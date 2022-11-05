@@ -7,6 +7,7 @@ __pycache__/
 *.so
 
 dataset/
+.DS_Store
 
 # Distribution / packaging
 .Python
