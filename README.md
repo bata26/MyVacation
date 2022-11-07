@@ -1,7 +1,5 @@
 # AirBnb
 
-![UseCases.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/cdfb7ac1-e592-4d2f-9a1c-1007d3f55f7a/UseCases.png)
-
 ### Tipologia di utenti
 
 - Utenti registrati
@@ -28,8 +26,9 @@ Un utente registrato può essere sia un host che un cliente
 - L’amministratore può approvare la pubblicazione di un’attività
 - L’amministratore può approvare la pubblicazione di un’attività
 - Un utente può segnalare un annuncio
+- Un utente registrato può modificare uno dei suoi annunci
 
-# Non functional requirements
+## Non functional requirements
 
 - The application must be written in python.
 - Le operazioni sul database dovranno essere atomiche
@@ -44,6 +43,7 @@ Un utente registrato può essere sia un host che un cliente
 - Un’attività deve essere approvato dall’admin
 - Ogni annuncio deve avere almeno una foto
 - Un annuncio non può avere più prenotazioni per lo stesso periodo
+- Ogni annuncio ha un numero minimo di notti che vanno rispettate
 
 ## Attori
 
@@ -58,8 +58,9 @@ Gli attori sono divisi in tre tipi di utenti:
 CA → consistency and availability
 
 ## Use Cases
-
+[![usecases.jpg](https://i.postimg.cc/wB2Pp8N5/usecases.jpg)](https://postimg.cc/Mcct7LdX)
 ## UML
+[![uml.jpg](https://i.postimg.cc/L58mp3h5/uml.jpg)](https://postimg.cc/Fd8MbcyX)
 
 ## Dataset Source
 
