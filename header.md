@@ -125,3 +125,46 @@ if start < END < end or start < START < end:
  - Query per lista delle prenotazioni di un utente
  - Query per lista delle prenotazioni relative ad un annuncio
  - Query per lista di utenti
+
+### QUERY PER OTTENERE LISTA DI ACCOMODATIONS OCCUPATE
+NB: Sostituire poi le ISODate con le date effettive che vengono dal frontend.
+```mongodb
+db.accomodations.aggregate([
+    {
+        "$unwind" : {
+            "path" : "$prenotations",
+            "preserveNullAndEmptyArrays": true
+        }
+    },
+    {
+        "$match":{
+                "$or" : [
+                    {"$and" : [
+                        { "prenotations.start_date" : { "$lte" : ISODate("2022-11-16T00:00:00.000Z")}},
+                        { "prenotations.start_date" : { "$gte" : ISODate("2022-11-14T00:00:00.000Z")}}
+                    ]} ,
+                    {"$and" : [
+                        { "prenotations.end_date" : { "$lte" : ISODate("2022-11-16T00:00:00.000Z")}},
+                        { "prenotations.end_date" : { "$gte" : ISODate("2022-11-14T00:00:00.000Z")}}
+                    ]} 
+                ]
+        },
+        
+    },
+    {
+        "$project" :  {"_id" : 1}
+    }
+])
+```
+
+Sia **occupied** una lista di id di accomodations occupate. A questo punto per ottenere tutte le accomodations libere:
+
+```mongodb
+db.accomodations.find(
+    {
+        "_id" : {
+            "$nin" : occupied
+        }
+    }
+)
+```
