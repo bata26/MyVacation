@@ -58,6 +58,24 @@ def getAccomodations():
     end_date = args.get("end_date")
     result = AccomodationsManager.getFilteredAccomodation(start_date  , end_date  , city , guests)
     return result , 200
+
+@application.route('/accomodations/<accomodation_id>' , methods = ['GET'])
+def getAccomodationById (accomodation_id):
+    accomodationId = escape(accomodation_id)
+    result = AccomodationsManager.getAccomodationsFromId(accomodationId)
+    return result , 200
+
+@application.route('/accomodations' , methods = ['GET'])
+def getAccomodations():
+    args = request.args
+    city = args.get("city")
+    guests = args.get("guests")
+    start_date = args.get("start_date")
+    end_date = args.get("end_date")
+    result = AccomodationsManager.getFilteredAccomodation(start_date  , end_date  , city , guests)
+    print(f"result : {result}")
+    result["_id"] = str(result["_id"])
+    return result , 200
     
 if __name__ == "__main__":
     application.run(threaded=True , debug=True , use_reloader=False)
