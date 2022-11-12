@@ -38,6 +38,6 @@ def getAccomodations():
     print(f"result : {result}")
     result["_id"] = str(result["_id"])
     return result , 200
-
+    
 if __name__ == "__main__":
     application.run(threaded=True , debug=True , use_reloader=False)
