@@ -16,7 +16,7 @@
     "location" : {
      "address"
      "city"
-     "nation"
+     "country"
     },
     "property_type"
     "accommodates"
