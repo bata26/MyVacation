@@ -61,13 +61,13 @@ export default function AppFooter() {
               <Grid item sx={{ display: 'flex' }}>
                 <Box component="a" href="https://mui.com/" sx={iconStyle}>
                   <img
-                    src='../../../images/appFooterFacebook.png'
+                    src='/images/appFooterFacebook.png'
                     alt="Facebook"
                   />
                 </Box>
                 <Box component="a" href="https://twitter.com/MUI_hq" sx={iconStyle}>
                   <img
-                    src="/static/themes/onepirate/appFooterTwitter.png"
+                    src="/images/appFooterTwitter.png"
                     alt="Twitter"
                   />
                 </Box>

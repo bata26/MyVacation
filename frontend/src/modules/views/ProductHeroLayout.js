@@ -43,7 +43,7 @@ function ProductHeroLayout(props) {
         }}
       >
         <img
-          src="/static/themes/onepirate/productHeroWonder.png"
+          src= "/images/productHeroWonder.png"
           alt="wonder"
           width="147"
           height="80"
@@ -64,7 +64,7 @@ function ProductHeroLayout(props) {
         <Background sx={sxBackground} />
         <Box
           component="img"
-          src="/static/themes/onepirate/productHeroArrowDown.png"
+          src="/images/productHeroArrowDown.png"
           height="16"
           width="12"
           alt="arrow down"

@@ -43,7 +43,7 @@ function ProductHowItWorks() {
       >
         <Box
           component="img"
-          src="/static/themes/onepirate/productCurvyLines.png"
+          src="/images/productCurvyLines.png"
           alt="curvy lines"
           sx={{
             pointerEvents: 'none',
@@ -62,7 +62,7 @@ function ProductHowItWorks() {
                 <Box sx={number}>1.</Box>
                 <Box
                   component="img"
-                  src="/static/themes/onepirate/productHowItWorks1.svg"
+                  src="/images/productHowItWorks1.svg"
                   alt="suitcase"
                   sx={image}
                 />
@@ -76,7 +76,7 @@ function ProductHowItWorks() {
                 <Box sx={number}>2.</Box>
                 <Box
                   component="img"
-                  src="/static/themes/onepirate/productHowItWorks2.svg"
+                  src="/images/productHowItWorks2.svg"
                   alt="graph"
                   sx={image}
                 />
@@ -91,7 +91,7 @@ function ProductHowItWorks() {
                 <Box sx={number}>3.</Box>
                 <Box
                   component="img"
-                  src="/static/themes/onepirate/productHowItWorks3.svg"
+                  src="/images/productHowItWorks3.svg"
                   alt="clock"
                   sx={image}
                 />

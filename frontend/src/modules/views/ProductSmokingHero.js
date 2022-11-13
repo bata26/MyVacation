@@ -28,7 +28,7 @@ function ProductSmokingHero() {
       </Typography>
       <Box
         component="img"
-        src="/static/themes/onepirate/producBuoy.svg"
+        src="/images/producBuoy.svg"
         alt="buoy"
         sx={{ width: 60 }}
       />
