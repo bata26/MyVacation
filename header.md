@@ -47,7 +47,6 @@
     },
     "description"
     "prenotations" : [],
-    "availableSlot" // posti disponibili
     "duration" // durata attività
     "pricePerPerson"
     "number_of_reviews"

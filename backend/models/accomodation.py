@@ -1,6 +1,3 @@
-import os
-from bson.objectid import ObjectId
-
 class Accomodation:
     def __init__(self , _id , name , description , 
         picture_url , host_id , host_url , host_name , host_since , 

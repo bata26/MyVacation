@@ -12,25 +12,25 @@ class AccomodationsManager:
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
         cursor = dict(collection.find_one({"_id" : ObjectId(accomodationID)}))
         accomodation = Accomodation(
-                                str(cursor["_id"]),
-                                cursor["name"] ,
-                                cursor["description"] ,
-                                cursor["picture_url"] ,
-                                cursor["host_id"] ,
-                                cursor["host_url"] ,
-                                cursor["host_name"] ,
-                                cursor["host_since"] ,
-                                cursor["host_picture_url"] ,
-                                cursor["location"] ,
-                                cursor["property_type"] ,
-                                cursor["accommodates"] ,
-                                cursor["bathrooms"] ,
-                                cursor["bedrooms"] ,
-                                cursor["beds"] ,
-                                cursor["price"] ,
-                                cursor["minimum_nights"] ,
-                                cursor["number_of_reviews"] ,
-                                cursor["review_scores_rating"])
+            str(cursor["_id"]),
+            cursor["name"] ,
+            cursor["description"] ,
+            cursor["picture_url"] ,
+            cursor["host_id"] ,
+            cursor["host_url"] ,
+            cursor["host_name"] ,
+            cursor["host_since"] ,
+            cursor["host_picture_url"] ,
+            cursor["location"] ,
+            cursor["property_type"] ,
+            cursor["accommodates"] ,
+            cursor["bathrooms"] ,
+            cursor["bedrooms"] ,
+            cursor["beds"] ,
+            cursor["price"] ,
+            cursor["minimum_nights"] ,
+            cursor["number_of_reviews"] ,
+            cursor["review_scores_rating"])
         return accomodation
         #cursor["_id"] = str(cursor["_id"])
         #return cursor
@@ -75,25 +75,25 @@ class AccomodationsManager:
         accomodations = list(collection.find(query))
         for accomodation in accomodations:
             accomodationResult = Accomodation(
-                                str(accomodation["_id"]) ,
-                                accomodation["name"] ,
-                                accomodation["description"] ,
-                                accomodation["picture_url"] ,
-                                accomodation["host_id"] ,
-                                accomodation["host_url"] ,
-                                accomodation["host_name"] ,
-                                accomodation["host_since"] ,
-                                accomodation["host_picture_url"] ,
-                                accomodation["location"] ,
-                                accomodation["property_type"] ,
-                                accomodation["accommodates"] ,
-                                accomodation["bathrooms"] ,
-                                accomodation["bedrooms"] ,
-                                accomodation["beds"] ,
-                                accomodation["price"] ,
-                                accomodation["minimum_nights"] ,
-                                accomodation["number_of_reviews"] ,
-                                accomodation["review_scores_rating"])
+                str(accomodation["_id"]) ,
+                accomodation["name"] ,
+                accomodation["description"] ,
+                accomodation["picture_url"] ,
+                accomodation["host_id"] ,
+                accomodation["host_url"] ,
+                accomodation["host_name"] ,
+                accomodation["host_since"] ,
+                accomodation["host_picture_url"] ,
+                accomodation["location"] ,
+                accomodation["property_type"] ,
+                accomodation["accommodates"] ,
+                accomodation["bathrooms"] ,
+                accomodation["bedrooms"] ,
+                accomodation["beds"] ,
+                accomodation["price"] ,
+                accomodation["minimum_nights"] ,
+                accomodation["number_of_reviews"] ,
+                accomodation["review_scores_rating"])
             result.append(accomodationResult)
         return result
         
