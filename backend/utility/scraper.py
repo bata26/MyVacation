@@ -90,7 +90,6 @@ if __name__ == "__main__":
                     "location" : location,
                     'property_type': row['property_type'] ,
                     'accommodates': row['accommodates'] ,
-                    #'bathrooms': row['bathrooms'] ,
                     'bedrooms': row['bedrooms'] ,
                     'beds': row['beds'] ,
                     'price': float(row['price'].split("$")[1]) ,

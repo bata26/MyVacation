@@ -2,6 +2,7 @@ from .connection import MongoManager
 import os
 from models.accomodation import Accomodation
 from bson.objectid import ObjectId
+from utility.serializer import Serializer
 
 class AccomodationsManager:
 
@@ -15,23 +16,21 @@ class AccomodationsManager:
             str(cursor["_id"]),
             cursor["name"] ,
             cursor["description"] ,
-            cursor["picture_url"] ,
+            cursor["picture"] ,
             cursor["host_id"] ,
             cursor["host_url"] ,
             cursor["host_name"] ,
-            cursor["host_since"] ,
-            cursor["host_picture_url"] ,
+            cursor["host_picture"] ,
             cursor["location"] ,
             cursor["property_type"] ,
             cursor["accommodates"] ,
-            cursor["bathrooms"] ,
             cursor["bedrooms"] ,
             cursor["beds"] ,
             cursor["price"] ,
             cursor["minimum_nights"] ,
             cursor["number_of_reviews"] ,
             cursor["review_scores_rating"])
-        return accomodation
+        return Serializer.serializeAccomodation(accomodation)
         #cursor["_id"] = str(cursor["_id"])
         #return cursor
 
@@ -78,23 +77,21 @@ class AccomodationsManager:
                 str(accomodation["_id"]) ,
                 accomodation["name"] ,
                 accomodation["description"] ,
-                accomodation["picture_url"] ,
+                accomodation["picture"] ,
                 accomodation["host_id"] ,
                 accomodation["host_url"] ,
                 accomodation["host_name"] ,
-                accomodation["host_since"] ,
-                accomodation["host_picture_url"] ,
+                accomodation["host_picture"] ,
                 accomodation["location"] ,
                 accomodation["property_type"] ,
                 accomodation["accommodates"] ,
-                accomodation["bathrooms"] ,
                 accomodation["bedrooms"] ,
                 accomodation["beds"] ,
                 accomodation["price"] ,
                 accomodation["minimum_nights"] ,
                 accomodation["number_of_reviews"] ,
                 accomodation["review_scores_rating"])
-            result.append(accomodationResult)
+            result.append(Serializer.serializeAccomodation(accomodationResult))
         return result
         
     @staticmethod

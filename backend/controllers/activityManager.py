@@ -2,6 +2,7 @@ from .connection import MongoManager
 import os
 from models.activity import Activity
 from bson.objectid import ObjectId
+from utility.serializer import Serializer
 
 class ActivityManager:
 
@@ -16,8 +17,7 @@ class ActivityManager:
             cursor["host_id"] ,
             cursor["host_url"] ,
             cursor["host_name"] ,
-            cursor["host_since"] ,
-            cursor["host_picture_ url"] ,
+            cursor["host_picture"] ,
             cursor["location"] ,
             cursor["description"] ,
             cursor["prenotations"] ,
@@ -25,7 +25,7 @@ class ActivityManager:
             cursor["pricePerPerson"] ,
             cursor["number_of_reviews"] ,
             cursor["review_scores_rating"])
-        return activity
+        return Serializer.serializeActivity(activity)
 
 
     @staticmethod
@@ -81,13 +81,14 @@ class ActivityManager:
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         activities = list(collection.find(query))
         for activity in activities:
+            print(activity["_id"])
+            print(str(activity["_id"]))
             activityResults = Activity(
                 str(activity["_id"]) ,
                 activity["host_id"] ,
                 activity["host_url"] ,
                 activity["host_name"] ,
-                activity["host_since"] ,
-                activity["host_picture_ url"] ,
+                activity["host_picture"] ,
                 activity["location"] ,
                 activity["description"] ,
                 activity["prenotations"] ,
@@ -95,5 +96,5 @@ class ActivityManager:
                 activity["pricePerPerson"] ,
                 activity["number_of_reviews"] ,
                 activity["review_scores_rating"])   
-            result.append(activityResults)
+            result.append(Serializer.serializeActivity(activityResults))
         return result

@@ -1,17 +1,19 @@
+import base64
+
 class Activity:
     def __init__(self , _id , host_id , host_url , 
-        host_name , host_since , host_picture_url , location , description , 
+        host_name  , host_picture , location , description , 
         prenotations , duration , pricePerPerson , 
         number_of_reviews , reviews_score_rating):
         self._id = _id 
         self.host_id = host_id 
         self.host_url = host_url 
         self.host_name = host_name 
-        self.host_since = host_since 
-        self.host_picture_url = host_picture_url 
-        self.location.address = location.address 
-        self.location.city = location.city 
-        self.location.nation = location.nation 
+        self.host_picture = host_picture
+        self.location = {}
+        self.location["address"] = location["address"]
+        self.location["city"] = location["city"]
+        self.location["country"] = location["country"]
         self.description = description 
         self.prenotations = prenotations 
         self.duration = duration 
@@ -24,9 +26,8 @@ class Activity:
             "_id" : self._id ,
             "host_id" : self.host_id ,
             "host_url" : self.host_url ,
-            "host_name" : self.name ,
-            "host_since" : self.host_since ,
-            "host_picture_url" : self.host_picture_url ,
+            "host_name" : self.host_name ,
+            "host_picture" : base64.encode(self.host_picture),
             "location" : self.location ,
             "description" : self.description ,
             "prenotations" : self.prenotations ,

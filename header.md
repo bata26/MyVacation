@@ -7,12 +7,12 @@
     "id"
     "name"
     "description"
-    "picture_url"
+    "picture"
     "host_id"
     "host_url"
     "host_name"
     "host_since"
-    "host_picture_url"
+    "host_picture"
     "location" : {
      "address"
      "city"
@@ -20,7 +20,6 @@
     },
     "property_type"
     "accommodates"
-    "bathrooms"
     "bedrooms"
     "beds"
     "price"
@@ -38,12 +37,11 @@
     "host_id"
     "host_url"
     "host_name"
-    "host_since"
-    "host_picture_url"
+    "host_picture"
     "location" : {
      "address"
      "city"
-     "nation"
+     "country"
     },
     "description"
     "prenotations" : [],
