@@ -9,6 +9,10 @@ __pycache__/
 dataset/
 .DS_Store
 
+node_modules/
+__init__.py
+testImg/
+
 # Distribution / packaging
 .Python
 build/
