@@ -4,8 +4,6 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -13,26 +11,23 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-//function Copyright(props) {
-//  return (
-//    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-//      {'Copyright © '}
-//      <Link color="inherit" href="https://mui.com/">
-//        Your Website
-//      </Link>{' '}
-//      {new Date().getFullYear()}
-//      {'.'}
-//    </Typography>
-//  );
-//}
+
+import { FormControl } from '@mui/material';
+import FormLabel from '@mui/material/FormLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 
 const theme = createTheme();
 
-const SignIn = () => {
+const SignUp = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
+      name: data.get('name'),
+      surname: data.get('surname'),
+      gender: data.get('gender'),
+      dateOfBirth: data.get('dateOfBirth'),
       username: data.get('username'),
       password: data.get('password'),
     });
@@ -54,9 +49,66 @@ const SignIn = () => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Sign Up
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+
+
+          <Grid container columnSpacing={1.4}>
+              <Grid item>
+                <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="name"
+                label="Name"
+                type="name"
+                id="name"
+                autoComplete="name"
+                autoFocus
+                />
+              </Grid>
+              <Grid item>
+                <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="surname"
+                label="Surname"
+                type="surname"
+                id="surname"
+                autoComplete="surname"
+                autoFocus
+                />
+              </Grid>
+            </Grid>
+
+            <FormControl>
+            <FormLabel id="gender" margin='normal'>Gender</FormLabel>
+            <RadioGroup
+                aria-labelledby="gender"
+                defaultValue="male"
+                name="radio-buttons-group"
+                row
+            >
+                <FormControlLabel value="male" control={<Radio />} label="Male" />
+                <FormControlLabel value="female" control={<Radio />} label="Female" />
+                <FormControlLabel value="other" control={<Radio />} label="Other" />
+            </RadioGroup>
+            </FormControl>
+
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="dateOfBirth"
+              label="Date of birth"
+              type="dateOfBirth"
+              id="dateOfBirth"
+              autoComplete="dateOfBirth"
+              autoFocus
+            />
+
             <TextField
               margin="normal"
               required
@@ -77,28 +129,18 @@ const SignIn = () => {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Sign Up
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
               </Grid>
               <Grid item>
-              <Link href="/signUp" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
               </Grid>
             </Grid>
           </Box>
@@ -109,4 +151,4 @@ const SignIn = () => {
   );
 }
 
-export default SignIn;
+export default SignUp;

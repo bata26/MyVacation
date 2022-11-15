@@ -10,6 +10,8 @@ import  SignIn from "./pages/signIn";
 import ResponsiveAppBar from "./components/navBar.js";
 import {useEffect} from 'react';
 
+import SignUp from "./pages/signUp";
+
 function App() {
   useEffect(() => {
     document.body.style.margin = 0;
@@ -22,6 +24,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </Router>
   );
