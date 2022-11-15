@@ -11,6 +11,7 @@ dataset/
 
 __init__.py
 testImg/
+node_modules/
 # Distribution / packaging
 .Python
 build/
