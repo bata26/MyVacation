@@ -37,14 +37,15 @@ function ResponsiveAppBar() {
   };
 
   const ChangePage = (pagePath) =>{
-    //console.log("sono dentro");
-    //console.log("sono dentro -> path : " , pagePath);
+    console.log("sono dentro -> path : " , pagePath);
     pagePath = (pagePath === "/home") ? "/" : pagePath;
     navigate(pagePath);
   }
-
-
-  const handleCloseUserMenu = () => {
+  
+  //Come test ho impostato che qualunque voce del menù venga premuta essa reinderizza nella home
+  const handleCloseUserMenu = (selectedSetting) => {
+    console.log(selectedSetting);
+    ChangePage("/");
     setAnchorElUser(null);
   };
 
@@ -131,7 +132,6 @@ function ResponsiveAppBar() {
               <Button
                 key={page}
                 onClick={() => ChangePage("/" + page)}
-                //onClick={ChangePage}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
@@ -162,7 +162,7 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
