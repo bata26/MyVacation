@@ -61,7 +61,7 @@ const SignUp = () => {
                   name="firstName"
                   required
                   fullWidth
-                  id="firstName"
+                  id="name"
                   label="First Name"
                   autoFocus
                 />
@@ -70,7 +70,7 @@ const SignUp = () => {
                 <TextField
                   required
                   fullWidth
-                  id="lastName"
+                  id="surname"
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
