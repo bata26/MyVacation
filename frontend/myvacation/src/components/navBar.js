@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 //Pagine navBar
-const pages = ["signIn" , "signUp", "search"];
+const pages = ["signIn" , "signUp" , "accomodation", "accomodations" , "activities" ];//, 'Pricing', 'Blog'];
 
 // Pagine a tendina logo utente
 const settings = ['Profile', 'Logout'];

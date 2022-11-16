@@ -1,12 +1,13 @@
 import React from "react";
 import {
- BrowserRouter as Router,
- Routes,
- Route,
+  BrowserRouter as Router,
+  Routes,
+  Route
 } from "react-router-dom";
-import  SignIn from "./pages/signIn";
+import SignIn from "./pages/signIn";
+import Accomodation from "./pages/accomodation";
 import ResponsiveAppBar from "./components/navBar.js";
-import {useEffect} from 'react';
+import { useEffect } from 'react';
 import SignUp from "./pages/signUp";
 import Profile from "./pages/profile";
 import Home from "./pages/home/home"
@@ -23,21 +24,18 @@ function App() {
   }, []);
 
   return (
-      <>
-        <ResponsiveAppBar />
-        <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/checkout" element={<Checkout />} />
-            {/*<Route element={<RequireAuth allowedRoles={"Admin"} />}>*/}
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="/reports" element={<Chart />} />
-            {/*<Route path='/accomodationtobe/:id' element={<AccomodationToBe />}/>*/}
-        </Routes>
-      </>
+    <Router>
+      <ResponsiveAppBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/accomodation/:accomodationID" element={<Accomodation />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/search" element={<Search />} />
+      </Routes>
+    </Router>
   );
 }
 
