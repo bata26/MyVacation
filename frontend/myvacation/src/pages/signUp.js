@@ -55,30 +55,25 @@ const SignUp = () => {
 
 
           <Grid container columnSpacing={1.4}>
-              <Grid item>
+          <Grid item xs={12} sm={6}>
                 <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="name"
-                label="Name"
-                type="name"
-                id="name"
-                autoComplete="name"
-                autoFocus
+                  autoComplete="given-name"
+                  name="firstName"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First Name"
+                  autoFocus
                 />
               </Grid>
-              <Grid item>
+              <Grid item xs={12} sm={6}>
                 <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="surname"
-                label="Surname"
-                type="surname"
-                id="surname"
-                autoComplete="surname"
-                autoFocus
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Last Name"
+                  name="lastName"
+                  autoComplete="family-name"
                 />
               </Grid>
             </Grid>
