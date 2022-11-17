@@ -41,11 +41,16 @@ function ResponsiveAppBar() {
     pagePath = (pagePath === "/home") ? "/" : pagePath;
     navigate(pagePath);
   }
-  
-  //Come test ho impostato che qualunque voce del menù venga premuta essa reinderizza nella home
+
+  // Profile -> profile.js --- Logout -> home.js
   const handleCloseUserMenu = (selectedSetting) => {
     console.log(selectedSetting);
-    ChangePage("/");
+    if (selectedSetting === 'Profile') {
+      ChangePage('/profile')
+    }
+    else if (selectedSetting === 'Logout') {
+      ChangePage('/')
+    }
     setAnchorElUser(null);
   };
 

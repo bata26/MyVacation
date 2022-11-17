@@ -80,6 +80,17 @@ export default function Home() {
             ))}
           </Grid>
         </Container>
+        <Box
+          component="footer"
+          sx={{
+            py: 3,
+            px: 2,
+            mt: 'auto',
+          }}
+        >
+          <Container maxWidth="sm">
+          </Container>
+        </Box>
       </main>
     </ThemeProvider>
   );

@@ -11,6 +11,7 @@ import ResponsiveAppBar from "./components/navBar.js";
 import {useEffect} from 'react';
 
 import SignUp from "./pages/signUp";
+import Profile from "./pages/profile";
 
 function App() {
   useEffect(() => {
@@ -25,6 +26,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );
