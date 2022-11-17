@@ -32,9 +32,9 @@
  - "/admin/activities" -> PUT activity approvata
  - "/admin/activities" -> DELETE activity da eliminare
 
- - "/admin/accomodations" -> GET accomodation da approvare
- - "/admin/accomodations" -> PUT accomodation approvata
- - "/admin/accomodations" -> DELETE accomodation da eliminare
+ - "/admin/accomodations" -> GET accomodations da approvare
+ - "/admin/accomodations" -> PUT accomodations approvata
+ - "/admin/accomodations" -> DELETE accomodations da eliminare
 
  - "/admin/search" -> GET per la ricerca di utenti
 
