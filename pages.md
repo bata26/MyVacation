@@ -5,6 +5,7 @@
  - room details
  - activity details
  - admin dashboard
+ - home
 
 ### ENDPOINT
  - "/login" -> POST per login
@@ -29,9 +30,9 @@
  - "/admin/activities" -> PUT activities approvata
  - "/admin/activities" -> DELETE activities da eliminare
 
- - "/admin/accomodations" -> GET activities da approvare
- - "/admin/accomodations" -> PUT activities approvata
- - "/admin/accomodations" -> DELETE activities da eliminare
+ - "/admin/accomodations" -> GET accomodations da approvare
+ - "/admin/accomodations" -> PUT accomodations approvata
+ - "/admin/accomodations" -> DELETE accomodations da eliminare
 
  - "/admin/search" -> GET per la ricerca di utenti
 
