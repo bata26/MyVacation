@@ -2,6 +2,7 @@
   "name": "myvacation",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3000/",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -45,5 +46,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^4.10.0"
   }
 }

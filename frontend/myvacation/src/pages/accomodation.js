@@ -4,6 +4,7 @@ import Paper from '@mui/material/Paper';
 import { useParams } from 'react-router-dom';
 import Grid from '@mui/material/Unstable_Grid2';
 import axios from 'axios';
+import Config from '../utility/config';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -15,9 +16,14 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 function getAccomodationByID(accomodationID){
-  const url = process.env.BASE_URL+"/accomodation/"+accomodationID;
+
+  const url = Config.BASE_URL+"/accomodations/"+accomodationID;
   console.log(url);
-  axios.get(url)
+  axios.get(url ,{ 
+    //headers: {
+    //  "Access-Control-Allow-Origin": '*'
+    //}
+  })
   .then(function (response){
     console.log(response);
   })
