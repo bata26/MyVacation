@@ -1,5 +1,7 @@
 # PAGES
  - login
+ - sign up
+ - homepage
  - profile details
  - search page
  - room details
@@ -26,13 +28,13 @@
  - "/activities" -> POST per update
  - "/activities" -> DELETE per eliminare
 
- - "/admin/activities" -> GET activities da approvare
- - "/admin/activities" -> PUT activities approvata
- - "/admin/activities" -> DELETE activities da eliminare
+ - "/admin/activities" -> GET activity da approvare
+ - "/admin/activities" -> PUT activity approvata
+ - "/admin/activities" -> DELETE activity da eliminare
 
- - "/admin/accomodations" -> GET accomodations da approvare
- - "/admin/accomodations" -> PUT accomodations approvata
- - "/admin/accomodations" -> DELETE accomodations da eliminare
+ - "/admin/accomodations" -> GET accomodation da approvare
+ - "/admin/accomodations" -> PUT accomodation approvata
+ - "/admin/accomodations" -> DELETE accomodation da eliminare
 
  - "/admin/search" -> GET per la ricerca di utenti
 
@@ -40,5 +42,5 @@
  - "/reservations" -> DELETE per eliminare una prenotazione
  - "/reservations" -> GET di tutte le prenotazioni
  - "/reservations/<reservation_id>" -> GET di una specifica prenotazione
- - "/reservations/<accomodation_id>" -> GET prenotazioni di una specifica accomodations
- - "/reservations/<activity_id>" -> GET prenotazioni di una specifica accomodations
+ - "/reservations/<accomodation_id>" -> GET prenotazioni di una specifica accomodation
+ - "/reservations/<activity_id>" -> GET prenotazioni di una specifica attività
