@@ -14,9 +14,10 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from "react-router-dom";
 
-const pages = ["signIn" , "signUp"];//, 'Pricing', 'Blog'];
+//Pagine navBar
+const pages = ["signIn" , "signUp", "accomodations" , "activities" ];//, 'Pricing', 'Blog'];
 
-//Pagine a tendina logo utente
+// Pagine a tendina logo utente
 const settings = ['Profile', 'Logout'];
 
 function ResponsiveAppBar() {
