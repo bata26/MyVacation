@@ -39,3 +39,36 @@ class Serializer:
             "number_of_reviews" : accomodation.number_of_reviews ,
             "review_scores_rating" : accomodation.review_scores_rating ,
         }
+
+
+    @staticmethod
+    def serializeReview(review):
+        return {
+            "_id" : review._id ,
+            "reviewerID" : review.reviewerID ,
+            "destinationID" : review.destinationID ,
+            "host_name" : review.host_name ,
+            "score" : review.score ,
+            "comment" : review.comment 
+        }
+
+
+    @staticmethod
+    def serializeUser(user):
+        return {
+            "_id" : user._id ,
+            "username" : user.usernmae ,
+            "password" : user.password ,
+            "name" : user.name,
+            "surname" : user.surname ,
+            "type" : user.type ,
+            "description" : user.description ,
+            "gender" : user.gender ,
+            "dateOfBirth" : user.dateOfBirth,
+            "nationality" : user.nationality ,
+            "knownLanguages" : user.knownLanguages ,
+            "prenotations" : user.prenotations ,
+            "reviews" : user.reviews ,
+            "plaHistory" : user.plaHistory ,
+            "actHistory" : user.actHistory
+        }
