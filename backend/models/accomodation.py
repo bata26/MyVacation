@@ -1,14 +1,14 @@
 import base64
 class Accomodation:
     def __init__(self , _id , name , description , 
-        picture , host_id , host_url , host_name  , 
+        pictures , host_id , host_url , host_name  , 
         host_picture , location , property_type , accommodates , 
         bedrooms , beds , price , minimum_nights , number_of_reviews , 
         review_scores_rating):
         self._id = _id 
         self.name = name 
         self.description = description 
-        self.picture = picture 
+        self.pictures = pictures 
         self.host_id = host_id 
         self.host_url = host_url 
         self.host_name = host_name 

@@ -4,52 +4,58 @@ import Paper from '@mui/material/Paper';
 import { useParams } from 'react-router-dom';
 import Grid from '@mui/material/Unstable_Grid2';
 import axios from 'axios';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
 import Config from '../utility/config';
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
+//const Item = styled(Paper)(({ theme }) => ({
+//  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+//  ...theme.typography.body2,
+//  padding: theme.spacing(1),
+//  textAlign: 'center',
+//  color: theme.palette.text.secondary,
+//}));
 
 
-function getAccomodationByID(accomodationID){
 
-  const url = Config.BASE_URL+"/accomodations/"+accomodationID;
-  console.log(url);
-  axios.get(url ,{ 
-    //headers: {
-    //  "Access-Control-Allow-Origin": '*'
-    //}
-  })
-  .then(function (response){
-    console.log(response);
-  })
-  .catch(function(err){
-    console.log(err);
-  })
-}
 
 
 const Accomodation = () => {
-    
-    const {accomodationID} = useParams();
-    const response = getAccomodationByID(accomodationID);
-    return (
-      <Grid container spacing={2}>
+  const [accomodation , setAccomodation] = React.useState(null);
+  const {accomodationID} = useParams();
+
+  React.useEffect( () =>{
+    const url = Config.BASE_URL+"/accomodations/"+accomodationID;
+    axios.get(url)
+      .then(function (response){
+        setAccomodation(response.data);
+      })
+      .catch(function(err){
+        console.log(err);
+      })
+  } , []);
+
+  if(!accomodation) return null;
+  
+  return (
+    <Grid container spacing={2}>
       <Grid xs={12}>
-        <Item>{accomodationID}</Item>
+        <ImageList sx={{ width: 50+'%', height: 99+'%' }} cols={2} rowHeight={400}>
+          {accomodation.pictures.map((item) => (
+            <ImageListItem key={item}>
+              <img
+                //src={`${item}?w=164&h=164&fit=crop&auto=format`}
+                src={`data:image/jpeg;base64,${item}`}
+                //srcSet={`${item}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                //alt={item.title}
+                //loading="lazy"
+              />
+            </ImageListItem>
+          ))}
+        </ImageList>
       </Grid>
       <Grid xs={4}>
-        <Item>xs=4</Item>
-      </Grid>
-      <Grid xs={4}>
-        <Item>xs=4</Item>
-      </Grid>
-      <Grid xs={8}>
-        <Item>xs=8</Item>
+        <h1>{accomodation.name}</h1>
       </Grid>
     </Grid>
   );

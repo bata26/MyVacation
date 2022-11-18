@@ -20,11 +20,14 @@ class Serializer:
     
     @staticmethod
     def serializeAccomodation(accomodation):
+        pictures = []
+        for acc in accomodation.pictures:
+            pictures.append(acc.decode('utf-8'))
         return {
             "_id" : accomodation._id ,
             "name" : accomodation.name ,
             "description" : accomodation.description ,
-            "picture" : accomodation.picture.decode('utf-8'),
+            "pictures" : pictures, # accomodation.pictures,#.decode('utf-8'),
             "host_id" : accomodation.host_id ,
             "host_url" : accomodation.host_url ,
             "host_name" : accomodation.host_name ,

@@ -3,9 +3,11 @@ from flask import Flask, abort, request, jsonify, Response
 from dotenv import load_dotenv
 from markupsafe import escape
 from controllers.activityManager import ActivityManager
+from flask_cors import CORS
 
 load_dotenv()
 application = Flask(__name__)
+CORS(application)
 
 @application.route('/activities/<activity_id>' , methods = ['DELETE'])
 def deleteActivityByID(activity_id):
