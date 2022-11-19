@@ -56,7 +56,7 @@ export default function Profile() {
 
 
 
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="md">
         <CssBaseline />
         <Box>
 
@@ -86,61 +86,42 @@ export default function Profile() {
           <Grid container columnSpacing={1.4}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
+                  disabled
                   fullWidth
-                  id="name"
-                  label="First Name"
-                  autoFocus
+                  label="Keanu"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  required
+                  disabled
                   fullWidth
-                  id="surname"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
+                  label="Reeves"
                 />
               </Grid>
           </Grid>
 
             <TextField
               margin="normal"
-              required
+              disabled
               fullWidth
-              name="gender"
-              label="Gender"
-              type="gender"
-              id="gender"
-              autoComplete="gender"
-              autoFocus
+              label="Male"
             />
             
 
             <TextField
               margin="normal"
-              required
+              disabled
               fullWidth
-              name="dateOfBirth"
-              label="Date of birth"
-              type="dateOfBirth"
-              id="dateOfBirth"
-              autoComplete="dateOfBirth"
-              autoFocus
+              label="02/09/1964"
             />
 
             <TextField
               margin="normal"
-              required
+              disabled
               fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
+              label="keanuReeves64"
               autoFocus
+              style={{marginBottom: 50 + 'px'}} 
             />
             <Grid container>
               <Grid item xs>
@@ -152,64 +133,78 @@ export default function Profile() {
         </Box>
       </Container>
 
-
-      <TableContainer component={Paper} style={{marginBottom: 50 + 'px'}} >
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell style={{fontWeight: 'bold'}}>
-                Accomodations
-                </TableCell>
-              <TableCell align="right" style={{fontWeight: 'bold'}}>Title</TableCell>
-              <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {rowsAccomodations.map((row) => (
-              <TableRow
-                key={row.title}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.title}
-                </TableCell>
-                <TableCell align="right">{row.date}</TableCell>
-                <TableCell align="right">{row.state}</TableCell>
+      <Container maxWidth="md">
+        <TableContainer component={Paper} style={{marginBottom: 50 + 'px'}} >
+          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+            <TableHead>
+              <TableRow>
+                <TableCell style={{fontWeight: 'bold'}}>
+                  Accomodations
+                  </TableCell>
+                <TableCell align="right" style={{fontWeight: 'bold'}}>Title</TableCell>
+                <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+
+            <TableBody>
+              {rowsAccomodations.map((row) => (
+                <TableRow
+                  key={row.title}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.title}
+                  </TableCell>
+                  <TableCell align="right">{row.date}</TableCell>
+                  <TableCell align="right">{row.state}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
 
-      
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell style={{fontWeight: 'bold'}}>Activities</TableCell>
-              <TableCell align="right" style={{fontWeight: 'bold'}}>Title</TableCell>
-              <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {rowsActivities.map((row) => (
-              <TableRow
-                key={row.title}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.title}
-                </TableCell>
-                <TableCell align="right">{row.date}</TableCell>
-                <TableCell align="right">{row.state}</TableCell>
+        
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+            <TableHead>
+              <TableRow>
+                <TableCell style={{fontWeight: 'bold'}}>Activities</TableCell>
+                <TableCell align="right" style={{fontWeight: 'bold'}}>Title</TableCell>
+                <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+
+            <TableBody>
+              {rowsActivities.map((row) => (
+                <TableRow
+                  key={row.title}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.title}
+                  </TableCell>
+                  <TableCell align="right">{row.date}</TableCell>
+                  <TableCell align="right">{row.state}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Container>
+
+
+      <Box
+          component="footer"
+          sx={{
+            py: 3,
+            px: 2,
+            mt: 'auto',
+          }}
+        >
+      </Box>
+
+
     </ThemeProvider>
   );
 }

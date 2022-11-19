@@ -83,8 +83,6 @@ export default function Activities() {
             mt: 'auto',
           }}
         >
-          <Container maxWidth="sm">
-          </Container>
         </Box>
       </main>
     </ThemeProvider>
