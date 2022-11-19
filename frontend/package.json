@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@mui/x-date-pickers": "^5.0.8",
+    "@mui/x-date-pickers-pro": "^5.0.8",
+    "dayjs": "^1.11.6",
+    "moment": "^2.29.4",
+    "react-html-parser": "^2.0.2"
+  }
+}

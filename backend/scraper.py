@@ -2,8 +2,11 @@ import pandas as pd
 import os
 import http.client, urllib.parse
 import json
-from backend.controllers.connection import MongoManager
+from controllers.connection import MongoManager
 import pymongo
+import base64
+import requests
+
 DIRECTORY_NAME = "dataset"
 LISTING_FILENAME = "listings.csv"
 REVIEWS_FILENAME = "reviews.csv"
@@ -48,7 +51,7 @@ def getAddress(latitude , longitude):
 if __name__ == "__main__":
     connection = http.client.HTTPConnection(API_URL)
     connection.connect()
-    os.chdir(DIRECTORY_NAME)
+    os.chdir('../'+DIRECTORY_NAME)
     
     directoryList = os.listdir()
     for directory in directoryList:
@@ -70,6 +73,19 @@ if __name__ == "__main__":
         db = client["myvacation"]
         collection = db["accomodations"]
         for index, row in listingDataFrame.iterrows():
+            
+            try:
+                
+                picture = base64.b64encode(requests.get(row["picture_url"]).content)
+                #print(row["host_picture_url"])
+                #print(requests.get(row["host_picture_url"]).content)
+                #print(base64.b64encode(requests.get(row["host_picture_url"]).content))
+                id = row["id"]
+                collection.update_one({"old_id" : id} , {"$set" : {"mainPicture" : picture}})
+                print(f"Terminato aggiornamento {index}")
+            except Exception as e:
+                print("Impossibile effettuare update: " + e)
+            """
             location = getAddress(row["latitude"] , row["longitude"])
             if(location == None):
                 indexToDelete.append(index)
@@ -103,5 +119,7 @@ if __name__ == "__main__":
                     print(f"oggetto {index} inserito correttamente")
                 except Exception as e:
                     print(f"impossibile inserire : {e}")
+            """
+            #break
         os.chdir("..")
         break
