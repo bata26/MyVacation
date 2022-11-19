@@ -29,6 +29,7 @@ function ResponsiveAppBar() {
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -43,14 +44,14 @@ function ResponsiveAppBar() {
     navigate(pagePath);
   }
 
-  // Profile -> profile.js --- Logout -> home.js
+  // Profile -> profile.js --- Logout -> checkout.js
   const handleCloseUserMenu = (selectedSetting) => {
     console.log(selectedSetting);
     if (selectedSetting === 'Profile') {
       ChangePage('/profile')
     }
     else if (selectedSetting === 'Logout') {
-      ChangePage('/')
+      ChangePage('/checkout')
     }
     setAnchorElUser(null);
   };
@@ -144,7 +145,6 @@ function ResponsiveAppBar() {
               </Button>
             ))}
           </Box>
-
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -179,4 +179,5 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
+
 export default ResponsiveAppBar;

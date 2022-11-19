@@ -10,8 +10,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-
 import { FormControl } from '@mui/material';
 import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
@@ -140,7 +138,6 @@ const SignUp = () => {
             </Grid>
           </Box>
         </Box>
-        { /* <Copyright sx={{ mt: 8, mb: 4 }} /> */ }
       </Container>
     </ThemeProvider>
   );

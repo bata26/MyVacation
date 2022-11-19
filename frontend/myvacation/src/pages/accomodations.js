@@ -56,8 +56,7 @@ export default function Accomodations() {
                     </Typography>
 
                   </CardContent>
-
-                  <CardMedia
+                    <CardMedia
                     component="img"
                     image="https://picsum.photos/200"
                     alt="random"

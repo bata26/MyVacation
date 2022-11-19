@@ -22,7 +22,6 @@ function createDataActivities(
   return { title, date, state};
 }
 
-
 const rowsActivities = [
   createDataActivities('Disco', '4/10/2022', 'Complited'),
   createDataActivities('Socker', '11/11/2022', 'Complited'),
@@ -37,7 +36,6 @@ function createDataAccomodations(
   return { title, date, state};
 }
 
-
 const rowsAccomodations = [
   createDataAccomodations('Turin', '25/10/2022', 'Complited'),
   createDataAccomodations('Rome', '11/11/2022', 'Complited'),
@@ -50,16 +48,10 @@ const theme = createTheme();
 export default function Profile() {
 
   return (
-
-
     <ThemeProvider theme={theme}>
-
-
-
       <Container component="main" maxWidth="md">
         <CssBaseline />
         <Box>
-
           <Box
           sx={{
             pt: 8,
@@ -78,12 +70,8 @@ export default function Profile() {
               </Typography>
             </Container>
           </Box>
-
-
           <Box component="form"  noValidate sx={{ mt: 1 }}>
-
-
-          <Grid container columnSpacing={1.4}>
+            <Grid container columnSpacing={1.4}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   disabled
@@ -98,23 +86,19 @@ export default function Profile() {
                   label="Reeves"
                 />
               </Grid>
-          </Grid>
-
+            </Grid>
             <TextField
               margin="normal"
               disabled
               fullWidth
               label="Male"
             />
-            
-
             <TextField
               margin="normal"
               disabled
               fullWidth
               label="02/09/1964"
             />
-
             <TextField
               margin="normal"
               disabled
@@ -132,7 +116,6 @@ export default function Profile() {
           </Box>
         </Box>
       </Container>
-
       <Container maxWidth="md">
         <TableContainer component={Paper} style={{marginBottom: 50 + 'px'}} >
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -145,7 +128,6 @@ export default function Profile() {
                 <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
               </TableRow>
             </TableHead>
-
             <TableBody>
               {rowsAccomodations.map((row) => (
                 <TableRow
@@ -162,9 +144,6 @@ export default function Profile() {
             </TableBody>
           </Table>
         </TableContainer>
-
-
-        
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
@@ -174,7 +153,6 @@ export default function Profile() {
                 <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
               </TableRow>
             </TableHead>
-
             <TableBody>
               {rowsActivities.map((row) => (
                 <TableRow
@@ -192,8 +170,6 @@ export default function Profile() {
           </Table>
         </TableContainer>
       </Container>
-
-
       <Box
           component="footer"
           sx={{
@@ -203,8 +179,6 @@ export default function Profile() {
           }}
         >
       </Box>
-
-
     </ThemeProvider>
   );
 }
