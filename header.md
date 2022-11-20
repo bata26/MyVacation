@@ -46,6 +46,8 @@
     "description"
     "prenotations" : [],
     "duration" // durata attività
+    "picture"
+    "category"
     "pricePerPerson"
     "number_of_reviews"
     "review_scores_rating"

@@ -1,6 +1,7 @@
 from controllers.connection import MongoManager
 import random
 from bson.objectid import ObjectId
+import base64
 categories = [
     {
         "type" : "kayak",
@@ -50,6 +51,11 @@ def getCitiesList():
     hostList = collection.distinct("location.city" , {})
     return hostList
 
+def encodeBase64Image(imagePath):
+    res = None
+    with open(imagePath, "rb") as img_file:
+        res = base64.b64encode(img_file.read())
+    return res
 
 def generateRandomActivity():
     global hostList , cityList
@@ -63,6 +69,8 @@ def generateRandomActivity():
     duration = durations[random.randint(0 , len(durations) - 1)]
     price = prices[random.randint(0 , len(prices) - 1)]
 
+    base64Picture = encodeBase64Image(activity["img_path"])
+
     activity = {
         "host_id" : hostID,
         "host_url" :cursor["host_url"],
@@ -74,6 +82,8 @@ def generateRandomActivity():
          "country" :cursor["location"]["country"],
         },
         "description" : activity["description"],
+        "picture" : base64Picture,
+        "category" : activity["type"],
         "prenotations" : [],
         "duration" : duration , 
         "pricePerPerson" : price,
@@ -92,7 +102,7 @@ client = MongoManager.getInstance()
 db = client["myvacation"]
 collection = db["activities"]
 activities = []
-for i in range(0 , 50):
+for i in range(0 , 150):
     activity = generateRandomActivity()
     activities.append(activity)
 

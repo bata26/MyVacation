@@ -14,7 +14,7 @@ class ActivityManager:
         cursor = dict(collection.find_one({"_id" : ObjectId(activityID)}))
         activity = Activity(
             str(cursor["_id"]) ,
-            cursor["host_id"] ,
+            str(cursor["host_id"]) ,
             cursor["host_url"] ,
             cursor["host_name"] ,
             cursor["host_picture"] ,
@@ -24,7 +24,9 @@ class ActivityManager:
             cursor["duration"] ,
             cursor["pricePerPerson"] ,
             cursor["number_of_reviews"] ,
-            cursor["review_scores_rating"])
+            cursor["review_scores_rating"],
+            cursor["picture"],
+            cursor["category"])
         return Serializer.serializeActivity(activity)
 
 
@@ -74,18 +76,16 @@ class ActivityManager:
         if(start_date != ""):
             collection = db[os.getenv("PRENOTATIONS_COLLECTION")]
             occupiedActivitiesID = collection.distinct("destinationId" , 
-            {"startDate" : start_date}
+                {"startDate" : start_date}
             )
         query["_id"] = {}
         query["_id"]["$nin"] = occupiedActivitiesID
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         activities = list(collection.find(query))
         for activity in activities:
-            print(activity["_id"])
-            print(str(activity["_id"]))
             activityResults = Activity(
                 str(activity["_id"]) ,
-                activity["host_id"] ,
+                str(activity["host_id"]) ,
                 activity["host_url"] ,
                 activity["host_name"] ,
                 activity["host_picture"] ,
@@ -95,6 +95,8 @@ class ActivityManager:
                 activity["duration"] ,
                 activity["pricePerPerson"] ,
                 activity["number_of_reviews"] ,
-                activity["review_scores_rating"])   
+                activity["review_scores_rating"],
+                activity["picture"],
+                activity["category"])
             result.append(Serializer.serializeActivity(activityResults))
         return result

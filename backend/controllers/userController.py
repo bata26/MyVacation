@@ -32,7 +32,7 @@ def getUsers():
     user = {
             "type" : "admin"
         }
-    result = UserManager.getFilteredUsers(name , surname, user)
+    result = UserManager.getFilteredUsers(user, name , surname)
     print(f"result : {result}")
     result["_id"] = str(result["_id"])
     return result , 200

@@ -10,7 +10,6 @@ class User:
         self.name = name
         self.surname = surname
         self.type = type
-        self.description = description
         self.gender = gender
         self.dateOfBirth = dateOfBirth
         self.nationality = nationality
@@ -27,8 +26,7 @@ class User:
             "password" : self.password ,
             "name" : self.name ,
             "surname" : self.surname ,
-            "type" : type,
-            "description" : self.description ,
+            "type" : self.type,
             "gender" : self.gender ,
             "dateOfBirth" : self.dateOfBirth ,
             "nationality" : self.nationality ,

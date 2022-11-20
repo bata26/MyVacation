@@ -39,7 +39,7 @@ class ReviewManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("REVIEW_COLLECTION")]
 
-        if (user["type"] != "admin"):
+        if (user.type != "admin"):
             review = collection.find_one({"_id" : ObjectId(reviewID)})
             if(review.host_id != user._id):
                 raise Exception("L'utente non possiede la review")
@@ -47,4 +47,4 @@ class ReviewManager:
             res = collection.delete_one({"_id" : ObjectId(reviewID)})
             return res
         except Exception:
-            raise Exception("Impossibile inserire")
+            raise Exception("Impossibile eliminare")

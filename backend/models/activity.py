@@ -4,7 +4,7 @@ class Activity:
     def __init__(self , _id , host_id , host_url , 
         host_name  , host_picture , location , description , 
         prenotations , duration , pricePerPerson , 
-        number_of_reviews , reviews_score_rating):
+        number_of_reviews , reviews_score_rating , picture , category):
         self._id = _id 
         self.host_id = host_id 
         self.host_url = host_url 
@@ -20,6 +20,8 @@ class Activity:
         self.pricePerPerson = pricePerPerson 
         self.number_of_reviews = number_of_reviews 
         self.review_scores_rating = reviews_score_rating 
+        self.picture = picture 
+        self.category = category 
 
     def getDictToUpload(self):
         return {
@@ -34,5 +36,7 @@ class Activity:
             "duration" : self.duration ,
             "pricePerPerson" : self.pricePerPerson ,
             "number_of_reviews" : self.number_of_reviews ,
-            "review_scores_rating" : self.review_scores_rating
+            "review_scores_rating" : self.review_scores_rating,
+            "picture" : base64.encode(self.picture),
+            "category" : self.category,
         }

@@ -19,7 +19,6 @@ class UserManager:
             cursor["name"] ,
             cursor["surname"] ,
             cursor["type"] ,
-            cursor["description"] ,
             cursor["gender"] ,
             cursor["dateOfBirth"] ,
             cursor["nationality"] ,
@@ -28,7 +27,7 @@ class UserManager:
             cursor["reviews"] ,
             cursor["plaHistory"] ,
             cursor["actHistory"])
-        return Serializer.serializeUser(User)
+        return Serializer.serializeUser(user)
         #cursor["_id"] = str(cursor["_id"])
         #return cursor
 
@@ -36,7 +35,7 @@ class UserManager:
     #   - name
     #   - surname
     @staticmethod
-    def getFilteredUsers(name = "" , surname = "" ):
+    def getFilteredUsers(user , name = "" , surname = "" ):
         if (user["type"] != "admin"):
             raise Exception("L'utente non possiede i privilegi di admin")
 
@@ -45,13 +44,14 @@ class UserManager:
         db = client[os.getenv("DB_NAME")]
         result = []
 
-        if(name != ""):
+        if(name != "" and name != None):
             query["name"] = name
-        if(surname != ""):
+        if(surname != "" and surname != None):
             query["surname"] = surname
         
         collection = db[os.getenv("USERS_COLLECTION")]
         users = list(collection.find(query))
+        print(users)
         for user in users:
             userResult = User(
                 str(user["_id"]) ,
@@ -60,7 +60,6 @@ class UserManager:
                 user["name"] ,
                 user["surname"] ,
                 user["type"] ,
-                user["description"] ,
                 user["gender"] ,
                 user["dateOfBirth"] ,
                 user["nationality"] ,
