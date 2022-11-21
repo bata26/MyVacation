@@ -15,7 +15,7 @@ load_dotenv()
 application = Flask(__name__)
 CORS(application)
 
-def validateAuthorization(userID):
+def validateObjecID(userID):
     validationRegex = "^[0-9a-fA-F]{24}$"
     if re.match(validationRegex , userID):
         return True
@@ -27,7 +27,7 @@ def required_token(f):
         if 'Authorization' not in request.headers:
             return Response(json.dumps(f"Authorization token not found"), 401)
         
-        if(not(validateAuthorization(request.headers.get('Authorization')))):
+        if(not(validateObjecID(request.headers.get('Authorization')))):
             return Response(json.dumps("userID non valido"), 403)
 
         return f(*args, **kwargs)
@@ -146,11 +146,24 @@ def getUsers():
     return result , 200
 
 
-@application.route('/admin/annuncements' , methods = ['GET'])
+@application.route('/admin/announcements' , methods = ['GET'])
 @required_token
 def getAnnouncementToBeApproved():
-    result = AdminManager.getItemToApprove()
-    return result , 200
+    try:
+        result = AdminManager.getAnnouncementToApprove()
+        return result , 200
+    except Exception as e:
+        return e , 500
+
+@application.route('/admin/announcements/<announcementID>' , methods = ['POST'])
+@required_token
+def approveAnnouncement(announcementID):
+    if(not(validateObjecID(announcementID))): return "Announcement non valido" , 500
+    #try:
+    AdminManager.approveAnnouncement(announcementID)
+    return "" , 200
+    #except Exception as e:
+    #    return "" , 500
 
 if __name__ == "__main__":
     application.run(threaded=True , debug=True , use_reloader=False)
