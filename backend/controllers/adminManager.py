@@ -65,31 +65,30 @@ class AdminManager(UserManager):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         approveCollection = db[os.getenv("APPROVE_COLLECTION")]
-        #collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
-
-        #try:
-        ann = approveCollection.find_one({"_id" : ObjectId(announcementID)})
-        if(ann):
-            if(ann["type"] == "activity"):
-                collection = db[os.getenv("ACTIVITIES_COLLECTION")]
-            else:
-                collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
-            try:
-                ann.pop("_id")
-                ann.pop("type")
-                insertedID = collection.insert_one(ann) # inserisco nella nuova collection
-                print(f"inserito {insertedID}")
-                time.sleep(30)
+        try:
+            ann = approveCollection.find_one({"_id" : ObjectId(announcementID)})
+            if(ann):
+                if(ann["type"] == "activity"):
+                    collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+                else:
+                    collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
                 try:
-                    res = approveCollection.delete_one({"_id" : ObjectId(announcementID)})
-                    print(res)
+                    ann.pop("_id")
+                    ann.pop("type")
+                    insertedID = collection.insert_one(ann) # inserisco nella nuova collection
+                    print(f"inserito {insertedID}")
+                    time.sleep(30)
+                    try:
+                        res = approveCollection.delete_one({"_id" : ObjectId(announcementID)})
+                        print(res)
+                    except Exception as e:
+                        # impossibile eliminare da approvations quindi eseguo il rollback
+                        collection.delete_one({"_id" : ObjectId(insertedID)})
                 except Exception as e:
-                    # impossibile eliminare da approvations quindi eseguo il rollback
-                    collection.delete_one({"_id" : ObjectId(insertedID)})
-            except Exception as e:
-                raise Exception("Impossibile inserire nella collection destinataria")
-        else:
-            raise Exception("L'announcementID non esiste")
-            
+                    raise Exception("Impossibile inserire nella collection destinataria")
+            else:
+                raise Exception("L'announcementID non esiste")
+        except Exception as e:
+            raise Exception(f"Impossibile trovare l'annuncio: {announcementID}")
 
         

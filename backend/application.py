@@ -10,6 +10,8 @@ from flask_cors import CORS
 import json
 from functools import wraps
 import re
+import bcrypt
+
 
 load_dotenv()
 application = Flask(__name__)
@@ -36,12 +38,12 @@ def required_token(f):
 
 
 @application.route("/test" , methods = ["GET"])
-@required_token
+#@required_token
 def testValidation():
     return "OK" , 200
 
 @application.route('/activities/<activity_id>' , methods = ['DELETE'])
-@required_token
+#@required_token
 def deleteActivityByID(activity_id):
     activityID = escape(activity_id)
     user = {
@@ -51,14 +53,14 @@ def deleteActivityByID(activity_id):
     return "" , 200
 
 @application.route('/activities/<activity_id>' , methods = ['GET'])
-@required_token
+#@required_token
 def getActivityByID(activity_id):
     activityID = escape(activity_id)
     result = ActivityManager.getActivityFromID(activityID)
     return result , 200
 
 @application.route('/activities' , methods = ['GET'])
-@required_token
+#@required_token
 def getActivities():
     args = request.args
     city = args.get("city")
@@ -69,7 +71,7 @@ def getActivities():
     return result , 200
 
 @application.route('/accomodations/<accomodation_id>' , methods = ['DELETE'])
-@required_token
+#@required_token
 def deleteAccomodationById(accomodation_id):
     accomodationId = escape(accomodation_id)
     user = {
@@ -79,14 +81,14 @@ def deleteAccomodationById(accomodation_id):
     return "" , 200
 
 @application.route('/accomodations/<accomodation_id>' , methods = ['GET'])
-@required_token
+#@required_token
 def getAccomodationById (accomodation_id):
     accomodationId = escape(accomodation_id)
     result = AccomodationsManager.getAccomodationsFromId(accomodationId)
     return result , 200
 
 @application.route('/accomodations' , methods = ['GET'])
-@required_token
+#@required_token
 def getAccomodations():
     args = request.args
     city = args.get("city")
@@ -97,7 +99,7 @@ def getAccomodations():
     return result , 200
 
 @application.route('/reviews/<review_id>' , methods = ['GET'])
-@required_token
+#@required_token
 def getReviewByID(review_id):
     reviewID = escape(review_id)
     result = ReviewManager.getReviewFromID(reviewID)
@@ -105,7 +107,7 @@ def getReviewByID(review_id):
     
 
 @application.route('/reviews/<review_id>' , methods = ['DELETE'])
-@required_token
+#@required_token
 def deleteReviewByID(reviewID):
     reviewID = escape(reviewID)
     user = {
@@ -115,7 +117,7 @@ def deleteReviewByID(reviewID):
     return "" , 200
 
 @application.route('/users/<user_id>' , methods = ['DELETE'])
-@required_token
+#@required_token
 def deleteUserById (user_id):
     userId = escape(user_id)
     user = {
@@ -125,14 +127,28 @@ def deleteUserById (user_id):
     return "" , 200
 
 @application.route('/users/<user_id>' , methods = ['GET'])
-@required_token
+#@required_token
 def getUserById (user_id):
     userId = escape(user_id)
     result = UserManager.getUserFromId(userId)
     return result , 200
 
+@application.route('/login' , methods = ['POST'])
+#@required_token
+def loginUser ():
+    #print(request.)
+    username = request.json["username"]
+    password = request.json["password"]
+    print(f"username : {username}")
+    print(f"password : {password}")
+    try:
+        userID = UserManager.authenicateUser(username , password)
+        return userID , 200
+    except Exception as e:
+        return str(e) , 500
+
 @application.route('/users' , methods = ['GET'])
-@required_token
+#@required_token
 def getUsers():
     args = request.args
     name = args.get("name")
@@ -147,7 +163,7 @@ def getUsers():
 
 
 @application.route('/admin/announcements' , methods = ['GET'])
-@required_token
+#@required_token
 def getAnnouncementToBeApproved():
     try:
         result = AdminManager.getAnnouncementToApprove()
@@ -156,14 +172,14 @@ def getAnnouncementToBeApproved():
         return e , 500
 
 @application.route('/admin/announcements/<announcementID>' , methods = ['POST'])
-@required_token
+#@required_token
 def approveAnnouncement(announcementID):
     if(not(validateObjecID(announcementID))): return "Announcement non valido" , 500
-    #try:
-    AdminManager.approveAnnouncement(announcementID)
-    return "" , 200
-    #except Exception as e:
-    #    return "" , 500
+    try:
+        AdminManager.approveAnnouncement(announcementID)
+        return "" , 200
+    except Exception as e:
+        return e , 500
 
 if __name__ == "__main__":
     application.run(threaded=True , debug=True , use_reloader=False)

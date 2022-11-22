@@ -10,10 +10,11 @@ import ResponsiveAppBar from "./components/navBar.js";
 import { useEffect } from 'react';
 import SignUp from "./pages/signUp";
 import Profile from "./pages/profile";
-import Home from "./pages/home/home"
-import Checkout from "./pages/checkout/checkout"
-import Search from "./pages/search"
-import AdminPage from "./pages/adminPage/adminPage";
+import Activities from "./pages/activities";
+import Accomodations from "./pages/accomodations";
+import Home from "./pages/home"
+import Checkout from "./pages/checkout"
+import AdminPage from "./pages/adminPage/adminPage"
 import Chart from "./pages/adminPage/chart";
 
 function App() {

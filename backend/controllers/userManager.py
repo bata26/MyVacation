@@ -3,6 +3,7 @@ import os
 from models.user import User
 from bson.objectid import ObjectId
 from utility.serializer import Serializer
+import bcrypt
 
 class UserManager:
 
@@ -95,3 +96,21 @@ class UserManager:
             return res
         except Exception:
             raise Exception("Impossibile eliminare")
+    
+    @staticmethod
+    def authenicateUser(username , password):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("USERS_COLLECTION")]
+
+        try:
+            print("dentro")
+            cursor = dict(collection.find_one({"username" : username}))
+            print(cursor["password"])
+            
+            if(bcrypt.checkpw(password.encode('utf-8') , cursor["password"].encode('utf-8'))):
+                return str(cursor["_id"])
+            else:
+                raise Exception("Credenziali non valide")
+        except Exception:
+            raise Exception("impossibile procedere con l'autenticazione")

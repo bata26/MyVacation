@@ -13,15 +13,6 @@ import ReactRoundedImage from "react-rounded-image";
 import Separator from "../components/separator";
 import DateRangePicker from "../components/datePicker";
 
-//const Item = styled(Paper)(({ theme }) => ({
-//  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-//  ...theme.typography.body2,
-//  padding: theme.spacing(1),
-//  textAlign: 'center',
-//  color: theme.palette.text.secondary,
-//}));
-
-
 function srcset(image, size, rows = 1, cols = 1) {
   return {
     src: `${image}?w=${size * cols}&h=${size * rows}&fit=crop&auto=format`,
@@ -31,16 +22,12 @@ function srcset(image, size, rows = 1, cols = 1) {
   };
 }
 
-
-
 const Accomodation = () => {
   const [accomodation , setAccomodation] = React.useState(null);
   const [searchParams] = useSearchParams();
   const {accomodationID} = useParams();
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
-  console.log("startDate: ", startDate);
-  console.log("endDate: ", endDate);
 
   React.useEffect( () =>{
     const url = Config.BASE_URL+"/accomodations/"+accomodationID;

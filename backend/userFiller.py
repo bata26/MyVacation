@@ -26,7 +26,7 @@ for i in range(1 , 10):
     # generating the salt
     salt = bcrypt.gensalt()
     # Hashing the password
-    hash = bcrypt.hashpw(bytes, salt)
+    hash = bcrypt.hashpw(bytes, salt).decode('utf-8')
     hashed_psw.append(hash)
   
     
