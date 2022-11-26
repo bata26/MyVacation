@@ -15,7 +15,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from "react-router-dom";
 
 //Pagine navBar
-const pages = ["signIn" , "signUp", "accomodations" , "activities" ];//, 'Pricing', 'Blog'];
+const pages = ["signIn" , "signUp", "search"];
 
 // Pagine a tendina logo utente
 const settings = ['Profile', 'Logout'];
@@ -145,6 +145,7 @@ function ResponsiveAppBar() {
               </Button>
             ))}
           </Box>
+
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
