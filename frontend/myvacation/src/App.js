@@ -6,6 +6,9 @@ import {
 } from "react-router-dom";
 import SignIn from "./pages/signIn";
 import Accomodation from "./pages/accomodation";
+import  SignIn from "./pages/signIn";
+import  Accomodation from "./pages/accomodation";
+import  Activity from "./pages/activity";
 import ResponsiveAppBar from "./components/navBar.js";
 import { useEffect } from 'react';
 import SignUp from "./pages/signUp";
@@ -16,6 +19,12 @@ import Home from "./pages/home"
 import Checkout from "./pages/checkout"
 import AdminPage from "./pages/adminPage/adminPage"
 import Chart from "./pages/adminPage/chart";
+import Home from "./pages/home";
+import Checkout from "./pages/checkout";
+import Search from "./pages/search";
+import InsertAccomodation from "./pages/insertAccomodation";
+
+
 
 function App() {
   useEffect(() => {
@@ -32,6 +41,8 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/accomodation/:accomodationID" element={<Accomodation />} />
+        <Route path="/edit/accomodation/:accomodationID" element={<InsertAccomodation />} />
+        <Route path="/activity/:activityID" element={<Activity />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/search" element={<Search />} />

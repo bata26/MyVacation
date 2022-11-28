@@ -98,6 +98,17 @@ def getAccomodations():
     result = AccomodationsManager.getFilteredAccomodation(start_date  , end_date  , city , guests)
     return result , 200
 
+@application.route('/insert/accomodation' , methods = ['POST'])
+#@required_token
+def insertAccomodation():
+    accomodation = request.data
+    print(f"req : {request}")
+    print(f"req : {request.data}")
+    print(f"form : {dict(request.form)}")
+    print(f"file : {dict(request.files)}")
+    
+    return "" , 200
+
 @application.route('/reviews/<review_id>' , methods = ['GET'])
 #@required_token
 def getReviewByID(review_id):

@@ -13,17 +13,19 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { SelectChangeEvent } from '@mui/material/Select';
+import BasicDatePicker from '../components/singleDatePicker';
 
 
-const handleSearch = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      type: data.get('type'),
-      city: data.get('city'),
-      date: data.get('date'),
-      numberOfPeople: data.get('numberOfPeople'),
-    });
+const handleFilter = (event) => {
+  event.preventDefault();
+  const data = new FormData(event.currentTarget);
+  console.log({
+    type: data.get('type'),
+    city: data.get('city'),
+    date: data.get('date'),
+    numberOfPeople: data.get('numberOfPeople'),
+  });
 };
 
 
@@ -36,7 +38,6 @@ export default function Search() {
     const handleChange = (event) => {
         setType(event.target.value);
     };
-
 
   return (
     <ThemeProvider theme={theme}>
@@ -62,57 +63,60 @@ export default function Search() {
             </Typography>
           </Container>
         </Box>
-
-
-
         {/* Inizio blocco ricerca */}
-
-
         <Container>
-        <CssBaseline />
-            <Box component="form" onSubmit={handleSearch} noValidate sx={{ mt: 1 }}>
-              <Grid container columnSpacing={1.4}>
-                <Grid item xs={6} sm={3}>
-                    <Select
-                        fullWidth
-                        id='type'
-                        name='type'
-                        value={type}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value={'activity'}>Activity</MenuItem>
-                        <MenuItem value={'accomodation'}>Accomodation</MenuItem>
-                    </Select>
-                </Grid>
-                <Grid item xs={6} sm={3}>
-                    <TextField
-                    fullWidth
-                    name="city"
-                    id="city"
-                    label="City"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={3}>
-                    <TextField
-                    fullWidth
-                    id="date"
-                    name="date"
-                    type="date"
-                    />
-                </Grid>
+          <CssBaseline />
+          <Box component="form" onSubmit={handleFilter} noValidate sx={{ mt: 1 }}>
+            <Grid container columnSpacing={1.4}>
+              <Grid item xs={6} sm={3}>
+                <Select
+                  fullWidth
+                  id="type"
+                  value={type}
+                  onChange={handleChange}
+                >
+                  <MenuItem value={'activity'}>Activity</MenuItem>
+                  <MenuItem value={'accomodation'}>Accomodation</MenuItem>
+                </Select>
+              </Grid>
+              <Grid item xs={6} sm={3}>
+                <TextField
+                  fullWidth
+                  name="city"
+                  id="city"
+                  label="City"
+                />
+              </Grid>
+              <Grid item xs={6} sm={2}>
+                {/*<TextField
+                  fullWidth
+                  id="date"
+                  name="date"
+                  type="date"
+                />*/}
 
-                <Grid item xs={6} sm={3}>
-                    <TextField
-                    fullWidth
-                    id="numberOfPeople"
-                    label="Number of people"
-                    name="numberOfPeople"
-                    type="number"
-                    />
-                </Grid>
+                <BasicDatePicker labelValue={"Check-in"}/>
+              </Grid>
+              <Grid item xs={6} sm={2}>
+                {/*<TextField
+                  fullWidth
+                  id="date"
+                  name="date"
+                  type="date"
+                />*/}
 
+                <BasicDatePicker labelValue={"Check-out"}/>
+              </Grid>
+              <Grid item xs={6} sm={2}>
+                <TextField
+                  fullWidth
+                  id="numberOfPeople"
+                  label="Number of people"
+                  name="numberOfPeople"
+                  type="number"
+                />
+              </Grid>
             </Grid>
-            
             <Button
               type="submit"
               fullWidth
@@ -122,25 +126,16 @@ export default function Search() {
               Search
             </Button>
           </Box>
-      </Container>
-
-
+        </Container>
         {/* Separatore */}
-
-
-      <Box
+        <Box
           sx={{
             bgcolor: 'background.paper',
             pt: 8,
             pb: 6,
           }}
         />
-
-
         {/* Inizio risultati ricerca */}
-
-
-
         <Container >
           {/* End hero unit */}
           <Grid container spacing={4}>
@@ -150,13 +145,11 @@ export default function Search() {
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
                   <CardContent sx={{ flexGrow: 1 }}>
-
                     <Typography gutterBottom variant="h5" component="h2">
                       Title
                     </Typography>
-
                   </CardContent>
-                    <CardMedia
+                  <CardMedia
                     component="img"
                     image="https://picsum.photos/200"
                     alt="random"
