@@ -10,12 +10,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
 import { TextField } from '@mui/material';
-
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import  { SelectChangeEvent } from '@mui/material/Select';
 
 
 const handleFilter = (event) => {
@@ -35,11 +32,8 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const theme = createTheme();
 
 export default function Search() {
-
-
     const [type, setType] = React.useState('');
-
-    const handleChange = (event: SelectChangeEvent) => {
+    const handleChange = (event) => {
         setType(event.target.value);
     };
 
@@ -76,15 +70,9 @@ export default function Search() {
 
         <Container>
         <CssBaseline />
-
-          <Box component="form" onSubmit={handleFilter} noValidate sx={{ mt: 1 }}>
-
-
-            <Grid container columnSpacing={1.4}>
-
-
+            <Box component="form" onSubmit={handleFilter} noValidate sx={{ mt: 1 }}>
+              <Grid container columnSpacing={1.4}>
                 <Grid item xs={6} sm={3}>
-
                     <Select
                         fullWidth
                         id="type"
@@ -95,8 +83,6 @@ export default function Search() {
                         <MenuItem value={'accomodation'}>Accomodation</MenuItem>
                     </Select>
                 </Grid>
-
-
                 <Grid item xs={6} sm={3}>
                     <TextField
                     fullWidth
@@ -104,9 +90,7 @@ export default function Search() {
                     id="city"
                     label="City"
                     />
-
                 </Grid>
-
                 <Grid item xs={6} sm={3}>
                     <TextField
                     fullWidth

@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 //Pagine navBar
 const pages = ["signIn" , "signUp", "search"];
@@ -21,40 +22,45 @@ const pages = ["signIn" , "signUp", "search"];
 const settings = ['Profile', 'Logout'];
 
 function ResponsiveAppBar() {
-  let navigate = useNavigate();
+    const navigate = useNavigate();
+    const { auth } = useAuth();
+    const [anchorElNav, setAnchorElNav] = React.useState(null);
+    const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const handleOpenNavMenu = (event) => {
+        setAnchorElNav(event.currentTarget);
+    };
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
+    };
 
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
+    const handleCloseNavMenu = () => {
+        setAnchorElNav(null);
+    };
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const ChangePage = (pagePath) =>{
-    console.log("sono dentro -> path : " , pagePath);
-    pagePath = (pagePath === "/home") ? "/" : pagePath;
-    navigate(pagePath);
-  }
-
-  // Profile -> profile.js --- Logout -> checkout.js
-  const handleCloseUserMenu = (selectedSetting) => {
-    console.log(selectedSetting);
-    if (selectedSetting === 'Profile') {
-      ChangePage('/profile')
+    const ChangePage = (pagePath) =>{
+        console.log("sono dentro -> path : " , pagePath);
+        pagePath = (pagePath === "/home") ? "/" : pagePath;
+        navigate(pagePath);
     }
-    else if (selectedSetting === 'Logout') {
-      ChangePage('/checkout')
-    }
-    setAnchorElUser(null);
-  };
+
+    // Profile -> profile.js --- Logout -> checkout.js
+    const handleCloseUserMenu = (selectedSetting) => {
+        console.log(selectedSetting);
+        console.log(auth);
+
+        if (selectedSetting === 'Profile') {
+            if(auth.role === "User")
+                ChangePage('/profile')
+            else
+                ChangePage('/admin')
+        }
+        else if (selectedSetting === 'Logout') {
+            ChangePage('/checkout')
+        }
+        setAnchorElUser(null);
+    };
 
   return (
     <AppBar position="static">

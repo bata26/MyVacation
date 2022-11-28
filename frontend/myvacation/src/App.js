@@ -11,8 +11,9 @@ import SignUp from "./pages/signUp";
 import Profile from "./pages/profile";
 import Home from "./pages/home/home"
 import Checkout from "./pages/checkout/checkout"
-import Search from "./pages/search";
-
+import Search from "./pages/search"
+import AdminPage from "./pages/adminPage/adminPage";
+import Chart from "./pages/adminPage/chart";
 
 function App() {
   useEffect(() => {
@@ -22,17 +23,21 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <ResponsiveAppBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/search" element={<Search />} />
-      </Routes>
-    </Router>
+      <>
+        <ResponsiveAppBar />
+        <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/checkout" element={<Checkout />} />
+            {/*<Route element={<RequireAuth allowedRoles={"Admin"} />}>*/}
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/reports" element={<Chart />} />
+            {/*<Route path='/accomodationtobe/:id' element={<AccomodationToBe />}/>*/}
+        </Routes>
+      </>
   );
 }
 

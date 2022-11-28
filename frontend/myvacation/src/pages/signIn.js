@@ -12,17 +12,61 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import useAuth from "../hooks/useAuth"
+import api from "../api/api"
+import {useState} from "react";
+import {useNavigate, useLocation } from 'react-router-dom';
 
 const theme = createTheme();
+const LOGIN_URL = "/signin";
 
 const SignIn = () => {
-  const handleSubmit = (event) => {
+  const { setAuth } = useAuth();
+  const [errMsg, setErrMsg] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       username: data.get('username'),
       password: data.get('password'),
     });
+
+    try {
+      const response = await api.post(LOGIN_URL,
+          JSON.stringify({
+            username: data.get('username'),
+            password: data.get('password'),
+          }),
+          {
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true
+          }
+      );
+      console.log(JSON.stringify(response));
+
+      //const accessToken = response?.data?.accessToken;
+      const role = response?.data?.role;
+      const username = response?.data?.username;
+      setAuth({ username, role});
+      navigate(from, { replace: true });
+
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg('No Server Response');
+      } else if (err.response?.status === 400) {
+        setErrMsg('Missing Username or Password');
+      } else if (err.response?.status === 401) {
+        setErrMsg('Unauthorized');
+      } else {
+        setErrMsg('Login Failed');
+      }
+      //Do stuff with errorMsg
+    }
   };
 
   return (
