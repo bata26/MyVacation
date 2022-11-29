@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
 
-const handleFilter = (event) => {
+const handleSearch = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
@@ -70,12 +70,13 @@ export default function Search() {
 
         <Container>
         <CssBaseline />
-            <Box component="form" onSubmit={handleFilter} noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSearch} noValidate sx={{ mt: 1 }}>
               <Grid container columnSpacing={1.4}>
                 <Grid item xs={6} sm={3}>
                     <Select
                         fullWidth
-                        id="type"
+                        id='type'
+                        name='type'
                         value={type}
                         onChange={handleChange}
                     >
