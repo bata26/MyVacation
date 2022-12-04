@@ -6,7 +6,7 @@ from controllers.activityManager import ActivityManager
 from controllers.reviewManager import ReviewManager
 from controllers.userManager import UserManager
 from controllers.adminManager import AdminManager
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import json
 from functools import wraps
 import re
@@ -15,7 +15,7 @@ import bcrypt
 
 load_dotenv()
 application = Flask(__name__)
-CORS(application)
+cors = CORS(application , support_credentials=True, origins=["*" , "http://127.0.0.1:3000"])
 
 def validateObjecID(userID):
     validationRegex = "^[0-9a-fA-F]{24}$"
@@ -82,6 +82,7 @@ def deleteAccomodationById(accomodation_id):
 
 @application.route('/accomodations/<accomodation_id>' , methods = ['GET'])
 #@required_token
+@cross_origin(origin="*")
 def getAccomodationById (accomodation_id):
     accomodationId = escape(accomodation_id)
     result = AccomodationsManager.getAccomodationsFromId(accomodationId)
@@ -193,4 +194,5 @@ def approveAnnouncement(announcementID):
         return e , 500
 
 if __name__ == "__main__":
-    application.run(threaded=True , debug=True , use_reloader=False)
+    
+    application.run(threaded=True , debug=True , use_reloader=True)

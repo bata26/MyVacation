@@ -1,11 +1,12 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "http://127.0.0.1:5000";
 
 const instance = axios.create({
     baseURL: BASE_URL,
     headers: {
-        "Access-Control-Allow-Origin" :"*"
+        "Access-Control-Allow-Origin" :"*",
+        "crossDomain" : true
     }
 
 });
