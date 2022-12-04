@@ -62,7 +62,7 @@ CA → consistency and availability
 Nella collection accomodation/activities mantenere l'array prenotations solo per le prenotazioni future. Con ridondanza con la collection prenotations.
 Stessa cosa per gli utenti, si mantiene un array di prenotazioni recenti. Stessa gestione con le reviews. (PARLARE CON DUCANGE).
 ## Use Cases
-[![usecases.jpg](https://i.postimg.cc/wB2Pp8N5/usecases.jpg)](https://postimg.cc/Mcct7LdX)
+[![Use-Cases4.png](https://i.postimg.cc/fbvKt1fS/Use-Cases4.png)](https://postimg.cc/bGsb4CMq)
 ## UML
 [![uml.jpg](https://i.postimg.cc/L58mp3h5/uml.jpg)](https://postimg.cc/Fd8MbcyX)
 
