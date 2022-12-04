@@ -86,47 +86,43 @@ const SignUp = () => {
             Sign Up
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-
-
-            <Grid container columnSpacing={1.4}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="name"
-                  label="First Name"
-                  autoFocus
-                />
+              <Grid container columnSpacing={1.4}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                    autoComplete="given-name"
+                    name="firstName"
+                    required
+                    fullWidth
+                    id="name"
+                    label="First Name"
+                    autoFocus
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                    required
+                    fullWidth
+                    id="surname"
+                    label="Last Name"
+                    name="lastName"
+                    autoComplete="family-name"
+                    />
+                  </Grid>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="surname"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
-            </Grid>
-
-            <FormControl>
-              <FormLabel id="gender" margin='normal'>Gender</FormLabel>
-              <RadioGroup
-                aria-labelledby="gender"
-                defaultValue="male"
-                name="radio-buttons-group"
-                row
-              >
-                <FormControlLabel value="male" control={<Radio />} label="Male" />
-                <FormControlLabel value="female" control={<Radio />} label="Female" />
-                <FormControlLabel value="other" control={<Radio />} label="Other" />
-              </RadioGroup>
-            </FormControl>
-
-            <TextField
+              <FormControl>
+                  <FormLabel id="gender" margin='normal'>Gender</FormLabel>
+                  <RadioGroup
+                  aria-labelledby="gender"
+                  defaultValue="male"
+                  name="radio-buttons-group"
+                  row
+                  >
+                    <FormControlLabel value="male" control={<Radio />} label="Male" />
+                    <FormControlLabel value="female" control={<Radio />} label="Female" />
+                    <FormControlLabel value="other" control={<Radio />} label="Other" />
+                  </RadioGroup>
+              </FormControl>
+              <TextField
               margin="normal"
               required
               fullWidth

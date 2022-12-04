@@ -12,6 +12,7 @@ import { borderRadius } from '@mui/system';
 import ReactRoundedImage from "react-rounded-image";
 import Separator from "../components/separator";
 import DateRangePicker from "../components/datePicker";
+import api from "../api/api";
 
 function srcset(image, size, rows = 1, cols = 1) {
   return {
@@ -31,13 +32,21 @@ const Accomodation = () => {
 
   React.useEffect( () =>{
     const url = Config.BASE_URL+"/accomodations/"+accomodationID;
-    axios.get(url)
-      .then(function (response){
-        setAccomodation(response.data);
-      })
-      .catch(function(err){
-        console.log(err);
-      })
+    api.get("/accomodations/"+accomodationID)
+    .then(function(response){
+      setAccomodation(response.data);
+    })
+    .catch(function(error){
+      console.log(error);
+    });
+
+    //axios.get(url)
+    //  .then(function (response){
+    //    setAccomodation(response.data);
+    //  })
+    //  .catch(function(err){
+    //    console.log(err);
+    //  })
   } , []);
 
   if(!accomodation) return null;

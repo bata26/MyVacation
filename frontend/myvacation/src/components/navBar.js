@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 //Pagine navBar
-const pages = ["signIn" , "signUp" , "accomodation", "accomodations" , "activities" ];//, 'Pricing', 'Blog'];
+const pages = ["signIn" , "signUp", "search"];
 
 // Pagine a tendina logo utente
 const settings = ['Profile', 'Logout'];
@@ -54,7 +54,7 @@ function ResponsiveAppBar() {
             if(auth.role === "User")
                 ChangePage('/profile')
             else
-                ChangePage('/admin')
+                ChangePage('/profile')
         }
         else if (selectedSetting === 'Logout') {
             ChangePage('/checkout')

@@ -3,9 +3,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import MainFeaturedPost from '../components/mainFeaturedPost';
-import FeaturedPost from '../components/featuredPost';
-import Footer from '../components/footer';
+import MainFeaturedPost from './mainFeaturedPost';
+import FeaturedPost from './featuredPost';
+import Footer from './../../components/footer';
 
 const mainFeaturedPost = {
     title: 'Title of a longer featured blog post',

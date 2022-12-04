@@ -16,8 +16,6 @@ import useAuth from "../hooks/useAuth"
 import api from "../api/api"
 import {useState} from "react";
 import {useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import Config from '../utility/config';
 
 const theme = createTheme();
 const LOGIN_URL = "/signin";
@@ -33,18 +31,6 @@ const SignIn = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const url = Config.BASE_URL+"/login";
-    console.log("data:" , data );
-    axios.post(url , {
-      "username" : data.get("username"),
-      "password" : data.get("password"),
-    })
-    .then(function(response){
-      console.log("resp: " , response);
-    })
-    .catch(function(error){
-      console.log(error);
-    })
     console.log({
       username: data.get('username'),
       password: data.get('password'),
