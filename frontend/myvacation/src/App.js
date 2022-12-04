@@ -4,7 +4,7 @@ import {
  Routes,
  Route,
 } from "react-router-dom";
-import  SignIn from "./pages/signIn";
+import SignIn from "./pages/signIn";
 import ResponsiveAppBar from "./components/navBar.js";
 import {useEffect} from 'react';
 import SignUp from "./pages/signUp";
