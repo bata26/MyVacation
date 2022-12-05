@@ -21,7 +21,8 @@ const handleSearch = (event) => {
     console.log({
       type: data.get('type'),
       city: data.get('city'),
-      date: data.get('date'),
+      startDate: data.get('startDate'),
+      endDate: data.get('endDate'),
       numberOfPeople: data.get('numberOfPeople'),
     });
 };
@@ -72,7 +73,7 @@ export default function Search() {
         <CssBaseline />
             <Box component="form" onSubmit={handleSearch} noValidate sx={{ mt: 1 }}>
               <Grid container columnSpacing={1.4}>
-                <Grid item xs={6} sm={3}>
+                <Grid item xs={4} sm={2}>
                     <Select
                         fullWidth
                         id='type'
@@ -84,7 +85,7 @@ export default function Search() {
                         <MenuItem value={'accomodation'}>Accomodation</MenuItem>
                     </Select>
                 </Grid>
-                <Grid item xs={6} sm={3}>
+                <Grid item xs={6} sm={4}>
                     <TextField
                     fullWidth
                     name="city"
@@ -92,16 +93,25 @@ export default function Search() {
                     label="City"
                     />
                 </Grid>
-                <Grid item xs={6} sm={3}>
+                <Grid item xs={6} sm={2}>
                     <TextField
                     fullWidth
-                    id="date"
-                    name="date"
+                    id="startDate"
+                    name="startDate"
                     type="date"
                     />
                 </Grid>
 
-                <Grid item xs={6} sm={3}>
+                <Grid item xs={6} sm={2}>
+                    <TextField
+                    fullWidth
+                    id="endDate"
+                    name="endDate"
+                    type="date"
+                    />
+                </Grid>
+
+                <Grid item xs={4} sm={2}>
                     <TextField
                     fullWidth
                     id="numberOfPeople"
