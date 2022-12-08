@@ -1,4 +1,3 @@
-from .userManager import UserManager
 from .connection import MongoManager
 from models.toApprove import ToApprove
 from models.accomodation import Accomodation
@@ -8,7 +7,7 @@ import os
 import time
 from bson.objectid import ObjectId
 
-class AdminManager(UserManager):
+class AdminManager():
 
     @staticmethod
     def getAnnouncementToApprove(index, direction):

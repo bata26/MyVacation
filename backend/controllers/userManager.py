@@ -36,7 +36,7 @@ class UserManager:
     # we can filter for:
     #   - name
     #   - surname
-    #   - id
+    # TODO: da spostare
     @staticmethod
     def getFilteredUsers(user , id = "" , name = "" , surname = "" , index = "", direction  = ""):
         if (user["type"] != "admin"):
@@ -97,7 +97,7 @@ class UserManager:
         except Exception:
             raise Exception("Impossibile inserire")
 
-
+    # TODO: spostare
     @staticmethod
     def deleteUser(userID , user):
         client = MongoManager.getInstance()
