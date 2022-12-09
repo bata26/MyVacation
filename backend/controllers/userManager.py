@@ -4,6 +4,7 @@ from models.user import User
 from bson.objectid import ObjectId
 from utility.serializer import Serializer
 import bcrypt
+from flask import jsonify
 
 class UserManager:
 
@@ -35,8 +36,9 @@ class UserManager:
     # we can filter for:
     #   - name
     #   - surname
+    #   - id
     @staticmethod
-    def getFilteredUsers(user , name = "" , surname = "" ):
+    def getFilteredUsers(user , id = "" , name = "" , surname = "" , index = "", direction  = ""):
         if (user["type"] != "admin"):
             raise Exception("L'utente non possiede i privilegi di admin")
 
@@ -44,15 +46,26 @@ class UserManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         result = []
+        page_size = 2;
 
+        if(id != "" and id != None):
+            query["_id"] = ObjectId(id)
         if(name != "" and name != None):
             query["name"] = name
         if(surname != "" and surname != None):
             query["surname"] = surname
-        
+
         collection = db[os.getenv("USERS_COLLECTION")]
-        users = list(collection.find(query))
-        print(users)
+
+        if index == "":
+            # When it is first page
+            users = collection.find().sort('_id', 1).limit(page_size)
+        else:
+            if (direction == "next"):
+                users = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(page_size)
+            elif (direction == "previous"):
+                users = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
+
         for user in users:
             userResult = User(
                 str(user["_id"]) ,
@@ -71,6 +84,8 @@ class UserManager:
                 user["actHistory"])
             result.append(Serializer.serializeUser(userResult))
         return result
+
+
 
     @staticmethod
     def insertNewUser(user):

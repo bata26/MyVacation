@@ -1,7 +1,8 @@
 from .userManager import UserManager
 from .connection import MongoManager
-from models.activity import Activity
+from models.toApprove import ToApprove
 from models.accomodation import Accomodation
+from models.activity import Activity
 from utility.serializer import Serializer
 import os
 import time
@@ -10,54 +11,31 @@ from bson.objectid import ObjectId
 class AdminManager(UserManager):
 
     @staticmethod
-    def getAnnouncementToApprove():
+    def getAnnouncementToApprove(index, direction):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("APPROVE_COLLECTION")]
-        try:
-            cursor = list(collection.find())
-        except Exception as e:
-            raise Exception("Impossibile connettersi al database")
+        page_size = 2
+
+        if index == "":
+            # When it is first page
+            items = collection.find().sort('_id', 1).limit(page_size)
+        else:
+            if (direction == "next"):
+                items = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(page_size)
+            elif (direction == "previous"):
+                items = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
+
         result = []
-        for item in cursor:
-            if item["type"] == "activity":
-                tempActivity = Activity(
-                    str(item["_id"]) ,
-                    str(item["host_id"]) ,
-                    item["host_url"] ,
-                    item["host_name"] ,
-                    item["host_picture"] ,
-                    item["location"] ,
-                    item["description"] ,
-                    item["prenotations"] ,
-                    item["duration"] ,
-                    item["pricePerPerson"] ,
-                    item["number_of_reviews"] ,
-                    item["review_scores_rating"],
-                    item["picture"],
-                    item["category"])
-                result.append(Serializer.serializeActivity(tempActivity))
-            else:
-                tempAccomodation = Accomodation(
-                    str(item["_id"]) ,
-                    item["name"] ,
-                    item["description"] ,
-                    item["pictures"] ,
-                    item["host_id"] ,
-                    item["host_url"] ,
-                    item["host_name"] ,
-                    item["mainPicture"] ,
-                    item["host_picture"] ,
-                    item["location"] ,
-                    item["property_type"] ,
-                    item["accommodates"] ,
-                    item["bedrooms"] ,
-                    item["beds"] ,
-                    item["price"] ,
-                    item["minimum_nights"] ,
-                    item["number_of_reviews"] ,
-                    item["review_scores_rating"])
-            result.append(Serializer.serializeAccomodation(tempAccomodation))
+
+        for item in items:
+            tempToApprove = ToApprove(
+                str(item["_id"]) ,
+                item["name"] ,
+                str(item["host_id"]) ,
+                item["location"] ,
+                item["type"])
+            result.append(Serializer.serializeToApprove(tempToApprove))
         return result
 
     @staticmethod

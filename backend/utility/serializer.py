@@ -76,3 +76,13 @@ class Serializer:
             "plaHistory" : user.plaHistory ,
             "actHistory" : user.actHistory
         }
+
+    @staticmethod
+    def serializeToApprove(toApprove):
+        return {
+            "_id" : toApprove._id ,
+            "name" : toApprove.name,
+            "host_id" : toApprove.host_id ,
+            "location" : toApprove.location,
+            "type" : toApprove.type
+        }

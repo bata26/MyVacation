@@ -163,14 +163,21 @@ def loginUser ():
 #@required_token
 def getUsers():
     args = request.args
+    id = args.get("id")
     name = args.get("name")
     surname = args.get("surname")
+    index = args.get("index")
+    direction = args.get("direction")
+    print(f"id : {id}")
     print(f"name : {name}")
     print(f"surname : {surname}")
+    print(f"lastid : {index}")
+    print(f"direction : {direction}")
+
     user = {
             "type" : "admin"
         }
-    result = UserManager.getFilteredUsers(user , name , surname)
+    result = UserManager.getFilteredUsers(user ,id, name , surname, index, direction)
     return result , 200
 
 
@@ -178,7 +185,10 @@ def getUsers():
 #@required_token
 def getAnnouncementToBeApproved():
     try:
-        result = AdminManager.getAnnouncementToApprove()
+        args = request.args
+        index = args.get("index")
+        direction = args.get("direction")
+        result = AdminManager.getAnnouncementToApprove(index, direction)
         return result , 200
     except Exception as e:
         return e , 500

@@ -54,7 +54,7 @@ function ResponsiveAppBar() {
             if(auth.role === "User")
                 ChangePage('/profile')
             else
-                ChangePage('/profile')
+                ChangePage('/admin')
         }
         else if (selectedSetting === 'Logout') {
             ChangePage('/checkout')

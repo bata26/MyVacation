@@ -13,6 +13,8 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
+import api from "../api/api";
 
 function createDataActivities(
   title,
@@ -46,139 +48,154 @@ const rowsAccomodations = [
 const theme = createTheme();
 
 export default function Profile() {
+  const [searchParams] = useSearchParams();
+  const {userID} = useParams();
+  const [user, setUser] = React.useState(null);
 
-  return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="md">
-        <CssBaseline />
-        <Box>
-          <Box
-          sx={{
-            pt: 8,
-            pb: 6,
-          }}
-          >
-            <Container maxWidth="sm">
-              <Typography
-                component="h1"
-                variant="h2"
-                align="center"
-                color="text.primary"
-                gutterBottom
-              >
-                Profile
-              </Typography>
-            </Container>
-          </Box>
-          <Box component="form"  noValidate sx={{ mt: 1 }}>
-            <Grid container columnSpacing={1.4}>
-              <Grid item xs={12} sm={6}>
-                <TextField
+  React.useEffect(() => {
+    api.get("/users/"+ userID)
+        .then(function (response) {
+          setUser(response.data);
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  }, []);
+
+  if(user!=null)
+    return(
+      <ThemeProvider theme={theme}>
+        <Container component="main" maxWidth="md">
+          <CssBaseline/>
+          <Box>
+            <Box
+                sx={{
+                  pt: 8,
+                  pb: 6,
+                }}
+            >
+              <Container maxWidth="sm">
+                <Typography
+                    component="h1"
+                    variant="h2"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                >
+                  Profile
+                </Typography>
+              </Container>
+            </Box>
+            <Box component="form" noValidate sx={{mt: 1}}>
+              <Grid container columnSpacing={1.4}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                      disabled
+                      fullWidth
+                      label={user.name}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                      disabled
+                      fullWidth
+                      label={user.surname}
+                  />
+                </Grid>
+              </Grid>
+              <TextField
+                  margin="normal"
                   disabled
                   fullWidth
-                  label="Keanu"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
+                  label={user.gender}
+              />
+              <TextField
+                  margin="normal"
                   disabled
                   fullWidth
-                  label="Reeves"
-                />
+                  label={user.dateOfBirth}
+              />
+              <TextField
+                  margin="normal"
+                  disabled
+                  fullWidth
+                  label={user._id}
+                  autoFocus
+                  style={{marginBottom: 50 + 'px'}}
+              />
+              <Grid container>
+                <Grid item xs>
+                </Grid>
+                <Grid item>
+                </Grid>
               </Grid>
-            </Grid>
-            <TextField
-              margin="normal"
-              disabled
-              fullWidth
-              label="Male"
-            />
-            <TextField
-              margin="normal"
-              disabled
-              fullWidth
-              label="02/09/1964"
-            />
-            <TextField
-              margin="normal"
-              disabled
-              fullWidth
-              label="keanuReeves64"
-              autoFocus
-              style={{marginBottom: 50 + 'px'}} 
-            />
-            <Grid container>
-              <Grid item xs>
-              </Grid>
-              <Grid item>
-              </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-      </Container>
-      <Container maxWidth="md">
-        <TableContainer component={Paper} style={{marginBottom: 50 + 'px'}} >
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell style={{fontWeight: 'bold'}}>
-                  Accomodations
+        </Container>
+        <Container maxWidth="md">
+          <TableContainer component={Paper} style={{marginBottom: 50 + 'px'}}>
+            <Table sx={{minWidth: 650}} size="small" aria-label="a dense table">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{fontWeight: 'bold'}}>
+                    Accomodations
                   </TableCell>
-                <TableCell align="right" style={{fontWeight: 'bold'}}>Title</TableCell>
-                <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rowsAccomodations.map((row) => (
-                <TableRow
-                  key={row.title}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.title}
-                  </TableCell>
-                  <TableCell align="right">{row.date}</TableCell>
-                  <TableCell align="right">{row.state}</TableCell>
+                  <TableCell align="right" style={{fontWeight: 'bold'}}>Title</TableCell>
+                  <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell style={{fontWeight: 'bold'}}>Activities</TableCell>
-                <TableCell align="right" style={{fontWeight: 'bold'}}>Title</TableCell>
-                <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rowsActivities.map((row) => (
-                <TableRow
-                  key={row.title}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.title}
-                  </TableCell>
-                  <TableCell align="right">{row.date}</TableCell>
-                  <TableCell align="right">{row.state}</TableCell>
+              </TableHead>
+              <TableBody>
+                {rowsAccomodations.map((row) => (
+                    <TableRow
+                        key={row.title}
+                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.title}
+                      </TableCell>
+                      <TableCell align="right">{row.date}</TableCell>
+                      <TableCell align="right">{row.state}</TableCell>
+                    </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TableContainer component={Paper}>
+            <Table sx={{minWidth: 650}} size="small" aria-label="a dense table">
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{fontWeight: 'bold'}}>Activities</TableCell>
+                  <TableCell align="right" style={{fontWeight: 'bold'}}>Title</TableCell>
+                  <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Container>
-      <Box
-          component="footer"
-          sx={{
-            py: 3,
-            px: 2,
-            mt: 'auto',
-          }}
+              </TableHead>
+              <TableBody>
+                {rowsActivities.map((row) => (
+                    <TableRow
+                        key={row.title}
+                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.title}
+                      </TableCell>
+                      <TableCell align="right">{row.date}</TableCell>
+                      <TableCell align="right">{row.state}</TableCell>
+                    </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Container>
+        <Box
+            component="footer"
+            sx={{
+              py: 3,
+              px: 2,
+              mt: 'auto',
+            }}
         >
-      </Box>
-    </ThemeProvider>
-  );
+        </Box>
+      </ThemeProvider>
+);
 }

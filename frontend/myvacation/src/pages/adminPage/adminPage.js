@@ -98,7 +98,7 @@ function DashboardContent() {
                             {/* Users List */}
                             <Grid item xs={12}>
                                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                                    <UsersList />
+                                      <UsersList />
                                 </Paper>
                             </Grid>
                         </Grid>
