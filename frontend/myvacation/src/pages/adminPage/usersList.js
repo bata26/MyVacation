@@ -25,6 +25,7 @@ export default function UsersList() {
     const [name, setName] = React.useState("");
     const [surname, setSurname] = React.useState("");
     const [id, setId] = React.useState("");
+    const [lastPage, setLastPage] = React.useState(null);
 
     React.useEffect(() => {
         api.get("/users?index=")
@@ -33,6 +34,8 @@ export default function UsersList() {
                 setLast_id(response.data[response.data.length -1]._id);
                 setFirst_id(response.data[0]._id);
                 console.log(response);
+                if(response.data.length === 2)
+                    setLastPage(false)
             })
             .catch(function (error) {
                 console.log(error);
@@ -73,6 +76,7 @@ export default function UsersList() {
         api.get("/users"+url)
             .then(function (response) {
                 setUserList(response.data);
+                setLastPage(false)
                 if (response && response.data.length > 0 ) {
                     setLast_id(response.data[0]._id);
                     setFirst_id(response.data[response.data.length - 1]._id);
@@ -87,18 +91,18 @@ export default function UsersList() {
     };
 
     const handleNextPage = () => {
-        setPage(page+1);
         const url ="?id=" + id + "&name=" + name + "&surname=" + surname + "&index=" + last_id + "&direction=next";
         console.log(url);
         api.get("/users"+url)
             .then(function (response) {
-                setUserList(response.data);
                 if (response && response.data.length > 0 ) {
                     setLast_id(response.data[response.data.length - 1]._id);
                     setFirst_id(response.data[0]._id);
+                    setUserList(response.data);
+                    setPage(page+1);
                 }
                 else{
-                    setFirst_id(last_id)
+                    setLastPage(true)
                 }
                 console.log(response.data);
                 console.log(first_id)
@@ -118,8 +122,10 @@ export default function UsersList() {
         api.get("/users"+url)
             .then(function (response) {
                 setUserList(response.data);
-                setLast_id(response.data[4]._id);
+                setLast_id(response.data[response.data.length - 1]._id);
+                setFirst_id(0);
                 console.log(response.data);
+                setLastPage(false)
             })
             .catch(function (error) {
                 console.log(error);
@@ -208,7 +214,7 @@ export default function UsersList() {
                     <TableRow>
                         <TableCell>
                             {page !== 1 ? <Button onClick={() => {handlePreviousPage()}}>Previous</Button> : <></>}
-                            {userList && userList.length === 2 ? <Button onClick={() => {handleNextPage()}}>Next</Button> : <></>}
+                            {lastPage!= null ? !lastPage && <Button onClick={() => {handleNextPage()}}>Next</Button> : <></>}
                             {page !== 1 ? <Button onClick={() => {handleFirstPage()}}> First</Button> : <></>}
                         </TableCell>
                     </TableRow>
