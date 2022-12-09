@@ -26,11 +26,11 @@ class Serializer:
         for acc in accomodation.pictures:
             pictures.append(acc.decode('utf-8'))
         return {
-            "_id" : accomodation._id ,
+            "_id" : str(accomodation._id) ,
             "name" : accomodation.name ,
             "description" : accomodation.description ,
             "pictures" : pictures, # accomodation.pictures,#.decode('utf-8'),
-            "host_id" : accomodation.host_id ,
+            "host_id" : str(accomodation.host_id) ,
             "host_url" : accomodation.host_url ,
             "host_name" : accomodation.host_name ,
             "host_picture" : accomodation.host_picture.decode("utf-8") ,
