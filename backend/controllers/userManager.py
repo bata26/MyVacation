@@ -124,7 +124,7 @@ class UserManager:
             print(cursor["password"])
             
             if(bcrypt.checkpw(password.encode('utf-8') , cursor["password"].encode('utf-8'))):
-                return str(cursor["_id"])
+                return str(cursor["_id"]) , cursor["type"]
             else:
                 raise Exception("Credenziali non valide")
         except Exception:

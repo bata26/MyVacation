@@ -16,6 +16,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import api from '../api/api'
 import { useNavigate } from "react-router-dom";
+import useAuth from '../hooks/useAuth';
 
 
 const theme = createTheme();
@@ -23,6 +24,7 @@ const REGISTER_URL = '/register';
 
 const SignUp = () => {
     const [errMsg, setErrMsg] = useState('');
+    const {auth} = useAuth();
     let navigate = useNavigate();
 
     const handleSubmit = async (event) => {
@@ -37,7 +39,7 @@ const SignUp = () => {
             password: data.get('password'),
         });
         try {
-          const response = await api.post(REGISTER_URL, JSON.stringify({
+          const response = await api.post(REGISTER_URL, {headers:{"Authorization":JSON.stringify(auth)}}, JSON.stringify({
                   name: data.get('name'),
                   surname: data.get('surname'),
                   gender: data.get('gender'),

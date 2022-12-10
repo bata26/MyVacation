@@ -15,6 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import api from "../api/api";
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 
 const theme = createTheme();
@@ -23,7 +24,7 @@ const Search = () => {
     const [last_id, setLast_id] = React.useState(null);
     const [first_id, setFirst_id] = React.useState(null);
     const [page, setPage] = React.useState(1);
-    const [lastPage, setLastPage] = React.useState(null);
+    const [lastPage, setLastPage] = React.useState(null);  const { auth } = useAuth();
     const navigate = useNavigate();
     const [search, setSearch] = React.useState(null);
     const [startDate , setStartDate] = React.useState(null);
@@ -32,7 +33,7 @@ const Search = () => {
     const [guests , setGuests] = React.useState(null);
     const [type, setType] = React.useState("accomodations");
     const handleChange = (event) => {
-      setType(event.target.value);
+    setType(event.target.value);
     };
 
 
@@ -52,18 +53,19 @@ const Search = () => {
       const url ="?startDate=" + formStartDate + "&endDate=" + formEndDate + "&city=" + city + "&guestsNumber=" + guests + "&index=";
       console.log(url);
 
-      api.get("/"+type+url).then(function (response) {
-              setSearch(response.data);
+      api.get("/" + type + url , {headers:{"Authorization":JSON.stringify(auth)}})
+      .then(function (response) {
+            setSearch(response.data);
               setFirst_id(response.data[0]._id);
               setLast_id("637bb280945bed1e66467434");
           response.data.forEach((elem, index) => {
-              console.log("ID" + index, elem._id);
+            console.log("ID" + index, elem._id);
           })
              // console.log(response.data);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
     const handlePreviousPage = () => {
@@ -139,23 +141,28 @@ const Search = () => {
         page > 1 ? Math.max(0, 2 - search ? search.length : 0) : 0;
 
 
-//Vari setter per gestione di form e url
-let setter = '';
-let hideNumberOfPerson = true
-let hideEndDate = true
-let hideStartDate = true
+  //Vari setter per gestione di form e url
+  let setter = '';
+  let hideNumberOfPerson = true
+  let hideEndDate = true
+  let hideStartDate = true
 
-if (type == 'accomodations'){
-  setter = 'accomodation'
-  hideNumberOfPerson = false
-  hideEndDate = false
-  hideStartDate = false
-} else {
-  setter = 'activity'
-  hideNumberOfPerson = true
-  hideEndDate = true
-  hideStartDate = false
-}
+  if (type == 'accomodations') {
+    setter = 'accomodation'
+    hideNumberOfPerson = false
+    hideEndDate = false
+    hideStartDate = false
+  } else {
+    setter = 'activity'
+    hideNumberOfPerson = true
+    hideEndDate = true
+    hideStartDate = false
+  }
+
+
+  const [page, setPage] = React.useState(0);
+  const [itemPerPage, setItemPerPage] = React.useState(15);
+
 
     return (
     <ThemeProvider theme={theme}>
@@ -188,62 +195,62 @@ if (type == 'accomodations'){
 
 
         <Container>
-        <CssBaseline />
-            <Box component="form" onSubmit={handleSearch} noValidate sx={{ mt: 1 }}>
-              <Grid container columnSpacing={1.4}>
-                <Grid item xs={4} sm={2}>
-                    <Select
-                        fullWidth
-                        id='type'
-                        name='type'
-                        value={type}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value={'activities'}>Activities</MenuItem>
-                        <MenuItem value={'accomodations'}>Accomodations</MenuItem>
-                    </Select>
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                    <TextField
-                    fullWidth
-                    name="city"
-                    id="city"
-                    label="City"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={2}>
-                    <TextField
-                    fullWidth
-                    id="startDate"
-                    name="startDate"
-                    type="date"
-                    disabled={hideStartDate}
-                    />
-                </Grid>
+          <CssBaseline />
+          <Box component="form" onSubmit={handleSearch} noValidate sx={{ mt: 1 }}>
+            <Grid container columnSpacing={1.4}>
+              <Grid item xs={4} sm={2}>
+                <Select
+                  fullWidth
+                  id='type'
+                  name='type'
+                  value={type}
+                  onChange={handleChange}
+                >
+                  <MenuItem value={'activities'}>Activities</MenuItem>
+                  <MenuItem value={'accomodations'}>Accomodations</MenuItem>
+                </Select>
+              </Grid>
+              <Grid item xs={6} sm={4}>
+                <TextField
+                  fullWidth
+                  name="city"
+                  id="city"
+                  label="City"
+                />
+              </Grid>
+              <Grid item xs={6} sm={2}>
+                <TextField
+                  fullWidth
+                  id="startDate"
+                  name="startDate"
+                  type="date"
+                  disabled={hideStartDate}
+                />
+              </Grid>
 
-                <Grid item xs={6} sm={2}>
-                    <TextField
-                    fullWidth
-                    id="endDate"
-                    name="endDate"
-                    type="date"
-                    disabled={hideEndDate}
-                    />
-                </Grid>
+              <Grid item xs={6} sm={2}>
+                <TextField
+                  fullWidth
+                  id="endDate"
+                  name="endDate"
+                  type="date"
+                  disabled={hideEndDate}
+                />
+              </Grid>
 
-                <Grid item xs={4} sm={2}>
-                    <TextField
-                    fullWidth
-                    id="numberOfPeople"
-                    label="Number of people"
-                    name="numberOfPeople"
-                    type="number"
-                    disabled={hideNumberOfPerson}
-                    />
-                </Grid>
+              <Grid item xs={4} sm={2}>
+                <TextField
+                  fullWidth
+                  id="numberOfPeople"
+                  label="Number of people"
+                  name="numberOfPeople"
+                  type="number"
+                  disabled={hideNumberOfPerson}
+                />
+              </Grid>
 
             </Grid>
-            
+
             <Button
               type="submit"
               fullWidth
@@ -253,9 +260,13 @@ if (type == 'accomodations'){
               Search
             </Button>
           </Box>
-      </Container>
-      {/* Separatore */}
-      <Box
+        </Container>
+
+
+        {/* Separatore */}
+
+
+        <Box
           sx={{
               bgcolor: 'background.paper',
             pt: 8,

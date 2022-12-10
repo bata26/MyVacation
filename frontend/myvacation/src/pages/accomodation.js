@@ -15,6 +15,7 @@ import DateRangePicker from "../components/datePicker";
 import api from "../api/api";
 import Button from '@mui/material/Button';
 import ReviewForm from '../components/reviewForm';
+import useAuth from '../hooks/useAuth';
 
 function srcset(image, size, rows = 1, cols = 1) {
   return {
@@ -25,29 +26,7 @@ function srcset(image, size, rows = 1, cols = 1) {
   };
 }
 
-function bookAccomodation(accomodation , startDate , endDate){
-  console.log(accomodation);
-  console.log(startDate);
-  console.log(endDate);
 
-  if(startDate === null || endDate === null){
-    alert("Torna indietro e inserisci le date per effettuare la prenotazione!");
-    return;
-  }
-  const bodyRequest = {
-    "accomodation" : accomodation,
-    "startDate" : startDate,
-    "endDate" : endDate,
-  };
-  api.post("/book/accomodation" , bodyRequest)
-  .then(function(response){
-    alert("prenotazione avvenuta con successo");
-  })
-  .catch(function(error){
-    console.log("error : " , error);
-    alert("Impossibile prenotare, riprova più tardi");
-  })
-}
 
 const Accomodation = () => {
   const [accomodation , setAccomodation] = React.useState(null);
@@ -55,6 +34,7 @@ const Accomodation = () => {
   const {accomodationID} = useParams();
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
+  const {auth} = useAuth();
 
   React.useEffect( () =>{
     const url = Config.BASE_URL+"/accomodations/"+accomodationID;
@@ -65,17 +45,34 @@ const Accomodation = () => {
     .catch(function(error){
       console.log(error);
     });
-
-    //axios.get(url)
-    //  .then(function (response){
-    //    setAccomodation(response.data);
-    //  })
-    //  .catch(function(err){
-    //    console.log(err);
-    //  })
   } , []);
-
+  
   if(!accomodation) return null;
+
+  function bookAccomodation(accomodation , startDate , endDate){
+    console.log(accomodation);
+    console.log(startDate);
+    console.log(endDate);
+  
+    if(startDate === null || endDate === null){
+      alert("Torna indietro e inserisci le date per effettuare la prenotazione!");
+      return;
+    }
+    const bodyRequest = {
+      "accomodation" : accomodation,
+      "startDate" : startDate,
+      "endDate" : endDate,
+    };
+    api.post("/book/accomodation" , {headers:{"Authorization":JSON.stringify(auth)}}, bodyRequest)
+    .then(function(response){
+      alert("prenotazione avvenuta con successo");
+    })
+    .catch(function(error){
+      console.log("error : " , error);
+      alert("Impossibile prenotare, riprova più tardi");
+    })
+  }
+
   
   return (
     <Grid container spacing={2}>

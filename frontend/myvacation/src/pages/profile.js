@@ -13,7 +13,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-
+import useAuth from '../hooks/useAuth';
 import api from "../api/api";
 import { useParams } from 'react-router-dom';
 import Moment from 'moment';
@@ -25,43 +25,43 @@ const theme = createTheme();
 
 const Profile = () => {
 
-  const [profile , setProfile] = React.useState(null);
-  const {profileID} = useParams();
+  const [profile, setProfile] = React.useState(null);
+  const { profileID } = useParams();
   let [reservations, setReservations] = React.useState([]);
-  
-  React.useEffect( () => {
+
+  React.useEffect(() => {
 
     //Richiesta per recuperare le informazioni dell'utente
-    api.get("/users/"+profileID)
-    .then(function(response){
-      setProfile(response.data);
-    })
-    .catch(function(error){
-      console.log(error);
-    });
+    api.get("/users/" + profileID)
+      .then(function (response) {
+        setProfile(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
 
     //Richiesta per recuperare le prenotazioni
-    api.get("/reservations").then(function (response) {
-      setReservations(response.data);
-      console.log(response.data);
-    })
-    .catch(function (error) {
+    api.get("/reservations" , {headers:{"Authorization":JSON.stringify(auth)}})
+      .then(function (response) {
+        setReservations(response.data);
+        console.log(response.data);
+      })
+      .catch(function (error) {
         console.log(error);
-    });
-  } , []);
+      });
+  }, []);
 
-  if(!profile) return null;
-
-
+  if (!profile) return null;
 
   //Metodo per eliminare reservation
   const deleteReservation = (reservationID) => {
-    api.delete("/reservations/" + reservationID).then(function (response) {
-      console.log(response.data);
-    })
-    .catch(function (error) {
+    api.delete("/reservations/" + reservationID , {headers:{"Authorization":JSON.stringify(auth)}})
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
         console.log(error);
-    });
+      });
     window.location.reload(false);
   }
 
@@ -72,10 +72,10 @@ const Profile = () => {
         <CssBaseline />
         <Box>
           <Box
-          sx={{
-            pt: 8,
-            pb: 6,
-          }}
+            sx={{
+              pt: 8,
+              pb: 6,
+            }}
           >
             <Container maxWidth="sm">
               <Typography
@@ -89,7 +89,7 @@ const Profile = () => {
               </Typography>
             </Container>
           </Box>
-          <Box component="form"  noValidate sx={{ mt: 1 }}>
+          <Box component="form" noValidate sx={{ mt: 1 }}>
             <Grid container columnSpacing={1.4}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -98,7 +98,7 @@ const Profile = () => {
                   disabled
                   id="outlined-disabled"
                   label="Name"
-                  defaultValue= {profile.name}
+                  defaultValue={profile.name}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -108,7 +108,7 @@ const Profile = () => {
                   disabled
                   id="outlined-disabled"
                   label="Surname"
-                  defaultValue= {profile.surname}
+                  defaultValue={profile.surname}
                 />
               </Grid>
             </Grid>
@@ -118,7 +118,7 @@ const Profile = () => {
               disabled
               id="outlined-disabled"
               label="Gender"
-              defaultValue= {profile.gender}
+              defaultValue={profile.gender}
             />
             <TextField
               margin="normal"
@@ -126,7 +126,7 @@ const Profile = () => {
               disabled
               id="outlined-disabled"
               label="Date of birth"
-              defaultValue= {Moment().utc(profile.dateOfBirth).format('MMM DD YYYY')}
+              defaultValue={Moment().utc(profile.dateOfBirth).format('MMM DD YYYY')}
             />
 
             <TextField
@@ -135,8 +135,8 @@ const Profile = () => {
               disabled
               id="outlined-disabled"
               label="Username"
-              defaultValue= {profile.username}
-              style={{marginBottom: 50 + 'px'}} 
+              defaultValue={profile.username}
+              style={{ marginBottom: 50 + 'px' }}
               autoFocus
             />
             <Grid container>
@@ -153,39 +153,39 @@ const Profile = () => {
 
 
       <Box
-          sx={{
-            pt: 8,
-            pb: 6,
-          }}
+        sx={{
+          pt: 8,
+          pb: 6,
+        }}
+      >
+        <Container maxWidth="sm">
+          <Typography
+            component="h1"
+            variant="h2"
+            align="center"
+            color="text.primary"
+            gutterBottom
           >
-            <Container maxWidth="sm">
-              <Typography
-                component="h1"
-                variant="h2"
-                align="center"
-                color="text.primary"
-                gutterBottom
-              >
-                Reservations
-              </Typography>
-            </Container>
-          </Box>
+            Reservations
+          </Typography>
+        </Container>
+      </Box>
 
 
       <Container maxWidth="md">
-        <TableContainer component={Paper} style={{marginBottom: 50 + 'px'}} >
+        <TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
           <Table sx={{ minWidth: 650 }} size="small">
             <TableHead>
               <TableRow>
-                <TableCell align="left" style={{fontWeight: 'bold'}}>Name</TableCell>
-                <TableCell align="center" style={{fontWeight: 'bold'}}>Type</TableCell>
-                <TableCell align="center" style={{fontWeight: 'bold'}}>Start Date</TableCell>
-                <TableCell align="right" style={{fontWeight: 'bold'}}>End Date</TableCell>
-                <TableCell align="right" style={{fontWeight: 'bold'}}></TableCell>
+                <TableCell align="left" style={{ fontWeight: 'bold' }}>Name</TableCell>
+                <TableCell align="center" style={{ fontWeight: 'bold' }}>Type</TableCell>
+                <TableCell align="center" style={{ fontWeight: 'bold' }}>Start Date</TableCell>
+                <TableCell align="right" style={{ fontWeight: 'bold' }}>End Date</TableCell>
+                <TableCell align="right" style={{ fontWeight: 'bold' }}></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-            {reservations.map((item) => (
+              {reservations.map((item) => (
                 <TableRow key={item._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 
                   <TableCell align="left">{item._id}</TableCell>
@@ -193,22 +193,22 @@ const Profile = () => {
                   <TableCell align="center">{item.startDate}</TableCell>
                   <TableCell align="right">{item.endDate}</TableCell>
                   <TableCell align='right'>
-                    <DeleteIcon color='error'style={{cursor:"pointer"}} onClick={()=>{deleteReservation(item._id)}}></DeleteIcon>
+                    <DeleteIcon color='error' style={{ cursor: "pointer" }} onClick={() => { deleteReservation(item._id) }}></DeleteIcon>
                   </TableCell>
                 </TableRow>
-            ))}
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Container>
       <Box
-          component="footer"
-          sx={{
-            py: 3,
-            px: 2,
-            mt: 'auto',
-          }}
-        >
+        component="footer"
+        sx={{
+          py: 3,
+          px: 2,
+          mt: 'auto',
+        }}
+      >
       </Box>
     </ThemeProvider>
   );
