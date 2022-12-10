@@ -61,9 +61,8 @@
     "userID"
     "destinationID"
     "typePrenotations" // attività o alloggio
-    "host_name"
     "startDate"
-    "endDate"
+    "endDate" // activity non presente
     "totalExpense"
 }
 ```
