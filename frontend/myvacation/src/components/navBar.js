@@ -53,10 +53,10 @@ function ResponsiveAppBar() {
         console.log(auth);
 
         if (selectedSetting === 'Profile') {
-            if(auth.role === "User")
-                ChangePage('/profile')
+            if(auth.role === "admin")
+              ChangePage('/admin')
             else
-                ChangePage('/admin')
+              ChangePage('/profile/' + auth._id)
         }
         else if (selectedSetting === 'Logout') {
             ChangePage('/checkout')

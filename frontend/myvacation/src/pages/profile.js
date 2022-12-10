@@ -17,7 +17,6 @@ import useAuth from '../hooks/useAuth';
 import api from "../api/api";
 import { useParams } from 'react-router-dom';
 import Moment from 'moment';
-
 import { Button, Icon } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -28,6 +27,7 @@ const Profile = () => {
   const [profile, setProfile] = React.useState(null);
   const { profileID } = useParams();
   let [reservations, setReservations] = React.useState([]);
+  const {auth} = useAuth();
 
   React.useEffect(() => {
 
