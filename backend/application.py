@@ -118,6 +118,21 @@ def bookActivity():
     print(f"startDate : {startDate}")
     result = ReservationManager.book(activity , startDate , user , "activity")
     return "OK" , 200
+
+@application.route('/reservations' , methods = ['GET'])
+#@required_token
+def bookActivity():
+    global user
+    result = ReservationManager.getReservationsByUser(user["_id"])
+    return "OK" , 200
+
+@application.route('/reservations/<reservation_id>' , methods = ['DELETE'])
+#@required_token
+def bookActivity(reservation_id):
+    reservationID = escape(reservation_id)
+    global user
+    result = ReservationManager.deleteReservationByID()
+    return "OK" , 200
     
 @application.route('/accomodations' , methods = ['GET'])
 #@required_token

@@ -7,6 +7,7 @@ from models.accomodationReservation import AccomodationReservation
 from models.activityReservation import ActivityReservation
 from datetime import datetime
 import dateparser
+from pymongo import ObjectId
 
 class ReservationManager:
 
@@ -28,7 +29,31 @@ class ReservationManager:
             reservation = ActivityReservation(user["_id"] , announcement["_id"] , type , startDatetime , totalExpense)
         try:
             res = collection.insert_one(reservation.getDictToUpload())
-            print(f"risultato insert: {res}")
             return res
         except Exception as e:
             raise Exception("Impossibile prenotare: " + str(e) )
+
+    @staticmethod
+    def getReservationsByUser(userID):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("RESERVATIONS_COLLECTION")]
+
+        try:
+            cursor = list(collection.find({"userID" : userID}))
+            return cursor
+        except Exception as e:
+            raise Exception("Impossibile ottenere prenotazioni: " + str(e))
+
+    
+    @staticmethod
+    def deleteReservationByID(reservationID):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("RESERVATIONS_COLLECTION")]
+
+        try:
+            cursor = list(collection.delete_one({"_id" : ObjectId(reservationID)}))
+            return cursor
+        except Exception as e:
+            raise Exception("Impossibile eliminarte prenotazione "+reservationID+": " + str(e))
