@@ -7,6 +7,7 @@ from models.accomodationReservation import AccomodationReservation
 from models.activityReservation import ActivityReservation
 from datetime import datetime
 import dateparser
+from bson.objectid import ObjectId
 
 class ReservationManager:
 

@@ -13,6 +13,7 @@ from functools import wraps
 import re
 import bcrypt
 from models.review import Review
+import json
 
 user = {
     "_id" : "637ce1a04ed62608566c5fae"
@@ -22,7 +23,10 @@ load_dotenv()
 application = Flask(__name__)
 cors = CORS(application , supports_credentials=True, origins=["*" , "http://127.0.0.1:3000"])
 
-def validateObjecID(userID):
+def validateObjecID(userObj):
+    parsedUserObj = json.loads(userObj)
+    print(parsedUserObj)
+    userID = parsedUserObj["userID"]
     validationRegex = "^[0-9a-fA-F]{24}$"
     if re.match(validationRegex , userID):
         return True
@@ -43,7 +47,7 @@ def required_token(f):
 
 
 @application.route("/test" , methods = ["GET"])
-#@required_token
+@required_token
 def testValidation():
     return "OK" , 200
 
@@ -135,7 +139,8 @@ def bookActivityFromId(reservation_id):
     global user
     result = ReservationManager.deleteReservationByID()
     return "OK" , 200
-    
+
+
 @application.route('/accomodations' , methods = ['GET'])
 #@required_token
 def getAccomodations():
