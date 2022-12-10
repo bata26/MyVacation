@@ -125,14 +125,14 @@ def bookActivity():
 
 @application.route('/reservations' , methods = ['GET'])
 #@required_token
-def bookActivity():
+def getReservationsByUserID():
     global user
     result = ReservationManager.getReservationsByUser(user["_id"])
     return "OK" , 200
 
 @application.route('/reservations/<reservation_id>' , methods = ['DELETE'])
 #@required_token
-def bookActivity(reservation_id):
+def deleteReservation(reservation_id):
     reservationID = escape(reservation_id)
     global user
     result = ReservationManager.deleteReservationByID()
