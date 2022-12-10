@@ -6,16 +6,21 @@ from controllers.activityManager import ActivityManager
 from controllers.reviewManager import ReviewManager
 from controllers.userManager import UserManager
 from controllers.adminManager import AdminManager
+from controllers.reservationManager import ReservationManager
 from flask_cors import CORS, cross_origin
 import json
 from functools import wraps
 import re
 import bcrypt
+from models.review import Review
 
+user = {
+    "_id" : "637ce1a04ed62608566c5fae"
+}
 
 load_dotenv()
 application = Flask(__name__)
-cors = CORS(application , support_credentials=True, origins=["*" , "http://127.0.0.1:3000"])
+cors = CORS(application , supports_credentials=True, origins=["*" , "http://127.0.0.1:3000"])
 
 def validateObjecID(userID):
     validationRegex = "^[0-9a-fA-F]{24}$"
@@ -71,7 +76,7 @@ def getActivities():
     return result , 200
 
 @application.route('/accomodations/<accomodation_id>' , methods = ['DELETE'])
-#@required_token
+@required_token
 def deleteAccomodationById(accomodation_id):
     accomodationId = escape(accomodation_id)
     user = {
@@ -81,19 +86,45 @@ def deleteAccomodationById(accomodation_id):
     return "" , 200
 
 @application.route('/accomodations/<accomodation_id>' , methods = ['GET'])
-#@required_token
-@cross_origin(origin="*")
+@required_token
 def getAccomodationById (accomodation_id):
     accomodationId = escape(accomodation_id)
     result = AccomodationsManager.getAccomodationsFromId(accomodationId)
+    print(f"res : {result['_id']}")
     return result , 200
 
+@application.route('/book/accomodation' , methods = ['POST'])
+#@required_token
+def bookAccomodation ():
+    global user
+    requestBody = request.json
+    accomodation= requestBody["accomodation"]
+    startDate = requestBody["startDate"]
+    endDate = requestBody["endDate"]
+    print(f"accomodation : {accomodation}")
+    print(f"startDate : {startDate}")
+    print(f"endDate : {endDate}")
+    result = ReservationManager.book(accomodation , startDate ,user, "accomodation", endDate)
+    return "OK" , 200
+
+@application.route('/book/activity' , methods = ['POST'])
+#@required_token
+def bookActivity():
+    global user
+    requestBody = request.json
+    activity= requestBody["activity"]
+    startDate = requestBody["startDate"]
+    print(f"activity : {activity}")
+    print(f"startDate : {startDate}")
+    result = ReservationManager.book(activity , startDate , user , "activity")
+    return "OK" , 200
+    
 @application.route('/accomodations' , methods = ['GET'])
 #@required_token
 def getAccomodations():
     args = request.args
     city = args.get("city")
-    guests = args.get("guests")
+    guests = args.get("guestsNumber")
     start_date = args.get("start_date")
     end_date = args.get("end_date")
     result = AccomodationsManager.getFilteredAccomodation(start_date  , end_date  , city , guests)
@@ -116,7 +147,21 @@ def getReviewByID(review_id):
     reviewID = escape(review_id)
     result = ReviewManager.getReviewFromID(reviewID)
     return result , 200
-    
+
+@application.route('/reviews' , methods = ['PUT'])
+#@required_token
+def insertReview():
+    global user
+    requestBody = request.json
+    review = Review(requestBody["userID"],
+                    requestBody["destinationID"],
+                    requestBody["score"],
+                    requestBody["description"])          
+    try:
+        ReviewManager.insertNewReview(review)
+        return "" , 200    
+    except Exception as e:
+        return str(e) , 200
 
 @application.route('/reviews/<review_id>' , methods = ['DELETE'])
 #@required_token
@@ -145,6 +190,18 @@ def getUserById (user_id):
     result = UserManager.getUserFromId(userId)
     return result , 200
 
+
+@application.route('/review/check/<destination_id>' , methods = ['GET'])
+#@required_token
+def getIfCanReview (destination_id):
+    destinationID = escape(destination_id)
+    print(destinationID)
+    global user
+    result = {"result" : False}
+    if ReviewManager.checkIfCanReview(str(destinationID) , user):
+        result = {"result" : True}
+    return result , 200
+
 @application.route('/login' , methods = ['POST'])
 #@required_token
 def loginUser ():
@@ -163,14 +220,21 @@ def loginUser ():
 #@required_token
 def getUsers():
     args = request.args
+    id = args.get("id")
     name = args.get("name")
     surname = args.get("surname")
+    index = args.get("index")
+    direction = args.get("direction")
+    print(f"id : {id}")
     print(f"name : {name}")
     print(f"surname : {surname}")
+    print(f"lastid : {index}")
+    print(f"direction : {direction}")
+
     user = {
             "type" : "admin"
         }
-    result = UserManager.getFilteredUsers(user , name , surname)
+    result = UserManager.getFilteredUsers(user ,id, name , surname, index, direction)
     return result , 200
 
 
@@ -178,7 +242,10 @@ def getUsers():
 #@required_token
 def getAnnouncementToBeApproved():
     try:
-        result = AdminManager.getAnnouncementToApprove()
+        args = request.args
+        index = args.get("index")
+        direction = args.get("direction")
+        result = AdminManager.getAnnouncementToApprove(index, direction)
         return result , 200
     except Exception as e:
         return e , 500

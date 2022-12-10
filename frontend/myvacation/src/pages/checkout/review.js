@@ -4,6 +4,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Grid from '@mui/material/Grid';
+import Button from "@mui/material/Button";
 
 const products = [
     {
@@ -41,7 +42,7 @@ export default function Review() {
     return (
         <React.Fragment>
             <Typography variant="h6" gutterBottom>
-                Order summary
+                Prenotation summary
             </Typography>
             <List disablePadding>
                 {products.map((product) => (
@@ -81,6 +82,15 @@ export default function Review() {
                                 </Grid>
                             </React.Fragment>
                         ))}
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                            onClick={()=> {console.log("CIAO");}}
+                        >
+                            Confirm
+                        </Button>
                     </Grid>
                 </Grid>
             </Grid>

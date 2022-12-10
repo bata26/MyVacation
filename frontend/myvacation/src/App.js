@@ -32,17 +32,15 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:profileID" element={<Profile />} />
             <Route path="/search" element={<Search />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/accomodation/:accomodationID" element={<Accomodation />} />
             <Route path="/edit/accomodation/:accomodationID" element={<InsertAccomodation />} />
             <Route path="/activity/:activityID" element={<Activity />} />
-            {/*<Route element={<RequireAuth allowedRoles={"Admin"} />}>*/}
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/reports" element={<Chart />} />
-            {/*<Route path='/accomodationtobe/:id' element={<AccomodationToBe />}/>*/}
         </Routes>
       </>
   );

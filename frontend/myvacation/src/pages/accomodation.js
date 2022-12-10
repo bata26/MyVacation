@@ -13,6 +13,8 @@ import ReactRoundedImage from "react-rounded-image";
 import Separator from "../components/separator";
 import DateRangePicker from "../components/datePicker";
 import api from "../api/api";
+import Button from '@mui/material/Button';
+import ReviewForm from '../components/reviewForm';
 
 function srcset(image, size, rows = 1, cols = 1) {
   return {
@@ -21,6 +23,23 @@ function srcset(image, size, rows = 1, cols = 1) {
       size * rows
     }&fit=crop&auto=format&dpr=2 2x`,
   };
+}
+
+function bookAccomodation(accomodation , startDate , endDate){
+  console.log(accomodation);
+  console.log(startDate);
+  console.log(endDate);
+
+  if(startDate === null || endDate === null){
+    alert("Torna indietro e inserisci le date per effettuare la prenotazione!");
+    return;
+  }
+  const bodyRequest = {
+    "accomodation" : accomodation,
+    "startDate" : startDate,
+    "endDate" : endDate,
+  };
+  api.post()
 }
 
 const Accomodation = () => {
@@ -130,7 +149,10 @@ const Accomodation = () => {
       <Grid xs={4}>
             <h3>Informazioni</h3>
       </Grid>
-      <Grid xs={6}/>
+      <Grid xs={4}>
+        <Button variant="contained" style={{width:100+'%'}} onClick={()=> bookAccomodation(accomodation , startDate , endDate)}>Prenota</Button>
+      </Grid>
+      <Grid xs={2}/>
 
       {/** ROW 5 */}
       <Grid xs={2}/>
@@ -140,7 +162,10 @@ const Accomodation = () => {
       <Grid xs={2}>
         <span>{accomodation.bedrooms} <strong>camere da letto</strong></span>
       </Grid>
-      <Grid xs={6}/>
+      <Grid xs={4}>
+        <ReviewForm destinationID={accomodation._id}/>
+      </Grid>
+      <Grid xs={2}/>
 
       {/** ROW 5 */}
       <Grid xs={2}/>

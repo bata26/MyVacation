@@ -14,29 +14,73 @@ import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
+import api from "../api/api";
+import { useNavigate } from 'react-router-dom';
 
-const handleSearch = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      type: data.get('type'),
-      city: data.get('city'),
-      startDate: data.get('startDate'),
-      endDate: data.get('endDate'),
-      numberOfPeople: data.get('numberOfPeople'),
-    });
-};
-
-
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const theme = createTheme();
 
-export default function Search() {
-    const [type, setType] = React.useState('');
-    const handleChange = (event) => {
-        setType(event.target.value);
-    };
+const Search = () => {
+
+  const navigate = useNavigate();
+
+  const [type, setType] = React.useState('accomodations');
+  const handleChange = (event) => {
+      setType(event.target.value);
+  };
+
+  const [search, setSearch] = React.useState(null);
+
+  const [startDate , setStartDate] = React.useState(null);
+  const [endDate , setEndDate] = React.useState(null);
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const city = form.get('city');
+    const guestsNumber = form.get('numberOfPeople');
+    const formStartDate = form.get('startDate');
+    const formEndDate = form.get('endDate');
+
+    setStartDate(formStartDate);
+    setEndDate(formEndDate);
+
+    const url ="?startDate=" + formStartDate + "&endDate=" + formEndDate + "&city=" + city + "&guestsNumber=" + guestsNumber;
+
+    console.log(url);
+
+    api.get("/"+type+url).then(function (response) {
+          setSearch(response.data);
+          console.log(response.data);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+  };
+
+
+//Vari setter per gestione di form e url
+let setter = '';
+let hideNumberOfPerson = true
+let hideEndDate = true
+let hideStartDate = true
+
+if (type == 'accomodations'){
+  setter = 'accomodation'
+  hideNumberOfPerson = false
+  hideEndDate = false
+  hideStartDate = false
+} else {
+  setter = 'activity'
+  hideNumberOfPerson = true
+  hideEndDate = true
+  hideStartDate = false
+}
+
+
+const [page, setPage] = React.useState(0);
+const [itemPerPage, setItemPerPage] = React.useState(15);
 
 
   return (
@@ -81,8 +125,8 @@ export default function Search() {
                         value={type}
                         onChange={handleChange}
                     >
-                        <MenuItem value={'activity'}>Activity</MenuItem>
-                        <MenuItem value={'accomodation'}>Accomodation</MenuItem>
+                        <MenuItem value={'activities'}>Activities</MenuItem>
+                        <MenuItem value={'accomodations'}>Accomodations</MenuItem>
                     </Select>
                 </Grid>
                 <Grid item xs={6} sm={4}>
@@ -99,6 +143,7 @@ export default function Search() {
                     id="startDate"
                     name="startDate"
                     type="date"
+                    disabled={hideStartDate}
                     />
                 </Grid>
 
@@ -108,6 +153,7 @@ export default function Search() {
                     id="endDate"
                     name="endDate"
                     type="date"
+                    disabled={hideEndDate}
                     />
                 </Grid>
 
@@ -118,6 +164,7 @@ export default function Search() {
                     label="Number of people"
                     name="numberOfPeople"
                     type="number"
+                    disabled={hideNumberOfPerson}
                     />
                 </Grid>
 
@@ -154,34 +201,52 @@ export default function Search() {
         <Container >
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
+            
+            {search && (itemPerPage > 0
+                            ? search.slice(page * itemPerPage, page * itemPerPage + itemPerPage)
+                            : search
+                    ).map((item) => (
+
+              <Grid item key={item._id} xs={12} sm={6} md={4}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
                   <CardContent sx={{ flexGrow: 1 }}>
 
                     <Typography gutterBottom variant="h5" component="h2">
-                      Title
+                      {item.name}
                     </Typography>
 
                   </CardContent>
+
                     <CardMedia
                     component="img"
-                    image="https://picsum.photos/200"
-                    alt="random"
-                  />
+                    src={`data:image/jpeg;base64,${item.mainPicture}`}
+                    />
                   <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography>
-                      This is the description of the activity or the accomodation
+                    
+                    <Typography variant='span'>
+                      <b>{item.location.city}</b>
+                      <br/>
+                      <i>{item.location.address}</i>
+                      <br/>
+                      {item.price}€
                     </Typography>
+                    
                   </CardContent>
                   <CardActions>
-                    <Button fullWidth>View</Button>
+                    <Button fullWidth onClick={()=>{navigate("/"+setter+"/"+item._id+"?startDate="+startDate+"&endDate="+endDate)}}>View</Button>
                   </CardActions>
                 </Card>
               </Grid>
+
+
             ))}
+
+
+
+
+
           </Grid>
         </Container>
         <Box
@@ -197,3 +262,5 @@ export default function Search() {
     </ThemeProvider>
   );
 }
+
+export default Search;

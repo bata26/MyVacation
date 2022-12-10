@@ -13,11 +13,11 @@ class Serializer:
             "description" : activity.description ,
             "prenotations" : activity.prenotations ,
             "duration" : activity.duration ,
-            "pricePerPerson" : activity.pricePerPerson ,
+            "price" : activity.price ,
             "number_of_reviews" : activity.number_of_reviews ,
             "review_scores_rating" : activity.review_scores_rating,
-            "picture" : activity.picture.decode("utf-8"),
-            "category" : activity.category,
+            "mainPicture" : activity.mainPicture.decode("utf-8"),
+            "name" : activity.name,
         }
     
     @staticmethod
@@ -26,11 +26,11 @@ class Serializer:
         for acc in accomodation.pictures:
             pictures.append(acc.decode('utf-8'))
         return {
-            "_id" : accomodation._id ,
+            "_id" : str(accomodation._id) ,
             "name" : accomodation.name ,
             "description" : accomodation.description ,
             "pictures" : pictures, # accomodation.pictures,#.decode('utf-8'),
-            "host_id" : accomodation.host_id ,
+            "host_id" : str(accomodation.host_id) ,
             "host_url" : accomodation.host_url ,
             "host_name" : accomodation.host_name ,
             "host_picture" : accomodation.host_picture.decode("utf-8") ,
@@ -75,4 +75,14 @@ class Serializer:
             "reviews" : user.reviews ,
             "plaHistory" : user.plaHistory ,
             "actHistory" : user.actHistory
+        }
+
+    @staticmethod
+    def serializeToApprove(toApprove):
+        return {
+            "_id" : toApprove._id ,
+            "name" : toApprove.name,
+            "host_id" : toApprove.host_id ,
+            "location" : toApprove.location,
+            "type" : toApprove.type
         }

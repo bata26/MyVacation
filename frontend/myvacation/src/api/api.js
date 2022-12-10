@@ -6,7 +6,8 @@ const instance = axios.create({
     baseURL: BASE_URL,
     headers: {
         "Access-Control-Allow-Origin" :"*",
-        "crossDomain" : true
+        "crossDomain" : true,
+        "Authorization" : localStorage.getItem("userID")
     }
 
 });

@@ -1,7 +1,7 @@
 
 class User:
     def __init__(self , _id , username , password ,
-        name , type , surname , gender ,
+        name , surname , type , gender ,
         dateOfBirth , nationality , knownLanguages ,
         prenotations , reviews, plaHistory, actHistory):
         self._id = _id

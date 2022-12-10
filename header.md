@@ -74,7 +74,6 @@
     "id"
     "reviewerID"
     "destinationID"
-    "host_name"
     "score"
     "comment"
 }

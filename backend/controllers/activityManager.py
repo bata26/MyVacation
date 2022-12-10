@@ -22,11 +22,11 @@ class ActivityManager:
             cursor["description"] ,
             cursor["prenotations"] ,
             cursor["duration"] ,
-            cursor["pricePerPerson"] ,
+            cursor["price"] ,
             cursor["number_of_reviews"] ,
             cursor["review_scores_rating"],
-            cursor["picture"],
-            cursor["category"])
+            cursor["mainPicture"],
+            cursor["name"])
         return Serializer.serializeActivity(activity)
 
 
@@ -67,14 +67,14 @@ class ActivityManager:
         result = []
 
         if(city != ""):
-            query["city"] = city
+            query["location.city"] = city
         if(guestNumbers != ""):
             query["accomodates"] = {}
             query["accomodates"]["$gte"] = guestNumbers
         
         # Deve essere stato inserito il periodo di svolgimento
         if(start_date != ""):
-            collection = db[os.getenv("PRENOTATIONS_COLLECTION")]
+            collection = db[os.getenv("RESERVATIONS_COLLECTION")]
             occupiedActivitiesID = collection.distinct("destinationId" , 
                 {"startDate" : start_date}
             )
@@ -93,10 +93,12 @@ class ActivityManager:
                 activity["description"] ,
                 activity["prenotations"] ,
                 activity["duration"] ,
-                activity["pricePerPerson"] ,
+                activity["price"] ,
                 activity["number_of_reviews"] ,
                 activity["review_scores_rating"],
-                activity["picture"],
-                activity["category"])
+                activity["mainPicture"],
+                activity["name"])
             result.append(Serializer.serializeActivity(activityResults))
+
+        
         return result
