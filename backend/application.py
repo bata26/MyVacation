@@ -23,10 +23,7 @@ load_dotenv()
 application = Flask(__name__)
 cors = CORS(application , supports_credentials=True, origins=["*" , "http://127.0.0.1:3000"])
 
-def validateObjecID(userObj):
-    parsedUserObj = json.loads(userObj)
-    print(parsedUserObj)
-    userID = parsedUserObj["userID"]
+def validateObjecID(userID):
     validationRegex = "^[0-9a-fA-F]{24}$"
     if re.match(validationRegex , userID):
         return True
@@ -38,7 +35,10 @@ def required_token(f):
         if 'Authorization' not in request.headers:
             return Response(json.dumps(f"Authorization token not found"), 401)
         
-        if(not(validateObjecID(request.headers.get('Authorization')))):
+        parsedUserObj = json.loads(request.headers.get('Authorization'))
+        print(parsedUserObj)
+        userID = parsedUserObj["userID"]
+        if(not(validateObjecID(userID))):
             return Response(json.dumps("userID non valido"), 403)
 
         return f(*args, **kwargs)
@@ -90,7 +90,7 @@ def deleteAccomodationById(accomodation_id):
     return "" , 200
 
 @application.route('/accomodations/<accomodation_id>' , methods = ['GET'])
-@required_token
+#@required_token
 def getAccomodationById (accomodation_id):
     accomodationId = escape(accomodation_id)
     result = AccomodationsManager.getAccomodationsFromId(accomodationId)
