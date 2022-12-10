@@ -8,6 +8,7 @@ from models.activityReservation import ActivityReservation
 from datetime import datetime
 import dateparser
 from bson.objectid import ObjectId
+from utility.serializer import Serializer
 
 class ReservationManager:
 
@@ -38,10 +39,30 @@ class ReservationManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
-
         try:
             cursor = list(collection.find({"userID" : userID}))
-            return cursor
+            result =[]
+            for reservation in cursor:
+                if reservation['destinationType'] == 'activity':
+                    activityResult = ActivityReservation(
+                        reservation['userID'],
+                        reservation['destinationID'],
+                        reservation['destinationType'],
+                        reservation['startDate'],
+                        reservation['totalExpense'],
+                        reservation['_id'])
+                    result.append(Serializer.serializeReservation(activityResult))
+                else:
+                    accomodationResult = AccomodationReservation(
+                        reservation['userID'],
+                        reservation['destinationID'],
+                        reservation['destinationType'],
+                        reservation['startDate'],
+                        reservation['endDate'],
+                        reservation['totalExpense'],
+                        reservation['_id'])
+                    result.append(Serializer.serializeReservation(accomodationResult))
+            return result
         except Exception as e:
             raise Exception("Impossibile ottenere prenotazioni: " + str(e))
 
@@ -53,7 +74,7 @@ class ReservationManager:
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
 
         try:
-            cursor = list(collection.delete_one({"_id" : ObjectId(reservationID)}))
-            return cursor
+            collection.delete_one({"_id" : ObjectId(reservationID)})
+            return "OK"
         except Exception as e:
             raise Exception("Impossibile eliminarte prenotazione "+reservationID+": " + str(e))

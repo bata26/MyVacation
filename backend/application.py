@@ -16,7 +16,7 @@ from models.review import Review
 import json
 
 user = {
-    "_id" : "637ce1a04ed62608566c5fae"
+    "_id" : "637ce1a04ed62608566c5fa7"
 }
 
 load_dotenv()
@@ -128,15 +128,15 @@ def bookActivity():
 def getReservationsByUserID():
     global user
     result = ReservationManager.getReservationsByUser(user["_id"])
-    return "OK" , 200
+    return result , 200
 
 @application.route('/reservations/<reservation_id>' , methods = ['DELETE'])
 #@required_token
 def deleteReservation(reservation_id):
     reservationID = escape(reservation_id)
     global user
-    result = ReservationManager.deleteReservationByID()
-    return "OK" , 200
+    result = ReservationManager.deleteReservationByID(reservationID)
+    return result , 200
 
 
 @application.route('/accomodations' , methods = ['GET'])

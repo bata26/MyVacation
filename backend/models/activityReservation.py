@@ -1,10 +1,12 @@
 class ActivityReservation:
-    def __init__(self , userID , destinationID , destinationType  , startDate , totalExpense):
+    def __init__(self , userID , destinationID , destinationType  , startDate , totalExpense, _id=""):
         self.userID = userID
         self.destinationID = destinationID
         self.destinationType = destinationType
         self.startDate = startDate
         self.totalExpense = totalExpense
+        if not(_id == ""):
+            self._id = _id
     
     def getDictToUpload(self):
         return{

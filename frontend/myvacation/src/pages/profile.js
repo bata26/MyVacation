@@ -18,45 +18,20 @@ import api from "../api/api";
 import { useParams } from 'react-router-dom';
 import Moment from 'moment';
 
-function createDataActivities(
-  nameOrCategory,
-  city,
-  date
-) {
-  return { nameOrCategory, city, date};
-}
-
-const rowsActivities = [
-  createDataActivities('Disco', 'Turin', '25/10/2022'),
-  createDataActivities('Socker', 'Milan', '11/11/2022'),
-  createDataActivities('Baseball', 'Amsterdam', '23/12/2022')
-];
-
-function createDataAccomodations(
-  nameOrCategory,
-  city,
-  date
-) {
-  return { nameOrCategory, city, date};
-}
-
-const rowsAccomodations = [
-  createDataAccomodations('Flat near the center', 'Turin', '25/10/2022'),
-  createDataAccomodations('Five star Hotel', 'Milan', '11/11/2022'),
-  createDataAccomodations('Countryside house', 'Amsterdam', '23/12/2022')
-];
-
+import { Button, Icon } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const theme = createTheme();
 
 const Profile = () => {
 
-
   const [profile , setProfile] = React.useState(null);
   const {profileID} = useParams();
-
+  let [reservations, setReservations] = React.useState([]);
+  
   React.useEffect( () => {
 
+    //Richiesta per recuperare le informazioni dell'utente
     api.get("/users/"+profileID)
     .then(function(response){
       setProfile(response.data);
@@ -64,9 +39,31 @@ const Profile = () => {
     .catch(function(error){
       console.log(error);
     });
+
+    //Richiesta per recuperare le prenotazioni
+    api.get("/reservations").then(function (response) {
+      setReservations(response.data);
+      console.log(response.data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
   } , []);
 
   if(!profile) return null;
+
+
+
+  //Metodo per eliminare reservation
+  const deleteReservation = (reservationID) => {
+    api.delete("/reservations/" + reservationID).then(function (response) {
+      console.log(response.data);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+    window.location.reload(false);
+  }
 
 
   return (
@@ -169,7 +166,7 @@ const Profile = () => {
                 color="text.primary"
                 gutterBottom
               >
-                Prenotations
+                Reservations
               </Typography>
             </Container>
           </Box>
@@ -180,53 +177,26 @@ const Profile = () => {
           <Table sx={{ minWidth: 650 }} size="small">
             <TableHead>
               <TableRow>
-                <TableCell style={{fontWeight: 'bold', height: 50 + 'px'}}>
-                  Accomodations
-                  </TableCell>
-                <TableCell align="center" style={{fontWeight: 'bold'}}>City</TableCell>
-                <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
+                <TableCell align="left" style={{fontWeight: 'bold'}}>Name</TableCell>
+                <TableCell align="center" style={{fontWeight: 'bold'}}>Type</TableCell>
+                <TableCell align="center" style={{fontWeight: 'bold'}}>Start Date</TableCell>
+                <TableCell align="right" style={{fontWeight: 'bold'}}>End Date</TableCell>
+                <TableCell align="right" style={{fontWeight: 'bold'}}></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rowsAccomodations.map((row) => (
-                <TableRow
-                  key={row.nameOrCategory}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row" style={{height: 50 + 'px'}}>
-                    {row.nameOrCategory}
+            {reservations.map((item) => (
+                <TableRow key={item._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+
+                  <TableCell align="left">{item._id}</TableCell>
+                  <TableCell align="center">{item.destinationType}</TableCell>
+                  <TableCell align="center">{item.startDate}</TableCell>
+                  <TableCell align="right">{item.endDate}</TableCell>
+                  <TableCell align='right'>
+                    <DeleteIcon color='error'style={{cursor:"pointer"}} onClick={()=>{deleteReservation(item._id)}}></DeleteIcon>
                   </TableCell>
-                  <TableCell align="center">{row.city}</TableCell>
-                  <TableCell align="right">{row.date}</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell style={{fontWeight: 'bold', height: 50 + 'px'}}>
-                  Activities
-                </TableCell>
-                <TableCell align="center" style={{fontWeight: 'bold'}}>City</TableCell>
-                <TableCell align="right" style={{fontWeight: 'bold'}}>Date</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rowsActivities.map((row) => (
-                <TableRow
-                  key={row.nameOrCategory}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row" style={{height: 50 + 'px'}}>
-                    {row.nameOrCategory}
-                  </TableCell>
-                  <TableCell align="center">{row.city}</TableCell>
-                  <TableCell align="right">{row.date}</TableCell>
-                </TableRow>
-              ))}
+            ))}
             </TableBody>
           </Table>
         </TableContainer>
