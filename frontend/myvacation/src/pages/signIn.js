@@ -50,9 +50,9 @@ const SignIn = () => {
       console.log(JSON.stringify(response));
 
       //const accessToken = response?.data?.accessToken;
-      //const role = response?.data?.role;
-      //const username = response?.data?.username;
-      //setAuth({ username, role});
+      const role = response.data.role;
+      const userID = response.data.userID;
+      setAuth({ userID, role});
       localStorage.setItem("userID" , response.data);
       navigate(from, { replace: true });
 
