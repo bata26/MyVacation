@@ -13,9 +13,6 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {useNavigate, useParams, useSearchParams} from "react-router-dom";
-import api from "../api/api";
-
 
 import api from "../api/api";
 import { useParams } from 'react-router-dom';
@@ -150,7 +147,7 @@ const Profile = () => {
               </Grid>
               <Grid item>
               </Grid>
-            </Box>
+            </Grid>
           </Box>
         </Box>
       </Container>
@@ -242,9 +239,9 @@ const Profile = () => {
             mt: 'auto',
           }}
         >
-        </Box>
-      </ThemeProvider>
-);
+      </Box>
+    </ThemeProvider>
+  );
 }
 
 export default Profile;

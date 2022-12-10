@@ -12,6 +12,9 @@ import { borderRadius } from '@mui/system';
 import ReactRoundedImage from "react-rounded-image";
 import Separator from "../components/separator";
 import ActivityStaticDatePicker from "../components/staticDatePicker";
+import api from "../api/api";
+import ReviewForm from '../components/reviewForm';
+import Button from '@mui/material/Button';
 
 function srcset(image, size, rows = 1, cols = 1) {
   return {
@@ -22,15 +25,38 @@ function srcset(image, size, rows = 1, cols = 1) {
   };
 }
 
+function bookActivity(activity , startDate){
+  console.log(activity);
+  console.log(startDate);
+
+  if(startDate === null){
+    alert("Torna indietro e inserisci le date per effettuare la prenotazione!");
+    return;
+  }
+  const bodyRequest = {
+    "activity" : activity,
+    "startDate" : startDate,
+  };
+  api.post("/book/activity" , bodyRequest)
+  .then(function(response){
+    alert("prenotazione avvenuta con successo");
+  })
+  .catch(function(error){
+    console.log("error : " , error);
+    alert("Impossibile prenotare, riprova più tardi");
+  })
+}
+
+
 const Activity = () => {
   const [activity , setActivity] = React.useState(null);
   const [searchParams] = useSearchParams();
   const {activityID} = useParams();
-  const date = searchParams.get("date");
+  const startDate = searchParams.get("startDate");
 
   React.useEffect( () =>{
     const url = Config.BASE_URL+"/activities/"+activityID;
-    axios.get(url)
+    api.get("/activities/"+activityID)
       .then(function (response){
         setActivity(response.data);
       })
@@ -46,7 +72,7 @@ const Activity = () => {
       <Grid xs={1}/>
       <Grid xs={10} >
         <img
-              src={`data:image/jpeg;base64,${activity.picture}`}
+              src={`data:image/jpeg;base64,${activity.mainPicture}`}
               style={{borderRadius:10 + 'px', height: 100+'%' , width: 99+'%', marginTop: 3+'px'}}
             />
       </Grid>
@@ -54,7 +80,7 @@ const Activity = () => {
       {/** ROW 1 */}
       <Grid xs={2}/>
       <Grid xs={4}>
-        <h1>{activity.category}</h1>
+        <h1>{activity.name}</h1>
       </Grid>
       <Grid xs={1}/>
       <Grid xs={3}>
@@ -74,7 +100,7 @@ const Activity = () => {
       <Grid xs={4}  style={{ borderRadius:10+'px', boxShadow:'1px 2px 9px #8a8987'}}>
         <ActivityStaticDatePicker    
             disabled
-            pickedValue={date}
+            pickedValue={startDate}
             style = {{gridRow:"span 2"}}
         />
         {/*<ReactRoundedImage
@@ -107,7 +133,10 @@ const Activity = () => {
       <Grid xs={4}>
             <h3>Informazioni</h3>
       </Grid>
-      <Grid xs={6}/>
+      <Grid xs={4}>
+        <Button variant="contained" style={{width:100+'%'}} onClick={()=> bookActivity(activity , startDate)}>Prenota</Button>
+      </Grid>
+      <Grid xs={2}/>
 
       {/** ROW 5 */}
       <Grid xs={2}/>
@@ -115,9 +144,12 @@ const Activity = () => {
         <span>{activity.duration} <strong>ore di puro divertimento</strong></span>
       </Grid>
       <Grid xs={2}>
-        <span>{activity.pricePerPerson} <strong>€ a persona</strong></span>
+        <span>{activity.price} <strong>€ a persona</strong></span>
       </Grid>
-      <Grid xs={6}/>
+      <Grid xs={4}>
+        <ReviewForm destinationID={activity._id}/>
+      </Grid>
+      <Grid xs={2}/>
 
       {/** ROW 8 */}
       <Grid xs={2}/>

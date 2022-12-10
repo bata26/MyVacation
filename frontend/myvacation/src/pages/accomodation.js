@@ -39,7 +39,14 @@ function bookAccomodation(accomodation , startDate , endDate){
     "startDate" : startDate,
     "endDate" : endDate,
   };
-  api.post()
+  api.post("/book/accomodation" , bodyRequest)
+  .then(function(response){
+    alert("prenotazione avvenuta con successo");
+  })
+  .catch(function(error){
+    console.log("error : " , error);
+    alert("Impossibile prenotare, riprova più tardi");
+  })
 }
 
 const Accomodation = () => {
