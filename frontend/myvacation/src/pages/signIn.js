@@ -18,7 +18,7 @@ import {useState} from "react";
 import {useNavigate, useLocation } from 'react-router-dom';
 
 const theme = createTheme();
-const LOGIN_URL = "/signin";
+const LOGIN_URL = "/login";
 
 const SignIn = () => {
   const { setAuth } = useAuth();
@@ -50,10 +50,12 @@ const SignIn = () => {
       console.log(JSON.stringify(response));
 
       //const accessToken = response?.data?.accessToken;
-      const role = response?.data?.role;
-      const username = response?.data?.username;
-      setAuth({ username, role});
+      //const role = response?.data?.role;
+      //const username = response?.data?.username;
+      //setAuth({ username, role});
+      localStorage.setItem("userID" , response.data);
       navigate(from, { replace: true });
+
 
     } catch (err) {
       if (!err?.response) {

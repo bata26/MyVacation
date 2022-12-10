@@ -39,10 +39,8 @@ function App() {
             <Route path="/accomodation/:accomodationID" element={<Accomodation />} />
             <Route path="/edit/accomodation/:accomodationID" element={<InsertAccomodation />} />
             <Route path="/activity/:activityID" element={<Activity />} />
-            {/*<Route element={<RequireAuth allowedRoles={"Admin"} />}>*/}
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/reports" element={<Chart />} />
-            {/*<Route path='/accomodationtobe/:id' element={<AccomodationToBe />}/>*/}
         </Routes>
       </>
   );
