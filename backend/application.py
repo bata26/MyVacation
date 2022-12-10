@@ -93,7 +93,7 @@ def getAccomodationById (accomodation_id):
 def getAccomodations():
     args = request.args
     city = args.get("city")
-    guests = args.get("guests")
+    guests = args.get("guestsNumber")
     start_date = args.get("start_date")
     end_date = args.get("end_date")
     result = AccomodationsManager.getFilteredAccomodation(start_date  , end_date  , city , guests)

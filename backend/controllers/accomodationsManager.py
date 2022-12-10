@@ -49,11 +49,10 @@ class AccomodationsManager:
         result = []
 
         if(city != ""):
-            query["city"] = city
+            query["location.city"] = city
         if(guestNumbers != ""):
-            query["accomodates"] = {}
-            query["accomodates"]["$gte"] = guestNumbers
-        
+            query["accommodates"] = {}
+            query["accommodates"]["$gte"] = int(guestNumbers)
         # se inserisce la data iniziale deve per forza esserci anche la data finale (la validazione verrà fatta sulla richiesta)
         if(start_date != "" and end_date != ""):
             # ottengo una lista di id di accomodations non occupate

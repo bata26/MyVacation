@@ -15,11 +15,13 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+
 //Pagine navBar
 const pages = ["signIn" , "signUp", "search"];
 
 // Pagine a tendina logo utente
-const settings = ['Profile', 'Logout'];
+const account = ['Profile', 'Logout'];
 
 function ResponsiveAppBar() {
     const navigate = useNavigate();
@@ -153,10 +155,9 @@ function ResponsiveAppBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
+            <Tooltip title="Open account">
+                {/*<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />*/}
+                <AccountCircleRoundedIcon fontSize='large' onClick={handleOpenUserMenu}/>
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}
@@ -174,7 +175,7 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              {account.map((setting) => (
                 <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
