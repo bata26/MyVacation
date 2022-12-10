@@ -126,9 +126,9 @@ def bookActivity():
     return "OK" , 200
 
 @application.route('/reservations' , methods = ['GET'])
-#@required_token
-def getReservationsByUserID():
-    global user
+@required_token
+def getReservationsByUserID(user={}):
+    #global user
     result = ReservationManager.getReservationsByUser(user["_id"])
     return result , 200
 
