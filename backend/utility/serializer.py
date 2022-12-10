@@ -86,3 +86,26 @@ class Serializer:
             "location" : toApprove.location,
             "type" : toApprove.type
         }
+
+    @staticmethod
+    def serializeReservation(reservation):
+        if reservation.destinationType == "activity":
+            return {
+            "_id" : str(reservation._id) ,
+            "userID" : str(reservation.userID) ,
+            "destinationID" : str(reservation.destinationID),
+            "destinationType" : reservation.destinationType ,
+            "startDate" : reservation.startDate ,
+            "totalExpense" : reservation.totalExpense,
+            }
+        else:
+            return {
+            "_id" : str(reservation._id) ,
+            "userID" : str(reservation.userID) ,
+            "destinationID" : str(reservation.destinationID),
+            "destinationType" : reservation.destinationType ,
+            "startDate" : reservation.startDate ,
+            "endDate" : reservation.endDate ,
+            "totalExpense" : reservation.totalExpense,
+            }
+            

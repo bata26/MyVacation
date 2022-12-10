@@ -1,11 +1,13 @@
 class AccomodationReservation:
-    def __init__(self , userID , destinationID , destinationType  , startDate , endDate , totalExpense):
+    def __init__(self , userID , destinationID , destinationType  , startDate , endDate , totalExpense, _id=""):
         self.userID = userID
         self.destinationID = destinationID
         self.destinationType = destinationType
         self.startDate = startDate
         self.endDate = endDate
         self.totalExpense = totalExpense
+        if not(_id == ""):
+            self._id = _id
     
     def getDictToUpload(self):
         return{
