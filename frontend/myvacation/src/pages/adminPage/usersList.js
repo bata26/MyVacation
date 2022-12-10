@@ -14,9 +14,12 @@ import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
 import TableFooter from "@mui/material/TableFooter";
 import {useNavigate} from "react-router-dom";
+import useAuth from '../../hooks/useAuth';
+
 
 
 export default function UsersList() {
+    const {auth} = useAuth();
     const [last_id, setLast_id] = React.useState(null);
     const [first_id, setFirst_id] = React.useState(null);
     const [page, setPage] = React.useState(1);
@@ -28,7 +31,7 @@ export default function UsersList() {
     const [lastPage, setLastPage] = React.useState(null);
 
     React.useEffect(() => {
-        api.get("/users?index=")
+        api.get("/users?index=", {headers:{"Authorization":JSON.stringify(auth)}})
             .then(function (response) {
                 setUserList(response.data);
                 setLast_id(response.data[response.data.length -1]._id);

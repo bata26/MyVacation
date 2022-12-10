@@ -13,26 +13,26 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-
 import api from "../api/api";
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 
 const theme = createTheme();
 
 const Search = () => {
-
+  const { auth } = useAuth();
   const navigate = useNavigate();
 
   const [type, setType] = React.useState('accomodations');
   const handleChange = (event) => {
-      setType(event.target.value);
+    setType(event.target.value);
   };
 
   const [search, setSearch] = React.useState(null);
 
-  const [startDate , setStartDate] = React.useState(null);
-  const [endDate , setEndDate] = React.useState(null);
+  const [startDate, setStartDate] = React.useState(null);
+  const [endDate, setEndDate] = React.useState(null);
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -45,42 +45,43 @@ const Search = () => {
     setStartDate(formStartDate);
     setEndDate(formEndDate);
 
-    const url ="?startDate=" + formStartDate + "&endDate=" + formEndDate + "&city=" + city + "&guestsNumber=" + guestsNumber;
+    const url = "?startDate=" + formStartDate + "&endDate=" + formEndDate + "&city=" + city + "&guestsNumber=" + guestsNumber;
 
     console.log(url);
 
-    api.get("/"+type+url).then(function (response) {
-          setSearch(response.data);
-          console.log(response.data);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+    api.get("/" + type + url , {headers:{"Authorization":JSON.stringify(auth)}})
+      .then(function (response) {
+        setSearch(response.data);
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
 
   };
 
 
-//Vari setter per gestione di form e url
-let setter = '';
-let hideNumberOfPerson = true
-let hideEndDate = true
-let hideStartDate = true
+  //Vari setter per gestione di form e url
+  let setter = '';
+  let hideNumberOfPerson = true
+  let hideEndDate = true
+  let hideStartDate = true
 
-if (type == 'accomodations'){
-  setter = 'accomodation'
-  hideNumberOfPerson = false
-  hideEndDate = false
-  hideStartDate = false
-} else {
-  setter = 'activity'
-  hideNumberOfPerson = true
-  hideEndDate = true
-  hideStartDate = false
-}
+  if (type == 'accomodations') {
+    setter = 'accomodation'
+    hideNumberOfPerson = false
+    hideEndDate = false
+    hideStartDate = false
+  } else {
+    setter = 'activity'
+    hideNumberOfPerson = true
+    hideEndDate = true
+    hideStartDate = false
+  }
 
 
-const [page, setPage] = React.useState(0);
-const [itemPerPage, setItemPerPage] = React.useState(15);
+  const [page, setPage] = React.useState(0);
+  const [itemPerPage, setItemPerPage] = React.useState(15);
 
 
   return (
@@ -114,62 +115,62 @@ const [itemPerPage, setItemPerPage] = React.useState(15);
 
 
         <Container>
-        <CssBaseline />
-            <Box component="form" onSubmit={handleSearch} noValidate sx={{ mt: 1 }}>
-              <Grid container columnSpacing={1.4}>
-                <Grid item xs={4} sm={2}>
-                    <Select
-                        fullWidth
-                        id='type'
-                        name='type'
-                        value={type}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value={'activities'}>Activities</MenuItem>
-                        <MenuItem value={'accomodations'}>Accomodations</MenuItem>
-                    </Select>
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                    <TextField
-                    fullWidth
-                    name="city"
-                    id="city"
-                    label="City"
-                    />
-                </Grid>
-                <Grid item xs={6} sm={2}>
-                    <TextField
-                    fullWidth
-                    id="startDate"
-                    name="startDate"
-                    type="date"
-                    disabled={hideStartDate}
-                    />
-                </Grid>
+          <CssBaseline />
+          <Box component="form" onSubmit={handleSearch} noValidate sx={{ mt: 1 }}>
+            <Grid container columnSpacing={1.4}>
+              <Grid item xs={4} sm={2}>
+                <Select
+                  fullWidth
+                  id='type'
+                  name='type'
+                  value={type}
+                  onChange={handleChange}
+                >
+                  <MenuItem value={'activities'}>Activities</MenuItem>
+                  <MenuItem value={'accomodations'}>Accomodations</MenuItem>
+                </Select>
+              </Grid>
+              <Grid item xs={6} sm={4}>
+                <TextField
+                  fullWidth
+                  name="city"
+                  id="city"
+                  label="City"
+                />
+              </Grid>
+              <Grid item xs={6} sm={2}>
+                <TextField
+                  fullWidth
+                  id="startDate"
+                  name="startDate"
+                  type="date"
+                  disabled={hideStartDate}
+                />
+              </Grid>
 
-                <Grid item xs={6} sm={2}>
-                    <TextField
-                    fullWidth
-                    id="endDate"
-                    name="endDate"
-                    type="date"
-                    disabled={hideEndDate}
-                    />
-                </Grid>
+              <Grid item xs={6} sm={2}>
+                <TextField
+                  fullWidth
+                  id="endDate"
+                  name="endDate"
+                  type="date"
+                  disabled={hideEndDate}
+                />
+              </Grid>
 
-                <Grid item xs={4} sm={2}>
-                    <TextField
-                    fullWidth
-                    id="numberOfPeople"
-                    label="Number of people"
-                    name="numberOfPeople"
-                    type="number"
-                    disabled={hideNumberOfPerson}
-                    />
-                </Grid>
+              <Grid item xs={4} sm={2}>
+                <TextField
+                  fullWidth
+                  id="numberOfPeople"
+                  label="Number of people"
+                  name="numberOfPeople"
+                  type="number"
+                  disabled={hideNumberOfPerson}
+                />
+              </Grid>
 
             </Grid>
-            
+
             <Button
               type="submit"
               fullWidth
@@ -179,13 +180,13 @@ const [itemPerPage, setItemPerPage] = React.useState(15);
               Search
             </Button>
           </Box>
-      </Container>
+        </Container>
 
 
         {/* Separatore */}
 
 
-      <Box
+        <Box
           sx={{
             bgcolor: 'background.paper',
             pt: 8,
@@ -201,11 +202,11 @@ const [itemPerPage, setItemPerPage] = React.useState(15);
         <Container >
           {/* End hero unit */}
           <Grid container spacing={4}>
-            
+
             {search && (itemPerPage > 0
-                            ? search.slice(page * itemPerPage, page * itemPerPage + itemPerPage)
-                            : search
-                    ).map((item) => (
+              ? search.slice(page * itemPerPage, page * itemPerPage + itemPerPage)
+              : search
+            ).map((item) => (
 
               <Grid item key={item._id} xs={12} sm={6} md={4}>
                 <Card
@@ -219,23 +220,23 @@ const [itemPerPage, setItemPerPage] = React.useState(15);
 
                   </CardContent>
 
-                    <CardMedia
+                  <CardMedia
                     component="img"
                     src={`data:image/jpeg;base64,${item.mainPicture}`}
-                    />
+                  />
                   <CardContent sx={{ flexGrow: 1 }}>
-                    
+
                     <Typography variant='span'>
                       <b>{item.location.city}</b>
-                      <br/>
+                      <br />
                       <i>{item.location.address}</i>
-                      <br/>
+                      <br />
                       {item.price}€
                     </Typography>
-                    
+
                   </CardContent>
                   <CardActions>
-                    <Button fullWidth onClick={()=>{navigate("/"+setter+"/"+item._id+"?startDate="+startDate+"&endDate="+endDate)}}>View</Button>
+                    <Button fullWidth onClick={() => { navigate("/" + setter + "/" + item._id + "?startDate=" + startDate + "&endDate=" + endDate) }}>View</Button>
                   </CardActions>
                 </Card>
               </Grid>

@@ -34,14 +34,14 @@ def required_token(f):
     def decorator(*args, **kwargs):
         if 'Authorization' not in request.headers:
             return Response(json.dumps(f"Authorization token not found"), 401)
-        
+        print(request.headers.get('Authorization'))
         parsedUserObj = json.loads(request.headers.get('Authorization'))
         print(parsedUserObj)
-        userID = parsedUserObj["userID"]
+        userID = parsedUserObj["_id"]
         if(not(validateObjecID(userID))):
             return Response(json.dumps("userID non valido"), 403)
 
-        return f(*args, **kwargs)
+        return f(*args, **kwargs, user=parsedUserObj)
 
     return decorator
 
@@ -212,11 +212,12 @@ def getUserById (user_id):
 
 
 @application.route('/review/check/<destination_id>' , methods = ['GET'])
-#@required_token
-def getIfCanReview (destination_id):
+@required_token
+def getIfCanReview (destination_id, user={}):
     destinationID = escape(destination_id)
-    print(destinationID)
-    global user
+    #user = json.loads(request.headers.get('Authorization'))
+    print(user)
+    #global user
     result = {"result" : False}
     if ReviewManager.checkIfCanReview(str(destinationID) , user):
         result = {"result" : True}
@@ -231,8 +232,8 @@ def loginUser ():
     print(f"username : {username}")
     print(f"password : {password}")
     try:
-        userID = UserManager.authenicateUser(username , password)
-        return userID , 200
+        userID, userType = UserManager.authenicateUser(username , password)
+        return {"userID" : userID , "role" : userType} , 200
     except Exception as e:
         return str(e) , 500
 

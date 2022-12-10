@@ -15,6 +15,7 @@ import ActivityStaticDatePicker from "../components/staticDatePicker";
 import api from "../api/api";
 import ReviewForm from '../components/reviewForm';
 import Button from '@mui/material/Button';
+import useAuth from '../hooks/useAuth';
 
 function srcset(image, size, rows = 1, cols = 1) {
   return {
@@ -25,30 +26,8 @@ function srcset(image, size, rows = 1, cols = 1) {
   };
 }
 
-function bookActivity(activity , startDate){
-  console.log(activity);
-  console.log(startDate);
-
-  if(startDate === null){
-    alert("Torna indietro e inserisci le date per effettuare la prenotazione!");
-    return;
-  }
-  const bodyRequest = {
-    "activity" : activity,
-    "startDate" : startDate,
-  };
-  api.post("/book/activity" , bodyRequest)
-  .then(function(response){
-    alert("prenotazione avvenuta con successo");
-  })
-  .catch(function(error){
-    console.log("error : " , error);
-    alert("Impossibile prenotare, riprova più tardi");
-  })
-}
-
-
 const Activity = () => {
+  const {auth} = useAuth();
   const [activity , setActivity] = React.useState(null);
   const [searchParams] = useSearchParams();
   const {activityID} = useParams();
@@ -64,6 +43,28 @@ const Activity = () => {
         console.log(err);
       })
   } , []);
+
+  function bookActivity(activity , startDate){
+    console.log(activity);
+    console.log(startDate);
+    
+    if(startDate === null){
+      alert("Torna indietro e inserisci le date per effettuare la prenotazione!");
+      return;
+    }
+    const bodyRequest = {
+      "activity" : activity,
+      "startDate" : startDate,
+    };
+    api.post("/book/activity" , bodyRequest , {headers:{"Authorization":JSON.stringify(auth)}})
+    .then(function(response){
+      alert("prenotazione avvenuta con successo");
+    })
+    .catch(function(error){
+      console.log("error : " , error);
+      alert("Impossibile prenotare, riprova più tardi");
+    })
+  }
 
   if(!activity) return null;
   

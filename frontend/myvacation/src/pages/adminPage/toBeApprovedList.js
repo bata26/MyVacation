@@ -11,6 +11,7 @@ import Paper from "@mui/material/Paper";
 import TableFooter from "@mui/material/TableFooter";
 import {useNavigate} from "react-router-dom";
 import Button from "@mui/material/Button";
+import useAuth from '../../hooks/useAuth';
 
 
 export default function ToBeApprovedList() {
@@ -19,9 +20,10 @@ export default function ToBeApprovedList() {
     const [page, setPage] = React.useState(1);
     const [toBeApprovedList, setToBeApprovedList] = React.useState(null);
     const navigate = useNavigate();
+    const {auth} = useAuth();
 
     React.useEffect(() => {
-        api.get("/admin/announcements?index=")
+        api.get("/admin/announcements?index=" , {headers:{"Authorization":JSON.stringify(auth)}})
             .then(function (response) {
                 setToBeApprovedList(response.data);
                 setLast_id(response.data[response.data.length -1]._id);

@@ -7,6 +7,8 @@ import Rating from '@mui/material/Rating';
 import TextField from '@mui/material/TextField';
 import { alignProperty } from '@mui/material/styles/cssUtils';
 import api from "../api/api";
+import { getAuthorizationHeader } from '../utility/api';
+import useAuth from '../hooks/useAuth';
 
 //export default function HalfRating() {
 //  return (
@@ -34,9 +36,11 @@ const style = {
 
 const ReviewForm = ({destinationID}) => {
   const [open, setOpen] = React.useState(false);
+  const {auth} = useAuth();
+  console.log(auth);
   const handleOpen = async () => {
     console.log("aspett");
-    await api.get("/review/check/"+destinationID)
+    await api.get("/review/check/"+destinationID , {headers:{"Authorization":JSON.stringify(auth)}})
     .then(function(response){
       if(response.data.result === true){
         setOpen(true);
