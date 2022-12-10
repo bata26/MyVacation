@@ -104,10 +104,8 @@ def bookAccomodation ():
     print(f"accomodation : {accomodation}")
     print(f"startDate : {startDate}")
     print(f"endDate : {endDate}")
-    #return "" , 200
     result = ReservationManager.book(accomodation , startDate ,user, "accomodation", endDate)
-    print(f"res : {result['_id']}")
-    return result , 200
+    return "OK" , 200
 
 @application.route('/book/activity' , methods = ['POST'])
 #@required_token
@@ -116,15 +114,11 @@ def bookActivity():
     requestBody = request.json
     activity= requestBody["activity"]
     startDate = requestBody["startDate"]
-    endDate = requestBody["endDate"]
     print(f"activity : {activity}")
     print(f"startDate : {startDate}")
-    print(f"endDate : {endDate}")
-    #return "" , 200
     result = ReservationManager.book(activity , startDate , user , "activity")
-    print(f"res : {result['_id']}")
-    return result , 200
-
+    return "OK" , 200
+    
 @application.route('/accomodations' , methods = ['GET'])
 #@required_token
 def getAccomodations():

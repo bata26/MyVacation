@@ -74,7 +74,7 @@ class ActivityManager:
         
         # Deve essere stato inserito il periodo di svolgimento
         if(start_date != ""):
-            collection = db[os.getenv("PRENOTATIONS_COLLECTION")]
+            collection = db[os.getenv("RESERVATIONS_COLLECTION")]
             occupiedActivitiesID = collection.distinct("destinationId" , 
                 {"startDate" : start_date}
             )

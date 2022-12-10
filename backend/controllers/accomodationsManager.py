@@ -59,7 +59,7 @@ class AccomodationsManager:
         if(start_date != "" and end_date != ""):
             # ottengo una lista di id di accomodations non occupate
             # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
-            collection = db[os.getenv("PRENOTATIONS_COLLECTION")]
+            collection = db[os.getenv("RESERVATIONS_COLLECTION")]
             occupiedAccomodationsID = collection.distinct("destinationId" , { "$or" : [
                     {"$and" : [
                         { "start_date" : { "$lte" : end_date}},
@@ -73,7 +73,7 @@ class AccomodationsManager:
         query["_id"] = {}
         query["_id"]["$nin"] = occupiedAccomodationsID
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
-        accomodations = list(collection.find(query))
+        accomodations = list(collection.find(query).limit(15))
         for accomodation in accomodations:
             accomodationResult = Accomodation(
                 str(accomodation["_id"]) ,
