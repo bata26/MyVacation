@@ -7,7 +7,6 @@ from models.accomodationReservation import AccomodationReservation
 from models.activityReservation import ActivityReservation
 from datetime import datetime
 import dateparser
-from pymongo import ObjectId
 
 class ReservationManager:
 

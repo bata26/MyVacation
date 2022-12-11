@@ -59,12 +59,13 @@ class ActivityManager:
 
 
     @staticmethod
-    def getFilteredActivity(start_date = "" , end_date = "" , city="" , guestNumbers=""):
+    def getFilteredActivity(start_date = "" , end_date = "" , city="" , guestNumbers="", index="", direction=""):
         query = {}
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         occupiedActivitiesID = []
         result = []
+        page_size=12
 
         if(city != ""):
             query["location.city"] = city
@@ -80,8 +81,17 @@ class ActivityManager:
             )
         query["_id"] = {}
         query["_id"]["$nin"] = occupiedActivitiesID
+
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
-        activities = list(collection.find(query))
+        if index == "":
+            # When it is first page
+            activities = collection.find().sort('_id', 1).limit(page_size)
+        else:
+            if (direction == "next"):
+                activities = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(page_size)
+            elif (direction == "previous"):
+                activities = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
+
         for activity in activities:
             activityResults = Activity(
                 str(activity["_id"]) ,

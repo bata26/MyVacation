@@ -72,7 +72,9 @@ def getActivities():
     guests = args.get("guests")
     start_date = args.get("start_date")
     end_date = args.get("end_date")
-    result = ActivityManager.getFilteredActivity(start_date  , end_date  , city , guests)
+    index = args.get("index")
+    direction = args.get("direction")
+    result = ActivityManager.getFilteredActivity(start_date  , end_date  , city , guests, index, direction)
     return result , 200
 
 @application.route('/accomodations/<accomodation_id>' , methods = ['DELETE'])
@@ -121,14 +123,14 @@ def bookActivity():
 
 @application.route('/reservations' , methods = ['GET'])
 #@required_token
-def bookActivity():
+def getReservations():
     global user
     result = ReservationManager.getReservationsByUser(user["_id"])
     return "OK" , 200
 
 @application.route('/reservations/<reservation_id>' , methods = ['DELETE'])
 #@required_token
-def bookActivity(reservation_id):
+def bookActivityFromId(reservation_id):
     reservationID = escape(reservation_id)
     global user
     result = ReservationManager.deleteReservationByID()
@@ -142,7 +144,15 @@ def getAccomodations():
     guests = args.get("guestsNumber")
     start_date = args.get("start_date")
     end_date = args.get("end_date")
-    result = AccomodationsManager.getFilteredAccomodation(start_date  , end_date  , city , guests)
+    index = args.get("index")
+    direction = args.get("direction")
+    print(f"city : {city}")
+    print(f"guests : {guests}")
+    print(f"start_date : {start_date}")
+    print(f"end_date : {end_date}")
+    print(f"index : {index}")
+    print(f"direction : {direction}")
+    result = AccomodationsManager.getFilteredAccomodation(start_date  , end_date  , city , guests, index, direction)
     return result , 200
 
 @application.route('/insert/accomodation' , methods = ['POST'])

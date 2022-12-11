@@ -43,20 +43,21 @@ class AccomodationsManager:
     #   - city
     #   - number of guests
     @staticmethod
-    def getFilteredAccomodation(start_date = "" , end_date = "" , city="" , guestNumbers=""):
+    def getFilteredAccomodation(start_date = "" , end_date = "" , city="" , guestNumbers="", index="", direction=""):
         query = {}
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         occupiedAccomodationsID = []
         result = []
+        page_size = 1
 
-        if(city != ""):
+        if(city != "" and city != None):
             query["location.city"] = city
-        if(guestNumbers != ""):
+        if(guestNumbers != "" and guestNumbers != None):
             query["accommodates"] = {}
             query["accommodates"]["$gte"] = int(guestNumbers)
         # se inserisce la data iniziale deve per forza esserci anche la data finale (la validazione verrà fatta sulla richiesta)
-        if(start_date != "" and end_date != ""):
+        if(start_date != "" and end_date != "" and end_date != None and start_date != None):
             # ottengo una lista di id di accomodations non occupate
             # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
             collection = db[os.getenv("RESERVATIONS_COLLECTION")]
@@ -73,7 +74,15 @@ class AccomodationsManager:
         query["_id"] = {}
         query["_id"]["$nin"] = occupiedAccomodationsID
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
-        accomodations = list(collection.find(query).limit(15))
+
+        if index == "":
+        # When it is first page
+            accomodations = collection.find().sort('_id', 1).limit(page_size)
+        else:
+            if (direction == "next"):
+                accomodations = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(page_size)
+            elif (direction == "previous"):
+                accomodations = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
         for accomodation in accomodations:
             accomodationResult = Accomodation(
                 str(accomodation["_id"]) ,
@@ -95,6 +104,7 @@ class AccomodationsManager:
                 accomodation["number_of_reviews"] ,
                 accomodation["review_scores_rating"])
             result.append(Serializer.serializeAccomodation(accomodationResult))
+        print("Lenght List is :",len(result))
         return result
         
     @staticmethod

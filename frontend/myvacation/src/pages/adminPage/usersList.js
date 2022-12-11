@@ -62,6 +62,7 @@ export default function UsersList() {
             .then(function (response) {
                 setUserList(response.data);
                 setLast_id(response.data[4]._id);
+                setFirst_id(response.data[0]);
                 console.log(response.data);
             })
             .catch(function (error) {
