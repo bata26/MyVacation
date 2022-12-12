@@ -35,6 +35,13 @@ const Search = () => {
     const handleChange = (event) => {
     setType(event.target.value);
     };
+  const { auth } = useAuth();
+  const navigate = useNavigate();
+
+  const [type, setType] = React.useState('accomodations');
+  const handleChange = (event) => {
+    setType(event.target.value);
+  };
 
 
   const handleSearch = (event) => {
