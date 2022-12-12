@@ -210,7 +210,7 @@ def deleteUserById (user_id):
     user = {
         "type" : "admin"
     }
-    result = UserManager.deleteUser(userId , user)
+    result = AdminManager.deleteUser(userId , user)
     return "" , 200
 
 @application.route('/users/<user_id>' , methods = ['GET'])
@@ -265,7 +265,7 @@ def getUsers():
     user = {
             "type" : "admin"
         }
-    result = UserManager.getFilteredUsers(user ,id, name , surname, index, direction)
+    result = AdminManager.getFilteredUsers(user ,id, name , surname, index, direction)
     return result , 200
 
 

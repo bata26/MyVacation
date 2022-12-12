@@ -1,6 +1,7 @@
 from .connection import MongoManager
 from models.toApprove import ToApprove
 from models.accomodation import Accomodation
+from models.user import User
 from models.activity import Activity
 from utility.serializer import Serializer
 import os
@@ -9,12 +10,64 @@ from bson.objectid import ObjectId
 
 class AdminManager():
 
+    # we can filter for:
+    #   - name
+    #   - surname
+    @staticmethod
+    def getFilteredUsers(user , id = "" , name = "" , surname = "" , index = "", direction  = ""):
+        if (user["type"] != "admin"):
+            raise Exception("L'utente non possiede i privilegi di admin")
+
+        query = {}
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        result = []
+        page_size = 5
+
+        if(id != "" and id != None):
+            query["_id"] = ObjectId(id)
+        if(name != "" and name != None):
+            query["name"] = name
+        if(surname != "" and surname != None):
+            query["surname"] = surname
+
+        collection = db[os.getenv("USERS_COLLECTION")]
+
+        if index == "":
+            # When it is first page
+            users = collection.find().sort('_id', 1).limit(page_size)
+        else:
+            if (direction == "next"):
+                users = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(page_size)
+            elif (direction == "previous"):
+                users = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
+
+        for user in users:
+            userResult = User(
+                str(user["_id"]) ,
+                user["username"] ,
+                user["password"] ,
+                user["name"] ,
+                user["surname"] ,
+                user["type"] ,
+                user["gender"] ,
+                user["dateOfBirth"] ,
+                user["nationality"] ,
+                user["knownLanguages"] ,
+                user["reservations"] ,
+                user["reviews"] ,
+                user["plaHistory"] ,
+                user["actHistory"])
+            result.append(Serializer.serializeUser(userResult))
+        return result
+
     @staticmethod
     def getAnnouncementToApprove(index, direction):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("APPROVE_COLLECTION")]
-        page_size = 2
+        page_size = 5
+        result = []
 
         if index == "":
             # When it is first page
@@ -24,8 +77,6 @@ class AdminManager():
                 items = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(page_size)
             elif (direction == "previous"):
                 items = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
-
-        result = []
 
         for item in items:
             tempToApprove = ToApprove(
@@ -68,4 +119,16 @@ class AdminManager():
         except Exception as e:
             raise Exception(f"Impossibile trovare l'annuncio: {announcementID}")
 
-        
+    @staticmethod
+    def deleteUser(userID , user):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("USERS_COLLECTION")]
+
+        if (user["type"] != "admin"):
+            raise Exception("L'utente non possiede i privilegi di admin")
+        try:
+            res = collection.delete_one({"_id" : ObjectId(userID)})
+            return res
+        except Exception:
+            raise Exception("Impossibile eliminare")

@@ -11,7 +11,7 @@ class Serializer:
             "host_picture" : activity.host_picture.decode("utf-8") ,
             "location" : activity.location ,
             "description" : activity.description ,
-            "prenotations" : activity.prenotations ,
+            "reservations" : activity.reservations ,
             "duration" : activity.duration ,
             "price" : activity.price ,
             "number_of_reviews" : activity.number_of_reviews ,
@@ -71,7 +71,7 @@ class Serializer:
             "dateOfBirth" : user.dateOfBirth,
             "nationality" : user.nationality ,
             "knownLanguages" : user.knownLanguages ,
-            "prenotations" : user.prenotations ,
+            "reservations" : user.reservations ,
             "reviews" : user.reviews ,
             "plaHistory" : user.plaHistory ,
             "actHistory" : user.actHistory

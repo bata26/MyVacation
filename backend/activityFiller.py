@@ -84,7 +84,7 @@ def generateRandomActivity():
         "description" : activity["description"],
         "picture" : base64Picture,
         "category" : activity["type"],
-        "prenotations" : [],
+        "reservations" : [],
         "duration" : duration , 
         "pricePerPerson" : price,
         "number_of_reviews" : random.randint(0 , 20),

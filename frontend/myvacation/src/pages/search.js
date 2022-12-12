@@ -57,7 +57,7 @@ const Search = () => {
       .then(function (response) {
             setSearch(response.data);
               setFirst_id(response.data[0]._id);
-              setLast_id("637bb280945bed1e66467434");
+              setLast_id(response.data[response.data.length - 1]._id);
           response.data.forEach((elem, index) => {
             console.log("ID" + index, elem._id);
           })
@@ -136,34 +136,23 @@ const Search = () => {
             });
 
     };
+    //Vari setter per gestione di form e url
+    let setter = '';
+    let hideNumberOfPerson = true
+    let hideEndDate = true
+    let hideStartDate = true
 
-    const emptyRows =
-        page > 1 ? Math.max(0, 2 - search ? search.length : 0) : 0;
-
-
-  //Vari setter per gestione di form e url
-  let setter = '';
-  let hideNumberOfPerson = true
-  let hideEndDate = true
-  let hideStartDate = true
-
-  if (type == 'accomodations') {
-    setter = 'accomodation'
-    hideNumberOfPerson = false
-    hideEndDate = false
-    hideStartDate = false
-  } else {
-    setter = 'activity'
-    hideNumberOfPerson = true
-    hideEndDate = true
-    hideStartDate = false
-  }
-
-
-  const [page, setPage] = React.useState(0);
-  const [itemPerPage, setItemPerPage] = React.useState(15);
-
-
+    if (type == 'accomodations') {
+        setter = 'accomodation'
+        hideNumberOfPerson = false
+        hideEndDate = false
+        hideStartDate = false
+    } else {
+        setter = 'activity'
+        hideNumberOfPerson = true
+        hideEndDate = true
+        hideStartDate = false
+    }
     return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -188,14 +177,9 @@ const Search = () => {
             </Typography>
           </Container>
         </Box>
-
-
-
-        {/* Inizio blocco ricerca */}
-
-
+          {/* Inizio blocco ricerca */}
         <Container>
-          <CssBaseline />
+        <CssBaseline />
           <Box component="form" onSubmit={handleSearch} noValidate sx={{ mt: 1 }}>
             <Grid container columnSpacing={1.4}>
               <Grid item xs={4} sm={2}>
@@ -227,7 +211,6 @@ const Search = () => {
                   disabled={hideStartDate}
                 />
               </Grid>
-
               <Grid item xs={6} sm={2}>
                 <TextField
                   fullWidth
@@ -237,7 +220,6 @@ const Search = () => {
                   disabled={hideEndDate}
                 />
               </Grid>
-
               <Grid item xs={4} sm={2}>
                 <TextField
                   fullWidth
@@ -248,9 +230,7 @@ const Search = () => {
                   disabled={hideNumberOfPerson}
                 />
               </Grid>
-
             </Grid>
-
             <Button
               type="submit"
               fullWidth
@@ -261,8 +241,6 @@ const Search = () => {
             </Button>
           </Box>
         </Container>
-
-
         {/* Separatore */}
 
 

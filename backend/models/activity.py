@@ -2,8 +2,8 @@ import base64
 
 class Activity:
     def __init__(self , _id , host_id , host_url , 
-        host_name  , host_picture , location , description , 
-        prenotations , duration , price , 
+        host_name  , host_picture , location , description ,
+        reservations , duration , price ,
         number_of_reviews , reviews_score_rating , mainPicture , name):
         self._id = _id 
         self.host_id = host_id 
@@ -15,7 +15,7 @@ class Activity:
         self.location["city"] = location["city"]
         self.location["country"] = location["country"]
         self.description = description 
-        self.prenotations = prenotations 
+        self.reservations = reservations
         self.duration = duration 
         self.price = price 
         self.number_of_reviews = number_of_reviews 
@@ -32,7 +32,7 @@ class Activity:
             "host_picture" : base64.encode(self.host_picture),
             "location" : self.location ,
             "description" : self.description ,
-            "prenotations" : self.prenotations ,
+            "reservations" : self.reservations ,
             "duration" : self.duration ,
             "price" : self.price ,
             "number_of_reviews" : self.number_of_reviews ,

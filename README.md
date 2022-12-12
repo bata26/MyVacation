@@ -58,8 +58,8 @@ Gli attori sono divisi in tre tipi di utenti:
 CA → consistency and availability
 
 
-## Prenotation
-Nella collection accomodation/activities mantenere l'array prenotations solo per le prenotazioni future. Con ridondanza con la collection prenotations.
+## Reservation
+Nella collection accomodation/activities mantenere l'array reservations solo per le prenotazioni future. Con ridondanza con la collection reservations.
 Stessa cosa per gli utenti, si mantiene un array di prenotazioni recenti. Stessa gestione con le reviews. (PARLARE CON DUCANGE).
 ## Use Cases
 [![Use-Cases4.png](https://i.postimg.cc/fbvKt1fS/Use-Cases4.png)](https://postimg.cc/bGsb4CMq)

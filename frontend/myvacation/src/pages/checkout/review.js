@@ -42,7 +42,7 @@ export default function Review() {
     return (
         <React.Fragment>
             <Typography variant="h6" gutterBottom>
-                Prenotation summary
+                Reservation summary
             </Typography>
             <List disablePadding>
                 {products.map((product) => (

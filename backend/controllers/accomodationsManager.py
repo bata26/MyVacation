@@ -49,7 +49,7 @@ class AccomodationsManager:
         db = client[os.getenv("DB_NAME")]
         occupiedAccomodationsID = []
         result = []
-        page_size = 1
+        page_size = 12
 
         if(city != "" and city != None):
             query["location.city"] = city

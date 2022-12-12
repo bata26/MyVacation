@@ -25,67 +25,13 @@ class UserManager:
             cursor["dateOfBirth"] ,
             cursor["nationality"] ,
             cursor["knownLanguages"] ,
-            cursor["prenotations"] ,
+            cursor["reservations"] ,
             cursor["reviews"] ,
             cursor["plaHistory"] ,
             cursor["actHistory"])
         return Serializer.serializeUser(user)
         #cursor["_id"] = str(cursor["_id"])
         #return cursor
-
-    # we can filter for:
-    #   - name
-    #   - surname
-    # TODO: da spostare
-    @staticmethod
-    def getFilteredUsers(user , id = "" , name = "" , surname = "" , index = "", direction  = ""):
-        if (user["type"] != "admin"):
-            raise Exception("L'utente non possiede i privilegi di admin")
-
-        query = {}
-        client = MongoManager.getInstance()
-        db = client[os.getenv("DB_NAME")]
-        result = []
-        page_size = 2;
-
-        if(id != "" and id != None):
-            query["_id"] = ObjectId(id)
-        if(name != "" and name != None):
-            query["name"] = name
-        if(surname != "" and surname != None):
-            query["surname"] = surname
-
-        collection = db[os.getenv("USERS_COLLECTION")]
-
-        if index == "":
-            # When it is first page
-            users = collection.find().sort('_id', 1).limit(page_size)
-        else:
-            if (direction == "next"):
-                users = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(page_size)
-            elif (direction == "previous"):
-                users = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
-
-        for user in users:
-            userResult = User(
-                str(user["_id"]) ,
-                user["username"] ,
-                user["password"] ,
-                user["name"] ,
-                user["surname"] ,
-                user["type"] ,
-                user["gender"] ,
-                user["dateOfBirth"] ,
-                user["nationality"] ,
-                user["knownLanguages"] ,
-                user["prenotations"] ,
-                user["reviews"] ,
-                user["plaHistory"] ,
-                user["actHistory"])
-            result.append(Serializer.serializeUser(userResult))
-        return result
-
-
 
     @staticmethod
     def insertNewUser(user):
@@ -97,21 +43,6 @@ class UserManager:
         except Exception:
             raise Exception("Impossibile inserire")
 
-    # TODO: spostare
-    @staticmethod
-    def deleteUser(userID , user):
-        client = MongoManager.getInstance()
-        db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("USERS_COLLECTION")]
-
-        if (user["type"] != "admin"):
-           raise Exception("L'utente non possiede i privilegi di admin")
-        try:
-            res = collection.delete_one({"_id" : ObjectId(userID)})
-            return res
-        except Exception:
-            raise Exception("Impossibile eliminare")
-    
     @staticmethod
     def authenicateUser(username , password):
         client = MongoManager.getInstance()

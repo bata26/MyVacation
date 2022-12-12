@@ -26,7 +26,7 @@
     "minimum_nights"
     "number_of_reviews"
     "review_scores_rating"
-    "prenotations" : []
+    "reservations" : []
 }
 ```
 
@@ -44,7 +44,7 @@
      "country"
     },
     "description"
-    "prenotations" : [],
+    "reservations" : [],
     "duration" // durata attività
     "picture"
     "category"
@@ -54,13 +54,13 @@
 }
 ```
 
-## PRENOTATIONS
+## RESERVATIONS
 ```JSON
 {
     "id"
     "userID"
     "destinationID"
-    "typePrenotations" // attività o alloggio
+    "reservationType" // attività o alloggio
     "startDate"
     "endDate" // activity non presente
     "totalExpense"
@@ -91,10 +91,10 @@
     "dateOfBirth"
     "nationality"
     "knownLanguages"
-    "prenotations" : [],
+    "reservations" : [],
     "reviews" : [],
-    "plaHistory" // ottenibili da prenotations
-    "actHistory" // ottenibili da prenotations
+    "plaHistory" // ottenibili da reservations
+    "actHistory" // ottenibili da reservations
 }
 ```
 
@@ -129,7 +129,7 @@ NB: Sostituire poi le ISODate con le date effettive che vengono dal frontend.
 db.accomodations.aggregate([
     {
         "$unwind" : {
-            "path" : "$prenotations",
+            "path" : "$reservations",
             "preserveNullAndEmptyArrays": true
         }
     },
@@ -137,12 +137,12 @@ db.accomodations.aggregate([
         "$match":{
                 "$or" : [
                     {"$and" : [
-                        { "prenotations.start_date" : { "$lte" : ISODate("2022-11-16T00:00:00.000Z")}},
-                        { "prenotations.start_date" : { "$gte" : ISODate("2022-11-14T00:00:00.000Z")}}
+                        { "reservations.start_date" : { "$lte" : ISODate("2022-11-16T00:00:00.000Z")}},
+                        { "reservations.start_date" : { "$gte" : ISODate("2022-11-14T00:00:00.000Z")}}
                     ]} ,
                     {"$and" : [
-                        { "prenotations.end_date" : { "$lte" : ISODate("2022-11-16T00:00:00.000Z")}},
-                        { "prenotations.end_date" : { "$gte" : ISODate("2022-11-14T00:00:00.000Z")}}
+                        { "reservations.end_date" : { "$lte" : ISODate("2022-11-16T00:00:00.000Z")}},
+                        { "reservations.end_date" : { "$gte" : ISODate("2022-11-14T00:00:00.000Z")}}
                     ]} 
                 ]
         },

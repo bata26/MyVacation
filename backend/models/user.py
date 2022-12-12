@@ -3,7 +3,7 @@ class User:
     def __init__(self , _id , username , password ,
         name , surname , type , gender ,
         dateOfBirth , nationality , knownLanguages ,
-        prenotations , reviews, plaHistory, actHistory):
+        reservations , reviews, plaHistory, actHistory):
         self._id = _id
         self.username = username
         self.password = password
@@ -14,7 +14,7 @@ class User:
         self.dateOfBirth = dateOfBirth
         self.nationality = nationality
         self.knownLanguages = knownLanguages
-        self.prenotations = prenotations
+        self.reservations = reservations
         self.reviews = reviews
         self.plaHistory = plaHistory
         self.actHistory = actHistory
@@ -31,7 +31,7 @@ class User:
             "dateOfBirth" : self.dateOfBirth ,
             "nationality" : self.nationality ,
             "knownLanguages" : self.knownLanguages ,
-            "prenotations" : self.prenotations ,
+            "reservations" : self.reservations ,
             "reviews" : self.reviews ,
             "plaHistory" : self.plaHistory ,
             "actHistory" : self.actHistory
