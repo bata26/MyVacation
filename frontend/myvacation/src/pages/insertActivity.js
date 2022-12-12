@@ -1,35 +1,15 @@
 import * as React from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
 import Button from '@mui/material/Button';
-import AccomodationForm from "../components/accomodationForm";
+import ActivityForm from "../components/activityForm";
 import FileInput from "../components/inputFile";
 import FormData from 'form-data';
 import api from '../api/api';
 import {useNavigate} from "react-router-dom";
+import { convertFileToBase64 } from '../utility/utility';
 
-async function convertFileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
-}
-
-const InsertAccomodation = () => {
+const InsertActivity = () => {
   let navigate = useNavigate();
-  const dataURLtoFile = (dataurl, filename) => {
-    const arr = dataurl.split(',')
-    const mime = arr[0].match(/:(.*?);/)[1]
-    const bstr = atob(arr[1])
-    let n = bstr.length
-    const u8arr = new Uint8Array(n)
-    while (n) {
-      u8arr[n - 1] = bstr.charCodeAt(n - 1)
-      n -= 1 // to make eslint happy
-    }
-    return new File([u8arr], filename, { type: mime })
-  }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -49,25 +29,25 @@ const InsertAccomodation = () => {
         data.append("imagesLength" , images.length);
         console.log("form: " , data);
         const headers = {'Content-type': 'multipart/form-data'};
-        const result = await api.post('/insert/accomodation' , 
+        const result = await api.post('/insert/activity' , 
           data,
           //{headers: headers}
         )
         .then(function(response){
           console.log(response.data);
-          navigate("/accomodation/"+response.data.accomodationID);
+          navigate("/activity/"+response.data.activityID);
         })
         .catch(function(error){
           console.log("errore");
         });
-      };
+    };
 
     return(
         <form onSubmit = {handleSubmit}>
+        <ActivityForm />
         <Grid container spacing={2}>
-            <AccomodationForm />
             {/*<FileInput label="Immagini"></FileInput>*/}
-            <Grid xs = {3} />
+            <Grid xs = {3}/>
             <Grid xs = {6}>
                 <Button
                   type="submit"
@@ -83,4 +63,4 @@ const InsertAccomodation = () => {
     );
 };
 
-export default InsertAccomodation;
+export default InsertActivity;

@@ -7,6 +7,8 @@ from controllers.reviewManager import ReviewManager
 from controllers.userManager import UserManager
 from controllers.adminManager import AdminManager
 from controllers.reservationManager import ReservationManager
+from models.accomodation import Accomodation
+from models.activity import Activity
 from flask_cors import CORS, cross_origin
 import json
 from functools import wraps
@@ -14,6 +16,7 @@ import re
 import bcrypt
 from models.review import Review
 import json
+from werkzeug.datastructures import ImmutableMultiDict
 
 user = {
     "_id" : "637ce1a04ed62608566c5fa7"
@@ -163,13 +166,76 @@ def getAccomodations():
 @application.route('/insert/accomodation' , methods = ['POST'])
 #@required_token
 def insertAccomodation():
-    accomodation = request.data
-    print(f"req : {request}")
-    print(f"req : {request.data}")
-    print(f"form : {dict(request.form)}")
-    print(f"file : {dict(request.files)}")
-    
-    return "" , 200
+    global user
+    formData = dict(request.form) 
+    host = UserManager.getUserFromId(user["_id"])
+    pictures = []
+    imagesLength = formData["imagesLength"]
+    for i in range(1 , int(imagesLength)):
+        pictures.append(formData[f"img-{i}"])
+    location = {
+        "address": formData["address"],
+        "city": formData["city"],
+        "country": formData["country"],
+    }
+
+    accomodation = Accomodation(
+        formData["name"],
+        formData["description"],
+        pictures,
+        host["_id"],
+        "hostUrl",
+        host["name"],
+        formData["img-0"],
+        host["picture"],
+        location,
+        formData["propertyType"],
+        formData["guests"],
+        formData["bedrooms"],
+        formData["beds"],
+        formData["price"],
+        formData["minimumNights"],
+        0,
+        0,
+    )
+    accomodationID = AccomodationsManager.insertNewAccomodation(accomodation)
+    return {"accomodationID" : str(accomodationID)} , 200
+    return "" , 500
+
+@application.route('/insert/activity' , methods = ['POST'])
+#@required_token
+def insertActivity():
+    global user
+    formData = dict(request.form) 
+    host = UserManager.getUserFromId(user["_id"])
+    pictures = []
+    imagesLength = formData["imagesLength"]
+    for i in range(1 , int(imagesLength)):
+        pictures.append(formData[f"img-{i}"])
+    location = {
+        "address": formData["address"],
+        "city": formData["city"],
+        "country": formData["country"],
+    }
+
+    activity = Activity(
+        host["_id"],
+        "hostUrl",
+        host["name"],
+        host["picture"],
+        location,
+        formData["description"],
+        [],
+        formData["duration"],
+        formData["price"],
+        0,
+        0,
+        formData["img-0"],
+        formData["category"],
+    )
+    activityID = ActivityManager.insertNewActivity(activity)
+    return {"activityID" : str(activityID)} , 200
+    return "" , 500
 
 @application.route('/reviews/<review_id>' , methods = ['GET'])
 #@required_token
@@ -248,24 +314,16 @@ def loginUser ():
         return str(e) , 500
 
 @application.route('/users' , methods = ['GET'])
-#@required_token
-def getUsers():
+@required_token
+def getUsers(user):
     args = request.args
     id = args.get("id")
     name = args.get("name")
     surname = args.get("surname")
     index = args.get("index")
     direction = args.get("direction")
-    print(f"id : {id}")
-    print(f"name : {name}")
-    print(f"surname : {surname}")
-    print(f"lastid : {index}")
-    print(f"direction : {direction}")
-
-    user = {
-            "type" : "admin"
-        }
-    result = AdminManager.getFilteredUsers(user ,id, name , surname, index, direction)
+    print(f"user : {user}")
+    result = UserManager.getFilteredUsers(user ,id, name , surname, index, direction)
     return result , 200
 
 

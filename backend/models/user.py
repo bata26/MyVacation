@@ -3,7 +3,7 @@ class User:
     def __init__(self , _id , username , password ,
         name , surname , type , gender ,
         dateOfBirth , nationality , knownLanguages ,
-        reservations , reviews, plaHistory, actHistory):
+        reservations , reviews, plaHistory, actHistory , picture=""):
         self._id = _id
         self.username = username
         self.password = password
@@ -18,6 +18,8 @@ class User:
         self.reviews = reviews
         self.plaHistory = plaHistory
         self.actHistory = actHistory
+        if(picture != ""):
+            self.picture = picture
 
     def getDictToUpload(self):
         return {
@@ -34,5 +36,6 @@ class User:
             "reservations" : self.reservations ,
             "reviews" : self.reviews ,
             "plaHistory" : self.plaHistory ,
-            "actHistory" : self.actHistory
+            "actHistory" : self.actHistory,
+            "picture" : self.picture
         }

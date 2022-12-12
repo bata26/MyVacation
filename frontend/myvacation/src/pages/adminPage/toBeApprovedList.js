@@ -23,7 +23,7 @@ export default function ToBeApprovedList() {
     const {auth} = useAuth();
 
     React.useEffect(() => {
-        api.get("/admin/announcements?index=" , {headers:{"Authorization":JSON.stringify(auth)}})
+        api.get("/admin/announcements?index=")
             .then(function (response) {
                 setToBeApprovedList(response.data);
                 setLast_id(response.data[response.data.length -1]._id);

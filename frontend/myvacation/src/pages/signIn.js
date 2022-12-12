@@ -53,7 +53,8 @@ const SignIn = () => {
       const role = response.data.role;
       const _id = response.data.userID;
       setAuth({ _id, role});
-      localStorage.setItem("userID" , response.data);
+      localStorage.setItem("userID" , response.data.userID);
+      localStorage.setItem("role" , response.data.role);
       navigate(from, { replace: true });
 
 

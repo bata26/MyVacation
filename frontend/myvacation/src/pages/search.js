@@ -15,7 +15,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import api from "../api/api";
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
 
 
 const theme = createTheme();
@@ -24,7 +23,7 @@ const Search = () => {
     const [last_id, setLast_id] = React.useState(null);
     const [first_id, setFirst_id] = React.useState(null);
     const [page, setPage] = React.useState(1);
-    const [lastPage, setLastPage] = React.useState(null);  const { auth } = useAuth();
+    const [lastPage, setLastPage] = React.useState(null);
     const navigate = useNavigate();
     const [search, setSearch] = React.useState(null);
     const [startDate , setStartDate] = React.useState(null);
@@ -33,16 +32,8 @@ const Search = () => {
     const [guests , setGuests] = React.useState(null);
     const [type, setType] = React.useState("accomodations");
     const handleChange = (event) => {
-    setType(event.target.value);
+      setType(event.target.value);
     };
-  const { auth } = useAuth();
-  const navigate = useNavigate();
-
-  const [type, setType] = React.useState('accomodations');
-  const handleChange = (event) => {
-    setType(event.target.value);
-  };
-
 
   const handleSearch = (event) => {
       event.preventDefault();
@@ -60,7 +51,7 @@ const Search = () => {
       const url ="?startDate=" + formStartDate + "&endDate=" + formEndDate + "&city=" + city + "&guestsNumber=" + guests + "&index=";
       console.log(url);
 
-      api.get("/" + type + url , {headers:{"Authorization":JSON.stringify(auth)}})
+    api.get("/" + type + url)
       .then(function (response) {
             setSearch(response.data);
               setFirst_id(response.data[0]._id);

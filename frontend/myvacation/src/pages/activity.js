@@ -56,7 +56,7 @@ const Activity = () => {
       "activity" : activity,
       "startDate" : startDate,
     };
-    api.post("/book/activity" , bodyRequest , {headers:{"Authorization":JSON.stringify(auth)}})
+    api.post("/book/activity" , bodyRequest)
     .then(function(response){
       alert("prenotazione avvenuta con successo");
     })

@@ -13,7 +13,6 @@ class ActivityManager:
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         cursor = dict(collection.find_one({"_id" : ObjectId(activityID)}))
         activity = Activity(
-            str(cursor["_id"]) ,
             str(cursor["host_id"]) ,
             cursor["host_url"] ,
             cursor["host_name"] ,
@@ -26,7 +25,8 @@ class ActivityManager:
             cursor["number_of_reviews"] ,
             cursor["review_scores_rating"],
             cursor["mainPicture"],
-            cursor["name"])
+            cursor["name"],
+            str(cursor["_id"]))
         return Serializer.serializeActivity(activity)
 
 
@@ -94,7 +94,6 @@ class ActivityManager:
 
         for activity in activities:
             activityResults = Activity(
-                str(activity["_id"]) ,
                 str(activity["host_id"]) ,
                 activity["host_url"] ,
                 activity["host_name"] ,
@@ -107,7 +106,8 @@ class ActivityManager:
                 activity["number_of_reviews"] ,
                 activity["review_scores_rating"],
                 activity["mainPicture"],
-                activity["name"])
+                activity["name"],
+                str(activity["_id"]))
             result.append(Serializer.serializeActivity(activityResults))
 
         

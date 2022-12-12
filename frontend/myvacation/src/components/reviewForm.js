@@ -40,7 +40,7 @@ const ReviewForm = ({destinationID}) => {
   console.log(auth);
   const handleOpen = async () => {
     console.log("aspett");
-    await api.get("/review/check/"+destinationID , {headers:{"Authorization":JSON.stringify(auth)}})
+    await api.get("/review/check/"+destinationID)
     .then(function(response){
       if(response.data.result === true){
         setOpen(true);

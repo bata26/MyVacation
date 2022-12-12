@@ -17,6 +17,7 @@ import Chart from "./pages/adminPage/chart";
 import InsertAccomodation from "./pages/insertAccomodation";
 import  Accomodation from "./pages/accomodation";
 import  Activity from "./pages/activity";
+import InsertActivity from "./pages/insertActivity";
 
 function App() {
   useEffect(() => {
@@ -37,6 +38,8 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/accomodation/:accomodationID" element={<Accomodation />} />
+            <Route path="/insert/accomodation" element={<InsertAccomodation />} />
+            <Route path="/insert/activity" element={<InsertActivity />} />
             <Route path="/edit/accomodation/:accomodationID" element={<InsertAccomodation />} />
             <Route path="/activity/:activityID" element={<Activity />} />
             <Route path="/admin" element={<AdminPage />} />

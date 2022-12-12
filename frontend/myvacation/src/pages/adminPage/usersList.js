@@ -31,7 +31,8 @@ export default function UsersList() {
     const [lastPage, setLastPage] = React.useState(null);
 
     React.useEffect(() => {
-        api.get("/users?index=", {headers:{"Authorization":JSON.stringify(auth)}})
+        console.log(auth);
+        api.get("/users?index=")
             .then(function (response) {
                 setUserList(response.data);
                 setLast_id(response.data[response.data.length -1]._id);

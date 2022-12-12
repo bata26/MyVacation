@@ -63,7 +63,7 @@ const Accomodation = () => {
       "startDate" : startDate,
       "endDate" : endDate,
     };
-    api.post("/book/accomodation" , {headers:{"Authorization":JSON.stringify(auth)}}, bodyRequest)
+    api.post("/book/accomodation" , bodyRequest)
     .then(function(response){
       alert("prenotazione avvenuta con successo");
     })

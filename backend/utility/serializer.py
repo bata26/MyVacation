@@ -23,8 +23,8 @@ class Serializer:
     @staticmethod
     def serializeAccomodation(accomodation):
         pictures = []
-        for acc in accomodation.pictures:
-            pictures.append(acc.decode('utf-8'))
+        for picture in accomodation.pictures:
+            pictures.append(picture.decode('utf-8'))
         return {
             "_id" : str(accomodation._id) ,
             "name" : accomodation.name ,
@@ -50,7 +50,7 @@ class Serializer:
     @staticmethod
     def serializeReview(review):
         return {
-            "_id" : review._id ,
+            "_id" : str(review._id),
             "reviewerID" : review.reviewerID ,
             "destinationID" : review.destinationID ,
             "host_name" : review.host_name ,
@@ -62,7 +62,7 @@ class Serializer:
     @staticmethod
     def serializeUser(user):
         return {
-            "_id" : user._id ,
+            "_id" : str(user._id),
             "username" : user.username ,
             "name" : user.name,
             "surname" : user.surname ,
@@ -74,7 +74,8 @@ class Serializer:
             "reservations" : user.reservations ,
             "reviews" : user.reviews ,
             "plaHistory" : user.plaHistory ,
-            "actHistory" : user.actHistory
+            "actHistory" : user.actHistory,
+            "picture" : user.picture.decode("utf-8") if hasattr(user , "picture") else "",
         }
 
     @staticmethod

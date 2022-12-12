@@ -41,7 +41,7 @@ const Profile = () => {
       });
 
     //Richiesta per recuperare le prenotazioni
-    api.get("/reservations" , {headers:{"Authorization":JSON.stringify(auth)}})
+    api.get("/reservations")
       .then(function (response) {
         setReservations(response.data);
         console.log(response.data);
@@ -55,7 +55,7 @@ const Profile = () => {
 
   //Metodo per eliminare reservation
   const deleteReservation = (reservationID) => {
-    api.delete("/reservations/" + reservationID , {headers:{"Authorization":JSON.stringify(auth)}})
+    api.delete("/reservations/" + reservationID)
       .then(function (response) {
         console.log(response.data);
       })

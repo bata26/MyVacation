@@ -9,23 +9,23 @@ import FileInput from "./inputFile";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 
-const AccomodationForm = () => {
+const ActivityForm = () => {
 
     return(
         <Grid container spacing={2}>
             {/** ROW 1 */}
             <Grid xs={3}/>
-            <Grid xs = {6}>
-                <FileInput label="Immagini" />
+            <Grid xs={6}>
+                <FileInput fullWidth label="Immagini" />
 
                 <TextField
                 margin="normal"
                 required
                 fullWidth
-                name="name"
-                label="Nome"
-                type="name"
-                id="name"
+                name="category"
+                label="Categoria"
+                type="category"
+                id="category"
                 autoFocus
                 />
 
@@ -63,14 +63,6 @@ const AccomodationForm = () => {
                 label="Nazione"
                 id="country"
                 />
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="propertyType"
-                label="Tipo di proprietà"
-                id="propertyType"
-                />
             </Grid>
             <Grid xs={3} />
             {/** ROW 2 */}
@@ -81,27 +73,14 @@ const AccomodationForm = () => {
                 margin="normal"
                 required
                 fullWidth
-                name="guests"
-                label="Numero di ospiti"
-                id="guests"
+                name="duration"
+                label="Durata (h)"
+                id="duration"
                 type="number"
                 />
             </Grid>
+            {/** ROW 3 */}
             <Grid xs = {3}>
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="beds"
-                label="Numero letti"
-                id="beds"
-                type="number"
-                />
-            </Grid>
-            <Grid xs = {3}/>
-            {/** GROW 3 */}
-            <Grid xs = {3}/>
-            <Grid xs = {2}>
                 <TextField
                 margin="normal"
                 required
@@ -112,30 +91,9 @@ const AccomodationForm = () => {
                 type="number"
                 />
             </Grid>
-            <Grid xs = {2}>
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="minimumNights"
-                label="Notti minime"
-                id="minimumNights"
-                type="number"
-                />
-            </Grid>
-            <Grid xs = {2}>
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="bedrooms"
-                label="Stanze da letto"
-                id="bedrooms"
-                type="number"
-                />
-            </Grid>
+            <Grid xs={2}/>
         </Grid>
     );
 };
 
-export default AccomodationForm;
+export default ActivityForm;

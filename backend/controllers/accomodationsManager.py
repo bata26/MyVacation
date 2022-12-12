@@ -15,7 +15,6 @@ class AccomodationsManager:
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
         cursor = dict(collection.find_one({"_id" : ObjectId(accomodationID)}))
         accomodation = Accomodation(
-            str(cursor["_id"]),
             cursor["name"] ,
             cursor["description"] ,
             cursor["pictures"] ,
@@ -32,7 +31,8 @@ class AccomodationsManager:
             cursor["price"] ,
             cursor["minimum_nights"] ,
             cursor["number_of_reviews"] ,
-            cursor["review_scores_rating"])
+            cursor["review_scores_rating"],
+            str(cursor["_id"]))
         return Serializer.serializeAccomodation(accomodation)
         #cursor["_id"] = str(cursor["_id"])
         #return cursor
@@ -85,7 +85,6 @@ class AccomodationsManager:
                 accomodations = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
         for accomodation in accomodations:
             accomodationResult = Accomodation(
-                str(accomodation["_id"]) ,
                 accomodation["name"] ,
                 accomodation["description"] ,
                 accomodation["pictures"] ,
@@ -102,7 +101,8 @@ class AccomodationsManager:
                 accomodation["price"] ,
                 accomodation["minimum_nights"] ,
                 accomodation["number_of_reviews"] ,
-                accomodation["review_scores_rating"])
+                accomodation["review_scores_rating"],
+                str(accomodation["_id"]))
             result.append(Serializer.serializeAccomodation(accomodationResult))
         print("Lenght List is :",len(result))
         return result
@@ -113,7 +113,8 @@ class AccomodationsManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
         try:
-            collection.insert_one(accomodation.getDictToUpload())
+            result = collection.insert_one(accomodation.getDictToUpload())
+            return result.inserted_id
         except Exception:
             raise Exception("Impossibile inserire")
 
