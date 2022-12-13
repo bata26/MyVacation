@@ -15,7 +15,6 @@ class UserManager:
         collection = db[os.getenv("USERS_COLLECTION")]
         cursor = dict(collection.find_one({"_id" : ObjectId(userID)}))
         user = User(
-            str(cursor["_id"]) ,
             cursor["username"] ,
             cursor["password"] ,
             cursor["name"] ,
@@ -26,10 +25,7 @@ class UserManager:
             cursor["nationality"] ,
             cursor["knownLanguages"] ,
             cursor["reservations"] ,
-            cursor["reviews"] ,
-            cursor["plaHistory"] ,
-            cursor["actHistory"],
-            cursor["picture"])
+            str(cursor["_id"]))
         return Serializer.serializeUser(user)
         #cursor["_id"] = str(cursor["_id"])
         #return cursor
@@ -69,7 +65,6 @@ class UserManager:
 
         for user in users:
             userResult = User(
-                str(user["_id"]) ,
                 user["username"] ,
                 user["password"] ,
                 user["name"] ,
@@ -79,10 +74,8 @@ class UserManager:
                 user["dateOfBirth"] ,
                 user["nationality"] ,
                 user["knownLanguages"] ,
-                user["prenotations"] ,
-                user["reviews"] ,
-                user["plaHistory"] ,
-                user["actHistory"])
+                user["reservations"] ,
+                str(user["_id"]))
             result.append(Serializer.serializeUser(userResult))
         return result
 

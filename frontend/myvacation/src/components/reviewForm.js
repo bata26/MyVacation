@@ -34,7 +34,7 @@ const style = {
 };
 
 
-const ReviewForm = ({destinationID}) => {
+const ReviewForm = ({destinationID , destinationType}) => {
   const [open, setOpen] = React.useState(false);
   const {auth} = useAuth();
   console.log(auth);
@@ -61,8 +61,8 @@ const ReviewForm = ({destinationID}) => {
     const data = new FormData(event.currentTarget);
     console.log(data);
     const review = {
+      "destinationType" : destinationType,
       "destinationID" : destinationID,
-      "userID" : "637ce1a04ed62608566c5fae",
       "score" : data.get("rating"),
       "description" : data.get("description")
     }

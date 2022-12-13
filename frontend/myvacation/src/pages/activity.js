@@ -148,7 +148,7 @@ const Activity = () => {
         <span>{activity.price} <strong>€ a persona</strong></span>
       </Grid>
       <Grid xs={4}>
-        <ReviewForm destinationID={activity._id}/>
+        <ReviewForm destinationID={activity._id} destinationType={"activity"}/>
       </Grid>
       <Grid xs={2}/>
 

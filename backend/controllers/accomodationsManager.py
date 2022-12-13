@@ -5,7 +5,7 @@ from bson.objectid import ObjectId
 from utility.serializer import Serializer
 from datetime import datetime
 import dateparser
-
+from models.review import Review
 class AccomodationsManager:
 
     @staticmethod
@@ -17,12 +17,9 @@ class AccomodationsManager:
         accomodation = Accomodation(
             cursor["name"] ,
             cursor["description"] ,
-            cursor["pictures"] ,
-            cursor["host_id"] ,
-            cursor["host_url"] ,
+            str(cursor["host_id"]),
             cursor["host_name"] ,
             cursor["mainPicture"] ,
-            cursor["host_picture"] ,
             cursor["location"] ,
             cursor["property_type"] ,
             cursor["accommodates"] ,
@@ -32,7 +29,10 @@ class AccomodationsManager:
             cursor["minimum_nights"] ,
             cursor["number_of_reviews"] ,
             cursor["review_scores_rating"],
-            str(cursor["_id"]))
+            cursor["reservations"],
+            cursor["reviews"],
+            str(cursor["_id"]),
+            cursor["pictures"])
         return Serializer.serializeAccomodation(accomodation)
         #cursor["_id"] = str(cursor["_id"])
         #return cursor
@@ -77,22 +77,21 @@ class AccomodationsManager:
 
         if index == "":
         # When it is first page
-            accomodations = collection.find().sort('_id', 1).limit(page_size)
+            accomodations = list(collection.find(query, {"pictures" : 0}).sort('_id', 1).limit(page_size))
         else:
             if (direction == "next"):
-                accomodations = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(page_size)
+                query["_id"]["$gt"] = ObjectId(index)
+                accomodations = list(collection.find(query , {"pictures" : 0}).sort('_id', 1).limit(page_size))
             elif (direction == "previous"):
-                accomodations = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
+                query["_id"]["$lt"] = ObjectId(index)
+                accomodations = list(collection.find(query , {"pictures" : 0}).sort('_id', -1).limit(page_size))
         for accomodation in accomodations:
             accomodationResult = Accomodation(
                 accomodation["name"] ,
                 accomodation["description"] ,
-                accomodation["pictures"] ,
-                accomodation["host_id"] ,
-                accomodation["host_url"] ,
+                str(accomodation["host_id"]),
                 accomodation["host_name"] ,
-                accomodation["mainPicture"] ,
-                accomodation["host_picture"] ,
+                accomodation["mainPicture"],
                 accomodation["location"] ,
                 accomodation["property_type"] ,
                 accomodation["accommodates"] ,
@@ -102,9 +101,10 @@ class AccomodationsManager:
                 accomodation["minimum_nights"] ,
                 accomodation["number_of_reviews"] ,
                 accomodation["review_scores_rating"],
+                accomodation["reservations"],
+                accomodation["reviews"],
                 str(accomodation["_id"]))
             result.append(Serializer.serializeAccomodation(accomodationResult))
-        print("Lenght List is :",len(result))
         return result
         
     @staticmethod
@@ -125,7 +125,7 @@ class AccomodationsManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
 
-        if (user["type"] != "admin"):
+        if (user["role"] != "admin"):
             accomodation = collection.find_one({"_id" : ObjectId(accomodationID)})
             if(accomodation.host_id != user._id):
                 raise Exception("L'utente non possiede l'accomodations")
@@ -134,3 +134,24 @@ class AccomodationsManager:
             return res
         except Exception:
             raise Exception("Impossibile inserire")
+
+    @staticmethod
+    def addReview(review):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        try:
+            collection.update_one({"_id" : ObjectId(review.destinationID)} , {"$push" : {"reviews" : review.getDictForAdvertisement()}})
+        except Exception as e:
+            raise Exception("Impossibile aggiungere la review: " + str(e))
+    
+
+    @staticmethod
+    def addReservation(reservation):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        try:
+            collection.update_one({"_id" : ObjectId(reservation.destinationID)} , {"$push" : {"reservations" : reservation.getDictForAdvertisement()}})
+        except Exception as e:
+            raise Exception("Impossibile aggiungere la reservation: " + str(e))

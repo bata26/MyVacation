@@ -1,14 +1,12 @@
-import base64
+from bson.objectid import ObjectId
 class Serializer:
 
     @staticmethod
     def serializeActivity(activity):
         return {
             "_id" : activity._id ,
-            "host_id" : activity.host_id ,
-            "host_url" : activity.host_url ,
+            "host_id" : str(activity.host_id),
             "host_name" : activity.host_name ,
-            "host_picture" : activity.host_picture.decode("utf-8") ,
             "location" : activity.location ,
             "description" : activity.description ,
             "reservations" : activity.reservations ,
@@ -18,6 +16,7 @@ class Serializer:
             "review_scores_rating" : activity.review_scores_rating,
             "mainPicture" : activity.mainPicture.decode("utf-8"),
             "name" : activity.name,
+            "reviews" : activity.reviews,
         }
     
     @staticmethod
@@ -31,9 +30,7 @@ class Serializer:
             "description" : accomodation.description ,
             "pictures" : pictures, # accomodation.pictures,#.decode('utf-8'),
             "host_id" : str(accomodation.host_id) ,
-            "host_url" : accomodation.host_url ,
             "host_name" : accomodation.host_name ,
-            "host_picture" : accomodation.host_picture.decode("utf-8") ,
             "location" : accomodation.location,
             "property_type" : accomodation.property_type ,
             "accommodates" : accomodation.accommodates ,
@@ -44,6 +41,8 @@ class Serializer:
             "number_of_reviews" : accomodation.number_of_reviews ,
             "review_scores_rating" : accomodation.review_scores_rating ,
             "mainPicture" : accomodation.mainPicture.decode('utf-8') ,
+            "reservations" : accomodation.reservations ,
+            "reviews" : accomodation.reviews ,
         }
 
 
@@ -51,8 +50,8 @@ class Serializer:
     def serializeReview(review):
         return {
             "_id" : str(review._id),
-            "reviewerID" : review.reviewerID ,
-            "destinationID" : review.destinationID ,
+            "reviewerID" : str(review.reviewerID),
+            "destinationID" : str(review.destinationID),
             "host_name" : review.host_name ,
             "score" : review.score ,
             "comment" : review.comment 
@@ -71,19 +70,15 @@ class Serializer:
             "dateOfBirth" : user.dateOfBirth,
             "nationality" : user.nationality ,
             "knownLanguages" : user.knownLanguages ,
-            "reservations" : user.reservations ,
-            "reviews" : user.reviews ,
-            "plaHistory" : user.plaHistory ,
-            "actHistory" : user.actHistory,
-            "picture" : user.picture.decode("utf-8") if hasattr(user , "picture") else "",
+            "reservations" : user.reservations 
         }
 
     @staticmethod
     def serializeToApprove(toApprove):
         return {
-            "_id" : toApprove._id ,
+            "_id" : str(toApprove._id),
             "name" : toApprove.name,
-            "host_id" : toApprove.host_id ,
+            "host_id" : str(toApprove.host_id),
             "location" : toApprove.location,
             "type" : toApprove.type
         }

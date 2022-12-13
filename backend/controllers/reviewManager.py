@@ -28,7 +28,10 @@ class ReviewManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("REVIEW_COLLECTION")]
         try:
-            collection.insert_one(review.getDictToUpload())
+            print("pre")
+            result = collection.insert_one(review.getDictToUpload())
+            print(f"inserita , _id : {result.inserted_id}")
+            return result.inserted_id
         except Exception:
             raise Exception("Impossibile inserire")
 
@@ -39,7 +42,7 @@ class ReviewManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("REVIEW_COLLECTION")]
 
-        if (user.type != "admin"):
+        if (user["role"] != "admin"):
             review = collection.find_one({"_id" : ObjectId(reviewID)})
             if(review.host_id != user._id):
                 raise Exception("L'utente non possiede la review")
@@ -54,10 +57,10 @@ class ReviewManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
-        query = {"destinationID" : destinationID , "userID" : user["_id"]}
+        query = {"destinationID" : ObjectId(destinationID) , "userID" : ObjectId(user["_id"])}
         print(query)
         try:
-            totalReservations = collection.count_documents({"destinationID" : destinationID , "userID" : user["_id"]})
+            totalReservations = collection.count_documents(query)
             print(f"totalReservations: {totalReservations}")
             if totalReservations > 0:
                 return True

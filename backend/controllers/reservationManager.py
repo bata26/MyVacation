@@ -12,25 +12,15 @@ from utility.serializer import Serializer
 
 class ReservationManager:
 
-    
     @staticmethod
-    def book(announcement , startDate ,  user , type, endDate=""):
+    def book(reservation):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
 
-        startDatetime = dateparser.parse(startDate)
-        if(type == "accomodation"):
-            endDatetime = dateparser.parse(endDate)
-            nightNumber = (((endDatetime - startDatetime).days) - 1)
-            totalExpense = nightNumber*announcement["price"]
-            reservation = AccomodationReservation(user["_id"] , announcement["_id"] , type , startDatetime , endDatetime , totalExpense)
-        else:
-            totalExpense = announcement["price"]
-            reservation = ActivityReservation(user["_id"] , announcement["_id"] , type , startDatetime , totalExpense)
         try:
             res = collection.insert_one(reservation.getDictToUpload())
-            return res
+            return res.inserted_id
         except Exception as e:
             raise Exception("Impossibile prenotare: " + str(e) )
 

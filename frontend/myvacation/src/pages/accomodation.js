@@ -59,6 +59,7 @@ const Accomodation = () => {
       return;
     }
     const bodyRequest = {
+      "destinationType" : "accomodation",
       "accomodation" : accomodation,
       "startDate" : startDate,
       "endDate" : endDate,
@@ -167,7 +168,7 @@ const Accomodation = () => {
         <span>{accomodation.bedrooms} <strong>camere da letto</strong></span>
       </Grid>
       <Grid xs={4}>
-        <ReviewForm destinationID={accomodation._id}/>
+        <ReviewForm destinationID={accomodation._id} destinationType={"accomodation"}/>
       </Grid>
       <Grid xs={2}/>
 

@@ -14,9 +14,7 @@ class ActivityManager:
         cursor = dict(collection.find_one({"_id" : ObjectId(activityID)}))
         activity = Activity(
             str(cursor["host_id"]) ,
-            cursor["host_url"] ,
             cursor["host_name"] ,
-            cursor["host_picture"] ,
             cursor["location"] ,
             cursor["description"] ,
             cursor["reservations"] ,
@@ -26,6 +24,7 @@ class ActivityManager:
             cursor["review_scores_rating"],
             cursor["mainPicture"],
             cursor["name"],
+            cursor["reviews"] ,
             str(cursor["_id"]))
         return Serializer.serializeActivity(activity)
 
@@ -59,7 +58,7 @@ class ActivityManager:
 
 
     @staticmethod
-    def getFilteredActivity(start_date = "" , end_date = "" , city="" , guestNumbers="", index="", direction=""):
+    def getFilteredActivity(start_date = "" , city="" , guestNumbers="", index="", direction=""):
         query = {}
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
@@ -85,19 +84,19 @@ class ActivityManager:
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         if index == "":
             # When it is first page
-            activities = collection.find().sort('_id', 1).limit(page_size)
+            activities = collection.find(query).sort('_id', 1).limit(page_size)
         else:
             if (direction == "next"):
-                activities = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(page_size)
+                query["_id"]["$gt"] = ObjectId(index)
+                activities = collection.find(query).sort('_id', 1).limit(page_size)
             elif (direction == "previous"):
-                activities = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
+                query["_id"]["$lt"] = ObjectId(index)
+                activities = collection.find(query).sort('_id', -1).limit(page_size)
 
         for activity in activities:
             activityResults = Activity(
                 str(activity["host_id"]) ,
-                activity["host_url"] ,
                 activity["host_name"] ,
-                activity["host_picture"] ,
                 activity["location"] ,
                 activity["description"] ,
                 activity["reservations"] ,
@@ -107,8 +106,29 @@ class ActivityManager:
                 activity["review_scores_rating"],
                 activity["mainPicture"],
                 activity["name"],
+                activity["reviews"],
                 str(activity["_id"]))
             result.append(Serializer.serializeActivity(activityResults))
 
         
         return result
+    
+    @staticmethod
+    def addReview(review):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        try:
+            collection.update_one({"_id" : ObjectId(review.destinationID)} , {"$push" : {"reviews" : review.getDictForAdvertisement()}})
+        except Exception as e:
+            raise Exception("Impossibile aggiungere la review: " + str(e))
+    
+    @staticmethod
+    def addReservation(reservation):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        try:
+            collection.update_one({"_id" : ObjectId(reservation.destinationID)} , {"$push" : {"reservations" : reservation.getDictForAdvertisement()}})
+        except Exception as e:
+            raise Exception("Impossibile aggiungere la reservation: " + str(e))
