@@ -44,7 +44,6 @@ class AdminManager():
 
         for user in users:
             userResult = User(
-                str(user["_id"]) ,
                 user["username"] ,
                 user["password"] ,
                 user["name"] ,
@@ -55,9 +54,9 @@ class AdminManager():
                 user["nationality"] ,
                 user["knownLanguages"] ,
                 user["reservations"] ,
-                user["reviews"] ,
-                user["plaHistory"] ,
-                user["actHistory"])
+                user["registrationDate"] ,
+                str(user["_id"])
+            )
             result.append(Serializer.serializeUser(userResult))
         return result
 

@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from '../hooks/useAuth';
 
 const theme = createTheme();
-const REGISTER_URL = '/register';
+const REGISTER_URL = '/signup';
 
 const SignUp = () => {
   const [errMsg, setErrMsg] = useState('');
@@ -42,9 +42,11 @@ const SignUp = () => {
         name: data.get('name'),
         surname: data.get('surname'),
         gender: data.get('gender'),
-        dateOfBirth: data.get('dateOfBirth'),
+        dateOfBirth: new Date(data.get('dateOfBirth')),
         username: data.get('username'),
         password: data.get('password'),
+        knownLanguages : ["italiano", "inglese"],
+        nationality : "Italia"
       }),
         {
           headers: { 'Content-Type': 'application/json' },
@@ -53,7 +55,7 @@ const SignUp = () => {
       );
       console.log(response?.data);
       console.log(JSON.stringify(response));
-      navigate("/", { replace: true });
+      navigate("/signin", { replace: true });
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No Server Response');
@@ -86,11 +88,11 @@ const SignUp = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="name"
                   required
                   fullWidth
                   id="name"
-                  label="First Name"
+                  label="Name"
                   autoFocus
                 />
               </Grid>
@@ -99,8 +101,8 @@ const SignUp = () => {
                   required
                   fullWidth
                   id="surname"
-                  label="Last Name"
-                  name="lastName"
+                  label="Surname"
+                  name="surname"
                   autoComplete="family-name"
                 />
               </Grid>
@@ -110,7 +112,7 @@ const SignUp = () => {
               <RadioGroup
                 aria-labelledby="gender"
                 defaultValue="male"
-                name="radio-buttons-group"
+                name="gender"
                 row
               >
                 <FormControlLabel value="male" control={<Radio />} label="Male" />
@@ -123,8 +125,7 @@ const SignUp = () => {
               required
               fullWidth
               name="dateOfBirth"
-              label="Date of birth"
-              type="dateOfBirth"
+              type="date"
               id="dateOfBirth"
               autoComplete="dateOfBirth"
               autoFocus

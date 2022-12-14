@@ -26,9 +26,7 @@ class Activity:
     def getDictToUpload(self):
         return {
             "host_id" : self.host_id ,
-            "host_url" : self.host_url ,
             "host_name" : self.host_name ,
-            "host_picture" : self.host_picture,
             "location" : self.location ,
             "description" : self.description ,
             "reservations": self.reservations,

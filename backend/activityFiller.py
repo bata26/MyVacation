@@ -73,9 +73,7 @@ def generateRandomActivity():
 
     activity = {
         "host_id" : hostID,
-        "host_url" :cursor["host_url"],
         "host_name" : cursor["host_name"],
-        "host_picture" : cursor["host_picture"],
         "location" : {
          "address" :cursor["location"]["address"],
          "city" : cursor["location"]["city"],
@@ -86,7 +84,7 @@ def generateRandomActivity():
         "category" : activity["type"],
         "reservations" : [],
         "duration" : duration , 
-        "pricePerPerson" : price,
+        "price" : price,
         "number_of_reviews" : random.randint(0 , 20),
         "review_scores_rating" : random.randint(0 , 5)
     }

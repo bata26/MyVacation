@@ -1,10 +1,10 @@
+from bson.objectid import ObjectId
 
 class User:
     def __init__(self ,username , password ,
         name , surname , type , gender ,
         dateOfBirth , nationality , knownLanguages ,
-        reservations , _id=""):
-        self._id = _id
+        reservations , registrationDate, _id=""):
         self.username = username
         self.password = password
         self.name = name
@@ -15,10 +15,12 @@ class User:
         self.nationality = nationality
         self.knownLanguages = knownLanguages
         self.reservations = reservations
+        self.registrationDate = registrationDate
+        if(_id != ""):
+            self._id = _id
 
     def getDictToUpload(self):
-        return {
-            "_id" : self._id ,
+        result = {
             "username" : self.username ,
             "password" : self.password ,
             "name" : self.name ,
@@ -29,4 +31,10 @@ class User:
             "nationality" : self.nationality ,
             "knownLanguages" : self.knownLanguages ,
             "reservations" : self.reservations ,
+            "registrationDate" : self.registrationDate
         }
+
+        if hasattr(self , "_id"):
+            result["_id"] = ObjectId(self._id)
+
+        return result

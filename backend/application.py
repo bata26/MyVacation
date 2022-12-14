@@ -11,6 +11,7 @@ from models.accomodation import Accomodation
 from models.accomodationReservation import AccomodationReservation
 from models.activityReservation import ActivityReservation
 from models.activity import Activity
+from models.user import User
 from flask_cors import CORS, cross_origin
 import json
 from functools import wraps
@@ -20,6 +21,7 @@ from models.review import Review
 import json
 from werkzeug.datastructures import ImmutableMultiDict
 import dateparser
+from datetime import datetime
 
 user = {
     "_id": "637ce1a04ed62608566c5fa7"
@@ -194,6 +196,7 @@ def getAccomodations():
 
 @application.route('/insert/accomodation', methods=['POST'])
 # @required_token
+#TODO Da rivedere
 def insertAccomodation():
     global user
     formData = dict(request.form)
@@ -213,7 +216,6 @@ def insertAccomodation():
         formData["description"],
         pictures,
         host["_id"],
-        "hostUrl",
         host["name"],
         formData["img-0"],
         host["picture"],
@@ -250,9 +252,7 @@ def insertActivity():
 
     activity = Activity(
         host["_id"],
-        "hostUrl",
         host["name"],
-        host["picture"],
         location,
         formData["description"],
         [],
@@ -356,6 +356,49 @@ def loginUser():
     try:
         userID, userType = UserManager.authenicateUser(username, password)
         return {"userID": userID, "role": userType}, 200
+    except Exception as e:
+        return str(e), 500
+
+
+@application.route('/signup', methods=['POST'])
+# @required_token
+def signUp():
+    # print(request.)
+    username = request.json["username"]
+    password = request.json["password"]
+    name = request.json["name"]
+    surname = request.json["surname"]
+    gender = request.json["gender"]
+    dateOfBirth = request.json["dateOfBirth"]
+    nationality = request.json["nationality"]
+    knownLanguages = request.json["knownLanguages"]
+    print(f"username : {username}")
+    print(f"password : {password}")
+    print(f"name : {name}")
+    print(f"surname : {surname}")
+    print(f"gender : {gender}")
+    print(f"dateOfBirth : {dateOfBirth}")
+    print(f"nationality : {nationality}")
+    print(f"knownLanguages : {knownLanguages}")
+
+    user = User(
+        username,
+        password,
+        name,
+        surname,
+        "user",
+        gender,
+        datetime.strptime(dateOfBirth, "%Y-%m-%dT%H:%M:%S.%f%z"),
+        nationality,
+        knownLanguages,
+        [],
+        datetime.today().replace(microsecond=0, second=0, hour=0, minute=0)
+        )
+    print("nell'endpoint")
+    try:
+        insertedID = UserManager.insertNewUser(user)
+        print(f"inserito id : {insertedID}")
+        return "", 200
     except Exception as e:
         return str(e), 500
 
