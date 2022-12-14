@@ -3,24 +3,23 @@ import { useParams , useSearchParams } from 'react-router-dom';
 import Grid from '@mui/material/Unstable_Grid2';
 import Config from '../utility/config';
 import ReactHtmlParser from 'react-html-parser';
-import Separator from "../components/separator";
-import ActivityStaticDatePicker from "../components/staticDatePicker";
 import api from "../api/api";
 import ReviewForm from '../components/reviewForm';
 import Button from '@mui/material/Button';
-import {useNavigate} from "react-router-dom";
+import { Typography } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import DateRangePicker from "../components/datePicker";
 
-function srcset(image, size, rows = 1, cols = 1) {
-  return {
-    src: `${image}?w=${size * cols}&h=${size * rows}&fit=crop&auto=format`,
-    srcSet: `${image}?w=${size * cols}&h=${
-      size * rows
-    }&fit=crop&auto=format&dpr=2 2x`,
-  };
-}
+
+
+
+
+const theme = createTheme();
 
 const Activity = () => {
-  const navigate = useNavigate();
   const [activity , setActivity] = React.useState(null);
   const [searchParams] = useSearchParams();
   const {activityID} = useParams();
@@ -45,138 +44,144 @@ const Activity = () => {
 
     if(!activity) return null;
   
-    return (
-    <Grid container spacing={2}>
-      <Grid xs={1}/>
-      <Grid xs={10} >
+  return (
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xl">
+        <CssBaseline />
+        <Box>
+          <Box
+            sx={{
+              pt: 8,
+              pb: 6,
+            }}
+          >
+            <Container maxWidth="xl">
+              <Typography
+                component="h1"
+                variant="h2"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+              {activity.name}
+              </Typography>
+            </Container>
+          </Box>
+        </Box>
+      </Container>
+
+      {/* Immagine */}
+      <Container maxWidth='lg'>
         <img
-              src={`data:image/jpeg;base64,${activity.mainPicture}`}
-              style={{borderRadius:10 + 'px', height: 100+'%' , width: 99+'%', marginTop: 3+'px'}}
-            />
-      </Grid>
-      <Grid xs={1}/>
-      {/** ROW 1 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-        <h1>{activity.name}</h1>
-      </Grid>
-      <Grid xs={1}/>
-      <Grid xs={3}>
-        <h2>Host: <i>{activity.host_name}</i></h2>
-      </Grid>
-      <Grid xs={2}/>
-
-      {/** ROW 2 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-        <span><strong>{activity.property_type}</strong></span>
-        <br></br>
-        <br></br>
-        <span>{ReactHtmlParser(activity.description)}</span>
-      </Grid>
-      
-      <Grid xs={4}  style={{ borderRadius:10+'px', boxShadow:'1px 2px 9px #8a8987'}}>
-        <ActivityStaticDatePicker    
-            disabled
-            pickedValue={startDate}
-            style = {{gridRow:"span 2"}}
+          src={`data:image/jpeg;base64,${activity.mainPicture}`}
+          style={{borderRadius:10 + 'px', height: 100+'%' , width: 99+'%', marginTop: 3+'px'}}
         />
-        {/*<ReactRoundedImage
-          image={`data:image/jpeg;base64,${activity.host_picture}`}
-          roundedColor="#fff"
-          imageWidth="150"
-          imageHeight="150"
-          roundedSize="8"
-          borderRadius="50"
-          hoverColor="#DD1144"
-          style={{Cursor:'pointer'}}
-          />
-        <DateRangePicker startDate={startDate} endDate={endDate}/>
-        */}
-      </Grid>
-      <Grid xs={1}/>
+      </Container>
 
-      {/** ROW 3 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-        <Separator />
-      </Grid>
-      <Grid xs={4}>
-        <Separator />
-      </Grid>
-      <Grid xs={2}/>
-
-      {/** ROW 4 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-            <h3>Informazioni</h3>
-      </Grid>
-      <Grid xs={4}>
-          {startDate != null && localStorage.getItem("userID") != null && guests != null ?
-              <Button variant="contained" style={{width:100+'%'}} onClick={()=> goToCheckout()}>Prenota</Button> : <></>}
-      </Grid>
-      <Grid xs={2}/>
-
-      {/** ROW 5 */}
-      <Grid xs={2}/>
-      <Grid xs={2}>
-        <span>{activity.duration} <strong>ore di puro divertimento</strong></span>
-      </Grid>
-      <Grid xs={2}>
-        <span>{activity.price} <strong>€ a persona</strong></span>
-      </Grid>
-      <Grid xs={4}>
-        <ReviewForm destinationID={activity._id} destinationType={"activity"}/>
-      </Grid>
-      <Grid xs={2}/>
-
-      {/** ROW 8 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-        <Separator />
-      </Grid>
-      <Grid xs={6}/>
+      <Container maxWidth='lg'>
+            <Typography
+              component="h2"
+              variant="h4"
+              align="left"
+              color="text.primary"
+              gutterBottom 
+              sx={{mt: 2}}         
+            >
+              Description
+            </Typography>
+            
+            <Typography
+              component="h2"
+              variant="h6"
+              align="left"
+              color="text.primary"
+            >
+              {ReactHtmlParser(activity.description)}
+            </Typography>
 
 
-      {/** ROW 4 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-            <h3>Posizione</h3>
-      </Grid>
-      <Grid xs={6}/>
+            <Typography
+                component="h3"
+                variant="h4"
+                align="right"
+                color="text.primary"
+                gutterBottom    
+              >
+                Price
+              </Typography>
 
-      {/** ROW 5 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-            <span><strong>Indirizzo:</strong></span>
-            <span>{activity.location.address}</span>
-      </Grid>
-      <Grid xs={6}/>
+              <Typography 
+                align='right'
+                component="h3"
+                variant="h5"
+                color="text.primary"
+                sx={{mb: 2}}
+              >
+                {activity.price}€
+              </Typography>
 
-      {/** ROW 6 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-            <span><strong>Città: </strong></span>
-            <span>{activity.location.city}</span>
-      </Grid>
-      <Grid xs={6}/>
+            <Typography
+              component="h3"
+              variant="h4"
+              align="right"
+              color="text.primary"
+              gutterBottom    
+            >
+              Other information
+            </Typography>
 
-      {/** ROW 7 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-            <span><strong>Nazione:</strong></span>
-            <span>{activity.location.country}</span>
-      </Grid>
-      <Grid xs={6}/>
+            <Typography align='right' sx={{mb: 2}}>
+              Host: {activity.host_name}
+              <br/>
+              Duration: {activity.duration}H
+              <br/>
+              Address: {activity.location.address}
+              <br/>
+              City: {activity.location.city}
+              <br/>
+              Country: {activity.location.country}
+            </Typography>
 
-      {/** ROW 8 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-        <Separator />
-      </Grid>
-      <Grid xs={6}/>
-          
-    </Grid>
+
+            <Box sx={{ml: 35, mb: 2}}>
+              <DateRangePicker startDate={startDate}/>
+            </Box>
+            
+
+            <Button 
+              fullWidth 
+              variant="contained"
+              sx={{mb: 2}}
+              onClick={()=> bookActivity(activity , startDate)}>
+                Book activity
+            </Button>
+
+            <ReviewForm destinationID={activity._id} destinationType={"activity"}/>
+
+            <Button 
+              fullWidth 
+              variant="contained"
+              color='error'
+              sx={{mt: 2}}
+              >
+                Delete activity
+            </Button>
+
+
+
+      </Container>
+      
+      <Box
+        component="footer"
+        sx={{
+          py: 3,
+          px: 2,
+          mt: 'auto',
+        }}
+      >
+      </Box>
+    </ThemeProvider>
+    
   );
 };
 

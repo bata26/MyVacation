@@ -5,24 +5,18 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import Config from '../utility/config';
 import ReactHtmlParser from 'react-html-parser';
-import Separator from "../components/separator";
 import DateRangePicker from "../components/datePicker";
 import api from "../api/api";
 import Button from '@mui/material/Button';
 import ReviewForm from '../components/reviewForm';
-import { useNavigate } from 'react-router-dom';
+import { Typography } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
 
 
-function srcset(image, size, rows = 1, cols = 1) {
-  return {
-    src: `${image}?w=${size * cols}&h=${size * rows}&fit=crop&auto=format`,
-    srcSet: `${image}?w=${size * cols}&h=${
-      size * rows
-    }&fit=crop&auto=format&dpr=2 2x`,
-  };
-}
-
-
+const theme = createTheme();
 
 const Accomodation = () => {
   const [accomodation , setAccomodation] = React.useState(null);
@@ -53,160 +47,170 @@ const Accomodation = () => {
 
   
   return (
-    <Grid container spacing={2}>
-      <Grid xs={2}/>
-      <Grid xs={8}>
-        {/*<ImageList sx={{ width: 50+'%', height: 99+'%' }} cols={2} rowHeight={400}> */}
-          <ImageList
-        sx={{ width: 100+'%', height: 99+'%'}}
-        variant="quilted"
-        gap={5}
-        cols={3}
-        rowHeight={200}
-      >
-        <ImageListItem key={accomodation.mainPicture} cols={2} rows={3}>
-            <img
-              src={`data:image/jpeg;base64,${accomodation.mainPicture}`}
-              style={{borderRadius:10 + 'px'}}
-            />
-        </ImageListItem>
-          {accomodation.pictures.map((item) => (
-            <ImageListItem key={item}>
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xl">
+        <CssBaseline />
+        <Box>
+          <Box
+            sx={{
+              pt: 8,
+              pb: 6,
+            }}
+          >
+            <Container maxWidth="xl">
+              <Typography
+                component="h1"
+                variant="h2"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+              {accomodation.name}
+              </Typography>
+            </Container>
+          </Box>
+        </Box>
+      </Container>
+
+      {/* Immagini */}
+      <Container maxWidth='lg'>
+        <ImageList
+          sx={{ width: 100+'%', height: 99+'%'}}
+          variant="quilted"
+          gap={5}
+          cols={3}
+          rowHeight={200}
+        >
+          <ImageListItem key={accomodation.mainPicture} cols={2} rows={3}>
               <img
-                src={`data:image/jpeg;base64,${item}`}
+                src={`data:image/jpeg;base64,${accomodation.mainPicture}`}
                 style={{borderRadius:10 + 'px'}}
               />
           </ImageListItem>
+            {accomodation.pictures.map((item) => (
+              <ImageListItem key={item}>
+                <img
+                  src={`data:image/jpeg;base64,${item}`}
+                  style={{borderRadius:10 + 'px'}}
+                />
+          </ImageListItem>
           ))}
         </ImageList>
-      </Grid>
-      <Grid xs={2}/>
-      {/** ROW 1 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-        <h1>{accomodation.name}</h1>
-      </Grid>
-      <Grid xs={1}/>
-      <Grid xs={3}>
-        <h2>Host: <i>{accomodation.host_name}</i></h2>
-      </Grid>
-      <Grid xs={2}/>
+      </Container>
 
-      {/** ROW 2 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-        <span><strong>{accomodation.property_type}</strong></span>
-        <br></br>
-        <br></br>
-        <span>{ReactHtmlParser(accomodation.description)}</span>
-      </Grid>
+      <Container maxWidth='lg'>
+        <Grid container spacing={24}>
+          <Grid item xs={6}>
+            <Typography
+              component="h2"
+              variant="h4"
+              align="left"
+              color="text.primary"
+              gutterBottom
+              sx={{mt: 2}}          
+            >
+              Description
+            </Typography>
+            
+            <Typography
+              component="h2"
+              variant="h6"
+              align="left"
+              color="text.primary"
+            >
+              {ReactHtmlParser(accomodation.description)}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6}>
+
+            <Typography
+                component="h3"
+                variant="h4"
+                align="right"
+                color="text.primary"
+                gutterBottom    
+              >
+                Price
+              </Typography>
+
+              <Typography 
+                align='right'
+                component="h3"
+                variant="h5"
+                color="text.primary"
+                sx={{mb: 2}}
+              >
+                {accomodation.price}€
+              </Typography>
+
+            <Typography
+              component="h3"
+              variant="h4"
+              align="right"
+              color="text.primary"
+              gutterBottom    
+            >
+              Other information
+            </Typography>
+
+            <Typography align='right' sx={{mb: 2}}>
+              Host: {accomodation.host_name}
+              <br/>
+              Beds: {accomodation.beds}
+              <br/>
+              Minimum nights: {accomodation.minimum_nights}
+              <br/>
+              Guests: {accomodation.accommodates}
+              <br/>
+              Bedrooms: {accomodation.bedrooms}
+              <br/>
+              Address: {accomodation.location.address}
+              <br/>
+              City: {accomodation.location.city}
+              <br/>
+              Country: {accomodation.location.country}
+            </Typography>
+
+
+            <DateRangePicker startDate={startDate} endDate={endDate}/>
+
+            <Button 
+              fullWidth 
+              variant="contained"
+              sx={{mb: 2}}
+              onClick={()=> bookAccomodation(accomodation , startDate , endDate)}>
+                Book Accomodation
+            </Button>
+
+            <ReviewForm destinationID={accomodation._id} destinationType={"accomodation"}/>
+
+            <Button 
+              fullWidth 
+              variant="contained"
+              color='error'
+              sx={{mt: 2}}
+              >
+                Delete Accomodation
+            </Button>
+
+
+          </Grid>
+
+        </Grid>
+
+      </Container>
       
-      <Grid xs={4} style={{borderRadius:10+'px', boxShadow:'1px 2px 9px #8a8987'}}>
-        {/*<ReactRoundedImage
-          image={`data:image/jpeg;base64,${accomodation.host_picture}`}
-          roundedColor="#fff"
-          imageWidth="150"
-          imageHeight="150"
-          roundedSize="8"
-          borderRadius="50"
-          hoverColor="#DD1144"
-          style={{Cursor:'pointer'}}
-          />*/}
-        <DateRangePicker startDate={startDate} endDate={endDate}/>
-      </Grid>
-      <Grid xs={1}/>
-
-      {/** ROW 3 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-        <Separator />
-      </Grid>
-      <Grid xs={4}>
-        <Separator />
-      </Grid>
-      <Grid xs={2}/>
-
-      {/** ROW 4 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-            <h3>Informazioni</h3>
-      </Grid>
-      <Grid xs={4}>
-          {startDate != null && endDate!= null && localStorage.getItem("userID") != null ?
-              <Button variant="contained" style={{width:100+'%'}} onClick={()=> {goToCheckout()}}>Prenota</Button> : <></>}
-      </Grid>
-      <Grid xs={2}/>
-
-      {/** ROW 5 */}
-      <Grid xs={2}/>
-      <Grid xs={2}>
-        <span>{accomodation.accommodates} <strong>ospiti</strong></span>
-      </Grid>
-      <Grid xs={2}>
-        <span>{accomodation.bedrooms} <strong>camere da letto</strong></span>
-      </Grid>
-      <Grid xs={4}>
-        <ReviewForm destinationID={accomodation._id} destinationType={"accomodation"}/>
-      </Grid>
-      <Grid xs={2}/>
-
-      {/** ROW 5 */}
-      <Grid xs={2}/>
-      <Grid xs={2}>
-        <span>{accomodation.beds} <strong>Letti</strong></span>
-      </Grid>
-      <Grid xs={2}>
-        <span><strong>Minimo </strong>{accomodation.minimum_nights} <strong>notti</strong></span>
-      </Grid>
-      <Grid xs={6}/>
-
-      {/** ROW 8 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-        <Separator />
-      </Grid>
-      <Grid xs={6}/>
-
-
-      {/** ROW 4 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-            <h3>Posizione</h3>
-      </Grid>
-      <Grid xs={6}/>
-
-      {/** ROW 5 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-            <span><strong>Indirizzo:</strong></span>
-            <span>{accomodation.location.address}</span>
-      </Grid>
-      <Grid xs={6}/>
-
-      {/** ROW 6 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-            <span><strong>Città: </strong></span>
-            <span>{accomodation.location.city}</span>
-      </Grid>
-      <Grid xs={6}/>
-
-      {/** ROW 7 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-            <span><strong>Nazione:</strong></span>
-            <span>{accomodation.location.country}</span>
-      </Grid>
-      <Grid xs={6}/>
-
-      {/** ROW 8 */}
-      <Grid xs={2}/>
-      <Grid xs={4}>
-        <Separator />
-      </Grid>
-      <Grid xs={6}/>
-          
-    </Grid>
+      <Box
+        component="footer"
+        sx={{
+          py: 3,
+          px: 2,
+          mt: 'auto',
+        }}
+      >
+      </Box>
+    </ThemeProvider>
   );
 };
 
