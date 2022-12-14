@@ -127,7 +127,7 @@ class AccomodationsManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
 
-        if (user["role"] != "admin"):
+        if (user['role'] != "admin"):
             raise Exception("L'utente non possiede l'accomodations")
         try:
             res = collection.delete_one({"_id" : ObjectId(accomodationID)})

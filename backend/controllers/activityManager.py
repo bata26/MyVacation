@@ -46,7 +46,7 @@ class ActivityManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
 
-        if (user["type"] != "admin"):
+        if (user['role'] != "admin"):
             raise Exception("L'utente non possiede l'activity")
         try:
             res = collection.delete_one({"_id" : ObjectId(activityID)})

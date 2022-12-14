@@ -63,12 +63,9 @@ def testValidation():
 
 
 @application.route('/activities/<activity_id>', methods=['DELETE'])
-# @required_token
-def deleteActivityByID(activity_id):
+@required_token
+def deleteActivityByID(activity_id, user={}):
     activityID = escape(activity_id)
-    user = {
-        "type": "admin"
-    }
     result = ActivityManager.deleteActivity(activityID, user)
     return "", 200
 
@@ -98,11 +95,8 @@ def getActivities():
 
 @application.route('/accomodations/<accomodation_id>', methods=['DELETE'])
 @required_token
-def deleteAccomodationById(accomodation_id):
+def deleteAccomodationById(accomodation_id, user={}):
     accomodationId = escape(accomodation_id)
-    user = {
-        "type": "admin"
-    }
     result = AccomodationsManager.deleteAccomodation(accomodationId, user)
     return "", 200
 

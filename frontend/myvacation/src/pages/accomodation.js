@@ -14,6 +14,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
+import { useNavigate } from "react-router-dom";
 
 
 const theme = createTheme();
@@ -38,6 +39,20 @@ const Accomodation = () => {
       console.log(error);
     });
   } , []);
+
+
+  //Metodo per eliminare accomodation
+  const deleteAccomodation = (accomodationID) => {
+    api.delete("/accomodations/" + accomodationID)
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    navigate('/search')
+  }
+
   
   if(!accomodation) return null;
 
@@ -190,15 +205,13 @@ const Accomodation = () => {
               variant="contained"
               color='error'
               sx={{mt: 2}}
+              onClick={() => {deleteAccomodation(accomodation._id)}}
               >
                 Delete Accomodation
             </Button>
 
-
           </Grid>
-
         </Grid>
-
       </Container>
       
       <Box

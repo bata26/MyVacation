@@ -12,9 +12,7 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import DateRangePicker from "../components/datePicker";
-
-
-
+import { useNavigate } from "react-router-dom";
 
 
 const theme = createTheme();
@@ -25,6 +23,8 @@ const Activity = () => {
   const {activityID} = useParams();
   const [startDate,setStartDate] = React.useState(searchParams.get("startDate") === "" ? null : searchParams.get("startDate"))
   const [guests,setGuests] = React.useState(searchParams.get("guests") === "" ? null : searchParams.get("guests"))
+
+  const navigate = useNavigate();
 
 
     React.useEffect( () =>{
@@ -37,6 +37,18 @@ const Activity = () => {
                 console.log(err);
             })
     } , []);
+
+  //Metodo per eliminare activity
+  const deleteActivity = (activityID) => {
+    api.delete("/activities/" + activityID)
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    navigate('/search')
+  }
 
     function goToCheckout(){
         navigate("/checkout?startDate=" + startDate + "&type=activities" + "&id=" + activity._id + "&guests=" + guests)
@@ -163,6 +175,7 @@ const Activity = () => {
               variant="contained"
               color='error'
               sx={{mt: 2}}
+              onClick={() => {deleteActivity(activity._id)}}
               >
                 Delete activity
             </Button>
