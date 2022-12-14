@@ -14,7 +14,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import api from "../api/api";
-import { useParams } from 'react-router-dom';
 import Moment from 'moment';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -23,7 +22,8 @@ const theme = createTheme();
 const Profile = () => {
 
   const [profile, setProfile] = React.useState(null);
-  const { profileID } = useParams();
+  const profileID = localStorage.getItem("userID");
+
   let [reservations, setReservations] = React.useState([]);
 
   React.useEffect(() => {
@@ -144,6 +144,7 @@ const Profile = () => {
           </Box>
         </Box>
       </Container>
+      
       <Box
         sx={{
           pt: 8,

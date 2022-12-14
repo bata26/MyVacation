@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
@@ -20,12 +19,14 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 const pages = ["signIn" , "signUp", "search"];
 
 // Pagine a tendina logo utente
-const account = ['Profile', 'Logout'];
+const account = ['Profile', 'MyAdv', 'Logout'];
 
 function ResponsiveAppBar() {
     const navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+    const role = localStorage.getItem("role");
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -45,7 +46,6 @@ function ResponsiveAppBar() {
         navigate(pagePath);
     }
 
-    // Profile -> profile.js --- Logout -> checkout.js
     const handleCloseUserMenu = (selectedSetting) => {
         console.log(selectedSetting);
 
@@ -57,6 +57,8 @@ function ResponsiveAppBar() {
         }
         else if (selectedSetting === 'Logout') {
             ChangePage('/checkout')
+        } else if (selectedSetting === 'MyAdv') {
+          ChangePage('/myadv');
         }
         setAnchorElUser(null);
     };
@@ -89,7 +91,6 @@ function ResponsiveAppBar() {
               size="large"
               aria-label="account of current user"
               aria-controls="menu-appbar"
-              aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
             >

@@ -455,6 +455,20 @@ def approveAnnouncement(announcementID):
     except Exception as e:
         return e, 500
 
+@application.route('/myadvacc/<user_id>' , methods = ['GET'])
+#@required_token
+def getAccomodationsByUserID(user_id):
+    userID = escape(user_id)
+    result = AccomodationsManager.getAccomodationsByUserID(userID)
+    return result , 200
+
+@application.route('/myadvact/<user_id>' , methods = ['GET'])
+#@required_token
+def getActivitiesByUserID(user_id):
+    userID = escape(user_id)
+    result = ActivityManager.getActivityByUserID(userID)
+    return result , 200
+
 
 if __name__ == "__main__":
 

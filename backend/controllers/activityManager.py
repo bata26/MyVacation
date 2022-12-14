@@ -47,9 +47,7 @@ class ActivityManager:
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
 
         if (user["type"] != "admin"):
-            activity = collection.find_one({"_id" : ObjectId(activityID)})
-            if(activity.host_id != user._id):
-                raise Exception("L'utente non possiede l'activity")
+            raise Exception("L'utente non possiede l'activity")
         try:
             res = collection.delete_one({"_id" : ObjectId(activityID)})
             return res
@@ -131,3 +129,33 @@ class ActivityManager:
             collection.update_one({"_id" : ObjectId(reservation.destinationID)} , {"$push" : {"reservations" : reservation.getDictForAdvertisement()}})
         except Exception as e:
             raise Exception("Impossibile aggiungere la reservation: " + str(e))
+
+
+
+    @staticmethod
+    def getActivityByUserID(userID):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        try:
+            cursor = list(collection.find({"host_id" : ObjectId(userID)}))
+            result =[]
+            for activity in cursor:
+                activity = Activity(
+                str(activity["host_id"]) ,
+                activity["host_name"] ,
+                activity["location"] ,
+                activity["description"] ,
+                activity["duration"] ,
+                activity["number_of_reviews"] ,
+                activity["review_scores_rating"],
+                activity["price"] ,
+                activity["mainPicture"],
+                activity["name"],
+                activity["reservations"] ,
+                activity["reviews"] ,
+                str(activity["_id"]))
+                result.append(Serializer.serializeActivity(activity))
+            return result
+        except Exception as e:
+            raise Exception("Impossibile ottenere prenotazioni: " + str(e))

@@ -128,9 +128,7 @@ class AccomodationsManager:
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
 
         if (user["role"] != "admin"):
-            accomodation = collection.find_one({"_id" : ObjectId(accomodationID)})
-            if(accomodation.host_id != user._id):
-                raise Exception("L'utente non possiede l'accomodations")
+            raise Exception("L'utente non possiede l'accomodations")
         try:
             res = collection.delete_one({"_id" : ObjectId(accomodationID)})
             return res
@@ -157,3 +155,38 @@ class AccomodationsManager:
             collection.update_one({"_id" : ObjectId(reservation.destinationID)} , {"$push" : {"reservations" : reservation.getDictForAdvertisement()}})
         except Exception as e:
             raise Exception("Impossibile aggiungere la reservation: " + str(e))
+
+
+
+    @staticmethod
+    def getAccomodationsByUserID(userID):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        try:
+            cursor = list(collection.find({"host_id" : ObjectId(userID)}))
+            result =[]
+            for accomodation in cursor:
+                accomodationResult = Accomodation (
+                accomodation["name"] ,
+                accomodation["description"] ,
+                str(accomodation["host_id"]),
+                accomodation["host_name"] ,
+                accomodation["mainPicture"] ,
+                accomodation["location"] ,
+                accomodation["property_type"] ,
+                accomodation["accommodates"] ,
+                accomodation["bedrooms"] ,
+                accomodation["beds"] ,
+                accomodation["price"] ,
+                accomodation["minimum_nights"] ,
+                accomodation["number_of_reviews"] ,
+                accomodation["review_scores_rating"],
+                accomodation["reservations"],
+                accomodation["reviews"],
+                str(accomodation["_id"]),
+                accomodation["pictures"])
+                result.append(Serializer.serializeAccomodation(accomodationResult))
+            return result
+        except Exception as e:
+            raise Exception("Impossibile ottenere prenotazioni: " + str(e))

@@ -18,6 +18,7 @@ import InsertAccomodation from "./pages/insertAccomodation";
 import  Accomodation from "./pages/accomodation";
 import  Activity from "./pages/activity";
 import InsertActivity from "./pages/insertActivity";
+import MyAdv from "./pages/myAdv";
 
 function App() {
   useEffect(() => {
@@ -33,9 +34,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/profile/:profileID" element={<Profile />} />
+            <Route path="/profile/" element={<Profile />} />
+            <Route path="/myadv" element={<MyAdv />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/checkout" element={<Checkout />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/accomodation/:accomodationID" element={<Accomodation />} />
             <Route path="/insert/accomodation" element={<InsertAccomodation />} />
@@ -43,7 +44,6 @@ function App() {
             <Route path="/edit/accomodation/:accomodationID" element={<InsertAccomodation />} />
             <Route path="/activity/:activityID" element={<Activity />} />
             <Route path="/admin" element={<AdminPage />} />
-            <Route path="/reports" element={<Chart />} />
         </Routes>
       </>
   );
