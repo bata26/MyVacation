@@ -4,7 +4,7 @@ class Serializer:
     @staticmethod
     def serializeActivity(activity):
         return {
-            "_id" : activity._id ,
+            "_id" : str(activity._id),
             "host_id" : str(activity.host_id),
             "host_name" : activity.host_name ,
             "location" : activity.location ,

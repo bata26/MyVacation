@@ -3,8 +3,8 @@ import base64
 class Activity:
     def __init__(self , host_id  , 
         host_name  , location , description , 
-        reservations , duration , price , 
-        number_of_reviews , reviews_score_rating , mainPicture , name , reviews, _id=""):
+        duration , price , number_of_reviews , 
+        reviews_score_rating , mainPicture , name , reservations=[],reviews=[], _id=""):
         self.host_id = host_id 
         self.host_name = host_name 
         self.location = {}

@@ -89,9 +89,9 @@ def getActivities():
     city = args.get("city")
     guests = args.get("guests")
     start_date = args.get("start_date")
-    end_date = args.get("end_date")
     index = args.get("index")
     direction = args.get("direction")
+    print("sono nella activities")
     result = ActivityManager.getFilteredActivity(
         start_date, city, guests, index, direction)
     return result, 200

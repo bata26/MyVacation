@@ -5,7 +5,7 @@ class Accomodation:
                  host_id, host_name, mainPicture,
                  location, property_type, accommodates,
                  bedrooms, beds, price, minimum_nights, number_of_reviews,
-                 review_scores_rating, reservations, reviews, _id="" , pictures=[]):
+                 review_scores_rating, reservations = [], reviews = [], _id="" , pictures=[]):
         self.name = name
         self.description = description
         self.pictures = pictures
@@ -13,7 +13,6 @@ class Accomodation:
         self.host_name = host_name
         self.mainPicture = mainPicture
         self.location = {}
-        print(location)
         self.location["address"] = location["address"]
         self.location["city"] = location["city"]
         self.location["country"] = location["country"]

@@ -64,7 +64,6 @@ class ActivityManager:
         db = client[os.getenv("DB_NAME")]
         occupiedActivitiesID = []
         result = []
-        page_size=12
 
         if(city != ""):
             query["location.city"] = city
@@ -80,37 +79,37 @@ class ActivityManager:
             )
         query["_id"] = {}
         query["_id"]["$nin"] = occupiedActivitiesID
-
+        projection = {
+            "reservations" : 0,
+            "reviews" : 0
+        }
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         if index == "":
             # When it is first page
-            activities = collection.find(query).sort('_id', 1).limit(page_size)
+            activities = list(collection.find(query , projection).sort('_id', 1).limit(int(os.getenv("PAGE_SIZE"))))
         else:
             if (direction == "next"):
                 query["_id"]["$gt"] = ObjectId(index)
-                activities = collection.find(query).sort('_id', 1).limit(page_size)
+                activities = list(collection.find(query , projection).sort('_id', 1).limit(int(os.getenv("PAGE_SIZE"))))
             elif (direction == "previous"):
                 query["_id"]["$lt"] = ObjectId(index)
-                activities = collection.find(query).sort('_id', -1).limit(page_size)
+                activities = list(collection.find(query , projection).sort('_id', -1).limit(int(os.getenv("PAGE_SIZE"))))
 
         for activity in activities:
-            activityResults = Activity(
+            activityResult = Activity(
                 str(activity["host_id"]) ,
                 activity["host_name"] ,
                 activity["location"] ,
                 activity["description"] ,
-                activity["reservations"] ,
                 activity["duration"] ,
                 activity["price"] ,
                 activity["number_of_reviews"] ,
                 activity["review_scores_rating"],
                 activity["mainPicture"],
                 activity["name"],
-                activity["reviews"],
-                str(activity["_id"]))
-            result.append(Serializer.serializeActivity(activityResults))
+                _id=str(activity["_id"]))
+            result.append(Serializer.serializeActivity(activityResult))
 
-        
         return result
     
     @staticmethod

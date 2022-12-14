@@ -49,7 +49,6 @@ class AccomodationsManager:
         db = client[os.getenv("DB_NAME")]
         occupiedAccomodationsID = []
         result = []
-        page_size = 12
 
         if(city != "" and city != None):
             query["location.city"] = city
@@ -73,18 +72,23 @@ class AccomodationsManager:
             ]})
         query["_id"] = {}
         query["_id"]["$nin"] = occupiedAccomodationsID
+        projection = {
+            "pictures" : 0,
+            "reservations": 0,
+            "reviews" : 0
+        }
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
 
         if index == "":
         # When it is first page
-            accomodations = list(collection.find(query, {"pictures" : 0}).sort('_id', 1).limit(page_size))
+            accomodations = list(collection.find(query, projection).sort('_id', 1).limit(int(os.getenv("PAGE_SIZE"))))
         else:
             if (direction == "next"):
                 query["_id"]["$gt"] = ObjectId(index)
-                accomodations = list(collection.find(query , {"pictures" : 0}).sort('_id', 1).limit(page_size))
+                accomodations = list(collection.find(query , projection).sort('_id', 1).limit(int(os.getenv("PAGE_SIZE"))))
             elif (direction == "previous"):
                 query["_id"]["$lt"] = ObjectId(index)
-                accomodations = list(collection.find(query , {"pictures" : 0}).sort('_id', -1).limit(page_size))
+                accomodations = list(collection.find(query , projection).sort('_id', -1).limit(int(os.getenv("PAGE_SIZE"))))
         for accomodation in accomodations:
             accomodationResult = Accomodation(
                 accomodation["name"] ,
@@ -101,9 +105,7 @@ class AccomodationsManager:
                 accomodation["minimum_nights"] ,
                 accomodation["number_of_reviews"] ,
                 accomodation["review_scores_rating"],
-                accomodation["reservations"],
-                accomodation["reviews"],
-                str(accomodation["_id"]))
+                _id=str(accomodation["_id"]))
             result.append(Serializer.serializeAccomodation(accomodationResult))
         return result
         

@@ -22,7 +22,6 @@ class AdminManager():
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         result = []
-        page_size = 5
 
         if(id != "" and id != None):
             query["_id"] = ObjectId(id)
@@ -35,12 +34,12 @@ class AdminManager():
 
         if index == "":
             # When it is first page
-            users = collection.find().sort('_id', 1).limit(page_size)
+            users = collection.find().sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
         else:
             if (direction == "next"):
-                users = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(page_size)
+                users = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
             elif (direction == "previous"):
-                users = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
+                users = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
 
         for user in users:
             userResult = User(
@@ -65,17 +64,16 @@ class AdminManager():
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("APPROVE_COLLECTION")]
-        page_size = 5
         result = []
 
         if index == "":
             # When it is first page
-            items = collection.find().sort('_id', 1).limit(page_size)
+            items = collection.find().sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
         else:
             if (direction == "next"):
-                items = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(page_size)
+                items = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
             elif (direction == "previous"):
-                items = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(page_size)
+                items = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
 
         for item in items:
             tempToApprove = ToApprove(
