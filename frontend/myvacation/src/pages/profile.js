@@ -168,7 +168,7 @@ const Profile = () => {
           <Table sx={{ minWidth: 650 }} size="small">
             <TableHead>
               <TableRow>
-                <TableCell align="left" style={{ fontWeight: 'bold' }}>Name</TableCell>
+                <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
                 <TableCell align="center" style={{ fontWeight: 'bold' }}>Type</TableCell>
                 <TableCell align="center" style={{ fontWeight: 'bold' }}>Start Date</TableCell>
                 <TableCell align="right" style={{ fontWeight: 'bold' }}>End Date</TableCell>
@@ -180,8 +180,8 @@ const Profile = () => {
                 <TableRow key={item._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell align="left">{item._id}</TableCell>
                   <TableCell align="center">{item.destinationType}</TableCell>
-                  <TableCell align="center">{item.startDate}</TableCell>
-                  <TableCell align="right">{item.endDate}</TableCell>
+                  <TableCell align="center">{Moment().utc(item.startDate).format('MMM DD YYYY')}</TableCell>
+                  <TableCell align="right">{Moment().utc(item.endDate).format('MMM DD YYYY')}</TableCell>
                   <TableCell align='right'>
                       <DeleteIcon color='error' style={{ cursor: "pointer" }} onClick={() => { deleteReservation(item._id) }}></DeleteIcon>
                   </TableCell>

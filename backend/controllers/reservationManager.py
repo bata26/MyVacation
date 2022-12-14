@@ -29,7 +29,7 @@ class ReservationManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
         try:
-            cursor = list(collection.find({"userID" : userID}))
+            cursor = list(collection.find({"userID" : ObjectId(userID)}))
             result =[]
             for reservation in cursor:
                 if reservation['destinationType'] == 'activity':
