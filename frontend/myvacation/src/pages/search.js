@@ -162,7 +162,6 @@ const Search = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <main>
-        {/* Hero unit */}
         <Box
           sx={{
             bgcolor: 'background.paper',
@@ -249,9 +248,8 @@ const Search = () => {
             </Button>
           </Box>
         </Container>
+
         {/* Separatore */}
-
-
         <Box
           sx={{
             bgcolor: 'background.paper',
@@ -259,9 +257,10 @@ const Search = () => {
             pb: 6,
           }}
         />
+
+
         {/* Inizio risultati ricerca */}
         <Container>
-          {/* End hero unit */}
           <Grid container spacing={4}>
             {search && search.map((item) => (
               <Grid item key={item._id} xs={12} sm={6} md={4}>
@@ -292,12 +291,54 @@ const Search = () => {
                 </Card>
               </Grid>
             ))}
-            <Grid>
-              {page !== 1 ? <Button onClick={() => { handlePreviousPage() }}>Previous</Button> : <></>}
-              {lastPage != null && !lastPage ? <Button onClick={() => { handleNextPage() }}>Next</Button> : <></>}
-              {page !== 1 ? <Button onClick={() => { handleFirstPage() }}> First</Button> : <></>}
+          </Grid>
+
+          {/* Separatore */}
+          <Box
+            sx={{
+              bgcolor: 'background.paper',
+              pt: 8,
+              pb: 6,
+            }}
+          />
+
+
+           
+          {/* Bottoni pagine */}
+          <Grid container columnSpacing={1.4}>
+            <Grid item xs={4} sm={4}>
+            {page !== 1 ? 
+              <Button 
+                type="submit" 
+                fullWidth 
+                variant="contained" 
+                sx={{ mt: 3, mb: 2 }} 
+                onClick={() => { handlePreviousPage() }}>Previous Page</Button> : <></>}
+            </Grid>
+            
+            <Grid item xs={4} sm={4}>
+              {lastPage != null && !lastPage ? 
+              <Button
+                type="submit" 
+                fullWidth 
+                variant="contained" 
+                sx={{ mt: 3, mb: 2 }} 
+                onClick={() => { handleNextPage() }}>Next Page</Button> : <></>}
+            </Grid>
+            
+            <Grid item xs={4} sm={4}>
+            {page !== 1 ? 
+              <Button
+                type="submit" 
+                fullWidth 
+                variant="contained" 
+                sx={{ mt: 3, mb: 2 }} 
+                onClick={() => { handleFirstPage() }}>First Page</Button> : <></>}
             </Grid>
           </Grid>
+            
+
+
         </Container>
         <Box
           component="footer"
