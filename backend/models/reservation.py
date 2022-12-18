@@ -1,14 +1,15 @@
 from bson.objectid import ObjectId
-class AccomodationReservation:
+class Reservation:
     def __init__(self , userID , destinationID , destinationType  , startDate , endDate , totalExpense, _id=""):
         self.userID = userID
         self.destinationID = destinationID
         self.destinationType = destinationType
         self.startDate = startDate
-        self.endDate = endDate
         self.totalExpense = totalExpense
         if not(_id == ""):
             self._id = _id
+        if not(endDate == ""):
+            self.endDate = endDate
     
     def getDictToUpload(self):
         result = {
@@ -16,19 +17,36 @@ class AccomodationReservation:
             "destinationID" : ObjectId(self.destinationID),
             "destinationType" : self.destinationType,
             "startDate" : self.startDate,
-            "endDate" : self.endDate,
             "totalExpense" : self.totalExpense
         }
         if hasattr(self , "_id"):
             result["_id"] = ObjectId(self._id)
+        if hasattr(self , "endDate"):
+            result["endDate"] = self.endDate
         
         return result
     
     def getDictForAdvertisement(self):
-        return {
+        result = {
             "userID" : ObjectId(self.userID),
             "startDate" : self.startDate,
-            "endDate" : self.endDate,
-            "totalExpense" : self.totalExpense,
-            "_id" : self._id,
+            "totalExpense" : self.totalExpense
         }
+        if hasattr(self , "_id"):
+            result["_id"] = ObjectId(self._id)
+        if hasattr(self , "endDate"):
+            result["endDate"] = self.endDate
+        return result
+
+    def getDictForUser(self):
+        result = {
+            "destinationID" : ObjectId(self.destinationID),
+            "destinationType" : self.destinationType,
+            "startDate" : self.startDate,
+            "totalExpense" : self.totalExpense
+        }
+        if hasattr(self , "_id"):
+            result["_id"] = ObjectId(self._id)
+        if hasattr(self , "endDate"):
+            result["endDate"] = self.endDate
+        return result

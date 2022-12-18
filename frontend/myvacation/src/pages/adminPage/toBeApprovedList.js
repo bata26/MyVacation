@@ -20,7 +20,8 @@ export default function ToBeApprovedList() {
     const [page, setPage] = React.useState(1);
     const [toBeApprovedList, setToBeApprovedList] = React.useState(null);
     const navigate = useNavigate();
-    const {auth} = useAuth();
+    const [lastPage, setLastPage] = React.useState(null);
+
 
     React.useEffect(() => {
         api.get("/admin/announcements?index=")
@@ -28,6 +29,8 @@ export default function ToBeApprovedList() {
                 setToBeApprovedList(response.data);
                 setLast_id(response.data[response.data.length -1]._id);
                 setFirst_id(response.data[0]._id);
+                if(response.data.length === parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE))
+                    setLastPage(false)
                 console.log(response);
                 console.log(response.data);
             })
@@ -141,7 +144,7 @@ export default function ToBeApprovedList() {
                     <TableRow>
                         <TableCell>
                             {page !== 1 ? <Button onClick={() => {handlePreviousPage()}}>Previous</Button> : <></>}
-                            {toBeApprovedList && toBeApprovedList.length === 2 ? <Button onClick={() => {handleNextPage()}}>Next</Button> : <></>}
+                            {lastPage!= null ? !lastPage && <Button onClick={() => {handleNextPage()}}>Next</Button> : <></>}
                             {page !== 1 ? <Button onClick={() => {handleFirstPage()}}> First</Button> : <></>}
                         </TableCell>
                     </TableRow>

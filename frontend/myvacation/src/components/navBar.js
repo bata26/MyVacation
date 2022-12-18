@@ -13,7 +13,6 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
 
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 
@@ -25,7 +24,6 @@ const account = ['Profile', 'Logout'];
 
 function ResponsiveAppBar() {
     const navigate = useNavigate();
-    const { auth } = useAuth();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -50,13 +48,12 @@ function ResponsiveAppBar() {
     // Profile -> profile.js --- Logout -> checkout.js
     const handleCloseUserMenu = (selectedSetting) => {
         console.log(selectedSetting);
-        console.log(auth);
 
         if (selectedSetting === 'Profile') {
-            if(auth.role === "admin")
+            if(localStorage.getItem("role") === "admin")
               ChangePage('/admin')
             else
-              ChangePage('/profile/' + auth._id)
+              ChangePage('/profile/' + localStorage.getItem("userID"))
         }
         else if (selectedSetting === 'Logout') {
             ChangePage('/checkout')
@@ -154,7 +151,7 @@ function ResponsiveAppBar() {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+            {localStorage.getItem("userID") != null ? (<Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open account">
                 {/*<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />*/}
                 <AccountCircleRoundedIcon fontSize='large' onClick={handleOpenUserMenu}/>
@@ -181,7 +178,7 @@ function ResponsiveAppBar() {
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
+          </Box>) : <></>}
         </Toolbar>
       </Container>
     </AppBar>

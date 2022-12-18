@@ -17,13 +17,13 @@ class ActivityManager:
             cursor["host_name"] ,
             cursor["location"] ,
             cursor["description"] ,
-            cursor["reservations"] ,
             cursor["duration"] ,
             cursor["price"] ,
             cursor["number_of_reviews"] ,
             cursor["review_scores_rating"],
             cursor["mainPicture"],
             cursor["name"],
+            cursor["reservations"] ,
             cursor["reviews"] ,
             str(cursor["_id"]))
         return Serializer.serializeActivity(activity)

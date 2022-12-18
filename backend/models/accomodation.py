@@ -30,10 +30,10 @@ class Accomodation:
             self._id = _id
 
     def getDictToUpload(self):
-        binaryMainPicture = self.mainPicture.encode("ascii")
+        binaryMainPicture = self.mainPicture.encode("utf-8")
         pictures = []
         for picture in self.pictures:
-            binaryPicture = picture.encode("ascii")
+            binaryPicture = picture.encode("utf-8")
             pictures.append(binaryPicture)
         return {
             "name": self.name,

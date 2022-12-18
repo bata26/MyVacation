@@ -14,9 +14,7 @@ class AdminManager():
     #   - name
     #   - surname
     @staticmethod
-    def getFilteredUsers(user , id = "" , name = "" , surname = "" , index = "", direction  = ""):
-        if (user["type"] != "admin"):
-            raise Exception("L'utente non possiede i privilegi di admin")
+    def getFilteredUsers(id = "" , name = "" , surname = "" , index = "", direction  = ""):
 
         query = {}
         client = MongoManager.getInstance()
@@ -52,7 +50,7 @@ class AdminManager():
                 user["dateOfBirth"] ,
                 user["nationality"] ,
                 user["knownLanguages"] ,
-                user["reservations"] ,
+                [] ,
                 user["registrationDate"] ,
                 str(user["_id"])
             )

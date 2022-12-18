@@ -13,11 +13,9 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import useAuth from '../hooks/useAuth';
 import api from "../api/api";
 import { useParams } from 'react-router-dom';
 import Moment from 'moment';
-import { Button, Icon } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const theme = createTheme();
@@ -27,7 +25,6 @@ const Profile = () => {
   const [profile, setProfile] = React.useState(null);
   const { profileID } = useParams();
   let [reservations, setReservations] = React.useState([]);
-  const {auth} = useAuth();
 
   React.useEffect(() => {
 
@@ -54,8 +51,8 @@ const Profile = () => {
   if (!profile) return null;
 
   //Metodo per eliminare reservation
-  const deleteReservation = (reservationID) => {
-    api.delete("/reservations/" + reservationID)
+  const deleteReservation = async (reservationID) => {
+    await api.delete("/reservations/" + reservationID)
       .then(function (response) {
         console.log(response.data);
       })
@@ -126,9 +123,8 @@ const Profile = () => {
               disabled
               id="outlined-disabled"
               label="Date of birth"
-              defaultValue={Moment().utc(profile.dateOfBirth).format('MMM DD YYYY')}
+              defaultValue={Moment(profile.dateOfBirth).utc().format('YYYY-MM-DD')}
             />
-
             <TextField
               margin="normal"
               fullWidth
@@ -148,10 +144,6 @@ const Profile = () => {
           </Box>
         </Box>
       </Container>
-
-
-
-
       <Box
         sx={{
           pt: 8,
@@ -170,8 +162,6 @@ const Profile = () => {
           </Typography>
         </Container>
       </Box>
-
-
       <Container maxWidth="md">
         <TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
           <Table sx={{ minWidth: 650 }} size="small">
@@ -187,13 +177,12 @@ const Profile = () => {
             <TableBody>
               {reservations.map((item) => (
                 <TableRow key={item._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-
                   <TableCell align="left">{item._id}</TableCell>
                   <TableCell align="center">{item.destinationType}</TableCell>
                   <TableCell align="center">{item.startDate}</TableCell>
                   <TableCell align="right">{item.endDate}</TableCell>
                   <TableCell align='right'>
-                    <DeleteIcon color='error' style={{ cursor: "pointer" }} onClick={() => { deleteReservation(item._id) }}></DeleteIcon>
+                      <DeleteIcon color='error' style={{ cursor: "pointer" }} onClick={() => { deleteReservation(item._id) }}></DeleteIcon>
                   </TableCell>
                 </TableRow>
               ))}

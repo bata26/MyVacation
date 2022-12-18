@@ -1,4 +1,6 @@
 import base64
+from bson.objectid import ObjectId
+
 
 class Activity:
     def __init__(self , host_id  , 
@@ -25,7 +27,7 @@ class Activity:
 
     def getDictToUpload(self):
         return {
-            "host_id" : self.host_id ,
+            "host_id" : ObjectId(self.host_id) ,
             "host_name" : self.host_name ,
             "location" : self.location ,
             "description" : self.description ,
@@ -34,7 +36,7 @@ class Activity:
             "price" : self.price ,
             "number_of_reviews" : self.number_of_reviews ,
             "review_scores_rating" : self.review_scores_rating,
-            "mainPicture" : self.mainPicture.encode("ascii"),
+            "mainPicture" : self.mainPicture.encode('utf-8'),
             "name" : self.name,
             "reviews": self.reviews
         }

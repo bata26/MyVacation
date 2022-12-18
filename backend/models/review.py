@@ -26,5 +26,5 @@ class Review:
             "userID" : ObjectId(self.userID),
             "score" : self.score ,
             "description" : self.description,
-            "_id" : self._id,
+            "_id" : ObjectId(self._id),
         }

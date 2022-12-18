@@ -31,9 +31,16 @@ const Search = () => {
   const [city, setCity] = React.useState(null);
   const [guests, setGuests] = React.useState(null);
   const [type, setType] = React.useState("accomodations");
+  const today = new Date();
+  const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
   const handleChange = (event) => {
     setType(event.target.value);
   };
+
+  const onChangeStartDate = (event) => {
+    setStartDate(event.target.value);
+  }
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -66,11 +73,11 @@ const Search = () => {
       });
   };
 
-  const handlePreviousPage = () => {
+  const handlePreviousPage = async () => {
     setPage(page - 1)
     const url = "?startDate=" + startDate + "&endDate=" + endDate + "&city=" + city + "&guestsNumber=" + guests + "&index=" + first_id + "&direction=previous";
     console.log(url);
-    api.get("/" + type + url)
+    await api.get("/" + type + url)
       .then(function (response) {
         setSearch(response.data);
         setLastPage(false)
@@ -87,10 +94,10 @@ const Search = () => {
       });
   };
 
-  const handleNextPage = () => {
+  const handleNextPage = async () => {
     const url = "?startDate=" + startDate + "&endDate=" + endDate + "&city=" + city + "&guestsNumber=" + guests + "&index=" + last_id + "&direction=next";
     console.log(url);
-    api.get("/" + type + url)
+    await api.get("/" + type + url)
       .then(function (response) {
         if (response && response.data.length > 0) {
           console.log("length response:", response.data.length)
@@ -114,12 +121,12 @@ const Search = () => {
       });
   };
 
-  const handleFirstPage = () => {
+  const handleFirstPage = async () => {
     setPage(1);
     const url = "?startDate=" + startDate + "&endDate=" + endDate + "&city=" + city + "&guestsNumber=" + guests + "&index=";
 
     console.log(url);
-    api.get("/" + type + url)
+    await api.get("/" + type + url)
       .then(function (response) {
         setSearch(response.data);
         setLast_id(response.data[response.data.length - 1]._id);
@@ -136,18 +143,18 @@ const Search = () => {
   };
   //Vari setter per gestione di form e url
   let setter = '';
-  let hideNumberOfPerson = true
+  let hideNumberOfPerson = false
   let hideEndDate = true
   let hideStartDate = true
 
-  if (type == 'accomodations') {
+  if (type === 'accomodations') {
     setter = 'accomodation'
     hideNumberOfPerson = false
     hideEndDate = false
     hideStartDate = false
   } else {
     setter = 'activity'
-    hideNumberOfPerson = true
+    hideNumberOfPerson = false
     hideEndDate = true
     hideStartDate = false
   }
@@ -207,17 +214,20 @@ const Search = () => {
                   name="startDate"
                   type="date"
                   disabled={hideStartDate}
+                  onChange={onChangeStartDate}
+                  InputProps={{ inputProps: { min:`${date}`, max:""} }}
                 />
               </Grid>
-              <Grid item xs={6} sm={2}>
+              {type === "accomodations" ? (<Grid item xs={6} sm={2}>
                 <TextField
                   fullWidth
                   id="endDate"
                   name="endDate"
                   type="date"
                   disabled={hideEndDate}
+                  InputProps={{ inputProps: { min:`${startDate}`, max:""}, }}
                 />
-              </Grid>
+              </Grid>) : <></>}
               <Grid item xs={4} sm={2}>
                 <TextField
                   fullWidth
@@ -277,7 +287,7 @@ const Search = () => {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button fullWidth onClick={() => { navigate("/" + setter + "/" + item._id + "?startDate=" + startDate + "&endDate=" + endDate) }}>View</Button>
+                    <Button fullWidth onClick={() => { navigate("/" + setter + "/" + item._id + "?startDate=" + startDate + "&endDate=" + endDate + "&guests=" + guests) }}>View</Button>
                   </CardActions>
                 </Card>
               </Grid>

@@ -8,8 +8,7 @@ from controllers.userManager import UserManager
 from controllers.adminManager import AdminManager
 from controllers.reservationManager import ReservationManager
 from models.accomodation import Accomodation
-from models.accomodationReservation import AccomodationReservation
-from models.activityReservation import ActivityReservation
+from models.reservation import Reservation
 from models.activity import Activity
 from models.user import User
 from flask_cors import CORS, cross_origin
@@ -23,9 +22,9 @@ from werkzeug.datastructures import ImmutableMultiDict
 import dateparser
 from datetime import datetime
 
-user = {
-    "_id": "637ce1a04ed62608566c5fa7"
-}
+#user = {
+ #   "_id": "637ce1a04ed62608566c5fa7"
+#}
 
 load_dotenv()
 application = Flask(__name__)
@@ -75,7 +74,7 @@ def deleteActivityByID(activity_id):
 
 
 @application.route('/activities/<activity_id>', methods=['GET'])
-# @required_token
+#@required_token
 def getActivityByID(activity_id):
     activityID = escape(activity_id)
     result = ActivityManager.getActivityFromID(activityID)
@@ -122,16 +121,25 @@ def getAccomodationById(accomodation_id):
 def bookAccomodation(user={}):
     requestBody = request.json
     accomodation = requestBody["accomodation"]
+    user = json.loads(request.headers.get('Authorization'))
     startDatetime = dateparser.parse(requestBody["startDate"])
     endDatetime = dateparser.parse(requestBody["endDate"])
-    nightNumber = (((endDatetime - startDatetime).days) - 1)
+    nightNumber = (((endDatetime - startDatetime).days))
     totalExpense = nightNumber*accomodation["price"]
-    reservation = AccomodationReservation(user["_id"] , accomodation["_id"] , "accomodation" , startDatetime , endDatetime , totalExpense)
-    
+    reservation = Reservation(user['_id'] , accomodation["_id"] , "accomodation" , startDatetime , endDatetime , totalExpense)
+    print(f"startDatetime : {startDatetime}")
+    print(f"endDatetime : {endDatetime}")
+    print(f"nightNumber : {nightNumber}")
+    print(f"totalExpense : {totalExpense}")
+    print(f"reservation : {reservation}")
+    print(f"userID : {user['_id']}")
+
     try:
         reservationID = ReservationManager.book(reservation)
+        print(f"reservationID : {reservationID}")
         reservation._id = reservationID
         AccomodationsManager.addReservation(reservation)
+        UserManager.addReservation(reservation)
         return "OK" , 200 
     except Exception as e:
         print("Errore: " + str(e))
@@ -143,8 +151,9 @@ def bookAccomodation(user={}):
 def bookActivity(user={}):
     requestBody = request.json
     activity = requestBody["activity"]
+    user = json.loads(request.headers.get('Authorization'))
     startDate = dateparser.parse(requestBody["startDate"])
-    reservation = ActivityReservation(user["_id"] , activity["_id"] , "accomodation" , startDate , activity["price"])
+    reservation = Reservation(user['_id'] , activity["_id"] , "activity" , startDate ,"", activity["price"])
 
     try:
         reservationID = ReservationManager.book(reservation)
@@ -286,7 +295,9 @@ def insertReview(user={}):
                     requestBody["score"],
                     requestBody["description"])
     print("nell'endpoint")
-    
+    print(f"user : {user}")
+    print(f"type : {destinationType}")
+
     try:
         insertedID = ReviewManager.insertNewReview(review)
         review._id = insertedID
@@ -336,11 +347,14 @@ def getUserById(user_id):
 @required_token
 def getIfCanReview(destination_id, user={}):
     destinationID = escape(destination_id)
-    #user = json.loads(request.headers.get('Authorization'))
-    print(user)
+    user = json.loads(request.headers.get('Authorization'))
+    args = request.args
+    destinationType = args["destinationType"]
+    print(f"sto controllando se posso recensire")
+    print(f"user dentro getIFCanReview: {user}")
     #global user
     result = {"result": False}
-    if ReviewManager.checkIfCanReview(str(destinationID), user):
+    if ReviewManager.checkIfCanReview(str(destinationID), destinationType, user):
         result = {"result": True}
     return result, 200
 
@@ -413,8 +427,7 @@ def getUsers(user):
     index = args.get("index")
     direction = args.get("direction")
     print(f"user : {user}")
-    result = UserManager.getFilteredUsers(
-        user, id, name, surname, index, direction)
+    result = AdminManager.getFilteredUsers( id, name, surname, index, direction)
     return result, 200
 
 

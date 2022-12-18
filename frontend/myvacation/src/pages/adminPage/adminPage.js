@@ -14,9 +14,6 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MainListItems from './listItems';
 import ToBeApprovedList from './toBeApprovedList';
 import UsersList from "./usersList";
-import useAuth from '../../hooks/useAuth';
-
-
 
 const drawerWidth = 240;
 
@@ -53,7 +50,6 @@ function DashboardContent() {
     const toggleDrawer = () => {
         setOpen(!open);
     };
-    const {auth} = useAuth();
 
     return (
         <ThemeProvider theme={mdTheme}>

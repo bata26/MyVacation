@@ -16,14 +16,13 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import api from '../api/api'
 import { useNavigate } from "react-router-dom";
-import useAuth from '../hooks/useAuth';
+
 
 const theme = createTheme();
 const REGISTER_URL = '/signup';
 
 const SignUp = () => {
   const [errMsg, setErrMsg] = useState('');
-  const { auth } = useAuth();
   let navigate = useNavigate();
 
   const handleSubmit = async (event) => {

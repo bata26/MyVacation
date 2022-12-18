@@ -58,3 +58,13 @@ class UserManager:
                 raise Exception("Credenziali non valide")
         except Exception:
             raise Exception("impossibile procedere con l'autenticazione")
+
+    @staticmethod
+    def addReservation(reservation):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("USERS_COLLECTION")]
+        try:
+            collection.update_one({"_id" : ObjectId(reservation.userID)} , {"$push" : {"reservations" : reservation.getDictForUser()}})
+        except Exception as e:
+            raise Exception("Impossibile aggiungere la reservation: " + str(e))

@@ -3,8 +3,7 @@ import os
 from models.accomodation import Accomodation
 from bson.objectid import ObjectId
 from utility.serializer import Serializer
-from models.accomodationReservation import AccomodationReservation
-from models.activityReservation import ActivityReservation
+from models.reservation import Reservation
 from datetime import datetime
 import dateparser
 from bson.objectid import ObjectId
@@ -34,16 +33,17 @@ class ReservationManager:
             result =[]
             for reservation in cursor:
                 if reservation['destinationType'] == 'activity':
-                    activityResult = ActivityReservation(
+                    activityResult = Reservation(
                         reservation['userID'],
                         reservation['destinationID'],
                         reservation['destinationType'],
                         reservation['startDate'],
+                        "",
                         reservation['totalExpense'],
                         reservation['_id'])
                     result.append(Serializer.serializeReservation(activityResult))
                 else:
-                    accomodationResult = AccomodationReservation(
+                    accomodationResult = Reservation(
                         reservation['userID'],
                         reservation['destinationID'],
                         reservation['destinationType'],

@@ -14,12 +14,11 @@ import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
 import TableFooter from "@mui/material/TableFooter";
 import {useNavigate} from "react-router-dom";
-import useAuth from '../../hooks/useAuth';
+import Moment from "moment";
 
 
 
 export default function UsersList() {
-    const {auth} = useAuth();
     const [last_id, setLast_id] = React.useState(null);
     const [first_id, setFirst_id] = React.useState(null);
     const [page, setPage] = React.useState(1);
@@ -30,15 +29,16 @@ export default function UsersList() {
     const [id, setId] = React.useState("");
     const [lastPage, setLastPage] = React.useState(null);
 
+
     React.useEffect(() => {
-        console.log(auth);
+        console.log(parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE));
         api.get("/users?index=")
             .then(function (response) {
                 setUserList(response.data);
                 setLast_id(response.data[response.data.length -1]._id);
                 setFirst_id(response.data[0]._id);
                 console.log(response);
-                if(response.data.length === 2)
+                if(response.data.length === parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE))
                     setLastPage(false)
             })
             .catch(function (error) {
@@ -186,18 +186,15 @@ export default function UsersList() {
             <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Id</TableCell>
                         <TableCell>Name</TableCell>
                         <TableCell>Surname</TableCell>
                         <TableCell>Date Of Birth</TableCell>
+                        <TableCell>Registration Date</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     { userList && userList.map((row) => (
                         <TableRow key={row._id} onClick={()=>{navigate("/profile/"+row._id)}} selected={true}>
-                            <TableCell component="th" scope="row">
-                                {row._id}
-                            </TableCell>
                             <TableCell component="th" scope="row">
                                 {row.name}
                             </TableCell>
@@ -205,7 +202,10 @@ export default function UsersList() {
                                 {row.surname}
                             </TableCell>
                             <TableCell style={{ width: 160 }} align="right">
-                                {row.dateOfBirth}
+                                {Moment(row.dateOfBirth).utc().format('YYYY-MM-DD')}
+                            </TableCell>
+                            <TableCell component="th" scope="row">
+                                {Moment(row.registrationDate).utc().format('YYYY-MM-DD')}
                             </TableCell>
                         </TableRow>
                     ))}

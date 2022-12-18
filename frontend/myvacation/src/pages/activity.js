@@ -1,21 +1,14 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
 import { useParams , useSearchParams } from 'react-router-dom';
 import Grid from '@mui/material/Unstable_Grid2';
-import axios from 'axios';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
 import Config from '../utility/config';
 import ReactHtmlParser from 'react-html-parser';
-import { borderRadius } from '@mui/system';
-import ReactRoundedImage from "react-rounded-image";
 import Separator from "../components/separator";
 import ActivityStaticDatePicker from "../components/staticDatePicker";
 import api from "../api/api";
 import ReviewForm from '../components/reviewForm';
 import Button from '@mui/material/Button';
-import useAuth from '../hooks/useAuth';
+import {useNavigate} from "react-router-dom";
 
 function srcset(image, size, rows = 1, cols = 1) {
   return {
@@ -27,48 +20,32 @@ function srcset(image, size, rows = 1, cols = 1) {
 }
 
 const Activity = () => {
-  const {auth} = useAuth();
+  const navigate = useNavigate();
   const [activity , setActivity] = React.useState(null);
   const [searchParams] = useSearchParams();
   const {activityID} = useParams();
-  const startDate = searchParams.get("startDate");
+  const [startDate,setStartDate] = React.useState(searchParams.get("startDate") === "" ? null : searchParams.get("startDate"))
+  const [guests,setGuests] = React.useState(searchParams.get("guests") === "" ? null : searchParams.get("guests"))
 
-  React.useEffect( () =>{
-    const url = Config.BASE_URL+"/activities/"+activityID;
-    api.get("/activities/"+activityID)
-      .then(function (response){
-        setActivity(response.data);
-      })
-      .catch(function(err){
-        console.log(err);
-      })
-  } , []);
 
-  function bookActivity(activity , startDate){
-    console.log(activity);
-    console.log(startDate);
-    
-    if(startDate === null){
-      alert("Torna indietro e inserisci le date per effettuare la prenotazione!");
-      return;
+    React.useEffect( () =>{
+        const url = Config.BASE_URL+"/activities/"+activityID;
+        api.get("/activities/"+activityID)
+            .then(function (response){
+                setActivity(response.data);
+            })
+            .catch(function(err){
+                console.log(err);
+            })
+    } , []);
+
+    function goToCheckout(){
+        navigate("/checkout?startDate=" + startDate + "&type=activities" + "&id=" + activity._id + "&guests=" + guests)
     }
-    const bodyRequest = {
-      "activity" : activity,
-      "startDate" : startDate,
-    };
-    api.post("/book/activity" , bodyRequest)
-    .then(function(response){
-      alert("prenotazione avvenuta con successo");
-    })
-    .catch(function(error){
-      console.log("error : " , error);
-      alert("Impossibile prenotare, riprova più tardi");
-    })
-  }
 
-  if(!activity) return null;
+    if(!activity) return null;
   
-  return (
+    return (
     <Grid container spacing={2}>
       <Grid xs={1}/>
       <Grid xs={10} >
@@ -135,7 +112,8 @@ const Activity = () => {
             <h3>Informazioni</h3>
       </Grid>
       <Grid xs={4}>
-        <Button variant="contained" style={{width:100+'%'}} onClick={()=> bookActivity(activity , startDate)}>Prenota</Button>
+          {startDate != null && localStorage.getItem("userID") != null && guests != null ?
+              <Button variant="contained" style={{width:100+'%'}} onClick={()=> goToCheckout()}>Prenota</Button> : <></>}
       </Grid>
       <Grid xs={2}/>
 

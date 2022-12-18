@@ -1,21 +1,17 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
 import { useParams , useSearchParams } from 'react-router-dom';
 import Grid from '@mui/material/Unstable_Grid2';
-import axios from 'axios';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import Config from '../utility/config';
 import ReactHtmlParser from 'react-html-parser';
-import { borderRadius } from '@mui/system';
-import ReactRoundedImage from "react-rounded-image";
 import Separator from "../components/separator";
 import DateRangePicker from "../components/datePicker";
 import api from "../api/api";
 import Button from '@mui/material/Button';
 import ReviewForm from '../components/reviewForm';
-import useAuth from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+
 
 function srcset(image, size, rows = 1, cols = 1) {
   return {
@@ -32,11 +28,13 @@ const Accomodation = () => {
   const [accomodation , setAccomodation] = React.useState(null);
   const [searchParams] = useSearchParams();
   const {accomodationID} = useParams();
-  const startDate = searchParams.get("startDate");
-  const endDate = searchParams.get("endDate");
-  const {auth} = useAuth();
+  const [startDate,setStartDate] = React.useState(searchParams.get("startDate") === "" ? null : searchParams.get("startDate"))
+  const [endDate,setEndDate] = React.useState(searchParams.get("endDate") === "" ? null : searchParams.get("endDate"))
+  const [guests,setGuests] = React.useState(searchParams.get("guests") === "" ? null : searchParams.get("guests"))
+  const navigate = useNavigate();
 
   React.useEffect( () =>{
+      console.log("CIAOCIAO")
     const url = Config.BASE_URL+"/accomodations/"+accomodationID;
     api.get("/accomodations/"+accomodationID)
     .then(function(response){
@@ -49,30 +47,9 @@ const Accomodation = () => {
   
   if(!accomodation) return null;
 
-  function bookAccomodation(accomodation , startDate , endDate){
-    console.log(accomodation);
-    console.log(startDate);
-    console.log(endDate);
-  
-    if(startDate === null || endDate === null){
-      alert("Torna indietro e inserisci le date per effettuare la prenotazione!");
-      return;
+    function goToCheckout(){
+        navigate("/checkout?startDate=" + startDate + "&endDate=" + endDate + "&type=accomodations" + "&id=" + accomodation._id + "&guests=" + guests)
     }
-    const bodyRequest = {
-      "destinationType" : "accomodation",
-      "accomodation" : accomodation,
-      "startDate" : startDate,
-      "endDate" : endDate,
-    };
-    api.post("/book/accomodation" , bodyRequest)
-    .then(function(response){
-      alert("prenotazione avvenuta con successo");
-    })
-    .catch(function(error){
-      console.log("error : " , error);
-      alert("Impossibile prenotare, riprova più tardi");
-    })
-  }
 
   
   return (
@@ -155,7 +132,8 @@ const Accomodation = () => {
             <h3>Informazioni</h3>
       </Grid>
       <Grid xs={4}>
-        <Button variant="contained" style={{width:100+'%'}} onClick={()=> bookAccomodation(accomodation , startDate , endDate)}>Prenota</Button>
+          {startDate != null && endDate!= null && localStorage.getItem("userID") != null ?
+              <Button variant="contained" style={{width:100+'%'}} onClick={()=> {goToCheckout()}}>Prenota</Button> : <></>}
       </Grid>
       <Grid xs={2}/>
 

@@ -12,7 +12,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import useAuth from "../hooks/useAuth"
 import api from "../api/api"
 import {useState} from "react";
 import {useNavigate, useLocation } from 'react-router-dom';
@@ -21,7 +20,6 @@ const theme = createTheme();
 const LOGIN_URL = "/login";
 
 const SignIn = () => {
-  const { setAuth } = useAuth();
   const [errMsg, setErrMsg] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,7 +50,6 @@ const SignIn = () => {
       //const accessToken = response?.data?.accessToken;
       const role = response.data.role;
       const _id = response.data.userID;
-      setAuth({ _id, role});
       localStorage.setItem("userID" , response.data.userID);
       localStorage.setItem("role" , response.data.role);
       navigate(from, { replace: true });

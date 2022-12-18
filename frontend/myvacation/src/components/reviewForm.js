@@ -5,10 +5,8 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Rating from '@mui/material/Rating';
 import TextField from '@mui/material/TextField';
-import { alignProperty } from '@mui/material/styles/cssUtils';
 import api from "../api/api";
-import { getAuthorizationHeader } from '../utility/api';
-import useAuth from '../hooks/useAuth';
+
 
 //export default function HalfRating() {
 //  return (
@@ -36,16 +34,18 @@ const style = {
 
 const ReviewForm = ({destinationID , destinationType}) => {
   const [open, setOpen] = React.useState(false);
-  const {auth} = useAuth();
-  console.log(auth);
+
   const handleOpen = async () => {
-    console.log("aspett");
-    await api.get("/review/check/"+destinationID)
-    .then(function(response){
+    console.log("Aspetta");
+    console.log("DestinationType",destinationType)
+
+    await api.get("/review/check/"+destinationID+"?destinationType="+destinationType).then(function(response){
       if(response.data.result === true){
         setOpen(true);
       }else{
-        alert("E' possibile recensire solo un annuncio che si è prenotato");
+        alert("Impossibile inserire una nuova recensione: " +
+            "è possibile recensire solo annuncio che si è prenotato; " +
+            "è possibile recensire un annuncio solo una volta");
       }
     })
     .catch(function(error){
@@ -53,6 +53,7 @@ const ReviewForm = ({destinationID , destinationType}) => {
         return false;
     });
   }
+
   const handleClose = () => setOpen(false);
 
   const handleSubmit = (event) => {
@@ -73,13 +74,13 @@ const ReviewForm = ({destinationID , destinationType}) => {
       setOpen(false);
     })  
     .catch(function(error){
-      alert("impossibile inserire la recensione, riprova più tardi");
+      alert("Impossibile inserire la recensione, riprova più tardi");
     })
   }
 
   return (
     <div>
-      <Button variant="outlined" style={{width:100+'%'}} onClick={handleOpen}>Lascia una recensione</Button>
+      {localStorage.getItem("userID") != null ? <Button variant="outlined" style={{width:100+'%'}} onClick={handleOpen}>Lascia una recensione</Button> : <></>}
       <Modal
         open={open}
         onClose={handleClose}

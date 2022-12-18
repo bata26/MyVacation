@@ -53,16 +53,23 @@ class ReviewManager:
             raise Exception("Impossibile eliminare")
     
     @staticmethod
-    def checkIfCanReview(destinationID , user):
+    def checkIfCanReview(destinationID , destinationType, user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("RESERVATIONS_COLLECTION")]
-        query = {"destinationID" : ObjectId(destinationID) , "userID" : ObjectId(user["_id"])}
-        print(query)
+        if(destinationType == "accomodation"):
+            collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        if(destinationType == "activity"):
+            collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        queryReservations = {"reservations.userID" : ObjectId(user["_id"]) , "_id" : ObjectId(destinationID)}
+        queryReviews = {"reviews.userID" : ObjectId(user["_id"]) , "_id" : ObjectId(destinationID)}
+        print(queryReviews)
+        print(queryReservations)
         try:
-            totalReservations = collection.count_documents(query)
+            totalReservations = collection.count_documents(queryReservations)
+            totalReviews = collection.count_documents(queryReviews)
             print(f"totalReservations: {totalReservations}")
-            if totalReservations > 0:
+            print(f"totalReviews: {totalReviews}")
+            if totalReservations > 0 and totalReviews == 0:
                 return True
             return False
         except Exception:
