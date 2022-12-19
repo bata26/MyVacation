@@ -45,7 +45,8 @@ export default function Checkout() {
                     setTotalExpense(response.data.price * diffDuration.days())
                 }
                 else if(type === "activities")
-                    setTotalExpense(response.data.price * guests)
+                //setTotalExpense(response.data.price * guests)
+                    setTotalExpense(response.data.price)
             })
             .catch(function(error){
                 console.log(error);
@@ -70,7 +71,7 @@ export default function Checkout() {
                 .catch(function (error) {
                     console.log("error : ", error);
                     alert("Impossibile prenotare, riprova più tardi");
-                })
+                });
         }
         else if(type === "activities") {
             console.log(reservation);

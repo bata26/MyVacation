@@ -202,10 +202,10 @@ export default function UsersList() {
                                 {row.surname}
                             </TableCell>
                             <TableCell style={{ width: 160 }} align="right">
-                                {Moment(row.dateOfBirth).utc().format('YYYY-MM-DD')}
+                                {Moment(row.dateOfBirth).utc().format('MMM DD YYYY')}
                             </TableCell>
                             <TableCell component="th" scope="row">
-                                {Moment(row.registrationDate).utc().format('YYYY-MM-DD')}
+                                {Moment(row.registrationDate).utc().format('MMM DD YYYY')}
                             </TableCell>
                         </TableRow>
                     ))}

@@ -332,8 +332,8 @@ def deleteUserById(user_id):
 
 
 @application.route('/users/<user_id>', methods=['GET'])
-# @required_token
-def getUserById(user_id):
+@required_token
+def getUserById(user_id , user={}):
     userId = escape(user_id)
     result = UserManager.getUserFromId(userId)
     return result, 200
@@ -382,14 +382,6 @@ def signUp():
     dateOfBirth = request.json["dateOfBirth"]
     nationality = request.json["nationality"]
     knownLanguages = request.json["knownLanguages"]
-    print(f"username : {username}")
-    print(f"password : {password}")
-    print(f"name : {name}")
-    print(f"surname : {surname}")
-    print(f"gender : {gender}")
-    print(f"dateOfBirth : {dateOfBirth}")
-    print(f"nationality : {nationality}")
-    print(f"knownLanguages : {knownLanguages}")
 
     user = User(
         username,
@@ -403,11 +395,9 @@ def signUp():
         knownLanguages,
         [],
         datetime.today().replace(microsecond=0, second=0, hour=0, minute=0)
-        )
-    print("nell'endpoint")
+        )    
     try:
         insertedID = UserManager.insertNewUser(user)
-        print(f"inserito id : {insertedID}")
         return "", 200
     except Exception as e:
         return str(e), 500

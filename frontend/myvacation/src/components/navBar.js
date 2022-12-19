@@ -16,52 +16,54 @@ import { useNavigate } from "react-router-dom";
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 
 //Pagine navBar
-const pages = ["signIn" , "signUp", "search"];
+const pages = ["signIn", "signUp", "search"];
 
 // Pagine a tendina logo utente
 const account = ['Profile', 'MyAdv', 'Logout'];
 
 function ResponsiveAppBar() {
-    const navigate = useNavigate();
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-    const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role");
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
 
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
 
-    const ChangePage = (pagePath) =>{
-        console.log("sono dentro -> path : " , pagePath);
-        pagePath = (pagePath === "/home") ? "/" : pagePath;
-        navigate(pagePath);
+  const ChangePage = (pagePath) => {
+    console.log("sono dentro -> path : ", pagePath);
+    pagePath = (pagePath === "/home") ? "/" : pagePath;
+    navigate(pagePath);
+  }
+
+  const handleCloseUserMenu = (selectedSetting) => {
+    console.log(selectedSetting);
+
+    if (selectedSetting === 'Profile') {
+      if (localStorage.getItem("role") === "admin")
+        ChangePage('/admin')
+      else
+        ChangePage('/profile')
     }
-
-    const handleCloseUserMenu = (selectedSetting) => {
-        console.log(selectedSetting);
-
-        if (selectedSetting === 'Profile') {
-            if(localStorage.getItem("role") === "admin")
-              ChangePage('/admin')
-            else
-              ChangePage('/profile/' + localStorage.getItem("userID"))
-        }
-        else if (selectedSetting === 'Logout') {
-            ChangePage('/checkout')
-        } else if (selectedSetting === 'MyAdv') {
-          ChangePage('/myadv');
-        }
-        setAnchorElUser(null);
-    };
+    else if (selectedSetting === 'Logout') {
+      localStorage.setItem("userID" , null);
+      localStorage.setItem("role" , null);
+      ChangePage('/');
+    } else if (selectedSetting === 'MyAdv') {
+      ChangePage('/myadv');
+    }
+    setAnchorElUser(null);
+  };
 
   return (
     <AppBar position="static">
@@ -152,10 +154,10 @@ function ResponsiveAppBar() {
             ))}
           </Box>
 
-            {localStorage.getItem("userID") != null ? (<Box sx={{ flexGrow: 0 }}>
+          {localStorage.getItem("userID") != null ? (<Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open account">
-                {/*<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />*/}
-                <AccountCircleRoundedIcon fontSize='large' onClick={handleOpenUserMenu}/>
+              {/*<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />*/}
+              <AccountCircleRoundedIcon fontSize='large' onClick={handleOpenUserMenu} />
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}

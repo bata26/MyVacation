@@ -16,18 +16,15 @@ import Container from '@mui/material/Container';
 import api from "../api/api";
 import Moment from 'moment';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useParams } from 'react-router-dom';
 
 const theme = createTheme();
 
 const Profile = () => {
-
   const [profile, setProfile] = React.useState(null);
-  const profileID = localStorage.getItem("userID");
-
   let [reservations, setReservations] = React.useState([]);
-
+  const profileID = localStorage.getItem("userID");
   React.useEffect(() => {
-
     //Richiesta per recuperare le informazioni dell'utente
     api.get("/users/" + profileID)
       .then(function (response) {
@@ -123,7 +120,7 @@ const Profile = () => {
               disabled
               id="outlined-disabled"
               label="Date of birth"
-              defaultValue={Moment(profile.dateOfBirth).utc().format('YYYY-MM-DD')}
+              defaultValue={Moment(profile.dateOfBirth).utc().format('MMM DD YYYY')}
             />
             <TextField
               margin="normal"
@@ -144,7 +141,7 @@ const Profile = () => {
           </Box>
         </Box>
       </Container>
-      
+
       <Box
         sx={{
           pt: 8,
@@ -171,7 +168,7 @@ const Profile = () => {
                 <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
                 <TableCell align="center" style={{ fontWeight: 'bold' }}>Type</TableCell>
                 <TableCell align="center" style={{ fontWeight: 'bold' }}>Start Date</TableCell>
-                <TableCell align="right" style={{ fontWeight: 'bold' }}>End Date</TableCell>
+                <TableCell align="center" style={{ fontWeight: 'bold' }}>End Date</TableCell>
                 <TableCell align="right" style={{ fontWeight: 'bold' }}></TableCell>
               </TableRow>
             </TableHead>
@@ -180,10 +177,14 @@ const Profile = () => {
                 <TableRow key={item._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell align="left">{item._id}</TableCell>
                   <TableCell align="center">{item.destinationType}</TableCell>
-                  <TableCell align="center">{Moment().utc(item.startDate).format('MMM DD YYYY')}</TableCell>
-                  <TableCell align="right">{Moment().utc(item.endDate).format('MMM DD YYYY')}</TableCell>
+                  <TableCell align="center">{Moment(item.startDate).utc().format('MMM DD YYYY')}</TableCell>
+                  { item.endDate  ? 
+                    <TableCell align="center">{Moment(item.endDate).utc().format('MMM DD YYYY')}</TableCell>
+                  : 
+                    <TableCell align="center"></TableCell>
+                  }
                   <TableCell align='right'>
-                      <DeleteIcon color='error' style={{ cursor: "pointer" }} onClick={() => { deleteReservation(item._id) }}></DeleteIcon>
+                    <DeleteIcon color='error' style={{ cursor: "pointer" }} onClick={() => { deleteReservation(item._id) }}></DeleteIcon>
                   </TableCell>
                 </TableRow>
               ))}

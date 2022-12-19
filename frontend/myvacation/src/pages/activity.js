@@ -159,14 +159,14 @@ const Activity = () => {
               <DateRangePicker startDate={startDate}/>
             </Box>
             
-
-            <Button 
-              fullWidth 
-              variant="contained"
-              sx={{mb: 2}}
-              onClick={()=> bookActivity(activity , startDate)}>
-                Book activity
-            </Button>
+            {startDate != null && localStorage.getItem("userID") != null && guests != null ?
+              <Button 
+                fullWidth 
+                variant="contained"
+                sx={{mb: 2}}
+                onClick={()=> goToCheckout()}>
+                  Book activity
+              </Button>:<></>}
 
             <ReviewForm destinationID={activity._id} destinationType={"activity"}/>
 

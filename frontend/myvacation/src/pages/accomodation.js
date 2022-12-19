@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { useParams , useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import Grid from '@mui/material/Unstable_Grid2';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-import Config from '../utility/config';
 import ReactHtmlParser from 'react-html-parser';
 import DateRangePicker from "../components/datePicker";
 import api from "../api/api";
@@ -20,25 +19,23 @@ import { useNavigate } from "react-router-dom";
 const theme = createTheme();
 
 const Accomodation = () => {
-  const [accomodation , setAccomodation] = React.useState(null);
+  const [accomodation, setAccomodation] = React.useState(null);
   const [searchParams] = useSearchParams();
-  const {accomodationID} = useParams();
-  const [startDate,setStartDate] = React.useState(searchParams.get("startDate") === "" ? null : searchParams.get("startDate"))
-  const [endDate,setEndDate] = React.useState(searchParams.get("endDate") === "" ? null : searchParams.get("endDate"))
-  const [guests,setGuests] = React.useState(searchParams.get("guests") === "" ? null : searchParams.get("guests"))
+  const { accomodationID } = useParams();
+  const [startDate, setStartDate] = React.useState(searchParams.get("startDate") === "" ? null : searchParams.get("startDate"))
+  const [endDate, setEndDate] = React.useState(searchParams.get("endDate") === "" ? null : searchParams.get("endDate"))
+  const [guests, setGuests] = React.useState(searchParams.get("guests") === "" ? null : searchParams.get("guests"))
   const navigate = useNavigate();
 
-  React.useEffect( () =>{
-      console.log("CIAOCIAO")
-    const url = Config.BASE_URL+"/accomodations/"+accomodationID;
-    api.get("/accomodations/"+accomodationID)
-    .then(function(response){
-      setAccomodation(response.data);
-    })
-    .catch(function(error){
-      console.log(error);
-    });
-  } , []);
+  React.useEffect(() => {
+    api.get("/accomodations/" + accomodationID)
+      .then(function (response) {
+        setAccomodation(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
 
 
   //Metodo per eliminare accomodation
@@ -53,14 +50,14 @@ const Accomodation = () => {
     navigate('/search')
   }
 
-  
-  if(!accomodation) return null;
 
-    function goToCheckout(){
-        navigate("/checkout?startDate=" + startDate + "&endDate=" + endDate + "&type=accomodations" + "&id=" + accomodation._id + "&guests=" + guests)
-    }
+  if (!accomodation) return null;
 
-  
+  function goToCheckout() {
+    navigate("/checkout?startDate=" + startDate + "&endDate=" + endDate + "&type=accomodations" + "&id=" + accomodation._id + "&guests=" + guests)
+  }
+
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xl">
@@ -80,7 +77,7 @@ const Accomodation = () => {
                 color="text.primary"
                 gutterBottom
               >
-              {accomodation.name}
+                {accomodation.name}
               </Typography>
             </Container>
           </Box>
@@ -90,25 +87,25 @@ const Accomodation = () => {
       {/* Immagini */}
       <Container maxWidth='lg'>
         <ImageList
-          sx={{ width: 100+'%', height: 99+'%'}}
+          sx={{ width: 100 + '%', height: 99 + '%' }}
           variant="quilted"
           gap={5}
           cols={3}
           rowHeight={200}
         >
           <ImageListItem key={accomodation.mainPicture} cols={2} rows={3}>
+            <img
+              src={`data:image/jpeg;base64,${accomodation.mainPicture}`}
+              style={{ borderRadius: 10 + 'px' }}
+            />
+          </ImageListItem>
+          {accomodation.pictures.map((item) => (
+            <ImageListItem key={item}>
               <img
-                src={`data:image/jpeg;base64,${accomodation.mainPicture}`}
-                style={{borderRadius:10 + 'px'}}
+                src={`data:image/jpeg;base64,${item}`}
+                style={{ borderRadius: 10 + 'px' }}
               />
-          </ImageListItem>
-            {accomodation.pictures.map((item) => (
-              <ImageListItem key={item}>
-                <img
-                  src={`data:image/jpeg;base64,${item}`}
-                  style={{borderRadius:10 + 'px'}}
-                />
-          </ImageListItem>
+            </ImageListItem>
           ))}
         </ImageList>
       </Container>
@@ -122,11 +119,11 @@ const Accomodation = () => {
               align="left"
               color="text.primary"
               gutterBottom
-              sx={{mt: 2}}          
+              sx={{ mt: 2 }}
             >
               Description
             </Typography>
-            
+
             <Typography
               component="h2"
               variant="h6"
@@ -140,80 +137,80 @@ const Accomodation = () => {
           <Grid item xs={6}>
 
             <Typography
-                component="h3"
-                variant="h4"
-                align="right"
-                color="text.primary"
-                gutterBottom    
-              >
-                Price
-              </Typography>
+              component="h3"
+              variant="h4"
+              align="right"
+              color="text.primary"
+              gutterBottom
+            >
+              Price
+            </Typography>
 
-              <Typography 
-                align='right'
-                component="h3"
-                variant="h5"
-                color="text.primary"
-                sx={{mb: 2}}
-              >
-                {accomodation.price}€
-              </Typography>
+            <Typography
+              align='right'
+              component="h3"
+              variant="h5"
+              color="text.primary"
+              sx={{ mb: 2 }}
+            >
+              {accomodation.price}€
+            </Typography>
 
             <Typography
               component="h3"
               variant="h4"
               align="right"
               color="text.primary"
-              gutterBottom    
+              gutterBottom
             >
               Other information
             </Typography>
 
-            <Typography align='right' sx={{mb: 2}}>
+            <Typography align='right' sx={{ mb: 2 }}>
               Host: {accomodation.host_name}
-              <br/>
+              <br />
               Beds: {accomodation.beds}
-              <br/>
+              <br />
               Minimum nights: {accomodation.minimum_nights}
-              <br/>
+              <br />
               Guests: {accomodation.accommodates}
-              <br/>
+              <br />
               Bedrooms: {accomodation.bedrooms}
-              <br/>
+              <br />
               Address: {accomodation.location.address}
-              <br/>
+              <br />
               City: {accomodation.location.city}
-              <br/>
+              <br />
               Country: {accomodation.location.country}
             </Typography>
 
 
-            <DateRangePicker startDate={startDate} endDate={endDate}/>
-
-            <Button 
-              fullWidth 
+            <DateRangePicker startDate={startDate} endDate={endDate} />
+            {startDate != null && endDate!= null && localStorage.getItem("userID") != null ?
+            <Button
+              fullWidth
               variant="contained"
-              sx={{mb: 2}}
-              onClick={()=> bookAccomodation(accomodation , startDate , endDate)}>
-                Book Accomodation
-            </Button>
+              sx={{ mb: 2 }}
+              onClick={() => goToCheckout()}>
+              Book Accomodation
+            </Button>:<></>}
 
-            <ReviewForm destinationID={accomodation._id} destinationType={"accomodation"}/>
+            <ReviewForm destinationID={accomodation._id} destinationType={"accomodation"} />
 
-            <Button 
-              fullWidth 
+            <Button
+              fullWidth
               variant="contained"
               color='error'
-              sx={{mt: 2}}
-              onClick={() => {deleteAccomodation(accomodation._id)}}
-              >
-                Delete Accomodation
+              sx={{ mt: 2 }}
+              onClick={() => { deleteAccomodation(accomodation._id) }}
+            >
+              Delete Accomodation
             </Button>
 
           </Grid>
         </Grid>
       </Container>
-      
+
       <Box
         component="footer"
         sx={{
