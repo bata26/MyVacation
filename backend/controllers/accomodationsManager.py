@@ -127,13 +127,39 @@ class AccomodationsManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
 
+        cursor = dict(collection.find_one({"_id" : ObjectId(accomodationID)}))
+        accomodation = Accomodation(
+            cursor["name"] ,
+            cursor["description"] ,
+            str(cursor["host_id"]),
+            cursor["host_name"] ,
+            cursor["mainPicture"] ,
+            cursor["location"] ,
+            cursor["property_type"] ,
+            cursor["accommodates"] ,
+            cursor["bedrooms"] ,
+            cursor["beds"] ,
+            cursor["price"] ,
+            cursor["minimum_nights"] ,
+            cursor["number_of_reviews"] ,
+            cursor["review_scores_rating"],
+            cursor["reservations"],
+            cursor["reviews"],
+            str(cursor["_id"]),
+            cursor["pictures"])
+        Serializer.serializeAccomodation(accomodation)
+
+
         if (user['role'] != "admin"):
             raise Exception("L'utente non possiede l'accomodations")
-        try:
-            res = collection.delete_one({"_id" : ObjectId(accomodationID)})
-            return res
-        except Exception:
-            raise Exception("Impossibile inserire")
+        if (accomodation.host_id != user['_id']):
+            raise Exception("L'utente non possiede l'accomodations")
+        else:
+            try:
+                res = collection.delete_one({"_id" : ObjectId(accomodationID)})
+                return res
+            except Exception:
+                raise Exception("Impossibile inserire")
 
     @staticmethod
     def addReview(review):

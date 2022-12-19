@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useParams , useSearchParams } from 'react-router-dom';
-import Grid from '@mui/material/Unstable_Grid2';
 import Config from '../utility/config';
 import ReactHtmlParser from 'react-html-parser';
 import api from "../api/api";
@@ -13,6 +12,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import DateRangePicker from "../components/datePicker";
 import { useNavigate } from "react-router-dom";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 
 const theme = createTheme();
@@ -180,8 +181,53 @@ const Activity = () => {
                 Delete activity
             </Button>
 
+      </Container>
 
+      <Box
+        sx={{
+          py: 3,
+          px: 2,
+          mt: 'auto',
+        }}
+      >
+      </Box>
 
+      <Container maxWidth='lg'>
+
+        <Typography
+          component="h2"
+          variant="h4"
+          align="center"
+          color="text.primary"
+          gutterBottom
+          sx={{ mt: 2 }}
+        >
+          Reviews
+        </Typography>
+
+        {activity.reviews.map((item) => (
+        <Card key={item._id} sx={{ maxHeight: 100 , marginTop: 2}}>
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+              {item.reviewer} - {item.score}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {item.description}
+            </Typography>
+          </CardContent>
+        </Card>
+        ))}
+
+        <Container maxWidth='sm'>
+          <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 2 }}
+              >
+                More reviews
+              </Button>
+
+        </Container>
       </Container>
       
       <Box
