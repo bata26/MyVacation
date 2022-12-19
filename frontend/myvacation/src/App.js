@@ -13,7 +13,6 @@ import Home from "./pages/home/home"
 import Checkout from "./pages/checkout/checkout"
 import Search from "./pages/search"
 import AdminPage from "./pages/adminPage/adminPage";
-import Chart from "./pages/adminPage/chart";
 import InsertAccomodation from "./pages/insertAccomodation";
 import  Accomodation from "./pages/accomodation";
 import  Activity from "./pages/activity";

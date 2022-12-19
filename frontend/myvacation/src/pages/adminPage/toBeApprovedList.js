@@ -27,12 +27,12 @@ export default function ToBeApprovedList() {
         api.get("/admin/announcements?index=")
             .then(function (response) {
                 setToBeApprovedList(response.data);
-                setLast_id(response.data[response.data.length -1]._id);
-                setFirst_id(response.data[0]._id);
+                if(response.data.length !== 0){
+                    setLast_id(response.data[response.data.length -1]._id);
+                    setFirst_id(response.data[0]._id);
                 if(response.data.length === parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE))
                     setLastPage(false)
-                console.log(response);
-                console.log(response.data);
+                }
             })
             .catch(function (error) {
                 console.log(error);

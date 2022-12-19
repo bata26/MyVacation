@@ -31,9 +31,9 @@ export default function UsersList() {
 
 
     React.useEffect(() => {
-        console.log(parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE));
         api.get("/users?index=")
             .then(function (response) {
+                console.log(response.data);
                 setUserList(response.data);
                 setLast_id(response.data[response.data.length -1]._id);
                 setFirst_id(response.data[0]._id);

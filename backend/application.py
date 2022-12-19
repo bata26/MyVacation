@@ -1,3 +1,4 @@
+from controllers.analyticsManager import AnalyticsManager
 from controllers.accomodationsManager import AccomodationsManager
 from flask import Flask, abort, request, jsonify, Response
 from dotenv import load_dotenv
@@ -57,8 +58,9 @@ def required_token(f):
 
 
 @application.route("/test", methods=["GET"])
-@required_token
+#@required_token
 def testValidation():
+    AnalyticsManager.getUsersForMonth()
     return "OK", 200
 
 

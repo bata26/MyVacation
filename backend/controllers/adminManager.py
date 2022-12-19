@@ -14,7 +14,9 @@ class AdminManager():
     #   - name
     #   - surname
     @staticmethod
-    def getFilteredUsers(id = "" , name = "" , surname = "" , index = "", direction  = ""):
+    def getFilteredUsers(user , id = "" , name = "" , surname = "" , index = "", direction  = ""):
+        if (user["role"] != "admin"):
+            raise Exception("L'utente non possiede i privilegi di admin")
 
         query = {}
         client = MongoManager.getInstance()
