@@ -46,13 +46,33 @@ class ActivityManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
 
+        cursor = dict(collection.find_one({"_id" : ObjectId(activityID)}))
+        activity = Activity(
+            str(cursor["host_id"]) ,
+            cursor["host_name"] ,
+            cursor["location"] ,
+            cursor["description"] ,
+            cursor["duration"] ,
+            cursor["price"] ,
+            cursor["number_of_reviews"] ,
+            cursor["review_scores_rating"],
+            cursor["mainPicture"],
+            cursor["name"],
+            cursor["reservations"] ,
+            cursor["reviews"] ,
+            str(cursor["_id"]))
+        Serializer.serializeActivity(activity)
+
         if (user['role'] != "admin"):
             raise Exception("L'utente non possiede l'activity")
-        try:
-            res = collection.delete_one({"_id" : ObjectId(activityID)})
-            return res
-        except Exception:
-            raise Exception("Impossibile inserire")
+        if (activity.host_id != user['_id']):
+            raise Exception("L'utente non possiede l'activity")
+        else:
+            try:
+                res = collection.delete_one({"_id" : ObjectId(activityID)})
+                return res
+            except Exception:
+                raise Exception("Impossibile inserire")
 
 
     @staticmethod

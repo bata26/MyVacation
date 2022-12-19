@@ -14,6 +14,8 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import { useNavigate } from "react-router-dom";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 
 const theme = createTheme();
@@ -209,6 +211,56 @@ const Accomodation = () => {
 
           </Grid>
         </Grid>
+      </Container>
+
+      <Box
+        sx={{
+          py: 3,
+          px: 2,
+          mt: 'auto',
+        }}
+      >
+      </Box>
+
+      <Container maxWidth='lg'>
+
+        <Typography
+          component="h2"
+          variant="h4"
+          align="center"
+          color="text.primary"
+          gutterBottom
+          sx={{ mt: 2 }}
+        >
+          Reviews
+        </Typography>
+
+        {accomodation.reviews.map((item) => (
+        <Card key={item._id} sx={{ maxHeight: 100 , marginTop: 2}}>
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+              {item.reviewer} - {item.score}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {item.description}
+            </Typography>
+          </CardContent>
+        </Card>
+        ))}
+
+
+        <Container maxWidth='sm'>
+          <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 2 }}
+              >
+                More reviews
+              </Button>
+
+        </Container>
+
+
       </Container>
 
       <Box
