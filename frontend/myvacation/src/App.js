@@ -10,7 +10,7 @@ import {useEffect} from 'react';
 import SignUp from "./pages/signUp";
 import Profile from "./pages/profile";
 import Home from "./pages/home/home"
-import Checkout from "./pages/checkout/checkout"
+import Checkout from "./pages/checkout"
 import Search from "./pages/search"
 import AdminPage from "./pages/adminPage/adminPage";
 import InsertAccomodation from "./pages/insertAccomodation";
