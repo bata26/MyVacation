@@ -131,7 +131,7 @@ export default function Checkout() {
             {reserved && (
             <Container maxWidth="sm">
                 <Card>
-                    <CardActionArea onClick={() => {navigate("/" + setter + "/" + reservedId)}}>
+                    <CardActionArea onClick={() => {navigate("/" + setter + "/" + reservedId + "?startDate=" + startDate + "&endDate=" + endDate + "&guests=" + guests)}}>
                         <CardMedia
                             component="img"
                             height="140"
