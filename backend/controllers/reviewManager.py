@@ -18,7 +18,8 @@ class ReviewManager:
             cursor["destinationID"] ,
             cursor["host_name"] ,
             cursor["score"] ,
-            cursor["comment"])
+            cursor["comment"] ,
+            cursor['reviewer'])
         return Serializer.serializeReview(review)
 
 

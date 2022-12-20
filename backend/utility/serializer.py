@@ -18,6 +18,7 @@ class Serializer:
                 "userID" : str(review['userID']),
                 "score" : review['score'],
                 "description" : review['description'],
+                "reviewer" : review['reviewer'],
                 "_id" : str(review['_id'])
             })
         return {
@@ -58,6 +59,7 @@ class Serializer:
                 "userID" : str(review['userID']),
                 "score" : review['score'],
                 "description" : review['description'],
+                "reviewer" : review['reviewer'],
                 "_id" : str(review['_id'])
             })
         return {
@@ -90,7 +92,8 @@ class Serializer:
             "destinationID" : str(review['destinationID']),
             "host_name" : review.host_name ,
             "score" : review.score ,
-            "comment" : review.comment 
+            "comment" : review.comment ,
+            "reviewer" : review.reviewer
         }
 
 

@@ -1,10 +1,11 @@
 from bson.objectid import ObjectId
 class Review:
-    def __init__(self , userID , destinationID , score , description, _id = ""):
+    def __init__(self , userID , destinationID , score , description, reviewer, _id = ""):
         self.userID = userID 
         self.destinationID = destinationID 
         self.score = score
         self.description = description
+        self.reviewer = reviewer
         if(_id != ""):
             self._id = _id
 
@@ -14,6 +15,8 @@ class Review:
             "destinationID" : ObjectId(self.destinationID),
             "score" : self.score ,
             "description" : self.description,
+            "reviewer" : self.reviewer
+
         }
 
         if hasattr(self , "_id"):
@@ -26,5 +29,6 @@ class Review:
             "userID" : ObjectId(self.userID),
             "score" : self.score ,
             "description" : self.description,
+            "reviewer" : self.reviewer,
             "_id" : ObjectId(self._id),
         }
