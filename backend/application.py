@@ -58,9 +58,10 @@ def required_token(f):
 
 
 @application.route("/test", methods=["GET"])
-#@required_token
-def testValidation():
-    AnalyticsManager.getUsersForMonth()
+@required_token
+def testValidation(user={}):
+    res = AnalyticsManager.getReservationByMonth(user)
+    print(res)
     return "OK", 200
 
 
@@ -81,15 +82,14 @@ def getActivityByID(activity_id):
 
 
 @application.route('/activities', methods=['GET'])
-# @required_token
-def getActivities():
+#@required_token
+def getActivities(user={}):
     args = request.args
     city = args.get("city")
     guests = args.get("guests")
-    start_date = args.get("start_date")
+    start_date = args.get("startDate")
     index = args.get("index")
     direction = args.get("direction")
-    print("sono nella activities")
     result = ActivityManager.getFilteredActivity(
         start_date, city, guests, index, direction)
     return result, 200
@@ -123,13 +123,6 @@ def bookAccomodation(user={}):
     nightNumber = (((endDatetime - startDatetime).days))
     totalExpense = nightNumber*accomodation["price"]
     reservation = Reservation(user['_id'] , accomodation["_id"] , "accomodation" , startDatetime , endDatetime , totalExpense)
-    print(f"startDatetime : {startDatetime}")
-    print(f"endDatetime : {endDatetime}")
-    print(f"nightNumber : {nightNumber}")
-    print(f"totalExpense : {totalExpense}")
-    print(f"reservation : {reservation}")
-    print(f"userID : {user['_id']}")
-
     try:
         reservationID = ReservationManager.book(reservation)
         print(f"reservationID : {reservationID}")
@@ -147,7 +140,6 @@ def bookAccomodation(user={}):
 def bookActivity(user={}):
     requestBody = request.json
     activity = requestBody["activity"]
-    user = json.loads(request.headers.get('Authorization'))
     startDate = dateparser.parse(requestBody["startDate"])
     reservation = Reservation(user['_id'] , activity["_id"] , "activity" , startDate ,"", activity["price"])
 
@@ -164,7 +156,6 @@ def bookActivity(user={}):
 @application.route('/reservations', methods=['GET'])
 @required_token
 def getReservationsByUserID(user={}):
-    #global user
     result = ReservationManager.getReservationsByUser(user["_id"])
     return result, 200
 
@@ -179,7 +170,7 @@ def deleteReservation(reservation_id):
 
 
 @application.route('/accomodations', methods=['GET'])
-# @required_token
+#@required_token
 def getAccomodations():
     args = request.args
     city = args.get("city")
@@ -188,12 +179,6 @@ def getAccomodations():
     end_date = args.get("end_date")
     index = args.get("index")
     direction = args.get("direction")
-    print(f"city : {city}")
-    print(f"guests : {guests}")
-    print(f"start_date : {start_date}")
-    print(f"end_date : {end_date}")
-    print(f"index : {index}")
-    print(f"direction : {direction}")
     result = AccomodationsManager.getFilteredAccomodation(
         start_date, end_date, city, guests, index, direction)
     return result, 200
