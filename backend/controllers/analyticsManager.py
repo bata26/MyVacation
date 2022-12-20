@@ -4,6 +4,8 @@ import datetime
 from bson.objectid import ObjectId
 
 
+
+
 class AnalyticsManager:
     @staticmethod
     def getReservationByMonth(user):
