@@ -288,7 +288,7 @@ def deleteReservation(reservation_id):
 
 
 @application.route('/accomodations', methods=['GET'])
-# @required_token
+#@required_token
 def getAccomodations():
     args = request.args
     city = args.get("city")
