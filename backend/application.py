@@ -62,6 +62,10 @@ def required_token(f):
 def testValidation(user={}):
     res = AnalyticsManager.getReservationByMonth(user)
     print(res)
+@required_token
+def testValidation(user={}):
+    res = AnalyticsManager.getReservationByMonth(user)
+    print(res)
     return "OK", 200
 
 
@@ -124,7 +128,7 @@ def getActivityByID(activity_id):
 
 
 @application.route('/activities', methods=['GET'])
-# @required_token
+#@required_token
 def getActivities(user={}):
     args = request.args
     city = args.get("city")
