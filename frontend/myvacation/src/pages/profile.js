@@ -178,9 +178,9 @@ const Profile = () => {
                   <TableCell align="left">{item._id}</TableCell>
                   <TableCell align="center">{item.destinationType}</TableCell>
                   <TableCell align="center">{Moment(item.startDate).utc().format('MMM DD YYYY')}</TableCell>
-                  { item.endDate  ? 
+                  {item.endDate ?
                     <TableCell align="center">{Moment(item.endDate).utc().format('MMM DD YYYY')}</TableCell>
-                  : 
+                    :
                     <TableCell align="center"></TableCell>
                   }
                   <TableCell align='right'>

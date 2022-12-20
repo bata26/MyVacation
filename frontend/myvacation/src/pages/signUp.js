@@ -16,6 +16,11 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import api from '../api/api'
 import { useNavigate } from "react-router-dom";
+import Config from '../utility/config';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+
 
 
 const theme = createTheme();
@@ -23,7 +28,21 @@ const REGISTER_URL = '/signup';
 
 const SignUp = () => {
   const [errMsg, setErrMsg] = useState('');
+  const [languages, setLanguages] = useState([]);
+  const [nationality, setNationality] = useState(null);
   let navigate = useNavigate();
+
+  const handleNationalityChange = (event) => {
+    setNationality(event.target.value);
+  };
+
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setLanguages(value);
+  };
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -35,6 +54,8 @@ const SignUp = () => {
       dateOfBirth: data.get('dateOfBirth'),
       username: data.get('username'),
       password: data.get('password'),
+      languages: data.get('password'),
+      nationality: data.get('nationality'),
     });
     try {
       const response = await api.post(REGISTER_URL, JSON.stringify({
@@ -44,8 +65,8 @@ const SignUp = () => {
         dateOfBirth: new Date(data.get('dateOfBirth')),
         username: data.get('username'),
         password: data.get('password'),
-        knownLanguages : ["italiano", "inglese"],
-        nationality : "Italia"
+        knownLanguages: languages,
+        nationality: data.get('nationality')
       }),
         {
           headers: { 'Content-Type': 'application/json' },
@@ -86,7 +107,7 @@ const SignUp = () => {
             <Grid container columnSpacing={1.4}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="given-name"
+                  //autoComplete="given-name"
                   name="name"
                   required
                   fullWidth
@@ -102,7 +123,7 @@ const SignUp = () => {
                   id="surname"
                   label="Surname"
                   name="surname"
-                  autoComplete="family-name"
+                  //autoComplete="family-name"
                 />
               </Grid>
             </Grid>
@@ -126,7 +147,7 @@ const SignUp = () => {
               name="dateOfBirth"
               type="date"
               id="dateOfBirth"
-              autoComplete="dateOfBirth"
+              //autoComplete="dateOfBirth"
               autoFocus
             />
             <TextField
@@ -136,7 +157,7 @@ const SignUp = () => {
               id="username"
               label="Username"
               name="username"
-              autoComplete="username"
+              //autoComplete="username"
               autoFocus
             />
             <TextField
@@ -147,8 +168,36 @@ const SignUp = () => {
               label="Password"
               type="password"
               id="password"
-              autoComplete="current-password"
+              //autoComplete="current-password"
             />
+            <InputLabel id="demo-simple-select-label">Age</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="nationality"
+              label="Nationality"
+              fullWidth
+              onChange={handleNationalityChange}
+              required
+            >
+              {Config.NATIONALITY_LIST.map((item, index) => {
+                return <MenuItem value={index}>{item}</MenuItem>
+              })}
+            </Select>
+            <InputLabel id="demo-simple-select-label">Languages</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="language"
+              label="Languages"
+              multiple
+              value={languages}
+              onChange={handleChange}
+              fullWidth
+              required
+            >
+              {Config.LANGUAGE_LIST.map((item, index) => {
+                return <MenuItem key={index} value={index}>{item}</MenuItem>
+              })}
+            </Select>
             <Button
               type="submit"
               fullWidth

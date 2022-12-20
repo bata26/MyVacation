@@ -383,9 +383,11 @@ def signUp():
     nationality = request.json["nationality"]
     knownLanguages = request.json["knownLanguages"]
 
+    salt = bcrypt.gensalt(12)
+    dbHash = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
     user = User(
         username,
-        password,
+        dbHash,
         name,
         surname,
         "user",
