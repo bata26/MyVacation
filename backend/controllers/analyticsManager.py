@@ -9,6 +9,8 @@ from utility.serializer import Serializer
 
 
 
+
+
 class AnalyticsManager:
     @staticmethod
     def getReservationByMonth(user):
