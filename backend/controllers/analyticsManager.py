@@ -101,6 +101,51 @@ class AnalyticsManager:
         except Exception as e:
             print("impossibile ottenere: " + str(e))
 
+
+    # Ottieni i tre annunci più prenotati di sempre
+    @staticmethod
+    def getTopAdv():
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        accomodationsCollection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        activitiesCollection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        try:
+
+            accomodationsResult = list(accomodationsCollection.aggregate([
+                {"$group" : {"_id" : "$reservations", "count" : {"$sum" : 1}}},
+                {"$sort" : {"count" : -1}},
+                {"$limit": 3}
+                ]))
+            
+            activitiesResult = list(activitiesCollection.aggregate([
+                {"$group" : {"_id" : "$reservations", "count" : {"$sum" : 1}}},
+                {"$sort" : {"count" : -1}},
+                {"$limit": 3}
+                ]))
+                
+            print(accomodationsResult)
+            print(activitiesResult)
+
+        except Exception as e:
+            raise Exception("Impossibile ottenere: " + str(e))
+
+    # Ottieni le tre città con più prenotazioni nell'ultimo mese (data da rivedere)
+    @staticmethod
+    def getTopCities():
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("RESERVATIONS_COLLECTION")]
+        try:
+
+            result = list(collection.aggregate([
+                {"$match" : {"startDate": {
+                    "$gte": datetime(2022, 12, 1, 0, 0, 0, tzinfo=timezone.utc), 
+                    "$lt": datetime(2022, 12, 31, 0, 0, 0, tzinfo=timezone.utc)
+                }}},
+                {"$group" : {"_id" : "$city", "count" : {"$sum" : 1}}},
+                {"$sort" : {"count" : -1}},
+                {"$limit": 3}
+                ]))
     @staticmethod
     def getAccomodationAverageCost(user):
         client = MongoManager.getInstance()
@@ -140,7 +185,13 @@ class AnalyticsManager:
             return result
         except Exception as e:
             print("Impossibile eseguire la query: " + str(e))
+                
 
+
+            print(result)
+
+        except Exception as e:
+            raise Exception("Impossibile ottenere: " + str(e))
     # Ottieni i tre annunci più prenotati di sempre
 
     @staticmethod
