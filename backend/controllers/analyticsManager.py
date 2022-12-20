@@ -71,6 +71,47 @@ class AnalyticsManager:
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
 
+    @staticmethod
+    def getAccomodationAverageCost(user):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        try:
+            result = list(collection.aggregate([
+                {"$group":
+                 {
+                     "_id": "$location.city",
+                     "averageCost": {"$avg": "$price"}
+                 }
+                 },
+                {"$project": {"_id": 0, "city": "$_id", "averageCost": 1}}
+
+            ]))
+            return result
+        except Exception as e:
+            print("Impossibile eseguire la query: " + str(e))
+
+    
+    @staticmethod
+    def getActivityAverageCost(user):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        try:
+            result = list(collection.aggregate([
+                {"$group":
+                 {
+                     "_id": "$location.city",
+                     "averageCost": {"$avg": "$price"}
+                 }
+                 },
+                {"$project": {"_id": 0, "city": "$_id", "averageCost": 1}}
+
+            ]))
+            return result
+        except Exception as e:
+            print("Impossibile eseguire la query: " + str(e))
+
     # Ottieni i tre annunci più prenotati di sempre
 
     @staticmethod
