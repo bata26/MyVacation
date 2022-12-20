@@ -19,20 +19,20 @@ except Exception as e:
 
 
 try:
-    accomodationList = list(accomodationCollection.find({} , {"_id" : 1 , "price" : 1 , "city" : "$location.city"}))
+    accomodationList = list(accomodationCollection.find({} , {"_id" : 1 , "price" : 1 , "city" : "$location.city" , "host_id" : 1}))
     print("Fetch delle accomodations eseguito")    
     print(accomodationList[0])
 except Exception as e:
     print("Impossibile ottenere utenti: " + str(e))
 
 try:
-    activityList = list(activityCollection.find({} , {"_id" : 1 , "price" : 1 , "city" : "$location.city"}))
+    activityList = list(activityCollection.find({} , {"_id" : 1 , "price" : 1 , "city" : "$location.city" , "host_id" : 1}))
     print("Fetch delle accomodations eseguito")    
 except Exception as e:
     print("Impossibile ottenere utenti: " + str(e))
 
 reservationList = []
-for i in range(0 , 600):
+for i in range(0 , 1200):
     startTimestamp = randint(START_TIMESTAMP , END_TIMESTAMP)
     startDatetime = datetime.fromtimestamp(startTimestamp).replace(hour=0, minute=0, second=0)
 
@@ -47,6 +47,8 @@ for i in range(0 , 600):
         destinationID = activity["_id"]
         totalExpense = activity["price"]
         city = activity["city"]
+        type = "activity"
+        host_id = activity["host_id"]
     else:
         numberOfDays = randint(0 , 20)
         endDatetime = startDatetime + timedelta(days=numberOfDays)
@@ -55,10 +57,14 @@ for i in range(0 , 600):
         totalExpense = accomodation["price"] * (numberOfDays - 1)
         reservation["endDate"] = endDatetime
         city = accomodation["city"]
+        type = "accomodation"
+        host_id = accomodation["host_id"]
     
     reservation["totalExpense"] = totalExpense
     reservation["destinationID"] = destinationID
     reservation["city"] = city
+    reservation["destinationType"] = type
+    reservation["host_id"] = host_id
 
     reservationList.append(reservation)
 
