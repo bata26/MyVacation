@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 
 //Pagine navBar
-const pages = ["signIn", "signUp", "search"];
+const pages = ["signIn", "signUp"];
 
 // Pagine a tendina logo utente
 const account = ['Profile', 'MyAdv', 'Logout'];
@@ -56,14 +56,18 @@ function ResponsiveAppBar() {
         ChangePage('/profile')
     }
     else if (selectedSetting === 'Logout') {
-      localStorage.setItem("userID" , null);
-      localStorage.setItem("role" , null);
+      localStorage.clear();
+      //localStorage.setItem("role", null);
       ChangePage('/');
     } else if (selectedSetting === 'MyAdv') {
       ChangePage('/myadv');
     }
     setAnchorElUser(null);
   };
+
+  React.useEffect(() => {
+    console.log(localStorage.getItem("userID"));
+  });
 
   return (
     <AppBar position="static">
@@ -116,11 +120,16 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              {
+                pages.map((page) => (
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))
+              }
+              <MenuItem key="search" onClick={handleCloseNavMenu}>
+                <Typography textAlign="center">search</Typography>
+              </MenuItem>
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -143,45 +152,57 @@ function ResponsiveAppBar() {
             MyVacation
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={() => ChangePage("/" + page)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
-
-          {localStorage.getItem("userID") != null ? (<Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open account">
-              {/*<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />*/}
-              <AccountCircleRoundedIcon fontSize='large' onClick={handleOpenUserMenu} />
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+            {
+              (localStorage.getItem("userID") == null || !localStorage.getItem("userID")) ?
+                (
+                  pages.map( page => (
+                    <Button
+                      key={page}
+                      onClick={() => ChangePage("/" + page)}
+                      sx={{ my: 2, color: 'white', display: 'block' }}
+                    >
+                      {page}
+                    </Button>
+                  ))
+                ) : <></>
+            }
+            <Button
+              key="search"
+              onClick={() => ChangePage("/search")}
+              sx={{ my: 2, color: 'white', display: 'block' }}
             >
-              {account.map((setting) => (
-                <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>) : <></>}
+              search
+            </Button>
+          </Box>
+          {localStorage.getItem("userID") != null && localStorage.getItem("userID") ?
+            (<Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open account">
+                {/*<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />*/}
+                <AccountCircleRoundedIcon fontSize='large' onClick={handleOpenUserMenu} />
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {account.map((setting) => (
+                  <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>) : <></>}
         </Toolbar>
       </Container>
     </AppBar>
