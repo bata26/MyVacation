@@ -7,6 +7,8 @@ from bson.objectid import ObjectId
 from utility.serializer import Serializer
 
 
+
+
 class AnalyticsManager:
     @staticmethod
     def getReservationByMonth(user):
@@ -138,6 +140,7 @@ class AnalyticsManager:
             print("Impossibile eseguire la query: " + str(e))
 
     # Ottieni i tre annunci più prenotati di sempre
+
     @staticmethod
     def getTopAdv():
         client = MongoManager.getInstance()
