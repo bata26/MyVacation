@@ -107,8 +107,8 @@ class AnalyticsManager:
 
             result = list(collection.aggregate([
                 {"$match" : {"startDate": {
-                    "$gte": datetime(2022, 12, 1, 0, 0, 0, tzinfo=timezone.utc), 
-                    "$lt": datetime(2022, 12, 31, 0, 0, 0, tzinfo=timezone.utc)
+                    "$gte": datetime(2022, 12, 1, 0, 0, 0, tzinfo=datetime.timezone.utc), 
+                    "$lt": datetime(2022, 12, 31, 0, 0, 0, tzinfo=datetime.timezone.utc)
                 }}},
                 {"$group" : {"_id" : "$city", "count" : {"$sum" : 1}}},
                 {"$sort" : {"count" : -1}},
