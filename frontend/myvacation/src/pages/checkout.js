@@ -63,12 +63,15 @@ export default function Checkout() {
     }
 
     async function reserve(reservation) {
-        console.log(reservation);
-        console.log(startDate);
-        console.log(endDate);
+        const accomodation = {
+            "_id" : reservation._id,
+            "city" : reservation.location.city,
+            "price" : reservation.price,
+            "hostID" : reservation.host_id
+        };
         if (type === "accomodations") {
             const bodyRequest = {
-                "accomodation": reservation,
+                "accomodation": accomodation,
                 "startDate": startDate,
                 "endDate": endDate,
             };
@@ -83,11 +86,14 @@ export default function Checkout() {
                 });
         }
         else if (type === "activities") {
-            console.log(reservation);
-            console.log(startDate);
-
+            const activity = {
+                "_id" : reservation._id,
+                "city" : reservation.location.city,
+                "price" : reservation.price,
+                "hostID" : reservation.host_id
+            };
             const bodyRequest = {
-                "activity": reservation,
+                "activity": activity,
                 "startDate": startDate
             };
             await api.post("/book/activity", bodyRequest)

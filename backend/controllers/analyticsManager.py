@@ -16,7 +16,7 @@ class AnalyticsManager:
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
         try:
             result = list(collection.aggregate(([
-                {"$match": {"host_id": ObjectId(
+                {"$match": {"hostID": ObjectId(
                     user["_id"]), "destinationType": "accomodation"}},
                 {"$group": {
                     "_id": {
@@ -109,7 +109,6 @@ class AnalyticsManager:
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
         month = datetime.datetime.now().month
         try:
-
             result = list(collection.aggregate([
                 {"$match":
                  {"$expr":
@@ -123,6 +122,10 @@ class AnalyticsManager:
                 {"$sort": {"count": -1}},
                 {"$limit": 3}
                 ]))
+            return result
+        except Exception as e:
+            print("impossibile ottenere: " + str(e))
+    
     @staticmethod
     def getAccomodationAverageCost(user):
         client = MongoManager.getInstance()

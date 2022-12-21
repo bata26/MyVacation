@@ -64,7 +64,7 @@ for i in range(0 , 1200):
     reservation["destinationID"] = destinationID
     reservation["city"] = city
     reservation["destinationType"] = type
-    reservation["host_id"] = host_id
+    reservation["hostID"] = host_id
 
     reservationList.append(reservation)
 

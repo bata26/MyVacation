@@ -23,9 +23,9 @@ from werkzeug.datastructures import ImmutableMultiDict
 import dateparser
 from datetime import datetime
 
-#user = {
- #   "_id": "637ce1a04ed62608566c5fa7"
-#}
+# user = {
+#   "_id": "637ce1a04ed62608566c5fa7"
+# }
 
 load_dotenv()
 application = Flask(__name__)
@@ -74,7 +74,7 @@ def deleteActivityByID(activity_id, user={}):
 
 
 @application.route('/activities/<activity_id>', methods=['GET'])
-#@required_token
+# @required_token
 def getActivityByID(activity_id):
     activityID = escape(activity_id)
     result = ActivityManager.getActivityFromID(activityID)
@@ -82,7 +82,7 @@ def getActivityByID(activity_id):
 
 
 @application.route('/activities', methods=['GET'])
-#@required_token
+# @required_token
 def getActivities(user={}):
     args = request.args
     city = args.get("city")
@@ -122,17 +122,20 @@ def bookAccomodation(user={}):
     endDatetime = dateparser.parse(requestBody["endDate"])
     nightNumber = (((endDatetime - startDatetime).days))
     totalExpense = nightNumber*accomodation["price"]
-    reservation = Reservation(user['_id'] , accomodation["_id"] , "accomodation" , startDatetime , endDatetime , totalExpense)
+    city = accomodation["city"]
+    hostID = accomodation["hostID"]
+    reservation = Reservation(user['_id'], accomodation["_id"], "accomodation",
+                              startDatetime, totalExpense, city, hostID, endDatetime)
     try:
         reservationID = ReservationManager.book(reservation)
         print(f"reservationID : {reservationID}")
         reservation._id = reservationID
         AccomodationsManager.addReservation(reservation)
         UserManager.addReservation(reservation)
-        return "OK" , 200 
+        return "OK", 200
     except Exception as e:
         print("Errore: " + str(e))
-        return str(e) , 500
+        return str(e), 500
 
 
 @application.route('/book/activity', methods=['POST'])
@@ -141,16 +144,18 @@ def bookActivity(user={}):
     requestBody = request.json
     activity = requestBody["activity"]
     startDate = dateparser.parse(requestBody["startDate"])
-    reservation = Reservation(user['_id'] , activity["_id"] , "activity" , startDate ,"", activity["price"])
-
+    city = activity["city"]
+    hostID = activity["hostID"]
+    reservation = Reservation(
+        user['_id'], activity["_id"], "activity", startDate, activity["price"], city, hostID)
     try:
         reservationID = ReservationManager.book(reservation)
         reservation._id = reservationID
         ActivityManager.addReservation(reservation)
-        return "OK" , 200 
+        return "OK", 200
     except Exception as e:
         print("Errore: " + str(e))
-        return str(e) , 500
+        return str(e), 500
 
 
 @application.route('/reservations', methods=['GET'])
@@ -170,7 +175,7 @@ def deleteReservation(reservation_id):
 
 
 @application.route('/accomodations', methods=['GET'])
-#@required_token
+# @required_token
 def getAccomodations():
     args = request.args
     city = args.get("city")
@@ -186,7 +191,7 @@ def getAccomodations():
 
 @application.route('/insert/accomodation', methods=['POST'])
 # @required_token
-#TODO Da rivedere
+# TODO Da rivedere
 def insertAccomodation():
     global user
     formData = dict(request.form)
@@ -283,10 +288,10 @@ def insertReview(user={}):
         insertedID = ReviewManager.insertNewReview(review)
         review._id = insertedID
         print(f"inserito id : {insertedID}")
-        if(destinationType == "accomodation"):
+        if (destinationType == "accomodation"):
             print("sto gestendo una accomodation")
             AccomodationsManager.addReview(review)
-        elif(destinationType == "activity"):
+        elif (destinationType == "activity"):
             print("sto gestendo una activity")
             ActivityManager.addReview(review)
         return "", 200
@@ -318,7 +323,7 @@ def deleteUserById(user_id):
 
 @application.route('/users/<user_id>', methods=['GET'])
 @required_token
-def getUserById(user_id , user={}):
+def getUserById(user_id, user={}):
     userId = escape(user_id)
     result = UserManager.getUserFromId(userId)
     return result, 200
@@ -382,7 +387,7 @@ def signUp():
         knownLanguages,
         [],
         datetime.today().replace(microsecond=0, second=0, hour=0, minute=0)
-        )    
+    )
     try:
         insertedID = UserManager.insertNewUser(user)
         return "", 200
@@ -400,7 +405,7 @@ def getUsers(user):
     index = args.get("index")
     direction = args.get("direction")
     print(f"user : {user}")
-    result = AdminManager.getFilteredUsers( id, name, surname, index, direction)
+    result = AdminManager.getFilteredUsers(id, name, surname, index, direction)
     return result, 200
 
 
@@ -428,19 +433,21 @@ def approveAnnouncement(announcementID):
     except Exception as e:
         return e, 500
 
-@application.route('/myadvacc/<user_id>' , methods = ['GET'])
-#@required_token
+
+@application.route('/myadvacc/<user_id>', methods=['GET'])
+# @required_token
 def getAccomodationsByUserID(user_id):
     userID = escape(user_id)
     result = AccomodationsManager.getAccomodationsByUserID(userID)
-    return result , 200
+    return result, 200
 
-@application.route('/myadvact/<user_id>' , methods = ['GET'])
-#@required_token
+
+@application.route('/myadvact/<user_id>', methods=['GET'])
+# @required_token
 def getActivitiesByUserID(user_id):
     userID = escape(user_id)
     result = ActivityManager.getActivityByUserID(userID)
-    return result , 200
+    return result, 200
 
 
 if __name__ == "__main__":
