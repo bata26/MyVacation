@@ -12,7 +12,9 @@ import Grid from '@mui/material/Grid';
 
 const theme = createTheme();
 
-export default function Home() {
+const Home = () => {
+
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -287,4 +289,6 @@ export default function Home() {
             />
         </ThemeProvider>
     );
-}
+};
+
+export default Home;
