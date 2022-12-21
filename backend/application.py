@@ -268,6 +268,14 @@ def insertActivity():
 def getReviewByID(review_id):
     reviewID = escape(review_id)
     result = ReviewManager.getReviewFromID(reviewID)
+    return result, 200\
+
+@application.route('/reviewsByDestination/<destination_id>', methods=['GET'])
+# @required_token
+def getReviewByAd(destination_id):
+    destinationID = escape(destination_id)
+    print(destinationID)
+    result = ReviewManager.getReviewFromDestinationID(destinationID)
     return result, 200
 
 
@@ -405,7 +413,7 @@ def getUsers(user):
     index = args.get("index")
     direction = args.get("direction")
     print(f"user : {user}")
-    result = AdminManager.getFilteredUsers(id, name, surname, index, direction)
+    result = AdminManager.getFilteredUsers(user, id, name, surname, index, direction)
     return result, 200
 
 

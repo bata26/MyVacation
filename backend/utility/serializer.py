@@ -87,12 +87,11 @@ class Serializer:
     @staticmethod
     def serializeReview(review):
         return {
-            "_id" : str(review['_id']),
-            "reviewerID" : str(review['reviewerID']),
-            "destinationID" : str(review['destinationID']),
-            "host_name" : review.host_name ,
+            "_id" : str(review._id),
+            "reviewerID" : str(review.userID),
+            "destinationID" : str(review.destinationID),
             "score" : review.score ,
-            "comment" : review.comment ,
+            "description" : review.description ,
             "reviewer" : review.reviewer
         }
 

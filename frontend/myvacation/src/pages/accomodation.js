@@ -22,6 +22,8 @@ const theme = createTheme();
 
 const Accomodation = () => {
   const [accomodation, setAccomodation] = React.useState(null);
+  const [reviews, setReviews] = React.useState(null);
+  const [enableButton, setEnableButton] = React.useState(null);
   const [searchParams] = useSearchParams();
   const { accomodationID } = useParams();
   const [startDate, setStartDate] = React.useState(searchParams.get("startDate") === "" ? null : searchParams.get("startDate"))
@@ -32,7 +34,15 @@ const Accomodation = () => {
   React.useEffect(() => {
     api.get("/accomodations/" + accomodationID)
       .then(function (response) {
-        setAccomodation(response.data);
+          console.log(response.data)
+          console.log(response.data.reviews.length)
+          console.log(parseInt(process.env.REACT_APP_REVIEWS_SIZE))
+          setAccomodation(response.data);
+          setReviews(response.data.reviews)
+          if(response.data.reviews.length >= parseInt(process.env.REACT_APP_REVIEWS_SIZE))
+              setEnableButton(true)
+          else
+              setEnableButton(false)
       })
       .catch(function (error) {
         console.log(error);
@@ -57,6 +67,18 @@ const Accomodation = () => {
 
   function goToCheckout() {
     navigate("/checkout?startDate=" + startDate + "&endDate=" + endDate + "&type=accomodations" + "&id=" + accomodation._id + "&guests=" + guests)
+  }
+
+  const getAllReviews = async () => {
+      await api.get("/reviewsByDestination/" + accomodationID)
+          .then(function (response) {
+              setReviews(response.data)
+              setEnableButton(false)
+              console.log(response.data)
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
   }
 
 
@@ -181,9 +203,9 @@ const Accomodation = () => {
               <br />
               Address: {accomodation.location.address}
               <br />
-              City: {accomodation.location.city}
-              <br />
               Country: {accomodation.location.country}
+              <br />
+              City: {accomodation.location.city}
             </Typography>
 
 
@@ -227,9 +249,7 @@ const Accomodation = () => {
         }}
       >
       </Box>
-
       <Container maxWidth='lg'>
-
         <Typography
           component="h2"
           variant="h4"
@@ -240,8 +260,10 @@ const Accomodation = () => {
         >
           Reviews
         </Typography>
-
-        {accomodation.reviews.map((item) => (
+        <Grid
+        sx={{ overflowY: "scroll", maxHeight: "1160px" }}
+        >
+        {reviews && reviews.map((item) => (
           <Card key={item._id} sx={{ maxHeight: 100, marginTop: 2 }}>
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
@@ -253,22 +275,19 @@ const Accomodation = () => {
             </CardContent>
           </Card>
         ))}
-
-
-        <Container maxWidth='sm'>
-          <Button
-            fullWidth
-            variant="contained"
-            sx={{ mt: 2 }}
-          >
-            More reviews
-          </Button>
-
-        </Container>
-
-
+        </Grid>
+          {enableButton ?
+              <Container maxWidth='sm'>
+                    <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 2 }}
+                    onClick={() => getAllReviews()}
+                >
+                More reviews
+                </Button>
+              </Container> : <></>}
       </Container>
-
       <Box
         component="footer"
         sx={{
