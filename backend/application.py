@@ -284,13 +284,16 @@ def getReviewByAd(destination_id):
 def insertReview(user={}):
     requestBody = request.json
     destinationType = requestBody["destinationType"]
+    reviewer = requestBody["reviewer"]
     review = Review(user["_id"],
                     requestBody["destinationID"],
                     requestBody["score"],
-                    requestBody["description"])
+                    requestBody["description"],
+                    reviewer)
     print("nell'endpoint")
     print(f"user : {user}")
     print(f"type : {destinationType}")
+    print(f"reviewer : {reviewer}")
 
     try:
         insertedID = ReviewManager.insertNewReview(review)
@@ -362,8 +365,8 @@ def loginUser():
     print(f"username : {username}")
     print(f"password : {password}")
     try:
-        userID, userType = UserManager.authenicateUser(username, password)
-        return {"userID": userID, "role": userType}, 200
+        userID, userType, name = UserManager.authenicateUser(username, password)
+        return {"userID": userID, "role": userType, "name": name}, 200
     except Exception as e:
         return str(e), 500
 

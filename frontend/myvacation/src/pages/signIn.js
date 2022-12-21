@@ -45,13 +45,12 @@ const SignIn = () => {
             withCredentials: true
           }
       );
-      console.log(JSON.stringify(response));
+      console.log(response.data);
 
       //const accessToken = response?.data?.accessToken;
-      const role = response.data.role;
-      const _id = response.data.userID;
       localStorage.setItem("userID" , response.data.userID);
       localStorage.setItem("role" , response.data.role);
+      localStorage.setItem("name" , response.data.name);
       navigate(from, { replace: true });
 
 
