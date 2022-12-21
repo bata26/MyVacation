@@ -8,7 +8,7 @@ import DateRangePicker from "../components/datePicker";
 import api from "../utility/api";
 import Button from '@mui/material/Button';
 import ReviewForm from '../components/reviewForm';
-import { Typography } from '@mui/material';
+import { CardActions, Typography } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -60,6 +60,18 @@ const Accomodation = () => {
         console.log(error);
       });
     navigate('/search')
+  }
+
+  //Metodo per eliminare review
+  const deleteReview = async (reviewID) => {
+    await api.delete("/reviews/" + reviewID)
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    window.location.reload(false);
   }
 
 
@@ -264,7 +276,7 @@ const Accomodation = () => {
         sx={{ overflowY: "scroll", maxHeight: "1160px" }}
         >
         {reviews && reviews.map((item) => (
-          <Card key={item._id} sx={{ maxHeight: 100, marginTop: 2 }}>
+          <Card key={item._id} sx={{ maxHeight: 150, marginTop: 2 }}>
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
                 {item.reviewer} - {item.score}
@@ -273,6 +285,9 @@ const Accomodation = () => {
                 {item.description}
               </Typography>
             </CardContent>
+            <CardActions>
+              <Button color='error' onClick={() => { deleteReview(item._id) }}>Delete</Button>
+            </CardActions>
           </Card>
         ))}
         </Grid>

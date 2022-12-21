@@ -75,7 +75,6 @@ const InsertActivity = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 2 }}
-            onClick={{ handleSubmit }}
           >
             Insert
           </Button>

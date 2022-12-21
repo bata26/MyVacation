@@ -62,8 +62,8 @@ class ReviewManager:
         collection = db[os.getenv("REVIEW_COLLECTION")]
 
         if (user["role"] != "admin"):
-            review = collection.find_one({"_id" : ObjectId(reviewID)})
-            if(review.host_id != user._id):
+            review = dict(collection.find_one({"_id" : ObjectId(reviewID)}))
+            if(str(review["userID"]) != user["_id"]):
                 raise Exception("L'utente non possiede la review")
         try:
             res = collection.delete_one({"_id" : ObjectId(reviewID)})

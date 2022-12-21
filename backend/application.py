@@ -299,8 +299,6 @@ def getReviewByID(review_id):
     result = ReviewManager.getReviewFromID(reviewID)
     return result, 200
 
-
-
 @application.route('/reviewsByDestination/<destination_id>', methods=['GET'])
 # @required_token
 def getReviewByAd(destination_id):
@@ -341,13 +339,10 @@ def insertReview(user={}):
         return str(e), 200
 
 
-@application.route('/reviews/<review_id>', methods=['DELETE'])
-# @required_token
-def deleteReviewByID(reviewID):
+@application.route('/reviews/<reviewID>', methods=['DELETE'])
+@required_token
+def deleteReviewByID(reviewID, user={}):
     reviewID = escape(reviewID)
-    user = {
-        "type": "admin"
-    }
     result = ReviewManager.deleteReview(reviewID, user)
     return "", 200
 
