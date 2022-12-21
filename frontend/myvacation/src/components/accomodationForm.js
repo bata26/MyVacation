@@ -1,140 +1,141 @@
 import * as React from 'react';
-import Grid from '@mui/material/Unstable_Grid2';
-import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { FormControl } from '@mui/material';
-import FormLabel from '@mui/material/FormLabel';
 import FileInput from "./inputFile";
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
+import Container from '@mui/material/Container';
 
 const AccomodationForm = () => {
 
-    return(
-        <Grid container spacing={2}>
-            {/** ROW 1 */}
-            <Grid xs={3}/>
-            <Grid xs = {6}>
-                <FileInput label="Immagini" />
+    return (
 
-                <TextField
+        <Container maxWidth='md'>
+            <FileInput fullWidth label="Images" />
+
+            <TextField
                 margin="normal"
                 required
                 fullWidth
                 name="name"
-                label="Nome"
+                label="Name"
                 type="name"
                 id="name"
                 autoFocus
-                />
+            />
 
-                <TextField
+            <TextField
                 margin="normal"
                 required
                 fullWidth
                 id="description"
-                label="Descrizione"
+                label="Description"
                 name="description"
-                />
-                
-                <TextField
+            />
+
+            <TextField
                 margin="normal"
                 required
                 fullWidth
                 name="address"
-                label="Indirizzo"
+                label="Address"
                 id="address"
-                />
+            />
 
-                <TextField
+            <TextField
                 margin="normal"
                 required
                 fullWidth
                 name="city"
-                label="Città"
+                label="City"
                 id="city"
-                />
-                <TextField
+            />
+            <TextField
                 margin="normal"
                 required
                 fullWidth
                 name="country"
-                label="Nazione"
+                label="Country"
                 id="country"
-                />
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="propertyType"
-                label="Tipo di proprietà"
-                id="propertyType"
-                />
-            </Grid>
-            <Grid xs={3} />
-            {/** ROW 2 */}
-            <Grid xs={3} />
+            />
 
-            <Grid xs = {3}>
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="guests"
-                label="Numero di ospiti"
-                id="guests"
-                type="number"
-                />
+
+            <Grid container columnSpacing={2}>
+                <Grid item xs={4} sm={4}>
+
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="propertyType"
+                        label="Tipo di proprietà"
+                        id="propertyType"
+                    />
+                </Grid>
+                <Grid item xs={4} sm={4}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="guests"
+                        label="Guests number"
+                        id="guests"
+                        type="number"
+                    />
+                </Grid>
+                <Grid item xs={4} sm={4}>
+
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="beds"
+                        label="Beds"
+                        id="beds"
+                        type="number"
+                    />
+                </Grid>
+                <Grid item xs={4} sm={4}>
+
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="price"
+                        label="Price"
+                        id="price"
+                        type="number"
+                    />
+                </Grid>
+                <Grid item xs={4} sm={4}>
+
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="minimumNights"
+                        label="Minimum nights"
+                        id="minimumNights"
+                        type="number"
+                    />
+                </Grid>
+                <Grid item xs={4} sm={4}>
+
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="bedrooms"
+                        label="Bedrooms"
+                        id="bedrooms"
+                        type="number"
+                    />
+                </Grid>
+
+
             </Grid>
-            <Grid xs = {3}>
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="beds"
-                label="Numero letti"
-                id="beds"
-                type="number"
-                />
-            </Grid>
-            <Grid xs = {3}/>
-            {/** GROW 3 */}
-            <Grid xs = {3}/>
-            <Grid xs = {2}>
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="price"
-                label="Prezzo"
-                id="price"
-                type="number"
-                />
-            </Grid>
-            <Grid xs = {2}>
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="minimumNights"
-                label="Notti minime"
-                id="minimumNights"
-                type="number"
-                />
-            </Grid>
-            <Grid xs = {2}>
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="bedrooms"
-                label="Stanze da letto"
-                id="bedrooms"
-                type="number"
-                />
-            </Grid>
-        </Grid>
+        </Container>
+
+
+
     );
 };
 

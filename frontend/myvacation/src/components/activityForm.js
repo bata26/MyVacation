@@ -1,98 +1,87 @@
 import * as React from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { FormControl } from '@mui/material';
-import FormLabel from '@mui/material/FormLabel';
 import FileInput from "./inputFile";
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
+import Container from '@mui/material/Container';
 
 const ActivityForm = () => {
 
-    return(
-        <Grid container spacing={2}>
-            {/** ROW 1 */}
-            <Grid xs={3}/>
-            <Grid xs={6}>
-                <FileInput fullWidth label="Immagini" />
+    return (
 
-                <TextField
+        <Container maxWidth='md'>
+            <FileInput fullWidth label="Images"/>
+
+            <TextField
                 margin="normal"
                 required
                 fullWidth
-                name="category"
-                label="Categoria"
-                type="category"
-                id="category"
+                name="name"
+                label="Name"
+                type="name"
+                id="name"
                 autoFocus
-                />
+            />
 
-                <TextField
+            <TextField
                 margin="normal"
                 required
                 fullWidth
                 id="description"
-                label="Descrizione"
+                label="Description"
                 name="description"
-                />
-                
-                <TextField
+            />
+
+            <TextField
                 margin="normal"
                 required
                 fullWidth
                 name="address"
-                label="Indirizzo"
+                label="Address"
                 id="address"
-                />
+            />
 
-                <TextField
+            <TextField
                 margin="normal"
                 required
                 fullWidth
                 name="city"
-                label="Città"
+                label="City"
                 id="city"
-                />
-                <TextField
+            />
+            <TextField
                 margin="normal"
                 required
                 fullWidth
                 name="country"
-                label="Nazione"
+                label="Country"
                 id="country"
-                />
-            </Grid>
-            <Grid xs={3} />
-            {/** ROW 2 */}
-            <Grid xs={3} />
+            />
+            <Grid container columnSpacing={2}>
+                <Grid item xs={4} sm={6}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="duration"
+                        label="Duration (h)"
+                        id="duration"
+                        type="number"
+                    />
+                </Grid>
+                <Grid item xs={4} sm={6}>
 
-            <Grid xs = {3}>
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="duration"
-                label="Durata (h)"
-                id="duration"
-                type="number"
-                />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="price"
+                        label="Price"
+                        id="price"
+                        type="number"
+                    />
+                </Grid>
             </Grid>
-            {/** ROW 3 */}
-            <Grid xs = {3}>
-                <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="price"
-                label="Prezzo"
-                id="price"
-                type="number"
-                />
-            </Grid>
-            <Grid xs={2}/>
-        </Grid>
+        </Container>
     );
 };
 

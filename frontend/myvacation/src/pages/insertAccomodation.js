@@ -1,11 +1,13 @@
 import * as React from 'react';
-import Grid from '@mui/material/Unstable_Grid2';
 import Button from '@mui/material/Button';
 import AccomodationForm from "../components/accomodationForm";
-import FileInput from "../components/inputFile";
 import FormData from 'form-data';
 import api from '../utility/api';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 async function convertFileToBase64(file) {
   return new Promise((resolve, reject) => {
@@ -31,56 +33,81 @@ const InsertAccomodation = () => {
     return new File([u8arr], filename, { type: mime })
   }
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        //const formData = new FormData();
-        const images = document.getElementById("images").files;
-        console.log("images: " , images);
-        let convertedImages = [];
-        let counter = 0;
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    //const formData = new FormData();
+    const images = document.getElementById("images").files;
+    console.log("images: ", images);
+    let convertedImages = [];
+    let counter = 0;
 
-        for(let i = 0 ; i < images.length; i++){
-          let elem = await convertFileToBase64(images[i]);
-          elem = elem.split(",")[1];
-          let label = "img-"+i;
-          data.append(label, elem);
-        }
-        data.append("imagesLength" , images.length);
-        console.log("form: " , data);
-        const headers = {'Content-type': 'multipart/form-data'};
-        const result = await api.post('/insert/accomodation' , 
-          data,
-          //{headers: headers}
-        )
-        .then(function(response){
-          console.log(response.data);
-          navigate("/accomodation/"+response.data.accomodationID);
-        })
-        .catch(function(error){
-          console.log("errore");
-        });
-      };
+    for (let i = 0; i < images.length; i++) {
+      let elem = await convertFileToBase64(images[i]);
+      elem = elem.split(",")[1];
+      let label = "img-" + i;
+      data.append(label, elem);
+    }
+    data.append("imagesLength", images.length);
+    console.log("form: ", data);
+    const headers = { 'Content-type': 'multipart/form-data' };
+    const result = await api.post('/insert/accomodation',
+      data,
+      //{headers: headers}
+    )
+      .then(function (response) {
+        console.log(response.data);
+        navigate("/accomodation/" + response.data.accomodationID);
+      })
+      .catch(function (error) {
+        console.log("errore");
+      });
+  };
 
-    return(
-        <form onSubmit = {handleSubmit}>
-        <Grid container spacing={2}>
-            <AccomodationForm />
-            {/*<FileInput label="Immagini"></FileInput>*/}
-            <Grid xs = {3} />
-            <Grid xs = {6}>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Modifica
-                </Button>
-            </Grid>
-        </Grid>
-        </form>
-    );
+  return (
+    <form onSubmit={handleSubmit}>
+      <Container component="main" maxWidth="lg">
+        <CssBaseline />
+        <Box
+          sx={{
+            pt: 8,
+            pb: 6,
+          }}
+        >
+          <Container maxWidth="lg">
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="text.primary"
+              gutterBottom
+            >
+              Insert accomodation
+            </Typography>
+          </Container>
+        </Box>
+        <AccomodationForm />
+        <Container maxWidth='md'>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 2 }}
+          >
+            Insert
+          </Button>
+        </Container>
+      </Container>
+      <Box
+        sx={{
+          py: 3,
+          px: 2,
+          mt: 'auto',
+        }}
+      >
+      </Box>
+    </form>
+  );
 };
 
 export default InsertAccomodation;
