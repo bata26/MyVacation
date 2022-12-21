@@ -259,8 +259,7 @@ const Activity = () => {
       </Container>
       
       <Box
-      component="footer"
-      sx={{
+        sx={{
           py: 3,
           px: 2,
           mt: 'auto',

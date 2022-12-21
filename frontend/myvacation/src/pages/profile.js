@@ -193,7 +193,6 @@ const Profile = () => {
         </TableContainer>
       </Container>
       <Box
-        component="footer"
         sx={{
           py: 3,
           px: 2,
