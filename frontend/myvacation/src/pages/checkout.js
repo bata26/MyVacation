@@ -10,7 +10,7 @@ import CardMedia from '@mui/material/CardMedia';
 import CardActionArea from '@mui/material/CardActionArea';
 import Button from "@mui/material/Button";
 import { useSearchParams } from "react-router-dom";
-import api from "../api/api";
+import api from "../utility/api";
 import moment from "moment";
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/system';

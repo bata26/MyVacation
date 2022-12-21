@@ -5,7 +5,7 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ReactHtmlParser from 'react-html-parser';
 import DateRangePicker from "../components/datePicker";
-import api from "../api/api";
+import api from "../utility/api";
 import Button from '@mui/material/Button';
 import ReviewForm from '../components/reviewForm';
 import { Typography } from '@mui/material';

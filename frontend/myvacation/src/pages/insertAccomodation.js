@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import AccomodationForm from "../components/accomodationForm";
 import FileInput from "../components/inputFile";
 import FormData from 'form-data';
-import api from '../api/api';
+import api from '../utility/api';
 import {useNavigate} from "react-router-dom";
 
 async function convertFileToBase64(file) {
