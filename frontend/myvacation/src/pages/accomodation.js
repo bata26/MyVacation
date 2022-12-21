@@ -188,26 +188,32 @@ const Accomodation = () => {
 
 
             <DateRangePicker startDate={startDate} endDate={endDate} />
-            {startDate != null && endDate!= null && localStorage.getItem("userID") != null ?
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mb: 2 }}
-              onClick={() => goToCheckout()}>
-              Book Accomodation
-            </Button>:<></>}
+            {startDate != null && endDate != null && localStorage.getItem("userID") != null ?
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ mb: 2 }}
+                onClick={() => goToCheckout()}>
+                Book Accomodation
+              </Button> : <></>}
 
             <ReviewForm destinationID={accomodation._id} destinationType={"accomodation"} />
+            {
+              localStorage.getItem("userID") === accomodation.host_id || localStorage.getItem("role") === "admin" ?
+                (
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color='error'
+                    sx={{ mt: 2 }}
+                    onClick={() => { deleteAccomodation(accomodation._id) }}
+                  >
+                    Delete Accomodation
+                  </Button>
+                )
+                :<></>
+            }
 
-            <Button
-              fullWidth
-              variant="contained"
-              color='error'
-              sx={{ mt: 2 }}
-              onClick={() => { deleteAccomodation(accomodation._id) }}
-            >
-              Delete Accomodation
-            </Button>
 
           </Grid>
         </Grid>
@@ -236,27 +242,27 @@ const Accomodation = () => {
         </Typography>
 
         {accomodation.reviews.map((item) => (
-        <Card key={item._id} sx={{ maxHeight: 100 , marginTop: 2}}>
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {item.reviewer} - {item.score}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {item.description}
-            </Typography>
-          </CardContent>
-        </Card>
+          <Card key={item._id} sx={{ maxHeight: 100, marginTop: 2 }}>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {item.reviewer} - {item.score}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {item.description}
+              </Typography>
+            </CardContent>
+          </Card>
         ))}
 
 
         <Container maxWidth='sm'>
           <Button
-                fullWidth
-                variant="contained"
-                sx={{ mt: 2 }}
-              >
-                More reviews
-              </Button>
+            fullWidth
+            variant="contained"
+            sx={{ mt: 2 }}
+          >
+            More reviews
+          </Button>
 
         </Container>
 
