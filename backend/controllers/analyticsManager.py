@@ -103,6 +103,7 @@ class AnalyticsManager:
 
 
     # Ottieni i tre annunci più prenotati di sempre
+
     @staticmethod
     def getTopAdv():
         client = MongoManager.getInstance()
@@ -112,17 +113,17 @@ class AnalyticsManager:
         try:
 
             accomodationsResult = list(accomodationsCollection.aggregate([
-                {"$group" : {"_id" : "$reservations", "count" : {"$sum" : 1}}},
-                {"$sort" : {"count" : -1}},
+                {"$group": {"_id": "$reservations", "count": {"$sum": 1}}},
+                {"$sort": {"count": -1}},
                 {"$limit": 3}
-                ]))
-            
+            ]))
+
             activitiesResult = list(activitiesCollection.aggregate([
-                {"$group" : {"_id" : "$reservations", "count" : {"$sum" : 1}}},
-                {"$sort" : {"count" : -1}},
+                {"$group": {"_id": "$reservations", "count": {"$sum": 1}}},
+                {"$sort": {"count": -1}},
                 {"$limit": 3}
-                ]))
-                
+            ]))
+
             print(accomodationsResult)
             print(activitiesResult)
 
@@ -135,15 +136,20 @@ class AnalyticsManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
+        month = datetime.datetime.now().month
         try:
 
             result = list(collection.aggregate([
-                {"$match" : {"startDate": {
-                    "$gte": datetime(2022, 12, 1, 0, 0, 0, tzinfo=timezone.utc), 
-                    "$lt": datetime(2022, 12, 31, 0, 0, 0, tzinfo=timezone.utc)
-                }}},
-                {"$group" : {"_id" : "$city", "count" : {"$sum" : 1}}},
-                {"$sort" : {"count" : -1}},
+                {"$match":
+                 {"$expr":
+                  {
+                      "$eq": [{"$month": "$startDate"}, month]
+                  }
+                  }
+                 },
+                {"$group": {"_id": "$city", "count": {"$sum": 1}}},
+                {"$project" : {"city" : "$_id" , "_id" : 0 , "total" : "$count"}},
+                {"$sort": {"count": -1}},
                 {"$limit": 3}
                 ]))
     @staticmethod

@@ -260,6 +260,22 @@ const Accomodation = () => {
                               : <></>
                       }
 
+            {
+              localStorage.getItem("userID") === accomodation.host_id || localStorage.getItem("role") === "admin" ?
+                (
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color='error'
+                    sx={{ mt: 2 }}
+                    onClick={() => { deleteAccomodation(accomodation._id) }}
+                  >
+                    Delete Accomodation
+                  </Button>
+                )
+                :<></>
+            }
+
 
                   </Grid>
               </Grid>
