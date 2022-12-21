@@ -1,11 +1,13 @@
 from bson.objectid import ObjectId
 class Reservation:
-    def __init__(self , userID , destinationID , destinationType  , startDate , endDate , totalExpense, _id=""):
+    def __init__(self , userID , destinationID , destinationType  , startDate , totalExpense, city, hostID, endDate="", _id=""):
         self.userID = userID
         self.destinationID = destinationID
         self.destinationType = destinationType
         self.startDate = startDate
         self.totalExpense = totalExpense
+        self.city = city
+        self.hostID = hostID
         if not(_id == ""):
             self._id = _id
         if not(endDate == ""):
@@ -17,7 +19,9 @@ class Reservation:
             "destinationID" : ObjectId(self.destinationID),
             "destinationType" : self.destinationType,
             "startDate" : self.startDate,
-            "totalExpense" : self.totalExpense
+            "totalExpense" : self.totalExpense,
+            "city" : self.city,
+            "hostID" : ObjectId(self.hostID),
         }
         if hasattr(self , "_id"):
             result["_id"] = ObjectId(self._id)

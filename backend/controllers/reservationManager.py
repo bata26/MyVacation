@@ -34,23 +34,26 @@ class ReservationManager:
             for reservation in cursor:
                 if reservation['destinationType'] == 'activity':
                     activityResult = Reservation(
-                        reservation['userID'],
-                        reservation['destinationID'],
+                        str(reservation['userID']),
+                        str(reservation['destinationID']),
                         reservation['destinationType'],
                         reservation['startDate'],
-                        "",
                         reservation['totalExpense'],
-                        reservation['_id'])
+                        reservation["city"],                        
+                        str(reservation["hostID"]),
+                        _id = str(reservation['_id']))
                     result.append(Serializer.serializeReservation(activityResult))
                 else:
                     accomodationResult = Reservation(
-                        reservation['userID'],
-                        reservation['destinationID'],
+                        str(reservation['userID']),
+                        str(reservation['destinationID']),
                         reservation['destinationType'],
                         reservation['startDate'],
-                        reservation['endDate'],
                         reservation['totalExpense'],
-                        reservation['_id'])
+                        reservation["city"],                        
+                        str(reservation["hostID"]),
+                        reservation['endDate'],
+                        str(reservation['_id']))
                     result.append(Serializer.serializeReservation(accomodationResult))
             return result
         except Exception as e:
