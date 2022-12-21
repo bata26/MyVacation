@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Rating from '@mui/material/Rating';
 import TextField from '@mui/material/TextField';
-import api from "../api/api";
+import api from "../utility/api";
 
 
 //export default function HalfRating() {

@@ -14,92 +14,92 @@ const theme = createTheme();
 
 export default function Home() {
     return (
-    <ThemeProvider theme={theme}>
-        <CssBaseline />
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
 
-        <Container maxWidth='lg'>
+            <Container maxWidth='lg'>
 
-            <Box
-            sx={{
-                pt: 8,
-                pb: 6,
-            }}
-            >
-                <Container maxWidth="sm">
-                    <Typography
-                    component="h2"
-                    variant="h3"
-                    align="center"
-                    color="text.primary"
-                    gutterBottom
-                    >
-                        Top cities of the month
-                    </Typography>
-                </Container>
-            </Box>
+                <Box
+                    sx={{
+                        pt: 8,
+                        pb: 6,
+                    }}
+                >
+                    <Container maxWidth="sm">
+                        <Typography
+                            component="h2"
+                            variant="h3"
+                            align="center"
+                            color="text.primary"
+                            gutterBottom
+                        >
+                            Top cities of the month
+                        </Typography>
+                    </Container>
+                </Box>
 
-            <Grid container columnSpacing={2}>
-                <Grid item xs={4} sm={4}>
-                    <Card sx={{ maxWidth: 345 }}>
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                #1 city of the month
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button size="small">Accomodations</Button>
-                            <Button size="small">Activities</Button>
-                        </CardActions>
-                    </Card>
+                <Grid container columnSpacing={2}>
+                    <Grid item xs={4} sm={4}>
+                        <Card sx={{ maxWidth: 345 }}>
+                            <CardContent>
+                                <Typography gutterBottom variant="h5" component="div">
+                                    #1 city of the month
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Button size="small">Accomodations</Button>
+                                <Button size="small">Activities</Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+
+                    <Grid item xs={4} sm={4}>
+                        <Card sx={{ maxWidth: 345 }}>
+                            <CardContent>
+                                <Typography gutterBottom variant="h5" component="div">
+                                    #2 city of the month
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Button size="small">Accomodations</Button>
+                                <Button size="small">Activities</Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+
+                    <Grid item xs={4} sm={4}>
+                        <Card sx={{ maxWidth: 345 }}>
+                            <CardContent>
+                                <Typography gutterBottom variant="h5" component="div">
+                                    #3 city of the month
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Button size="small">Accomodations</Button>
+                                <Button size="small">Activities</Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
                 </Grid>
 
-                <Grid item xs={4} sm={4}>
-                    <Card sx={{ maxWidth: 345 }}>
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                #2 city of the month
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button size="small">Accomodations</Button>
-                            <Button size="small">Activities</Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
-
-                <Grid item xs={4} sm={4}>
-                    <Card sx={{ maxWidth: 345 }}>
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                #3 city of the month
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button size="small">Accomodations</Button>
-                            <Button size="small">Activities</Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
-            </Grid>
-
-            <Box
-            sx={{
-                pt: 8,
-                pb: 6,
-            }}
-            >
-                <Container maxWidth="sm">
-                    <Typography
-                    component="h2"
-                    variant="h3"
-                    align="center"
-                    color="text.primary"
-                    gutterBottom
-                    >
-                        Top 3 Accomodations
-                    </Typography>
-                </Container>
-            </Box>
+                <Box
+                    sx={{
+                        pt: 8,
+                        pb: 6,
+                    }}
+                >
+                    <Container maxWidth="sm">
+                        <Typography
+                            component="h2"
+                            variant="h3"
+                            align="center"
+                            color="text.primary"
+                            gutterBottom
+                        >
+                            Top 3 Accomodations
+                        </Typography>
+                    </Container>
+                </Box>
 
                 <Grid container spacing={4}>
                     <Grid item xs={12} sm={6} md={4}>
@@ -111,7 +111,7 @@ export default function Home() {
                                     Titolo
                                 </Typography>
                             </CardContent>
-                            <img src='https://picsum.photos/300/300'/>
+                            <img src='https://picsum.photos/300/300' />
                             <CardContent sx={{ flexGrow: 1 }}>
                                 <Typography variant='span'>
                                     <b>City</b>
@@ -136,7 +136,7 @@ export default function Home() {
                                     Titolo
                                 </Typography>
                             </CardContent>
-                            <img src='https://picsum.photos/300/300'/>
+                            <img src='https://picsum.photos/300/300' />
                             <CardContent sx={{ flexGrow: 1 }}>
                                 <Typography variant='span'>
                                     <b>City</b>
@@ -161,7 +161,7 @@ export default function Home() {
                                     Titolo
                                 </Typography>
                             </CardContent>
-                            <img src='https://picsum.photos/300/300'/>
+                            <img src='https://picsum.photos/300/300' />
                             <CardContent sx={{ flexGrow: 1 }}>
                                 <Typography variant='span'>
                                     <b>City</b>
@@ -177,114 +177,114 @@ export default function Home() {
                         </Card>
                     </Grid>
                 </Grid>
+
+                <Box
+                    sx={{
+                        pt: 8,
+                        pb: 6,
+                    }}
+                >
+                    <Container maxWidth="sm">
+                        <Typography
+                            component="h2"
+                            variant="h3"
+                            align="center"
+                            color="text.primary"
+                            gutterBottom
+                        >
+                            Top 3 Activities
+                        </Typography>
+                    </Container>
+                </Box>
+
+                <Grid container spacing={4}>
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Card
+                            sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+                        >
+                            <CardContent sx={{ flexGrow: 1 }}>
+                                <Typography gutterBottom variant="h5" component="h2">
+                                    Titolo
+                                </Typography>
+                            </CardContent>
+                            <img src='https://picsum.photos/300/300' />
+                            <CardContent sx={{ flexGrow: 1 }}>
+                                <Typography variant='span'>
+                                    <b>City</b>
+                                    <br />
+                                    <i>Address</i>
+                                    <br />
+                                    Price€
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Button fullWidth>View</Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Card
+                            sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+                        >
+                            <CardContent sx={{ flexGrow: 1 }}>
+                                <Typography gutterBottom variant="h5" component="h2">
+                                    Titolo
+                                </Typography>
+                            </CardContent>
+                            <img src='https://picsum.photos/300/300' />
+                            <CardContent sx={{ flexGrow: 1 }}>
+                                <Typography variant='span'>
+                                    <b>City</b>
+                                    <br />
+                                    <i>Address</i>
+                                    <br />
+                                    Price€
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Button fullWidth>View</Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Card
+                            sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+                        >
+                            <CardContent sx={{ flexGrow: 1 }}>
+                                <Typography gutterBottom variant="h5" component="h2">
+                                    Titolo
+                                </Typography>
+                            </CardContent>
+                            <img src='https://picsum.photos/300/300' />
+                            <CardContent sx={{ flexGrow: 1 }}>
+                                <Typography variant='span'>
+                                    <b>City</b>
+                                    <br />
+                                    <i>Address</i>
+                                    <br />
+                                    Price€
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Button fullWidth>View</Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                </Grid>
+
+            </Container>
+
 
             <Box
-            sx={{
-                pt: 8,
-                pb: 6,
-            }}
-            >
-                <Container maxWidth="sm">
-                    <Typography
-                    component="h2"
-                    variant="h3"
-                    align="center"
-                    color="text.primary"
-                    gutterBottom
-                    >
-                        Top 3 Activities
-                    </Typography>
-                </Container>
-            </Box>
-
-            <Grid container spacing={4}>
-                <Grid item xs={12} sm={6} md={4}>
-                    <Card
-                        sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                    >
-                        <CardContent sx={{ flexGrow: 1 }}>
-                            <Typography gutterBottom variant="h5" component="h2">
-                                Titolo
-                            </Typography>
-                        </CardContent>
-                        <img src='https://picsum.photos/300/300'/>
-                        <CardContent sx={{ flexGrow: 1 }}>
-                            <Typography variant='span'>
-                                <b>City</b>
-                                <br />
-                                <i>Address</i>
-                                <br />
-                                Price€
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button fullWidth>View</Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
-
-                <Grid item xs={12} sm={6} md={4}>
-                    <Card
-                        sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                    >
-                        <CardContent sx={{ flexGrow: 1 }}>
-                            <Typography gutterBottom variant="h5" component="h2">
-                                Titolo
-                            </Typography>
-                        </CardContent>
-                        <img src='https://picsum.photos/300/300'/>
-                        <CardContent sx={{ flexGrow: 1 }}>
-                            <Typography variant='span'>
-                                <b>City</b>
-                                <br />
-                                <i>Address</i>
-                                <br />
-                                Price€
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button fullWidth>View</Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
-
-                <Grid item xs={12} sm={6} md={4}>
-                    <Card
-                        sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                    >
-                        <CardContent sx={{ flexGrow: 1 }}>
-                            <Typography gutterBottom variant="h5" component="h2">
-                                Titolo
-                            </Typography>
-                        </CardContent>
-                        <img src='https://picsum.photos/300/300'/>
-                        <CardContent sx={{ flexGrow: 1 }}>
-                            <Typography variant='span'>
-                                <b>City</b>
-                                <br />
-                                <i>Address</i>
-                                <br />
-                                Price€
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button fullWidth>View</Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
-            </Grid>
-
-        </Container>
-        
-
-        <Box
-        component="footer"
-        sx={{
-            py: 3,
-            px: 2,
-            mt: 'auto',
-        }}
-        />
-    </ThemeProvider>
+                component="footer"
+                sx={{
+                    py: 3,
+                    px: 2,
+                    mt: 'auto',
+                }}
+            />
+        </ThemeProvider>
     );
 }

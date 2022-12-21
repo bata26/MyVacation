@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import Config from '../utility/config';
 import ReactHtmlParser from 'react-html-parser';
-import api from "../api/api";
+import api from "../utility/api";
 import ReviewForm from '../components/reviewForm';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';

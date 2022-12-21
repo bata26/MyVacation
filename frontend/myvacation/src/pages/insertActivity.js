@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import ActivityForm from "../components/activityForm";
 import FileInput from "../components/inputFile";
 import FormData from 'form-data';
-import api from '../api/api';
+import api from '../utility/api';
 import {useNavigate} from "react-router-dom";
 import { convertFileToBase64 } from '../utility/utility';
 

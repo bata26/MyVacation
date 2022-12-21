@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import api from "../api/api"
+import api from "../utility/api"
 import {useState} from "react";
 import {useNavigate, useLocation } from 'react-router-dom';
 
