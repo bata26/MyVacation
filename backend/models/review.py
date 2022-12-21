@@ -16,7 +16,6 @@ class Review:
             "score" : self.score ,
             "description" : self.description,
             "reviewer" : self.reviewer
-
         }
 
         if hasattr(self , "_id"):

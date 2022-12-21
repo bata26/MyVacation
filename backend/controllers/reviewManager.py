@@ -13,14 +13,32 @@ class ReviewManager:
         collection = db[os.getenv("REVIEW_COLLECTION")]
         cursor = dict(collection.find_one({"_id" : ObjectId(reviewID)}))
         review = Review(
-            str(cursor["_id"]) ,
-            cursor["reviewerID"] ,
+            cursor["userID"] ,
             cursor["destinationID"] ,
-            cursor["host_name"] ,
             cursor["score"] ,
-            cursor["comment"] ,
-            cursor['reviewer'])
-        return Serializer.serializeReview(review)
+            cursor["description"] ,
+            cursor['reviewer'] ,
+            str(cursor["_id"]))
+        return Serializer.serializeReview(review)\
+
+    @staticmethod
+    def getReviewFromDestinationID(destinationID):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("REVIEW_COLLECTION")]
+        cursor = list(collection.find({"destinationID" : ObjectId(destinationID)}))
+        print(cursor)
+        result = []
+        for review in cursor:
+            reviewResult = Review(
+                str(review["userID"]) ,
+                str(review["destinationID"]) ,
+                review["score"] ,
+                review["description"] ,
+                review['reviewer'] ,
+                str(review['_id']))
+            result.append(Serializer.serializeReview(reviewResult))
+        return result
 
 
     @staticmethod
