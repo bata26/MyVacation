@@ -18,6 +18,7 @@ import  Accomodation from "./pages/accomodation";
 import  Activity from "./pages/activity";
 import InsertActivity from "./pages/insertActivity";
 import MyAdv from "./pages/myAdv";
+import ToApprove from "./pages/toApprove"
 
 function App() {
   useEffect(() => {
@@ -38,6 +39,10 @@ function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/accomodation/:accomodationID" element={<Accomodation />} />
+            {
+                localStorage.getItem("role") === "admin" &&
+                <Route path="/toApprove/:advertisementID" element={<ToApprove />} />
+            }
             <Route path="/insert/accomodation" element={<InsertAccomodation />} />
             <Route path="/insert/activity" element={<InsertActivity />} />
             <Route path="/edit/accomodation/:accomodationID" element={<InsertAccomodation />} />

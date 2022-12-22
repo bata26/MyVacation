@@ -11,7 +11,7 @@ from models.review import Review
 class AccomodationsManager:
 
     @staticmethod
-    def getAccomodationsFromId(accomodationID):
+    def getAccomodationFromId(accomodationID):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
@@ -141,7 +141,7 @@ class AccomodationsManager:
                 res = collection.delete_one({"_id": ObjectId(accomodationID)})
                 return res
             except Exception:
-                raise Exception("Impossibile inserire")
+                raise Exception("Impossibile eliminare")
 
     @staticmethod
     def addReview(review):

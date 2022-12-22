@@ -107,7 +107,7 @@ def deleteAccomodationById(accomodation_id, user={}):
 # @required_token
 def getAccomodationById(accomodation_id):
     accomodationId = escape(accomodation_id)
-    result = AccomodationsManager.getAccomodationsFromId(accomodationId)
+    result = AccomodationsManager.getAccomodationFromId(accomodationId)
     print(f"res : {result['_id']}")
     return result, 200
 
@@ -359,7 +359,6 @@ def getIfCanReview(destination_id, user={}):
 @application.route('/login', methods=['POST'])
 # @required_token
 def loginUser():
-    # print(request.)
     username = request.json["username"]
     password = request.json["password"]
     print(f"username : {username}")
@@ -422,24 +421,47 @@ def getUsers(user):
 
 @application.route('/admin/announcements', methods=['GET'])
 # @required_token
-def getAnnouncementToBeApproved():
+def getAnnouncementsToBeApproved():
     try:
         args = request.args
         index = args.get("index")
         direction = args.get("direction")
-        result = AdminManager.getAnnouncementToApprove(index, direction)
+        result = AdminManager.getAnnouncementsToApprove(index, direction)
+        return result, 200
+    except Exception as e:
+        return e, 500\
+
+@application.route('/admin/announcement/<announcementID>', methods=['GET'])
+# @required_token
+def getAnnouncementToBeApprovedByID(announcementID):
+    try:
+        if (not (validateObjecID(announcementID))):
+            return "Announcement non valido", 500
+        print(announcementID)
+        result = AdminManager.getAnnouncementToApproveByID(announcementID)
         return result, 200
     except Exception as e:
         return e, 500
 
 
-@application.route('/admin/announcements/<announcementID>', methods=['POST'])
-# @required_token
-def approveAnnouncement(announcementID):
+@application.route('/admin/announcement/<announcementID>', methods=['POST'])
+@required_token
+def approveAnnouncement(announcementID, user={}):
     if (not (validateObjecID(announcementID))):
         return "Announcement non valido", 500
     try:
-        AdminManager.approveAnnouncement(announcementID)
+        AdminManager.approveAnnouncement(announcementID, user)
+        return "", 200
+    except Exception as e:
+        return e, 500\
+
+@application.route('/admin/announcement/<announcementID>', methods=['DELETE'])
+@required_token
+def refuseAnnouncement(announcementID, user={}):
+    if (not (validateObjecID(announcementID))):
+        return "Announcement non valido", 500
+    try:
+        AdminManager.refuseAnnouncement(announcementID, user)
         return "", 200
     except Exception as e:
         return e, 500

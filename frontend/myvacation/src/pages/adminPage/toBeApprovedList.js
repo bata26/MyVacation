@@ -118,7 +118,7 @@ export default function ToBeApprovedList() {
                 </TableHead>
                 <TableBody>
                     { toBeApprovedList && toBeApprovedList.map((row) => (
-                        <TableRow key={row._id} onClick={()=>{navigate("/" + row.type + "/" + row._id)}} selected={true}>
+                        <TableRow key={row._id} onClick={()=>{navigate("/toApprove/" + row._id + "?type=" + row.type)}} selected={true}>
                             <TableCell component="th" scope="row">
                                 {row.host_id}
                             </TableCell>
