@@ -194,7 +194,7 @@ export default function UsersList() {
                 </TableHead>
                 <TableBody>
                     { userList && userList.map((row) => (
-                        <TableRow key={row._id} onClick={()=>{navigate("/profile/"+row._id)}} selected={true}>
+                        <TableRow key={row._id} onClick={()=>{navigate("/profile?userId="+row._id)}} selected={true}>
                             <TableCell component="th" scope="row">
                                 {row.name}
                             </TableCell>

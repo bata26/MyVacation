@@ -158,10 +158,12 @@ def bookActivity(user={}):
         return str(e), 500
 
 
-@application.route('/reservations', methods=['GET'])
-@required_token
-def getReservationsByUserID(user={}):
-    result = ReservationManager.getReservationsByUser(user["_id"])
+@application.route('/reservations/<user_id>', methods=['GET'])
+#@required_token
+def getReservationsByUserID(user_id):
+    userID = escape(user_id)
+    print(userID)
+    result = ReservationManager.getReservationsByUser(userID)
     return result, 200
 
 

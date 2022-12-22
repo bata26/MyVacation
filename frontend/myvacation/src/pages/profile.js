@@ -16,14 +16,16 @@ import Container from '@mui/material/Container';
 import api from "../utility/api";
 import Moment from 'moment';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useParams } from 'react-router-dom';
+import {useParams, useSearchParams} from 'react-router-dom';
 
 const theme = createTheme();
 
 const Profile = () => {
   const [profile, setProfile] = React.useState(null);
   let [reservations, setReservations] = React.useState([]);
-  const profileID = localStorage.getItem("userID");
+  const [searchParams] = useSearchParams();
+  const profileID = searchParams.get("userId") != null ? searchParams.get("userId") : localStorage.getItem("userID");
+
   React.useEffect(() => {
     //Richiesta per recuperare le informazioni dell'utente
     api.get("/users/" + profileID)
@@ -35,7 +37,7 @@ const Profile = () => {
       });
 
     //Richiesta per recuperare le prenotazioni
-    api.get("/reservations")
+    api.get("/reservations/" + profileID)
       .then(function (response) {
         setReservations(response.data);
         console.log(response.data);

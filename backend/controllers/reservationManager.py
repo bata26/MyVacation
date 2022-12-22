@@ -16,7 +16,6 @@ class ReservationManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
-
         try:
             res = collection.insert_one(reservation.getDictToUpload())
             return res.inserted_id
@@ -41,6 +40,7 @@ class ReservationManager:
                         reservation['totalExpense'],
                         reservation["city"],                        
                         str(reservation["hostID"]),
+                        "",
                         _id = str(reservation['_id']))
                     result.append(Serializer.serializeReservation(activityResult))
                 else:
