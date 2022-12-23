@@ -319,11 +319,6 @@ def insertReview(user={}):
                     requestBody["score"],
                     requestBody["description"],
                     reviewer)
-    print("nell'endpoint")
-    print(f"user : {user}")
-    print(f"type : {destinationType}")
-    print(f"reviewer : {reviewer}")
-
     try:
         insertedID = ReviewManager.insertNewReview(review)
         review._id = insertedID
@@ -348,12 +343,9 @@ def deleteReviewByID(reviewID, user={}):
 
 
 @application.route('/users/<user_id>', methods=['DELETE'])
-# @required_token
-def deleteUserById(user_id):
+@required_token
+def deleteUserById(user_id , user={}):
     userId = escape(user_id)
-    user = {
-        "type": "admin"
-    }
     result = AdminManager.deleteUser(userId, user)
     return "", 200
 
