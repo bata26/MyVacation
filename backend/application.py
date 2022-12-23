@@ -137,6 +137,26 @@ def bookAccomodation(user={}):
         print("Errore: " + str(e))
         return str(e), 500
 
+@application.route('/reservation/<reservation_id>', methods=['PATCH'])
+@required_token
+def updateReservation(reservation_id, user={}):
+    requestBody = request.json
+    type = requestBody["type"]
+    startDate = requestBody["startDate"]
+    endDate = None
+    reservationID = escape(reservation_id)
+    if (type == "accomodation"):
+        endDate = requestBody["endDate"]
+
+    print(f"type : {type}")
+    print(f"startDate : {startDate}")
+    print(f"endDate : {endDate}")
+    print(f"reservationId : {reservationID}")
+    try:
+        ReservationManager.updateReservation(startDate, endDate, type, reservationID)
+        return "", 200
+    except Exception as e:
+        return e, 500 \
 
 @application.route('/book/activity', methods=['POST'])
 @required_token

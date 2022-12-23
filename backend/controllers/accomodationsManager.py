@@ -62,14 +62,14 @@ class AccomodationsManager:
             # ottengo una lista di id di accomodations non occupate
             # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
             collection = db[os.getenv("RESERVATIONS_COLLECTION")]
-            occupiedAccomodationsID = collection.distinct("destinationId", {"$or": [
+            occupiedAccomodationsID = collection.distinct("destinationID", {"$or": [
                 {"$and": [
-                    {"start_date": {"$lte": end_date}},
-                    {"start_date": {"$gte": start_date}}
+                    {"startDate": {"$lte": dateparser.parse(end_date)}},
+                    {"startDate": {"$gte": dateparser.parse(start_date)}}
                 ]},
                 {"$and": [
-                    {"end_date": {"$lte": end_date}},
-                    {"end_date": {"$gte": start_date}}
+                    {"endDate": {"$lte": dateparser.parse(end_date)}},
+                    {"endDate": {"$gte": dateparser.parse(start_date)}}
                 ]}
             ]})
         query["_id"] = {}

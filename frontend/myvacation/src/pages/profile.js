@@ -16,7 +16,9 @@ import Container from '@mui/material/Container';
 import api from "../utility/api";
 import Moment from 'moment';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditReservationModal from "../components/editReservationModal";
 import {useParams, useSearchParams} from 'react-router-dom';
+
 
 const theme = createTheme();
 
@@ -24,7 +26,8 @@ const Profile = () => {
   const [profile, setProfile] = React.useState(null);
   let [reservations, setReservations] = React.useState([]);
   const [searchParams] = useSearchParams();
-  const profileID = searchParams.get("userId") != null ? searchParams.get("userId") : localStorage.getItem("userID");
+  //TODO FIXARE STA ROBA
+  const profileID = (searchParams.get("userId") != null && localStorage.getItem("role") === "admin") ? searchParams.get("userId") : localStorage.getItem("userID");
 
   React.useEffect(() => {
     //Richiesta per recuperare le informazioni dell'utente
@@ -60,7 +63,6 @@ const Profile = () => {
       });
     window.location.reload(false);
   }
-
 
   return (
     <ThemeProvider theme={theme}>
@@ -188,6 +190,11 @@ const Profile = () => {
                   <TableCell align='right'>
                     <DeleteIcon color='error' style={{ cursor: "pointer" }} onClick={() => { deleteReservation(item._id) }}></DeleteIcon>
                   </TableCell>
+                  {profileID === localStorage.getItem("userID") ?
+                      (<TableCell align='right'>
+                        <EditReservationModal type={item.destinationType} endDateProp={item.endDate} startDateProp={item.startDate} reservationId={item._id}></EditReservationModal>
+                      </TableCell>
+                      ) : <></>}
                 </TableRow>
               ))}
             </TableBody>

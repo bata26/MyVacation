@@ -71,7 +71,7 @@ class ActivityManager:
             query["accomodates"]["$gte"] = guestNumbers
 
         # Deve essere stato inserito il periodo di svolgimento
-        if (start_date != ""):
+        if (start_date != "" and start_date != None):
             collection = db[os.getenv("RESERVATIONS_COLLECTION")]
             occupiedActivitiesID = collection.distinct("destinationId",
                                                        {"startDate": start_date}
