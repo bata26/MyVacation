@@ -158,9 +158,10 @@ def updateReservation(reservation_id, user={}):
     try:
         ReservationManager.updateReservation(
             startDate, endDate, type, reservationID, destinationID)
+        # se la update è andata bene, aggiorno anche la collection accomodation/activi
         return "", 200
     except Exception as e:
-        return e, 500 \
+        return e, 500
 
 
 
@@ -296,7 +297,7 @@ def insertActivity():
 def getReviewByID(review_id):
     reviewID = escape(review_id)
     result = ReviewManager.getReviewFromID(reviewID)
-    return result, 200\
+    return result, 200
 
 
 
@@ -461,7 +462,7 @@ def getAnnouncementsToBeApproved():
         result = AdminManager.getAnnouncementsToApprove(index, direction)
         return result, 200
     except Exception as e:
-        return e, 500\
+        return e, 500
 
 
 
@@ -487,7 +488,7 @@ def approveAnnouncement(announcementID, user={}):
         AdminManager.approveAnnouncement(announcementID, user)
         return "", 200
     except Exception as e:
-        return e, 500\
+        return e, 500
 
 
 
