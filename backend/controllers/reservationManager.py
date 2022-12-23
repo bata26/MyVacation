@@ -59,7 +59,7 @@ class ReservationManager:
             raise Exception("Impossibile ottenere prenotazioni: " + str(e))
 
     @staticmethod
-    def updateReservation(startDate, endDate, type, reservationID):
+    def updateReservation(startDate, endDate, type, reservationID , destinationID):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
@@ -80,26 +80,29 @@ class ReservationManager:
                         {"endDate": {"$gte": dateparser.parse(startDate)}}
                     ]}
                     ]})
+
+                    if ObjectId(destinationID) in occupiedAccomodationsID:
+                        raise Exception("Accomodation Occupata, impossibile aggiornare")
+
                     print("DEBUG2")
-                    query = { '$match': { '$and': [ { '_id': ObjectId(reservationID) }, { 'destinationID': { '$nin': occupiedAccomodationsID } } ] } }
+                    query = { '_id': ObjectId(reservationID) }
                     #query["_id"] = ObjectId(reservationID)
                     print("DEBUG3")
                     print(query)
                     #query["destinationID"]["$nin"] = occupiedAccomodationsID
                     result = collection.update_one({query}, {"$set": {'startDate': dateparser.parse(startDate), 'endDate': dateparser.parse(endDate)}})
                     print("DEBUG4")
+                    return result
             if(type == "activity"):
                 if (startDate != "" and startDate != None):
-                    occupiedActivitiesID = collection.distinct("destinationID",
-                                                       {"startDate": dateparser.parse(startDate)}
-                                                       )
+                    occupiedActivitiesID = collection.distinct("_id" , {"destinationID" : ObjectId(destinationID) , "startDate": dateparser.parse(startDate)})
+                    
+                    if len(occupiedActivitiesID) != 0:
+                        raise Exception("Accomodation Occupata, impossibile aggiornare")
+
                     query["_id"] = ObjectId(reservationID)
-                    query["destinationID"]["$nin"] = occupiedActivitiesID
                     result = collection.update_one({query}, {"$set": {'startDate': dateparser.parse(startDate)}})
-            if(result.matched_count == 0):
-                raise Exception ("Impossibile aggiornare la prenotazione alle date inserite")
-            else:
-                return result
+                    return result
         except Exception as e:
             raise Exception("Impossibile aggiornare prenotazione "+reservationID+": " + str(e))
 

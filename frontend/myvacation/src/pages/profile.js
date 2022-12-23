@@ -192,7 +192,7 @@ const Profile = () => {
                   </TableCell>
                   {profileID === localStorage.getItem("userID") ?
                       (<TableCell align='right'>
-                        <EditReservationModal type={item.destinationType} endDateProp={item.endDate} startDateProp={item.startDate} reservationId={item._id}></EditReservationModal>
+                        <EditReservationModal type={item.destinationType} endDateProp={item.endDate} startDateProp={item.startDate} reservationId={item._id} destinationID={item.destinationID}></EditReservationModal>
                       </TableCell>
                       ) : <></>}
                 </TableRow>

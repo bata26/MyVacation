@@ -27,7 +27,7 @@ const style = {
 };
 
 
-const EditReservationModal = ({type , startDateProp, endDateProp, reservationId}) => {
+const EditReservationModal = ({type , startDateProp, endDateProp, reservationId , destinationID}) => {
     const [open, setOpen] = React.useState(false);
     const [startDate, setStartDate] = React.useState(startDateProp);
     const [endDate, setEndDate] = React.useState(endDateProp);
@@ -61,13 +61,15 @@ const EditReservationModal = ({type , startDateProp, endDateProp, reservationId}
             updatedData = {
                 "startDate": data.get("startDate"),
                 "endDate": data.get("endDate"),
-                "type" : type
+                "type" : type,
+                "destinationID" : destinationID
             }
         }
         else {
             updatedData = {
                 "startDate": data.get("startDate"),
-                "type" : type
+                "type" : type,
+                "destinationID" : destinationID
             }
         }
 

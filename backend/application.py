@@ -137,14 +137,17 @@ def bookAccomodation(user={}):
         print("Errore: " + str(e))
         return str(e), 500
 
+
 @application.route('/reservation/<reservation_id>', methods=['PATCH'])
 @required_token
 def updateReservation(reservation_id, user={}):
     requestBody = request.json
     type = requestBody["type"]
     startDate = requestBody["startDate"]
+    destinationID = requestBody["destinationID"]
     endDate = None
     reservationID = escape(reservation_id)
+
     if (type == "accomodation"):
         endDate = requestBody["endDate"]
 
@@ -153,10 +156,13 @@ def updateReservation(reservation_id, user={}):
     print(f"endDate : {endDate}")
     print(f"reservationId : {reservationID}")
     try:
-        ReservationManager.updateReservation(startDate, endDate, type, reservationID)
+        ReservationManager.updateReservation(
+            startDate, endDate, type, reservationID, destinationID)
         return "", 200
     except Exception as e:
         return e, 500 \
+
+
 
 @application.route('/book/activity', methods=['POST'])
 @required_token
@@ -179,7 +185,7 @@ def bookActivity(user={}):
 
 
 @application.route('/reservations/<user_id>', methods=['GET'])
-#@required_token
+# @required_token
 def getReservationsByUserID(user_id):
     userID = escape(user_id)
     print(userID)
@@ -292,6 +298,8 @@ def getReviewByID(review_id):
     result = ReviewManager.getReviewFromID(reviewID)
     return result, 200\
 
+
+
 @application.route('/reviewsByDestination/<destination_id>', methods=['GET'])
 # @required_token
 def getReviewByAd(destination_id):
@@ -386,7 +394,8 @@ def loginUser():
     print(f"username : {username}")
     print(f"password : {password}")
     try:
-        userID, userType, name = UserManager.authenicateUser(username, password)
+        userID, userType, name = UserManager.authenicateUser(
+            username, password)
         return {"userID": userID, "role": userType, "name": name}, 200
     except Exception as e:
         return str(e), 500
@@ -437,7 +446,8 @@ def getUsers(user):
     index = args.get("index")
     direction = args.get("direction")
     print(f"user : {user}")
-    result = AdminManager.getFilteredUsers(user, id, name, surname, index, direction)
+    result = AdminManager.getFilteredUsers(
+        user, id, name, surname, index, direction)
     return result, 200
 
 
@@ -452,6 +462,8 @@ def getAnnouncementsToBeApproved():
         return result, 200
     except Exception as e:
         return e, 500\
+
+
 
 @application.route('/admin/announcement/<announcementID>', methods=['GET'])
 # @required_token
@@ -476,6 +488,8 @@ def approveAnnouncement(announcementID, user={}):
         return "", 200
     except Exception as e:
         return e, 500\
+
+
 
 @application.route('/admin/announcement/<announcementID>', methods=['DELETE'])
 @required_token
