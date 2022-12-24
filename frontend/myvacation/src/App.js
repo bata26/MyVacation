@@ -42,6 +42,10 @@ function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/accomodation/:accomodationID" element={<Accomodation />} />
+            {
+                localStorage.getItem("role") === "admin" &&
+                <Route path="/toApprove/:advertisementID" element={<ToApprove />} />
+            }
             <Route path="/toApprove/:advertisementID" element={localStorage.getItem("role") === "admin" ? <ToApprove /> : <Unauthorized/>} />
             <Route path="/insert/accomodation" element={localStorage.getItem("userID") != null ? <InsertAccomodation /> : <Unauthorized/>} />
             <Route path="/insert/activity" element={localStorage.getItem("userID") != null ? <InsertActivity /> : <Unauthorized/>} />

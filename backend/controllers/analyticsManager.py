@@ -152,6 +152,9 @@ class AnalyticsManager:
                 {"$sort": {"count": -1}},
                 {"$limit": 3}
                 ]))
+        except Exception as e:
+            raise Exception("Impossibile eseguire la query: " + str(e))
+
     @staticmethod
     def getAccomodationAverageCost(user):
         client = MongoManager.getInstance()

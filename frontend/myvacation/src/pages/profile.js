@@ -77,6 +77,16 @@ const Profile = () => {
       .catch(function (error) {
         console.log(error);
       });
+      window.location.reload(false);
+    }
+    const deleteProfile = async (profileID) => {
+      await api.delete("/users/" + profileID)
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
       navigate("/admin");
   }
 

@@ -43,9 +43,11 @@ const EditAccomodation = () => {
 		//console.log("form: ", data.get("bedrooms"));
 		//const headers = { 'Content-type': 'multipart/form-data' };
 		const result = await api.post('/edit/accomodations/' + accomodationID,
-			data).then(function (response) {
+			data,
+		)
+			.then(function (response) {
 				console.log(response.data);
-				navigate("/myadv");
+				navigate("/accomodation/" + response.data.accomodationID);
 			})
 			.catch(function (error) {
 				console.log("errore");
@@ -70,7 +72,7 @@ const EditAccomodation = () => {
 							color="text.primary"
 							gutterBottom
 						>
-							Edit accomodation
+							Insert accomodation
 						</Typography>
 					</Container>
 				</Box>
@@ -98,4 +100,5 @@ const EditAccomodation = () => {
 	);
 };
 
+export default EditAccomodation;
 export default EditAccomodation;
