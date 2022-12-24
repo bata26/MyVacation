@@ -103,6 +103,16 @@ def deleteAccomodationById(accomodation_id, user={}):
     return "", 200
 
 
+@application.route('/edit/accomodations/<accomodationID>', methods=['POST'])
+@required_token
+def editAccomodationById(accomodationID, user={}):
+    print("dentro")
+    formData = dict(request.form)
+    result = AccomodationsManager.editAccomodation(
+        accomodationID, formData, user)
+    return "", 200
+
+
 @application.route('/accomodations/<accomodation_id>', methods=['GET'])
 # @required_token
 def getAccomodationById(accomodation_id):
@@ -164,7 +174,6 @@ def updateReservation(reservation_id, user={}):
         return e, 500
 
 
-
 @application.route('/book/activity', methods=['POST'])
 @required_token
 def bookActivity(user={}):
@@ -219,10 +228,9 @@ def getAccomodations():
 
 
 @application.route('/insert/accomodation', methods=['POST'])
-# @required_token
+@required_token
 # TODO Da rivedere
-def insertAccomodation():
-    global user
+def insertAccomodationus(user={}):
     formData = dict(request.form)
     host = UserManager.getUserFromId(user["_id"])
     pictures = []
@@ -299,6 +307,7 @@ def getReviewByID(review_id):
     result = ReviewManager.getReviewFromID(reviewID)
     return result, 200
 
+
 @application.route('/reviewsByDestination/<destination_id>', methods=['GET'])
 # @required_token
 def getReviewByAd(destination_id):
@@ -344,7 +353,7 @@ def deleteReviewByID(reviewID, user={}):
 
 @application.route('/users/<user_id>', methods=['DELETE'])
 @required_token
-def deleteUserById(user_id , user={}):
+def deleteUserById(user_id, user={}):
     userId = escape(user_id)
     result = AdminManager.deleteUser(userId, user)
     return "", 200
@@ -452,7 +461,6 @@ def getAnnouncementsToBeApproved():
         return e, 500
 
 
-
 @application.route('/admin/announcement/<announcementID>', methods=['GET'])
 # @required_token
 def getAnnouncementToBeApprovedByID(announcementID):
@@ -476,7 +484,6 @@ def approveAnnouncement(announcementID, user={}):
         return "", 200
     except Exception as e:
         return e, 500
-
 
 
 @application.route('/admin/announcement/<announcementID>', methods=['DELETE'])

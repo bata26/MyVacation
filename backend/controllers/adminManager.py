@@ -34,11 +34,15 @@ class AdminManager():
 
         if index == "":
             # When it is first page
-            users = collection.find().sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
+            users = collection.find(query).sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
         else:
             if (direction == "next"):
+                query["_id"] = {}
+                query["_id"]["$gt"] = ObjectId(index)
                 users = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
             elif (direction == "previous"):
+                query["_id"] = {}
+                query["_id"]["$lt"] = ObjectId(index)
                 users = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
 
         for user in users:
@@ -198,7 +202,7 @@ class AdminManager():
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("USERS_COLLECTION")]
 
-        if (user["type"] != "admin"):
+        if (user["role"] != "admin"):
             raise Exception("L'utente non possiede i privilegi di admin")
         try:
             res = collection.delete_one({"_id" : ObjectId(userID)})

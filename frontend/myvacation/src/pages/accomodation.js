@@ -34,9 +34,6 @@ const Accomodation = () => {
   React.useEffect(() => {
     api.get("/accomodations/" + accomodationID)
       .then(function (response) {
-          console.log(response.data)
-          console.log(response.data.reviews.length)
-          console.log(parseInt(process.env.REACT_APP_REVIEWS_SIZE))
           setAccomodation(response.data);
           setReviews(response.data.reviews)
           if(response.data.reviews.length >= parseInt(process.env.REACT_APP_REVIEWS_SIZE))

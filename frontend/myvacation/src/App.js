@@ -9,16 +9,17 @@ import ResponsiveAppBar from "./components/navBar.js";
 import {useEffect} from 'react';
 import SignUp from "./pages/signUp";
 import Profile from "./pages/profile";
-import Home from "./pages/home"
-import Checkout from "./pages/checkout"
-import Search from "./pages/search"
+import Home from "./pages/home";
+import Checkout from "./pages/checkout";
+import Search from "./pages/search";
+import EditAccomodation from "./pages/editAccomodation";
 import AdminPage from "./pages/adminPage/adminPage";
 import InsertAccomodation from "./pages/insertAccomodation";
 import  Accomodation from "./pages/accomodation";
 import  Activity from "./pages/activity";
 import InsertActivity from "./pages/insertActivity";
 import MyAdv from "./pages/myAdv";
-import ToApprove from "./pages/toApprove"
+import ToApprove from "./pages/toApprove";
 
 function App() {
   useEffect(() => {
@@ -45,7 +46,7 @@ function App() {
             }
             <Route path="/insert/accomodation" element={<InsertAccomodation />} />
             <Route path="/insert/activity" element={<InsertActivity />} />
-            <Route path="/edit/accomodation/:accomodationID" element={<InsertAccomodation />} />
+            <Route path="/edit/accomodation/:accomodationID" element={<EditAccomodation />} />
             <Route path="/activity/:activityID" element={<Activity />} />
             <Route path="/admin" element={<AdminPage />} />
         </Routes>

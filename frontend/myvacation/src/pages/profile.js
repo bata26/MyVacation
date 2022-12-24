@@ -17,7 +17,8 @@ import api from "../utility/api";
 import Moment from 'moment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditReservationModal from "../components/editReservationModal";
-import {useParams, useSearchParams} from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import Button from '@mui/material/Button';
 
 
 const theme = createTheme();
@@ -26,6 +27,7 @@ const Profile = () => {
   const [profile, setProfile] = React.useState(null);
   let [reservations, setReservations] = React.useState([]);
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   //TODO FIXARE STA ROBA
   const profileID = (searchParams.get("userId") != null && localStorage.getItem("role") === "admin") ? searchParams.get("userId") : localStorage.getItem("userID");
 
@@ -61,7 +63,17 @@ const Profile = () => {
       .catch(function (error) {
         console.log(error);
       });
-    window.location.reload(false);
+      window.location.reload(false);
+    }
+    const deleteProfile = async (profileID) => {
+      await api.delete("/users/" + profileID)
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      navigate("/admin");
   }
 
   return (
@@ -144,6 +156,14 @@ const Profile = () => {
             </Grid>
           </Box>
         </Box>
+        {localStorage.getItem("role") == "admin" ? (
+          <Button fullWidth
+            variant="contained"
+            color='error'
+            onClick={() => { deleteProfile(profile._id) }}>elimina profilo</Button>
+        ) : <></>
+        }
+
       </Container>
 
       <Box
@@ -191,10 +211,10 @@ const Profile = () => {
                     <DeleteIcon color='error' style={{ cursor: "pointer" }} onClick={() => { deleteReservation(item._id) }}></DeleteIcon>
                   </TableCell>
                   {profileID === localStorage.getItem("userID") ?
-                      (<TableCell align='right'>
-                        <EditReservationModal type={item.destinationType} endDateProp={item.endDate} startDateProp={item.startDate} reservationId={item._id} destinationID={item.destinationID}></EditReservationModal>
-                      </TableCell>
-                      ) : <></>}
+                    (<TableCell align='right'>
+                      <EditReservationModal type={item.destinationType} endDateProp={item.endDate} startDateProp={item.startDate} reservationId={item._id} destinationID={item.destinationID}></EditReservationModal>
+                    </TableCell>
+                    ) : <></>}
                 </TableRow>
               ))}
             </TableBody>

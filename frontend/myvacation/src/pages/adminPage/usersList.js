@@ -31,6 +31,7 @@ export default function UsersList() {
 
 
     React.useEffect(() => {
+        console.log("env: " , process.env.REACT_APP_ADMIN_PAGE_SIZE);
         api.get("/users?index=")
             .then(function (response) {
                 console.log(response.data);

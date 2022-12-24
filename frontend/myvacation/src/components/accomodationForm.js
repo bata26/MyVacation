@@ -1,28 +1,36 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
+import TextField from '@mui/material/TextField'
 import FileInput from "./inputFile";
 import Container from '@mui/material/Container';
 
-const AccomodationForm = () => {
+const AccomodationForm = ({ accomodation = null }) => {
 
     return (
 
         <Container maxWidth='md'>
             <FileInput fullWidth label="Images" />
-
             <TextField
+                multiline
+                InputLabelProps={{
+                    shrink: accomodation ? true : false,
+                }}
+                defaultValue={accomodation ? accomodation.name : undefined}
                 margin="normal"
                 required
                 fullWidth
-                name="name"
-                label="Name"
-                type="name"
                 id="name"
+                label="Name"
+                name="name"
                 autoFocus
             />
 
             <TextField
+                multiline
+                InputLabelProps={{
+                    shrink: accomodation ? true : false,
+                }}
+                defaultValue={accomodation ? accomodation.description : undefined}
                 margin="normal"
                 required
                 fullWidth
@@ -32,6 +40,11 @@ const AccomodationForm = () => {
             />
 
             <TextField
+                multiline
+                InputLabelProps={{
+                    shrink: accomodation ? true : false,
+                }}
+                defaultValue={accomodation ? accomodation.location.address : undefined}
                 margin="normal"
                 required
                 fullWidth
@@ -41,6 +54,11 @@ const AccomodationForm = () => {
             />
 
             <TextField
+                multiline
+                InputLabelProps={{
+                    shrink: accomodation ? true : false,
+                }}
+                defaultValue={accomodation ? accomodation.location.city : undefined}
                 margin="normal"
                 required
                 fullWidth
@@ -49,6 +67,11 @@ const AccomodationForm = () => {
                 id="city"
             />
             <TextField
+                multiline
+                InputLabelProps={{
+                    shrink: accomodation ? true : false,
+                }}
+                defaultValue={accomodation ? accomodation.location.country : undefined}
                 margin="normal"
                 required
                 fullWidth
@@ -62,6 +85,11 @@ const AccomodationForm = () => {
                 <Grid item xs={4} sm={4}>
 
                     <TextField
+                        multiline
+                        InputLabelProps={{
+                            shrink: accomodation ? true : false,
+                        }}
+                        defaultValue={accomodation ? accomodation.property_type : undefined}
                         margin="normal"
                         required
                         fullWidth
@@ -72,6 +100,11 @@ const AccomodationForm = () => {
                 </Grid>
                 <Grid item xs={4} sm={4}>
                     <TextField
+                        multiline
+                        InputLabelProps={{
+                            shrink: accomodation ? true : false,
+                        }}
+                        defaultValue={accomodation ? accomodation.accommodates : undefined}
                         margin="normal"
                         required
                         fullWidth
@@ -84,6 +117,11 @@ const AccomodationForm = () => {
                 <Grid item xs={4} sm={4}>
 
                     <TextField
+                        multiline
+                        InputLabelProps={{
+                            shrink: accomodation ? true : false,
+                        }}
+                        defaultValue={accomodation ? accomodation.beds : undefined}
                         margin="normal"
                         required
                         fullWidth
@@ -96,6 +134,11 @@ const AccomodationForm = () => {
                 <Grid item xs={4} sm={4}>
 
                     <TextField
+                        multiline
+                        InputLabelProps={{
+                            shrink: accomodation ? true : false,
+                        }}
+                        defaultValue={accomodation ? accomodation.price : undefined}
                         margin="normal"
                         required
                         fullWidth
@@ -108,6 +151,11 @@ const AccomodationForm = () => {
                 <Grid item xs={4} sm={4}>
 
                     <TextField
+                        multiline
+                        InputLabelProps={{
+                            shrink: accomodation ? true : false,
+                        }}
+                        defaultValue={accomodation ? accomodation.minimum_nights : undefined}
                         margin="normal"
                         required
                         fullWidth
@@ -120,6 +168,11 @@ const AccomodationForm = () => {
                 <Grid item xs={4} sm={4}>
 
                     <TextField
+                        multiline
+                        InputLabelProps={{
+                            shrink: accomodation ? true : false,
+                        }}
+                        defaultValue={accomodation ? accomodation.bedrooms : undefined} 
                         margin="normal"
                         required
                         fullWidth

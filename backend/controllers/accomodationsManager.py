@@ -9,7 +9,17 @@ from models.review import Review
 
 
 class AccomodationsManager:
+    @staticmethod
+    def editAccomodation(accomodationID , accomodation,  user):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
 
+        try:
+            collection.update_one({"_id" : ObjectId(accomodationID)} , {"$set" : accomodation})
+        except Exception as e:
+            raise Exception("Impossibile aggiornare: " + str(e))
+    
     @staticmethod
     def getAccomodationFromId(accomodationID):
         client = MongoManager.getInstance()
