@@ -242,10 +242,10 @@ const Profile = () => {
                     <DeleteIcon color='error' style={{ cursor: "pointer" }} onClick={() => { deleteReservation(item._id) }}></DeleteIcon>
                   </TableCell>
                   {profileID === localStorage.getItem("userID") ?
-                    (<TableCell align='right'>
-                      <EditReservationModal type={item.destinationType} endDateProp={item.endDate} startDateProp={item.startDate} reservationId={item._id} destinationID={item.destinationID}></EditReservationModal>
-                    </TableCell>
-                    ) : <></>}
+                      (<TableCell align='right'>
+                        <EditReservationModal reservation={item}></EditReservationModal>
+                      </TableCell>
+                      ) : <></>}
                 </TableRow>
               ))}
             </TableBody>

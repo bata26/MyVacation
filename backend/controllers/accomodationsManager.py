@@ -216,6 +216,25 @@ class AccomodationsManager:
             raise Exception("Impossibile aggiungere la reservation: " + str(e))
 
     @staticmethod
+    def updateReservation(reservation, newStartDate, newEndDate):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        prevStartDate = reservation["startDate"]
+        prevEndDate = reservation["endDate"]
+        prevTotalExpense = int(reservation["totalExpense"])
+        price = prevTotalExpense/((dateparser.parse(prevEndDate) - dateparser.parse(prevStartDate)).days)
+        newNightNumber = (((dateparser.parse(newEndDate) - dateparser.parse(newStartDate)).days))
+        newTotalExpense = newNightNumber*price
+
+        try:
+            collection.update_one({"reservations._id": ObjectId(reservation['_id'])}, {
+                                  "$set": {"reservations.$.startDate": dateparser.parse(newStartDate), "reservations.$.endDate": dateparser.parse(newEndDate),
+                                           "reservations.$.totalExpense": newTotalExpense}})
+        except Exception as e:
+            raise Exception("Impossibile aggiornare la reservation: " + str(e))
+
+    @staticmethod
     def getAccomodationsByUserID(userID):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
@@ -249,3 +268,4 @@ class AccomodationsManager:
             return result
         except Exception as e:
             raise Exception("Impossibile ottenere prenotazioni: " + str(e))
+

@@ -26,19 +26,15 @@ const style = {
 };
 
 
-const EditReservationModal = ({type , startDateProp, endDateProp, reservationId , destinationID}) => {
+const EditReservationModal = ({reservation}) => {
     const [open, setOpen] = React.useState(false);
-    const [startDate, setStartDate] = React.useState(startDateProp);
-    const [endDate, setEndDate] = React.useState(endDateProp);
+    const [startDate, setStartDate] = React.useState(reservation.startDate);
+    const [endDate, setEndDate] = React.useState(reservation.endDate);
     const today = new Date();
     const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     const navigate = useNavigate();
 
-    const handleOpen = () => {
-        setOpen(true)
-        console.log(type)
-        console.log(startDateProp)
-        console.log(endDateProp)};
+    const handleOpen = () => setOpen(true);
 
     const handleClose = () => setOpen(false);
 
@@ -56,30 +52,30 @@ const EditReservationModal = ({type , startDateProp, endDateProp, reservationId 
         const data = new FormData(event.currentTarget);
         console.log(data);
         let updatedData;
-        if(type === "accomodation") {
+        if(reservation.destinationType === "accomodation") {
             updatedData = {
                 "startDate": data.get("startDate"),
                 "endDate": data.get("endDate"),
-                "type" : type,
-                "destinationID" : destinationID
+                "reservation" : reservation
             }
+            console.log(updatedData)
         }
         else {
             updatedData = {
                 "startDate": data.get("startDate"),
-                "type" : type,
-                "destinationID" : destinationID
+                "reservation" : reservation
             }
         }
 
-        api.patch("/reservation/" + reservationId , updatedData)
+        api.patch("/reservation/" + reservation._id , updatedData)
             .then(function(response){
                 alert("Reservation updated correctly");
                 setOpen(false);
-                navigate("/profile")
+                window.location.reload(true);
             })
             .catch(function(error){
                 console.log(error);
+                alert("Already booked for this period/date");
             })
     }
 
@@ -102,19 +98,21 @@ const EditReservationModal = ({type , startDateProp, endDateProp, reservationId 
                             id="startDate"
                             name="startDate"
                             type="text"
+                            required={true}
                             onFocus={(e) => (e.target.type = "date")}
                             onBlur={(e) => (e.target.type = "text")}
-                            placeholder={Moment(startDateProp).utc().format('MMM DD YYYY')}
+                            placeholder={Moment(reservation.startDate).utc().format('MMM DD YYYY')}
                             onChange={onChangeStartDate}
                             InputProps={{ inputProps: { min:`${date}`, max:""} }}
                             style={{width:100+'%', marginTop:10}}
                         />
-                    {type === "accomodation" ?
+                    {reservation.destinationType === "accomodation" ?
                         (<TextField
                             fullWidth
                             id="endDate"
                             name="endDate"
                             type="text"
+                            required={true}
                             onChange={onChangeEndDate}
                             onFocus={(e) => (e.target.type = "date")}
                             onBlur={(e) => (e.target.type = "text")}

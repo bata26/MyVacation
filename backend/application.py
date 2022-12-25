@@ -217,19 +217,18 @@ def bookAccomodation(user={}):
 @required_token
 def updateReservation(reservation_id, user={}):
     requestBody = request.json
-    type = requestBody["type"]
-    startDate = requestBody["startDate"]
-    destinationID = requestBody["destinationID"]
-    endDate = None
-    reservationID = escape(reservation_id)
-
-    if (type == "accomodation"):
-        endDate = requestBody["endDate"]
-
+    newStartDate = requestBody["startDate"]
+    reservation = requestBody["reservation"]
+    newEndDate = None
+    print(reservation)
+    if (reservation['destinationType'] == "accomodation"):
+        newEndDate = requestBody["endDate"]
     try:
-        ReservationManager.updateReservation(
-            startDate, endDate, type, reservationID, destinationID)
-        # se la update è andata bene, aggiorno anche la collection accomodation/activi
+        ReservationManager.updateReservation(reservation, newStartDate, newEndDate)
+        if(reservation['destinationType'] == "accomodation"):
+            AccomodationsManager.updateReservation(reservation, newStartDate, newEndDate)
+        else:
+             ActivityManager.updateReservation(reservation, newStartDate)
         return "", 200
     except Exception as e:
         return e, 500

@@ -3,7 +3,7 @@ import os
 from models.activity import Activity
 from bson.objectid import ObjectId
 from utility.serializer import Serializer
-
+import dateparser
 
 class ActivityManager:
 
@@ -185,6 +185,16 @@ class ActivityManager:
                                   "$push": {"reservations": reservation.getDictForAdvertisement()}})
         except Exception as e:
             raise Exception("Impossibile aggiungere la reservation: " + str(e))
+
+    @staticmethod
+    def updateReservation(reservation, newStartDate):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        try:
+            collection.update_one({"reservations._id": ObjectId(reservation['_id'])}, {"$set": {"reservations.$.startDate": dateparser.parse(newStartDate)}})
+        except Exception as e:
+            raise Exception("Impossibile aggiornare la reservation: " + str(e))
 
     @staticmethod
     def getActivityByUserID(userID):
