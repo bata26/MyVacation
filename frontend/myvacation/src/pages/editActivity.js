@@ -9,6 +9,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useParams, useSearchParams } from 'react-router-dom';
+import ActivityForm from '../components/activityForm';
 
 
 async function convertFileToBase64(file) {
@@ -20,16 +21,16 @@ async function convertFileToBase64(file) {
 	});
 }
 
-const EditAccomodation = () => {
+const EditActivity = () => {
 	let navigate = useNavigate();
-	const [accomodation, setAccomodation] = React.useState(null);
-	const { accomodationID } = useParams();
+	const [activity, setActivity] = React.useState(null);
+	const { activityID } = useParams();
 
 	React.useEffect(() => {
-		api.get('/accomodations/' + accomodationID)
+		api.get('/activities/' + activityID)
 			.then(function (response) {
 				console.log(response.data);
-				setAccomodation(response.data);
+				setActivity(response.data);
 			})
 			.catch(function (error) {
 				console.log("errore");
@@ -42,12 +43,12 @@ const EditAccomodation = () => {
 		//const formData = new FormData();
 		//console.log("form: ", data.get("bedrooms"));
 		//const headers = { 'Content-type': 'multipart/form-data' };
-		const result = await api.post('/edit/accomodations/' + accomodationID,
+		const result = await api.post('/edit/activities/' + activityID,
 			data,
 		)
 			.then(function (response) {
 				console.log(response.data);
-				navigate("/accomodation/" + accomodationID);
+				navigate("/activity/" + activityID);
 			})
 			.catch(function (error) {
 				console.log("errore");
@@ -72,11 +73,11 @@ const EditAccomodation = () => {
 							color="text.primary"
 							gutterBottom
 						>
-							Edit accomodation
+							Edit activity
 						</Typography>
 					</Container>
 				</Box>
-				<AccomodationForm accomodation={accomodation} />
+				<ActivityForm activity={activity} />
 				<Container maxWidth='md'>
 					<Button
 						type="submit"
@@ -100,4 +101,4 @@ const EditAccomodation = () => {
 	);
 };
 
-export default EditAccomodation;
+export default EditActivity;

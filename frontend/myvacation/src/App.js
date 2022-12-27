@@ -13,6 +13,7 @@ import Home from "./pages/home";
 import Checkout from "./pages/checkout";
 import Search from "./pages/search";
 import EditAccomodation from "./pages/editAccomodation";
+import EditActivity from "./pages/editActivity";
 import AdminPage from "./pages/adminPage/adminPage";
 import InsertAccomodation from "./pages/insertAccomodation";
 import  Accomodation from "./pages/accomodation";
@@ -47,6 +48,7 @@ function App() {
             <Route path="/insert/accomodation" element={<InsertAccomodation />} />
             <Route path="/insert/activity" element={<InsertActivity />} />
             <Route path="/edit/accomodation/:accomodationID" element={<EditAccomodation />} />
+            <Route path="/edit/activity/:activityID" element={<EditActivity />} />
             <Route path="/activity/:activityID" element={<Activity />} />
             <Route path="/admin" element={<AdminPage />} />
         </Routes>

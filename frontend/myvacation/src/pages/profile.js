@@ -194,6 +194,7 @@ const Profile = () => {
                 <TableCell align="center" style={{ fontWeight: 'bold' }}>Start Date</TableCell>
                 <TableCell align="center" style={{ fontWeight: 'bold' }}>End Date</TableCell>
                 <TableCell align="right" style={{ fontWeight: 'bold' }}></TableCell>
+                <TableCell align="right" style={{ fontWeight: 'bold' }}></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

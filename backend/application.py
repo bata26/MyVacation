@@ -65,6 +65,48 @@ def testValidation(user={}):
     return "OK", 200
 
 
+@application.route("/analytics/topcities", methods=["GET"])
+@required_token
+def getBestCities(user={}):
+    try:
+        res = AnalyticsManager.getTopCities()
+        return res
+    except Exception as e:
+        return str(e), 500
+
+
+@application.route("/analytics/topadv", methods=["GET"])
+@required_token
+def getBestAdv(user={}):
+    try:
+        res = AnalyticsManager.getTopAdv()
+        return res
+    except Exception as e:
+        return str(e), 500
+
+
+@application.route("/analytics/advinfo", methods=["GET"])
+@required_token
+def getBestAdvInfo(user={}):
+    try:
+        print(f"data: {request.data}")
+        print(f"form: {request.form}")
+        print(f"json: {request.json}")
+        
+        print("dentro")
+        requestBody = request.json
+        print("problemi")
+        accomodationsID = requestBody["accomodationsID"]
+        activitiesID = requestBody["activitiesID"]
+        result = {}
+        result["accomodations"] = AccomodationsManager.getAccomodationsFromIdList(accomodationsID)
+        result["activities"] = ActivityManager.getActivitiesFromIdList(activitiesID)
+        print(result)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
+
+
 @application.route('/activities/<activity_id>', methods=['DELETE'])
 @required_token
 def deleteActivityByID(activity_id, user={}):
@@ -108,8 +150,31 @@ def deleteAccomodationById(accomodation_id, user={}):
 def editAccomodationById(accomodationID, user={}):
     print("dentro")
     formData = dict(request.form)
+    formData["location"] = {}
+    formData["location"]["city"] = formData["city"]
+    formData["location"]["address"] = formData["address"]
+    formData["location"]["country"] = formData["country"]
+    formData.pop("city")
+    formData.pop("address")
+    formData.pop("country")
     result = AccomodationsManager.editAccomodation(
         accomodationID, formData, user)
+    return "", 200
+
+
+@application.route('/edit/activities/<activityID>', methods=['POST'])
+@required_token
+def editActivityById(activityID, user={}):
+    formData = dict(request.form)
+    formData["location"] = {}
+    formData["location"]["city"] = formData["city"]
+    formData["location"]["address"] = formData["address"]
+    formData["location"]["country"] = formData["country"]
+    formData.pop("city")
+    formData.pop("address")
+    formData.pop("country")
+    result = ActivityManager.editActivity(
+        activityID, formData, user)
     return "", 200
 
 

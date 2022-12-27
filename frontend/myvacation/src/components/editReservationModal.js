@@ -85,7 +85,7 @@ const EditReservationModal = ({type , startDateProp, endDateProp, reservationId 
 
     return (
         <div>
-            <EditIcon color='error' style={{ cursor: "pointer" }} onClick={handleOpen}/>
+            <EditIcon color="primary" style={{ cursor: "pointer" }} onClick={handleOpen}/>
             <Modal
                 open={open}
                 onClose={handleClose}

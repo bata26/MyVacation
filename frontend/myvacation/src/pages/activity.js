@@ -20,7 +20,7 @@ import Grid from '@mui/material/Grid';
 const theme = createTheme();
 
 const Activity = () => {
-  const [activity , setActivity] = React.useState(null);
+  const [activity, setActivity] = React.useState(null);
   const [reviews, setReviews] = React.useState(null);
   const [enableButton, setEnableButton] = React.useState(null);
   const [searchParams] = useSearchParams();
@@ -31,23 +31,23 @@ const Activity = () => {
   const navigate = useNavigate();
 
 
-  React.useEffect( () =>{
-        api.get("/activities/"+activityID)
-            .then(function (response){
-                setActivity(response.data);
-                setReviews(response.data.reviews)
-                console.log(response.data)
-                console.log(response.data.reviews.length)
-                console.log(parseInt(process.env.REACT_APP_REVIEWS_SIZE))
-                if(response.data.reviews.length >= parseInt(process.env.REACT_APP_REVIEWS_SIZE))
-                    setEnableButton(true)
-                else
-                    setEnableButton(false)
-            })
-            .catch(function(err){
-                console.log(err);
-            })
-  } , []);
+  React.useEffect(() => {
+    api.get("/activities/" + activityID)
+      .then(function (response) {
+        setActivity(response.data);
+        setReviews(response.data.reviews)
+        console.log(response.data)
+        console.log(response.data.reviews.length)
+        console.log(parseInt(process.env.REACT_APP_REVIEWS_SIZE))
+        if (response.data.reviews.length >= parseInt(process.env.REACT_APP_REVIEWS_SIZE))
+          setEnableButton(true)
+        else
+          setEnableButton(false)
+      })
+      .catch(function (err) {
+        console.log(err);
+      })
+  }, []);
 
   //Metodo per eliminare activity
   const deleteActivity = (activityID) => {
@@ -61,24 +61,24 @@ const Activity = () => {
     navigate('/search')
   }
 
-  function goToCheckout(){
-        navigate("/checkout?startDate=" + startDate + "&type=activities" + "&id=" + activity._id + "&guests=" + guests)
+  function goToCheckout() {
+    navigate("/checkout?startDate=" + startDate + "&type=activities" + "&id=" + activity._id + "&guests=" + guests)
   }
 
   const getAllReviews = async () => {
-        await api.get("/reviewsByDestination/" + activityID)
-            .then(function (response) {
-                setReviews(response.data)
-                setEnableButton(false)
-                console.log(response.data)
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+    await api.get("/reviewsByDestination/" + activityID)
+      .then(function (response) {
+        setReviews(response.data)
+        setEnableButton(false)
+        console.log(response.data)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
-  if(!activity) return null;
-  
+  if (!activity) return null;
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xl">
@@ -165,17 +165,17 @@ const Activity = () => {
           Other information
         </Typography>
 
-            <Typography align='right' sx={{mb: 2}}>
-              Host: {activity.host_name}
-              <br/>
-              Duration: {activity.duration}H
-              <br/>
-              Address: {activity.location.address}
-              <br/>
-              Country: {activity.location.country}
-              <br/>
-              City: {activity.location.city}
-            </Typography>
+        <Typography align='right' sx={{ mb: 2 }}>
+          Host: {activity.host_name}
+          <br />
+          Duration: {activity.duration}H
+          <br />
+          Address: {activity.location.address}
+          <br />
+          Country: {activity.location.country}
+          <br />
+          City: {activity.location.city}
+        </Typography>
 
 
         <Box sx={{ ml: 35, mb: 2 }}>
@@ -210,11 +210,11 @@ const Activity = () => {
         }
       </Container>
       <Box
-      sx={{
+        sx={{
           py: 3,
           px: 2,
           mt: 'auto',
-      }}
+        }}
       >
       </Box>
 
@@ -230,40 +230,40 @@ const Activity = () => {
           Reviews
         </Typography>
         <Grid
-        sx={{ overflowY: "scroll", maxHeight: "1160px" }}
+          sx={{ overflowY: "scroll", maxHeight: "1160px" }}
         >
-        {reviews && reviews.map((item) => (
-        <Card key={item._id} sx={{ maxHeight: 100 , marginTop: 2}}>
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {item.reviewer} - {item.score}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {item.description}
-            </Typography>
-          </CardContent>
-        </Card>
-        ))}
+          {reviews && reviews.map((item) => (
+            <Card key={item._id} sx={{ maxHeight: 100, marginTop: 2 }}>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  {item.reviewer} - {item.score}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {item.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
         </Grid>
         {enableButton ?
-            <Container maxWidth='sm'>
-                <Button
-                fullWidth
-                variant="contained"
-                sx={{ mt: 2 }}
-                onClick={() => {getAllReviews()}}
-                >
-                More reviews
-                </Button>
-            </Container> : <></>}
+          <Container maxWidth='sm'>
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mt: 2 }}
+              onClick={() => { getAllReviews() }}
+            >
+              More reviews
+            </Button>
+          </Container> : <></>}
       </Container>
-      
+
       <Box
         sx={{
           py: 3,
           px: 2,
           mt: 'auto',
-      }}
+        }}
       >
       </Box>
     </ThemeProvider>

@@ -8,6 +8,52 @@ from utility.serializer import Serializer
 class ActivityManager:
 
     @staticmethod
+    def editActivity(activityID, activity,  user):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+
+        try:
+            print("pre edit")
+            res = collection.update_one(
+                {"_id": ObjectId(activityID)}, {"$set": activity})
+            print(res)
+        except Exception as e:
+            raise Exception("Impossibile aggiornare: " + str(e))
+
+    @staticmethod
+    def getActivitiesFromIdList(activitiesIdList):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+
+        idList = [ObjectId(item) for item in activitiesIdList]
+
+        try:
+            serializedActivities = []
+            activitiesList = list(collection.find({"_id": {"$in": idList}}))
+            
+            for activity in activitiesList:
+                activityObject = Activity(
+                    str(activity["host_id"]),
+                    activity["host_name"],
+                    activity["location"],
+                    activity["description"],
+                    activity["duration"],
+                    activity["price"],
+                    activity["number_of_reviews"],
+                    activity["review_scores_rating"],
+                    activity["mainPicture"],
+                    activity["name"],
+                    activity["reservations"],
+                    activity["reviews"],
+                    str(activity["_id"]))
+                serializedActivities.append(Serializer.serializeActivity(activityObject))
+            return serializedActivities
+        except Exception as e:
+            raise Exception("Impossibile aggiornare: " + str(e))
+
+    @staticmethod
     def getActivityFromID(activityID):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]

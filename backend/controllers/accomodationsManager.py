@@ -16,10 +16,46 @@ class AccomodationsManager:
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
 
         try:
-            collection.update_one({"_id" : ObjectId(accomodationID)} , {"$set" : accomodation})
+            print("pre edit")
+            res = collection.update_one({"_id" : ObjectId(accomodationID)} , {"$set" : accomodation})
+            print(res)
         except Exception as e:
             raise Exception("Impossibile aggiornare: " + str(e))
     
+    @staticmethod
+    def getAccomodationsFromIdList(accomodationsIdList):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        idList = [ObjectId(item) for item in accomodationsIdList]
+        try:
+            serializedAccomodations = []
+            accomodationsList = list(collection.find({"_id": {"$in": idList}} , {"pictures" : 0}))
+
+            for accomodation in accomodationsList:
+                accomodationObject = Accomodation(
+                        accomodation["name"],
+                        accomodation["description"],
+                        str(accomodation["host_id"]),
+                        accomodation["host_name"],
+                        accomodation["mainPicture"],
+                        accomodation["location"],
+                        accomodation["property_type"],
+                        accomodation["accommodates"],
+                        accomodation["bedrooms"],
+                        accomodation["beds"],
+                        accomodation["price"],
+                        accomodation["minimum_nights"],
+                        accomodation["number_of_reviews"],
+                        accomodation["review_scores_rating"],
+                        accomodation["reservations"],
+                        accomodation["reviews"],
+                        str(accomodation["_id"]))
+                serializedAccomodations.append(Serializer.serializeAccomodation(accomodationObject))
+            return serializedAccomodations
+        except Exception as e:
+            raise Exception("Impossibile aggiornare: " + str(e))
+
     @staticmethod
     def getAccomodationFromId(accomodationID):
         client = MongoManager.getInstance()

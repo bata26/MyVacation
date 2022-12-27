@@ -12,7 +12,8 @@ const instance = axios.create({
     headers: {
         "Access-Control-Allow-Origin" :"*",
         "crossDomain" : true,
-        "Authorization" : JSON.stringify(authorizationObject)
+        "Authorization" : JSON.stringify(authorizationObject),
+        "Content-Type" : "application/json"
     }
 
 });
