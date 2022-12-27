@@ -4,13 +4,13 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Title from './title';
 import api from "../../utility/api";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
-import TableFooter from "@mui/material/TableFooter";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
+import { Container } from '@mui/system';
+import { Grid } from '@mui/material';
 
 
 export default function ToBeApprovedList() {
@@ -26,11 +26,11 @@ export default function ToBeApprovedList() {
         api.get("/admin/announcements?index=")
             .then(function (response) {
                 setToBeApprovedList(response.data);
-                if(response.data.length !== 0){
-                    setLast_id(response.data[response.data.length -1]._id);
+                if (response.data.length !== 0) {
+                    setLast_id(response.data[response.data.length - 1]._id);
                     setFirst_id(response.data[0]._id);
-                if(response.data.length === parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE))
-                    setLastPage(false)
+                    if (response.data.length === parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE))
+                        setLastPage(false)
                 }
             })
             .catch(function (error) {
@@ -39,13 +39,13 @@ export default function ToBeApprovedList() {
     }, []);
 
     const handlePreviousPage = () => {
-        setPage(page-1)
-        const url ="?index=" + first_id + "&direction=previous";
+        setPage(page - 1)
+        const url = "?index=" + first_id + "&direction=previous";
         console.log(url);
-        api.get("/admin/announcements"+url)
+        api.get("/admin/announcements" + url)
             .then(function (response) {
                 setToBeApprovedList(response.data);
-                if (response && response.data.length > 0 ) {
+                if (response && response.data.length > 0) {
                     setLast_id(response.data[0]._id);
                     setFirst_id(response.data[response.data.length - 1]._id);
                 }
@@ -59,17 +59,17 @@ export default function ToBeApprovedList() {
     };
 
     const handleNextPage = () => {
-        setPage(page+1);
+        setPage(page + 1);
         const url = "?index=" + last_id + "&direction=next";
         console.log(url);
-        api.get("/admin/announcements"+url)
+        api.get("/admin/announcements" + url)
             .then(function (response) {
                 setToBeApprovedList(response.data);
-                if (response && response.data.length > 0 ) {
+                if (response && response.data.length > 0) {
                     setLast_id(response.data[response.data.length - 1]._id);
                     setFirst_id(response.data[0]._id);
                 }
-                else{
+                else {
                     setFirst_id(last_id)
                 }
                 console.log(response.data);
@@ -84,10 +84,10 @@ export default function ToBeApprovedList() {
 
     const handleFirstPage = () => {
         setPage(1);
-        const url ="?index=";
+        const url = "?index=";
 
         console.log(url);
-        api.get("/admin/announcements"+url)
+        api.get("/admin/announcements" + url)
             .then(function (response) {
                 setToBeApprovedList(response.data);
                 setLast_id(response.data[4]._id);
@@ -106,29 +106,28 @@ export default function ToBeApprovedList() {
     return (
 
         <TableContainer component={Paper}>
-            <Title>To be approved list</Title>
-            <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+            <Table sx={{ minWidth: 500 }} size='small'>
                 <TableHead>
                     <TableRow>
-                        <TableCell>HostId</TableCell>
-                        <TableCell>Title</TableCell>
-                        <TableCell>City</TableCell>
-                        <TableCell>Type</TableCell>
+                        <TableCell align="left" style={{ fontWeight: 'bold' }}>HostID</TableCell>
+                        <TableCell align="center" style={{ fontWeight: 'bold' }}>Title</TableCell>
+                        <TableCell align="center" style={{ fontWeight: 'bold' }}>City</TableCell>
+                        <TableCell align="right" style={{ fontWeight: 'bold' }}>Type</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    { toBeApprovedList && toBeApprovedList.map((row) => (
-                        <TableRow key={row._id} onClick={()=>{navigate("/toApprove/" + row._id + "?type=" + row.type)}} selected={true}>
-                            <TableCell component="th" scope="row">
+                    {toBeApprovedList && toBeApprovedList.map((row) => (
+                        <TableRow key={row._id} onClick={() => { navigate("/toApprove/" + row._id + "?type=" + row.type) }} style={{ cursor: "pointer" }}>
+                            <TableCell align='left' component="th" scope="row">
                                 {row.host_id}
                             </TableCell>
-                            <TableCell component="th" scope="row">
+                            <TableCell align='center' component="th" scope="row">
                                 {row.name}
                             </TableCell>
-                            <TableCell style={{ width: 160 }} align="right">
+                            <TableCell align='center' style={{ width: 160 }}>
                                 {row.location.city}
                             </TableCell>
-                            <TableCell style={{ width: 160 }} align="right">
+                            <TableCell align='right' style={{ width: 160 }}>
                                 {row.type}
                             </TableCell>
                         </TableRow>
@@ -139,16 +138,45 @@ export default function ToBeApprovedList() {
                         </TableRow>
                     )}
                 </TableBody>
-                <TableFooter>
-                    <TableRow>
-                        <TableCell>
-                            {page !== 1 ? <Button onClick={() => {handlePreviousPage()}}>Previous</Button> : <></>}
-                            {lastPage!= null ? !lastPage && <Button onClick={() => {handleNextPage()}}>Next</Button> : <></>}
-                            {page !== 1 ? <Button onClick={() => {handleFirstPage()}}> First</Button> : <></>}
-                        </TableCell>
-                    </TableRow>
-                </TableFooter>
             </Table>
+            {/* Bottoni pagine */}
+            <Container>
+                <Grid container columnSpacing={1.4}>
+                    <Grid item xs={4} sm={4}>
+                        {page !== 1 ?
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant='outlined'
+                                sx={{ mt: 3, mb: 2 }}
+                                onClick={() => { handlePreviousPage() }}>Previous Page</Button> : <></>}
+                    </Grid>
+
+                    <Grid item xs={4} sm={4}>
+                        {lastPage != null && !lastPage ?
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant='outlined'
+                                sx={{ mt: 3, mb: 2 }}
+                                onClick={() => { handleNextPage() }}>Next Page</Button> : <></>}
+                    </Grid>
+
+                    <Grid item xs={4} sm={4}>
+                        {page !== 1 ?
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant='outlined'
+                                sx={{ mt: 3, mb: 2 }}
+                                onClick={() => { handleFirstPage() }}>First Page</Button> : <></>}
+                    </Grid>
+                </Grid>
+            </Container>
+
+
+
         </TableContainer>
+
     );
 }
