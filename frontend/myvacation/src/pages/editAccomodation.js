@@ -47,7 +47,7 @@ const EditAccomodation = () => {
 		)
 			.then(function (response) {
 				console.log(response.data);
-				navigate("/accomodation/" + response.data.accomodationID);
+				navigate("/accomodation/" + accomodationID);
 			})
 			.catch(function (error) {
 				console.log("errore");
@@ -72,7 +72,7 @@ const EditAccomodation = () => {
 							color="text.primary"
 							gutterBottom
 						>
-							Insert accomodation
+							Edit accomodation
 						</Typography>
 					</Container>
 				</Box>

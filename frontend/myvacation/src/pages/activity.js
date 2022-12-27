@@ -21,6 +21,7 @@ const theme = createTheme();
 
 const Activity = () => {
   const [activity, setActivity] = React.useState(null);
+  const [activity, setActivity] = React.useState(null);
   const [reviews, setReviews] = React.useState(null);
   const [enableButton, setEnableButton] = React.useState(null);
   const [searchParams] = useSearchParams();
@@ -31,6 +32,23 @@ const Activity = () => {
   const navigate = useNavigate();
 
 
+  React.useEffect(() => {
+    api.get("/activities/" + activityID)
+      .then(function (response) {
+        setActivity(response.data);
+        setReviews(response.data.reviews)
+        console.log(response.data)
+        console.log(response.data.reviews.length)
+        console.log(parseInt(process.env.REACT_APP_REVIEWS_SIZE))
+        if (response.data.reviews.length >= parseInt(process.env.REACT_APP_REVIEWS_SIZE))
+          setEnableButton(true)
+        else
+          setEnableButton(false)
+      })
+      .catch(function (err) {
+        console.log(err);
+      })
+  }, []);
   React.useEffect(() => {
     api.get("/activities/" + activityID)
       .then(function (response) {

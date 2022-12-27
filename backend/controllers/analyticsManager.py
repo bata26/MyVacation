@@ -202,7 +202,6 @@ class AnalyticsManager:
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
     # Ottieni i tre annunci più prenotati di sempre
-
     @staticmethod
     def getTopAdv():
         client = MongoManager.getInstance()
