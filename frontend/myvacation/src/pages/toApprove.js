@@ -26,6 +26,8 @@ const ToApprove = () => {
     console.log(advertisementID)
 
     React.useEffect(() => {
+        console.log("LOGUSEEFFECT",advertisementID)
+        api.get("/admin/announcement/" + type + "/" + advertisementID)
         api.get("/admin/announcement/" + type + "/" + advertisementID)
             .then(function (response) {
                 console.log(response.data)
