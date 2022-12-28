@@ -42,17 +42,14 @@ const Home = () => {
                     requestBody.accomodationsID.map(accomodationID => request.accomodationsID.push(accomodationID._id));
                     requestBody.activitiesID.map(activityID => request.activitiesID.push(activityID._id));
                     console.log(request);
-
-                })
-                .catch(function (error) {
-                    console.log(error);
-                })
-            console.log("request: " , request);
-            
-            await api.get("/analytics/advinfo", JSON.stringify(request), { headers: { 'Content-Type': 'application/json' } })
-                .then(function (response) {
-                    setAccomodations(response.data["accomodations"]);
-                    setActivities(response.data["activities"]);
+                    await api.post("/analytics/advinfo", JSON.stringify(request))
+                        .then(function (response) {
+                            setAccomodations(response.data["accomodations"]);
+                            setActivities(response.data["activities"]);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -138,17 +135,19 @@ const Home = () => {
                                 >
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography gutterBottom variant="h5" component="h2">
-                                            {accomodations.name}
+                                            {item.name}
                                         </Typography>
                                     </CardContent>
-                                    <img src='https://picsum.photos/300/300' />
+                                    <img
+                                        src={`data:image/jpeg;base64,${item.mainPicture}`}
+                                    />
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography variant='span'>
-                                            <b>{accomodations.location.city}</b>
+                                            <b>{item.location.city}</b>
                                             <br />
-                                            <i>{accomodations.location.city}</i>
+                                            <i>{item.location.city}</i>
                                             <br />
-                                            {accomodations.price}€
+                                            {item.price}€
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
@@ -158,57 +157,6 @@ const Home = () => {
                             </Grid>
                         ))
                     }
-
-
-                    <Grid item xs={12} sm={6} md={4}>
-                        <Card
-                            sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                        >
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography gutterBottom variant="h5" component="h2">
-                                    Titolo
-                                </Typography>
-                            </CardContent>
-                            <img src='https://picsum.photos/300/300' />
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography variant='span'>
-                                    <b>City</b>
-                                    <br />
-                                    <i>Address</i>
-                                    <br />
-                                    Price€
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button fullWidth>View</Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} md={4}>
-                        <Card
-                            sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                        >
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography gutterBottom variant="h5" component="h2">
-                                    Titolo
-                                </Typography>
-                            </CardContent>
-                            <img src='https://picsum.photos/300/300' />
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography variant='span'>
-                                    <b>City</b>
-                                    <br />
-                                    <i>Address</i>
-                                    <br />
-                                    Price€
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button fullWidth>View</Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
                 </Grid>
 
                 <Box
@@ -231,80 +179,36 @@ const Home = () => {
                 </Box>
 
                 <Grid container spacing={4}>
-                    <Grid item xs={12} sm={6} md={4}>
-                        <Card
-                            sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                        >
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography gutterBottom variant="h5" component="h2">
-                                    Titolo
-                                </Typography>
-                            </CardContent>
-                            <img src='https://picsum.photos/300/300' />
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography variant='span'>
-                                    <b>City</b>
-                                    <br />
-                                    <i>Address</i>
-                                    <br />
-                                    Price€
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button fullWidth>View</Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} md={4}>
-                        <Card
-                            sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                        >
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography gutterBottom variant="h5" component="h2">
-                                    Titolo
-                                </Typography>
-                            </CardContent>
-                            <img src='https://picsum.photos/300/300' />
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography variant='span'>
-                                    <b>City</b>
-                                    <br />
-                                    <i>Address</i>
-                                    <br />
-                                    Price€
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button fullWidth>View</Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} md={4}>
-                        <Card
-                            sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                        >
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography gutterBottom variant="h5" component="h2">
-                                    Titolo
-                                </Typography>
-                            </CardContent>
-                            <img src='https://picsum.photos/300/300' />
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography variant='span'>
-                                    <b>City</b>
-                                    <br />
-                                    <i>Address</i>
-                                    <br />
-                                    Price€
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button fullWidth>View</Button>
-                            </CardActions>
-                        </Card>
-                    </Grid>
+                {
+                        activities.map((item, index) => (
+                            <Grid item xs={12} sm={6} md={4}>
+                                <Card
+                                    sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+                                >
+                                    <CardContent sx={{ flexGrow: 1 }}>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                            {item.name}
+                                        </Typography>
+                                    </CardContent>
+                                    <img
+                                        src={`data:image/jpeg;base64,${item.mainPicture}`}
+                                    />
+                                    <CardContent sx={{ flexGrow: 1 }}>
+                                        <Typography variant='span'>
+                                            <b>{item.location.city}</b>
+                                            <br />
+                                            <i>{item.location.city}</i>
+                                            <br />
+                                            {item.price}€
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button fullWidth>View</Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+                        ))
+                    }                                       
                 </Grid>
 
             </Container>

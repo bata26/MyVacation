@@ -211,11 +211,11 @@ class AnalyticsManager:
             serializedAccomodations = []
             serializedActivities = []
             accomodationsResult = list(collection.aggregate([
-                {"$match" : {"destinationType" : "accomodation"}},
+                {"$match": {"destinationType": "accomodation"}},
                 {"$group": {"_id": "$destinationID", "count": {"$sum": 1}}},
-                {"$sort": {"count": -1}},
+                {"$sort": {"count": -1 , "_id" : 1}},
                 {"$limit": 3},
-                {"$project" : {"count" : 0}}
+                {"$project": {"count": 0}}
             ]))
 
             for accomodation in accomodationsResult:
@@ -224,11 +224,11 @@ class AnalyticsManager:
                 serializedAccomodations.append(accomodation)
 
             activitiesResult = list(collection.aggregate([
-                {"$match" : {"destinationType" : "activity"}},
+                {"$match": {"destinationType": "activity"}},
                 {"$group": {"_id": "$destinationID", "count": {"$sum": 1}}},
-                {"$sort": {"count": -1}},
+                {"$sort": {"count": -1 , "_id" : 1}},
                 {"$limit": 3},
-                {"$project" : {"count" : 0}}
+                {"$project": {"count": 0}}
             ]))
 
             for activity in activitiesResult:
@@ -236,8 +236,8 @@ class AnalyticsManager:
                 activity["_id"] = stringId
                 serializedActivities.append(activity)
 
-            return {"accomodationsID" : serializedAccomodations, 
-                    "activitiesID" : serializedActivities}
+            return {"accomodationsID": serializedAccomodations,
+                    "activitiesID": serializedActivities}
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
 

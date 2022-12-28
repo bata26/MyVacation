@@ -89,14 +89,13 @@ def getBestAdv(user={}):
         return str(e), 500
 
 
-@application.route("/analytics/advinfo", methods=["GET"])
+@application.route("/analytics/advinfo", methods=["POST"])
 @required_token
 def getBestAdvInfo(user={}):
     try:
         print(f"data: {request.data}")
         print(f"form: {request.form}")
         print(f"json: {request.json}")
-        
         print("dentro")
         requestBody = request.json
         print("problemi")
@@ -108,6 +107,7 @@ def getBestAdvInfo(user={}):
         print(result)
         return result, 200
     except Exception as e:
+        print(str(e))
         return str(e), 500
 
 
