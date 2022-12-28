@@ -43,7 +43,7 @@ class AnalyticsManager:
             ])))
             return result
         except Exception as e:
-            print("Impossibile eseguire la query: " + str(e))
+            raise Exception("Impossibile eseguire la query: " + str(e))
 
     @staticmethod
     def getUsersForMonth():
@@ -72,7 +72,7 @@ class AnalyticsManager:
                     "$project": {"month": "$_id", "users": "$users", "_id": 0}
                 }]))
 
-            print(result)
+            return result
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
 
@@ -213,7 +213,7 @@ class AnalyticsManager:
             accomodationsResult = list(collection.aggregate([
                 {"$match": {"destinationType": "accomodation"}},
                 {"$group": {"_id": "$destinationID", "count": {"$sum": 1}}},
-                {"$sort": {"count": -1 , "_id" : 1}},
+                {"$sort": {"count": -1, "_id": 1}},
                 {"$limit": 3},
                 {"$project": {"count": 0}}
             ]))
@@ -226,7 +226,7 @@ class AnalyticsManager:
             activitiesResult = list(collection.aggregate([
                 {"$match": {"destinationType": "activity"}},
                 {"$group": {"_id": "$destinationID", "count": {"$sum": 1}}},
-                {"$sort": {"count": -1 , "_id" : 1}},
+                {"$sort": {"count": -1, "_id": 1}},
                 {"$limit": 3},
                 {"$project": {"count": 0}}
             ]))
@@ -262,24 +262,76 @@ class AnalyticsManager:
             print("Impossibile eseguire la query: " + str(e))
 
     @staticmethod
-    def getActivityAverageCost(user):
+    def getTotAdvs(user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        accomodationCollection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        activityCollection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        result = 0
         try:
-            result = list(collection.aggregate([
-                {"$group":
-                 {
-                     "_id": "$location.city",
-                     "averageCost": {"$avg": "$price"}
-                 }
-                 },
-                {"$project": {"_id": 0, "city": "$_id", "averageCost": 1}}
-
-            ]))
+            if (user["role"] == "admin"):
+                resultAcc = list(accomodationCollection.aggregate([
+                    {
+                        '$count': 'totalAccomodations'
+                    }
+                ]))
+                resultAct = list(activityCollection.aggregate([
+                    {
+                        '$count': 'totalActivities'
+                    }
+                ]))
+            else:
+                resultAcc = list(accomodationCollection.aggregate([
+                    {
+                        '$match': {
+                            'host_id': ObjectId(user["_id"])
+                        }
+                    }, {
+                        '$count': 'totalAccomodations'
+                    }
+                ]))
+                resultAct = list(activityCollection.aggregate([
+                    {
+                        '$match': {
+                            'host_id': ObjectId(user["_id"])
+                        }
+                    }, {
+                        '$count': 'totalActivities'
+                    }
+                ]))
+            result = {
+                "totalAccomodations": resultAcc[0]["totalAccomodations"] , 
+                "totalActivities": resultAct[0]["totalActivities"] 
+            }
             return result
         except Exception as e:
             print("Impossibile eseguire la query: " + str(e))
+
+    @staticmethod
+    def getBestAdvertisers(user , destinationType):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        if (destinationType == "accomodation"):
+            collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        else:
+            collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        try:
+            result = []
+            hostList = list(collection.aggregate([
+                {'$group': {'_id': '$host_id', 'avg': {
+                    '$avg': '$review_scores_rating'}}},
+                {'$sort': {'avg': -1}},
+                {'$limit': 10},
+                {"$project" : {"_id" : 0 , "hostID" : "$_id" , "averageRating" : "$avg"}}
+            ]))
+
+            for host in hostList:
+                tmpHost = {}
+                tmpHost["hostID"] = str(host["hostID"])
+                tmpHost["averageRating"] = host["averageRating"]
+                result.append(tmpHost)
+
+            return result
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
 

@@ -93,23 +93,78 @@ def getBestAdv(user={}):
 @required_token
 def getBestAdvInfo(user={}):
     try:
-        print(f"data: {request.data}")
-        print(f"form: {request.form}")
-        print(f"json: {request.json}")
-        print("dentro")
         requestBody = request.json
-        print("problemi")
         accomodationsID = requestBody["accomodationsID"]
         activitiesID = requestBody["activitiesID"]
         result = {}
         result["accomodations"] = AccomodationsManager.getAccomodationsFromIdList(accomodationsID)
         result["activities"] = ActivityManager.getActivitiesFromIdList(activitiesID)
-        print(result)
         return result, 200
     except Exception as e:
-        print(str(e))
         return str(e), 500
 
+@application.route("/analytics/monthReservations", methods=["GET"])
+@required_token
+def getMonthReservations(user={}):
+    try:
+        res = AnalyticsManager.getReservationByMonth(user)
+        return res
+    except Exception as e:
+        return str(e), 500
+    
+@application.route("/analytics/usersForMonth", methods=["GET"])
+@required_token
+def getUsersForMonth(user={}):
+    try:
+        res = AnalyticsManager.getUsersForMonth()
+        return res
+    except Exception as e:
+        return str(e), 500
+
+@application.route("/analytics/averageAccomodations", methods=["GET"])
+@required_token
+def getAccomodationsAverageCost(user={}):
+    try:
+        res = AnalyticsManager.getAccomodationAverageCost(user)
+        return res
+    except Exception as e:
+        return str(e), 500
+
+@application.route("/analytics/averageActivities", methods=["GET"])
+@required_token
+def getActivitiesAverageCost(user={}):
+    try:
+        res = AnalyticsManager.getActivityAverageCost(user)
+        return res
+    except Exception as e:
+        return str(e), 500
+
+@application.route("/analytics/totalReservations", methods=["GET"])
+@required_token
+def getTotalReservations(user={}):
+    try:
+        res = AnalyticsManager.getTotReservations(user)
+        return res
+    except Exception as e:
+        return str(e), 500
+
+@application.route("/analytics/totalAdvertisement", methods=["GET"])
+@required_token
+def getTotalAdvs(user={}):
+    try:
+        res = AnalyticsManager.getTotAdvs(user)
+        return res
+    except Exception as e:
+        return str(e), 500
+
+@application.route("/analytics/bestHost/<destinationType>", methods=["GET"])
+@required_token
+def getBestHost(destinationType , user={}):
+    try:
+        res = AnalyticsManager.getBestAdvertisers(user , escape(destinationType))
+        return res
+    except Exception as e:
+        return str(e), 500
 
 @application.route('/activities/<activity_id>', methods=['DELETE'])
 @required_token
@@ -151,8 +206,7 @@ def deleteAccomodationById(accomodation_id, user={}):
 
 @application.route('/edit/accomodations/<accomodationID>', methods=['POST'])
 @required_token
-def updateAccomodationById(accomodationID, user={}):
-    print("dentro")
+def editAccomodationById(accomodationID, user={}):
     formData = dict(request.json)
     formData["location"] = {}
     formData["location"]["city"] = formData["city"]
@@ -161,7 +215,10 @@ def updateAccomodationById(accomodationID, user={}):
     formData.pop("city")
     formData.pop("address")
     formData.pop("country")
+    formData["accommodates"] = formData["guests"]
+    formData.pop("guests")
     formData["approved"] = False
+    
     result = AccomodationsManager.updateAccomodation(
         accomodationID, formData, user)
     return "", 200

@@ -165,7 +165,7 @@ const SignUp = () => {
               type="password"
               id="password"
             />
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
+            <InputLabel id="demo-simple-select-label">Nationality</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="nationality"
