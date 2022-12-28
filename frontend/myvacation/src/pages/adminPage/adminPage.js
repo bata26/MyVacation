@@ -184,10 +184,21 @@ const AdminPage = () => {
                         color="text.primary"
                         gutterBottom
                     >
-                        To be approved
+                        Accomodations to be approved
                     </Typography>
                     {/* To be Approved List*/}
-                    <ToBeApprovedList />
+                    <ToBeApprovedList destinationType={"accomodation"}/>
+                    <Typography
+                        component="h2"
+                        variant="h4"
+                        align="center"
+                        color="text.primary"
+                        gutterBottom
+                        sx={{ mt: 4 }}
+                    >
+                        Activities to be approved
+                    </Typography>
+                    <ToBeApprovedList destinationType={"activity"}/>
                 </Container>
 
                 <Container maxWidth="md" sx={{ mt: 4 }}>

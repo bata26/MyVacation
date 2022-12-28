@@ -157,6 +157,7 @@ def editAccomodationById(accomodationID, user={}):
     formData.pop("city")
     formData.pop("address")
     formData.pop("country")
+    formData["approved"] = False
     result = AccomodationsManager.editAccomodation(
         accomodationID, formData, user)
     return "", 200
@@ -173,6 +174,7 @@ def editActivityById(activityID, user={}):
     formData.pop("city")
     formData.pop("address")
     formData.pop("country")
+    formData["approved"] = False
     result = ActivityManager.editActivity(
         activityID, formData, user)
     return "", 200
@@ -183,7 +185,6 @@ def editActivityById(activityID, user={}):
 def getAccomodationById(accomodation_id):
     accomodationId = escape(accomodation_id)
     result = AccomodationsManager.getAccomodationFromId(accomodationId)
-    print(f"res : {result['_id']}")
     return result, 200
 
 
@@ -203,7 +204,6 @@ def bookAccomodation(user={}):
                               startDatetime, totalExpense, city, hostID, endDatetime)
     try:
         reservationID = ReservationManager.book(reservation)
-        print(f"reservationID : {reservationID}")
         reservation._id = reservationID
         AccomodationsManager.addReservation(reservation)
         UserManager.addReservation(reservation)
@@ -226,10 +226,6 @@ def updateReservation(reservation_id, user={}):
     if (type == "accomodation"):
         endDate = requestBody["endDate"]
 
-    print(f"type : {type}")
-    print(f"startDate : {startDate}")
-    print(f"endDate : {endDate}")
-    print(f"reservationId : {reservationID}")
     try:
         ReservationManager.updateReservation(
             startDate, endDate, type, reservationID, destinationID)
@@ -263,7 +259,6 @@ def bookActivity(user={}):
 # @required_token
 def getReservationsByUserID(user_id):
     userID = escape(user_id)
-    print(userID)
     result = ReservationManager.getReservationsByUser(userID)
     return result, 200
 
@@ -295,7 +290,7 @@ def getAccomodations():
 @application.route('/insert/accomodation', methods=['POST'])
 @required_token
 # TODO Da rivedere
-def insertAccomodationus(user={}):
+def insertAccomodations(user={}):
     formData = dict(request.form)
     host = UserManager.getUserFromId(user["_id"])
     pictures = []
@@ -325,6 +320,7 @@ def insertAccomodationus(user={}):
         formData["minimumNights"],
         0,
         0,
+        False
     )
     accomodationID = AccomodationsManager.insertNewAccomodation(accomodation)
     return {"accomodationID": str(accomodationID)}, 200
@@ -359,6 +355,7 @@ def insertActivity():
         0,
         formData["img-0"],
         formData["category"],
+        False
     )
     activityID = ActivityManager.insertNewActivity(activity)
     return {"activityID": str(activityID)}, 200
@@ -377,7 +374,6 @@ def getReviewByID(review_id):
 # @required_token
 def getReviewByAd(destination_id):
     destinationID = escape(destination_id)
-    print(destinationID)
     result = ReviewManager.getReviewFromDestinationID(destinationID)
     return result, 200
 
@@ -396,12 +392,9 @@ def insertReview(user={}):
     try:
         insertedID = ReviewManager.insertNewReview(review)
         review._id = insertedID
-        print(f"inserito id : {insertedID}")
         if (destinationType == "accomodation"):
-            print("sto gestendo una accomodation")
             AccomodationsManager.addReview(review)
         elif (destinationType == "activity"):
-            print("sto gestendo una activity")
             ActivityManager.addReview(review)
         return "", 200
     except Exception as e:
@@ -513,27 +506,31 @@ def getUsers(user):
     return result, 200
 
 
-@application.route('/admin/announcements', methods=['GET'])
+@application.route('/admin/announcements/<destination_type>', methods=['GET'])
 # @required_token
-def getAnnouncementsToBeApproved():
+def getAnnouncementsToBeApproved(destination_type):
     try:
+        print("DEBUG12")
         args = request.args
         index = args.get("index")
         direction = args.get("direction")
-        result = AdminManager.getAnnouncementsToApprove(index, direction)
+        print(f"destinationType:{destination_type}")
+        result = AdminManager.getAnnouncementsToApprove(index, direction, destination_type)
         return result, 200
     except Exception as e:
         return e, 500
 
 
-@application.route('/admin/announcement/<announcementID>', methods=['GET'])
+@application.route('/admin/announcement/<destination_type>/<announcementID>', methods=['GET'])
 # @required_token
-def getAnnouncementToBeApprovedByID(announcementID):
+def getAnnouncementToBeApprovedByID(destination_type, announcementID):
     try:
         if (not (validateObjecID(announcementID))):
             return "Announcement non valido", 500
         print(announcementID)
-        result = AdminManager.getAnnouncementToApproveByID(announcementID)
+
+        print(f"DDDDDDDD:{destination_type}")
+        result = AdminManager.getAnnouncementToApproveByID(announcementID, destination_type)
         return result, 200
     except Exception as e:
         return e, 500
@@ -545,19 +542,24 @@ def approveAnnouncement(announcementID, user={}):
     if (not (validateObjecID(announcementID))):
         return "Announcement non valido", 500
     try:
-        AdminManager.approveAnnouncement(announcementID, user)
+        requestBody = request.json
+        destinationType = requestBody["destinationType"]
+        AdminManager.approveAnnouncement(announcementID, user, destinationType)
         return "", 200
     except Exception as e:
         return e, 500
 
 
-@application.route('/admin/announcement/<announcementID>', methods=['DELETE'])
+@application.route('/admin/announcement/<destination_type>/<announcementID>', methods=['DELETE'])
 @required_token
-def refuseAnnouncement(announcementID, user={}):
+def refuseAnnouncement(destination_type, announcementID, user={}):
     if (not (validateObjecID(announcementID))):
         return "Announcement non valido", 500
     try:
-        AdminManager.refuseAnnouncement(announcementID, user)
+        if(destination_type == "accomodation"):
+            AccomodationsManager.deleteAccomodation(announcementID, user)
+        elif(destination_type == "activity"):
+            ActivityManager.deleteActivity(announcementID, user)
         return "", 200
     except Exception as e:
         return e, 500

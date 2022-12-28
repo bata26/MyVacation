@@ -27,7 +27,7 @@ const ToApprove = () => {
 
     React.useEffect(() => {
         console.log("LOGUSEEFFECT",advertisementID)
-        api.get("/admin/announcement/" + advertisementID)
+        api.get("/admin/announcement/" + type + "/" + advertisementID)
             .then(function (response) {
                 console.log(response.data)
                 console.log(type)
@@ -42,7 +42,7 @@ const ToApprove = () => {
 
     //Metodo per eliminare l'adv
     const notApproveAdvertisement = (advertisementID) => {
-        api.delete("/admin/announcement/" + advertisementID)
+        api.delete("/admin/announcement/" + type + "/" + advertisementID)
             .then(function (response) {
                 console.log(response.data);
                 alert("The advertisement has not been approved")
@@ -54,7 +54,7 @@ const ToApprove = () => {
     }
 
     const approveAdvertisement = (advertisementID) => {
-        api.post("/admin/announcement/" + advertisementID)
+        api.post("/admin/announcement/" + advertisementID, {"destinationType" : type})
             .then(function (response) {
                 console.log(response.data);
                 alert("The advertisement has been approved")
@@ -62,6 +62,7 @@ const ToApprove = () => {
             })
             .catch(function (error) {
                 console.log(error);
+                alert("Impossible to approve the announcement")
             });
     }
     
@@ -108,7 +109,7 @@ const ToApprove = () => {
                         />
                     </ImageListItem>
                     {
-                        type === "Accomodation" ?
+                        type === "accomodation" ?
                             (advertisement.pictures.map((item) => (
                                 <ImageListItem key={item}>
                                     <img
@@ -178,7 +179,7 @@ const ToApprove = () => {
                             Host: {advertisement.host_name}
                             <br />
                         </Typography>
-                        {type === "Accomodation" ?
+                        {type === "accomodation" ?
                             (<Typography align='right' sx={{ mb: 2 }}>
                                 Beds: {advertisement.beds}
                                 <br />
@@ -215,7 +216,7 @@ const ToApprove = () => {
                             sx={{ mt: 2 }}
                             onClick={() => { notApproveAdvertisement(advertisementID) }}
                         >
-                            Don't Approve
+                            Not Approve
                         </Button>
                     </Grid>
                 </Grid>

@@ -15,7 +15,6 @@ def deleteUserById (user_id):
         "type" : "admin"
     }
     result = UserManager.deleteUser(userId , user)
-    print(f"delete result : {result}")
     return "" , 200
 
 @application.route('/users/<user_id>' , methods = ['GET'])
@@ -33,6 +32,5 @@ def getUsers():
             "type" : "admin"
         }
     result = UserManager.getFilteredUsers(user, name , surname)
-    print(f"result : {result}")
     result["_id"] = str(result["_id"])
     return result , 200

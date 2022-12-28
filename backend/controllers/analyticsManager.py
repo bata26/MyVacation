@@ -216,9 +216,6 @@ class AnalyticsManager:
             return result
         except Exception as e:
             print("Impossibile eseguire la query: " + str(e))
-
-            print(result)
-
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
 

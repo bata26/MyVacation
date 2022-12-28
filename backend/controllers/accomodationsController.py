@@ -15,7 +15,6 @@ def deleteAccomodationById (accomodation_id):
         "type" : "admin"
     }
     result = AccomodationsManager.deleteAccomodation(accomodationId , user)
-    print(f"delete result : {result}")
     return "" , 200
 
 @application.route('/accomodations/<accomodation_id>' , methods = ['GET'])
@@ -32,6 +31,5 @@ def getAccomodations():
     start_date = args.get("start_date")
     end_date = args.get("end_date")
     result = AccomodationsManager.getFilteredAccomodation(start_date  , end_date  , city , guests)
-    print(f"result : {result}")
     result["_id"] = str(result["_id"])
     return result , 200

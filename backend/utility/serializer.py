@@ -21,6 +21,10 @@ class Serializer:
                 "reviewer" : review['reviewer'],
                 "_id" : str(review['_id'])
             })
+        decodedMainPic = None
+        if(activity.mainPicture != None):
+            decodedMainPic = activity.mainPicture.decode('utf-8')
+
         return {
             "_id" : str(activity._id),
             "host_id" : str(activity.host_id),
@@ -32,8 +36,9 @@ class Serializer:
             "price" : activity.price ,
             "number_of_reviews" : activity.number_of_reviews ,
             "review_scores_rating" : activity.review_scores_rating,
-            "mainPicture" : activity.mainPicture.decode('utf-8'),
+            "mainPicture" : decodedMainPic,
             "name" : activity.name,
+            "approved" : activity.approved,
             "reviews" : serializedReviews,
         }
     
@@ -62,6 +67,9 @@ class Serializer:
                 "reviewer" : review['reviewer'],
                 "_id" : str(review['_id'])
             })
+        decodedMainPic = None
+        if(accomodation.mainPicture != None):
+            decodedMainPic = accomodation.mainPicture.decode('utf-8')
         return {
             "_id" : str(accomodation._id) ,
             "name" : accomodation.name ,
@@ -78,7 +86,8 @@ class Serializer:
             "minimum_nights" : accomodation.minimum_nights ,
             "number_of_reviews" : accomodation.number_of_reviews ,
             "review_scores_rating" : accomodation.review_scores_rating ,
-            "mainPicture" : accomodation.mainPicture.decode('utf-8') ,
+            "mainPicture" : decodedMainPic ,
+            "approved" : accomodation.approved,
             "reservations" : serializedReservations ,
             "reviews" : serializedReviews ,
         }
@@ -120,16 +129,6 @@ class Serializer:
             "knownLanguages" : user.knownLanguages ,
             "reservations" : serializedReservations,
             "registrationDate" : user.registrationDate
-        }
-
-    @staticmethod
-    def serializeToApprove(toApprove):
-        return {
-            "_id" : str(toApprove._id),
-            "name" : toApprove.name,
-            "host_id" : str(toApprove.host_id),
-            "location" : toApprove.location,
-            "type" : toApprove.type
         }
 
     @staticmethod

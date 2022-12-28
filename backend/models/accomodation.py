@@ -5,7 +5,7 @@ class Accomodation:
                  host_id, host_name, mainPicture,
                  location, property_type, accommodates,
                  bedrooms, beds, price, minimum_nights, number_of_reviews,
-                 review_scores_rating, reservations = [], reviews = [], _id="" , pictures=[]):
+                 review_scores_rating, approved, reservations = [], reviews = [], _id="" , pictures=[]):
         self.name = name
         self.description = description
         self.pictures = pictures
@@ -24,6 +24,7 @@ class Accomodation:
         self.minimum_nights = minimum_nights
         self.number_of_reviews = number_of_reviews
         self.review_scores_rating = review_scores_rating
+        self.approved = approved
         self.reservations = reservations
         self.reviews = reviews
         if (_id != ""):
@@ -50,6 +51,7 @@ class Accomodation:
             "minimum_nights": self.minimum_nights,
             "number_of_reviews": self.number_of_reviews,
             "review_scores_rating": self.review_scores_rating,
+            "approved": self.approved,
             "pictures": pictures,
             "reservations": self.reservations,
             "reviews": self.reviews

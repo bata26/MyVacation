@@ -48,6 +48,7 @@ class AccomodationsManager:
                         accomodation["minimum_nights"],
                         accomodation["number_of_reviews"],
                         accomodation["review_scores_rating"],
+                        accomodation["approved"],
                         accomodation["reservations"],
                         accomodation["reviews"],
                         str(accomodation["_id"]))
@@ -77,6 +78,7 @@ class AccomodationsManager:
             cursor["minimum_nights"],
             cursor["number_of_reviews"],
             cursor["review_scores_rating"],
+            cursor["approved"],
             cursor["reservations"],
             cursor["reviews"],
             str(cursor["_id"]),
@@ -125,6 +127,7 @@ class AccomodationsManager:
             "reservations": 0,
             "reviews": 0
         }
+        query["approved"] = True
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
 
         if index == "":
@@ -156,6 +159,7 @@ class AccomodationsManager:
                 accomodation["minimum_nights"],
                 accomodation["number_of_reviews"],
                 accomodation["review_scores_rating"],
+                accomodation["approved"],
                 _id=str(accomodation["_id"]))
             result.append(Serializer.serializeAccomodation(accomodationResult))
         return result
@@ -235,6 +239,7 @@ class AccomodationsManager:
                     accomodation["minimum_nights"],
                     accomodation["number_of_reviews"],
                     accomodation["review_scores_rating"],
+                    accomodation["approved"],
                     accomodation["reservations"],
                     accomodation["reviews"],
                     str(accomodation["_id"]),

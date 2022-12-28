@@ -45,6 +45,7 @@ class ActivityManager:
                     activity["review_scores_rating"],
                     activity["mainPicture"],
                     activity["name"],
+                    activity["approved"],
                     activity["reservations"],
                     activity["reviews"],
                     str(activity["_id"]))
@@ -70,6 +71,7 @@ class ActivityManager:
             cursor["review_scores_rating"],
             cursor["mainPicture"],
             cursor["name"],
+            cursor["approved"],
             cursor["reservations"],
             cursor["reviews"],
             str(cursor["_id"]))
@@ -100,7 +102,7 @@ class ActivityManager:
                 res = collection.delete_one({"_id": ObjectId(activityID)})
                 return res
             except Exception:
-                raise Exception("Impossibile inserire")
+                raise Exception("Impossibile eliminare")
 
     @staticmethod
     def getFilteredActivity(start_date="", city="", guestNumbers="", index="", direction=""):
@@ -128,6 +130,7 @@ class ActivityManager:
             "reservations": 0,
             "reviews": 0
         }
+        query["approved"] = True
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         if index == "":
             # When it is first page
@@ -155,6 +158,7 @@ class ActivityManager:
                 activity["review_scores_rating"],
                 activity["mainPicture"],
                 activity["name"],
+                activity["approved"],
                 _id=str(activity["_id"]))
             result.append(Serializer.serializeActivity(activityResult))
 
@@ -202,6 +206,7 @@ class ActivityManager:
                     activity["price"],
                     activity["mainPicture"],
                     activity["name"],
+                    activity["approved"],
                     activity["reservations"],
                     activity["reviews"],
                     str(activity["_id"]))

@@ -36,7 +36,6 @@ class UserManager:
         collection = db[os.getenv("USERS_COLLECTION")]
         try:
             result = collection.insert_one(user.getDictToUpload())
-            print(f"inserita , _id : {result.inserted_id}")
             return result.inserted_id
         except Exception:
             raise Exception("Impossibile inserire")
@@ -48,10 +47,8 @@ class UserManager:
         collection = db[os.getenv("USERS_COLLECTION")]
 
         try:
-            print("dentro")
             cursor = dict(collection.find_one({"username" : username}))
-            print(cursor["password"])
-            
+
             if(bcrypt.checkpw(password.encode('utf-8') , cursor["password"].encode('utf-8'))):
                 return str(cursor["_id"]) , cursor["type"], cursor["name"]
             else:

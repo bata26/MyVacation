@@ -13,7 +13,7 @@ import { Container } from '@mui/system';
 import { Grid } from '@mui/material';
 
 
-export default function ToBeApprovedList() {
+export default function ToBeApprovedList({destinationType}) {
     const [last_id, setLast_id] = React.useState(null);
     const [first_id, setFirst_id] = React.useState(null);
     const [page, setPage] = React.useState(1);
@@ -23,15 +23,14 @@ export default function ToBeApprovedList() {
 
 
     React.useEffect(() => {
-        api.get("/admin/announcements?index=")
+        api.get("/admin/announcements/" + destinationType + "?index=")
             .then(function (response) {
                 setToBeApprovedList(response.data);
-                if (response.data.length !== 0) {
                     setLast_id(response.data[response.data.length - 1]._id);
                     setFirst_id(response.data[0]._id);
                     if (response.data.length === parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE))
                         setLastPage(false)
-                }
+
             })
             .catch(function (error) {
                 console.log(error);
@@ -42,9 +41,10 @@ export default function ToBeApprovedList() {
         setPage(page - 1)
         const url = "?index=" + first_id + "&direction=previous";
         console.log(url);
-        api.get("/admin/announcements" + url)
+        api.get("/admin/announcements/" + destinationType + url)
             .then(function (response) {
                 setToBeApprovedList(response.data);
+                setLastPage(false)
                 if (response && response.data.length > 0) {
                     setLast_id(response.data[0]._id);
                     setFirst_id(response.data[response.data.length - 1]._id);
@@ -59,18 +59,18 @@ export default function ToBeApprovedList() {
     };
 
     const handleNextPage = () => {
-        setPage(page + 1);
         const url = "?index=" + last_id + "&direction=next";
         console.log(url);
-        api.get("/admin/announcements" + url)
+        api.get("/admin/announcements/" + destinationType + url)
             .then(function (response) {
-                setToBeApprovedList(response.data);
                 if (response && response.data.length > 0) {
                     setLast_id(response.data[response.data.length - 1]._id);
                     setFirst_id(response.data[0]._id);
+                    setToBeApprovedList(response.data);
+                    setPage(page + 1);
                 }
                 else {
-                    setFirst_id(last_id)
+                    setLastPage(true)
                 }
                 console.log(response.data);
                 console.log(first_id)
@@ -84,13 +84,12 @@ export default function ToBeApprovedList() {
 
     const handleFirstPage = () => {
         setPage(1);
-        const url = "?index=";
-
-        console.log(url);
-        api.get("/admin/announcements" + url)
+        api.get("/admin/announcements/" + destinationType + "?index=")
             .then(function (response) {
                 setToBeApprovedList(response.data);
-                setLast_id(response.data[4]._id);
+                setLast_id(response.data[response.data.length - 1]._id);
+                setFirst_id(0);
+                setLastPage(false)
                 console.log(response.data);
             })
             .catch(function (error) {
@@ -112,12 +111,12 @@ export default function ToBeApprovedList() {
                         <TableCell align="left" style={{ fontWeight: 'bold' }}>HostID</TableCell>
                         <TableCell align="center" style={{ fontWeight: 'bold' }}>Title</TableCell>
                         <TableCell align="center" style={{ fontWeight: 'bold' }}>City</TableCell>
-                        <TableCell align="right" style={{ fontWeight: 'bold' }}>Type</TableCell>
+                        <TableCell align="right" style={{ fontWeight: 'bold' }}>Price</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {toBeApprovedList && toBeApprovedList.map((row) => (
-                        <TableRow key={row._id} onClick={() => { navigate("/toApprove/" + row._id + "?type=" + row.type) }} style={{ cursor: "pointer" }}>
+                        <TableRow key={row._id} onClick={() => { navigate("/toApprove/" + row._id + "?type=" + destinationType) }} style={{ cursor: "pointer" }}>
                             <TableCell align='left' component="th" scope="row">
                                 {row.host_id}
                             </TableCell>
@@ -128,7 +127,7 @@ export default function ToBeApprovedList() {
                                 {row.location.city}
                             </TableCell>
                             <TableCell align='right' style={{ width: 160 }}>
-                                {row.type}
+                                {row.price}
                             </TableCell>
                         </TableRow>
                     ))}

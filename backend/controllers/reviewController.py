@@ -22,5 +22,4 @@ def deleteReviewByID(reviewID):
         "type" : "admin"
     }
     result = ReviewManager.deleteReview(reviewID , user)
-    print(f"delete result : {result}")
     return "" , 200

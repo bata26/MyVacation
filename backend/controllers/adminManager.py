@@ -1,5 +1,4 @@
 from .connection import MongoManager
-from models.toApprove import ToApprove
 from models.accomodation import Accomodation
 from models.user import User
 from models.activity import Activity
@@ -64,41 +63,77 @@ class AdminManager():
         return result
 
     @staticmethod
-    def getAnnouncementsToApprove(index, direction):
+    def getAnnouncementsToApprove(index, direction, destinationType):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("APPROVE_COLLECTION")]
+        if(destinationType == "accomodation"):
+            collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        else:
+            collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         result = []
 
         if index == "":
             # When it is first page
-            items = collection.find().sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
+            items = collection.find({"approved" : False}).sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
         else:
             if (direction == "next"):
-                items = collection.find({'_id': {'$gt': ObjectId(index)}}).sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
+                items = collection.find({'_id': {'$gt': ObjectId(index)}, 'approved': False}).sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
             elif (direction == "previous"):
-                items = collection.find({'_id': {'$lt': ObjectId(index)}}).sort('_id', -1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
-
-        for item in items:
-            tempToApprove = ToApprove(
-                str(item["_id"]) ,
-                item["name"] ,
-                str(item["host_id"]) ,
-                item["location"] ,
-                item["type"])
-            result.append(Serializer.serializeToApprove(tempToApprove))
-        return result\
+                items = collection.find({'_id': {'$lt': ObjectId(index)}, 'approved': False}).sort('_id', -1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
+        if(destinationType == "accomodation"):
+            for item in items:
+                tempToApprove = Accomodation(
+                    item["name"] ,
+                    item["description"] ,
+                    str(item["host_id"]) ,
+                    item["host_name"] ,
+                    None,
+                    item["location"] ,
+                    item["property_type"] ,
+                    item["accommodates"] ,
+                    item["bedrooms"] ,
+                    item["beds"] ,
+                    item["price"] ,
+                    item["minimum_nights"] ,
+                    0 ,
+                    0 ,
+                    item["approved"] ,
+                    [] ,
+                    [] ,
+                    str(item["_id"]) ,
+                    [])
+                result.append(Serializer.serializeAccomodation(tempToApprove))
+        else:
+            for item in items:
+                tempToApprove = Activity(
+                    str(item["host_id"]) ,
+                    item["host_name"] ,
+                    item["location"] ,
+                    item["description"] ,
+                    item["duration"] ,
+                    item["price"] ,
+                    0 ,
+                    0 ,
+                    None ,
+                    item["name"] ,
+                    item["approved"] ,
+                    [] ,
+                    [] ,
+                    str(item["_id"]))
+                result.append(Serializer.serializeActivity(tempToApprove))
+        return result
 
     @staticmethod
-    def getAnnouncementToApproveByID(announcementID):
+    def getAnnouncementToApproveByID(announcementID, destinationType):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("APPROVE_COLLECTION")]
+        if(destinationType == "accomodation"):
+            collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        else:
+            collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         announcement = collection.find_one({"_id" : ObjectId(announcementID)})
-        print(announcement['type'])
         result = None
-        if(announcement['type'] == "Accomodation"):
-            print("sono Dentro il blocco")
+        if(destinationType == "accomodation"):
             accomodationToBeApproved = Accomodation(
                 announcement["name"],
                 announcement["description"],
@@ -114,15 +149,15 @@ class AdminManager():
                 announcement["minimum_nights"],
                 "0",
                 "0",
+                announcement["approved"],
                 [],
                 [],
                 str(announcement["_id"]),
                 announcement["pictures"]
             )
-            print("DEBUG")
             result = Serializer.serializeAccomodation(accomodationToBeApproved)
 
-        elif(announcement['type'] == "Activity"):
+        elif(destinationType == "activity"):
             activityToBeApproved = Activity(
                 str(announcement["host_id"]),
                 announcement["host_name"],
@@ -134,6 +169,7 @@ class AdminManager():
                 0,
                 announcement["mainPicture"],
                 announcement["name"],
+                announcement["approved"],
                 [],
                 [],
                 str(announcement["_id"])
@@ -142,59 +178,24 @@ class AdminManager():
         return result
 
     @staticmethod
-    def approveAnnouncement(announcementID, user):
+    def approveAnnouncement(announcementID, user, destinationType):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        approveCollection = db[os.getenv("APPROVE_COLLECTION")]
+        if(destinationType == "accomodation"):
+            collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        else:
+            collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         try:
             if (user['role'] != "admin"):
                 raise Exception("L'utente non è admin")
             else:
-                ann = approveCollection.find_one({"_id" : ObjectId(announcementID)})
-                if(ann):
-                    if(ann["type"] == "activity"):
-                        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
-                    else:
-                        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
-                    try:
-                        ann.pop("_id")
-                        ann.pop("type")
-                        print("DEBUG1")
-                        ann.update({
-                            'number_of_reviews' : 0,
-                            'review_scores_rating' : 0,
-                            'reviews' : [],
-                            'reservations' : []
-                        })
-                        insertedID = collection.insert_one(ann) # inserisco nella nuova collection
-                        print(f"inserito {insertedID}")
-                        try:
-                            res = approveCollection.delete_one({"_id" : ObjectId(announcementID)})
-                            print(res)
-                        except Exception as e:
-                            # impossibile eliminare da approvations quindi eseguo il rollback
-                            collection.delete_one({"_id" : ObjectId(insertedID)})
-                    except Exception as e:
-                        raise Exception("Impossibile inserire nella collection destinataria")
-                else:
-                    raise Exception("L'announcementID non esiste")
+                try:
+                    result = collection.update_one({"_id" : ObjectId(announcementID)}, {"$set":{"approved" : True}})
+                    return result
+                except Exception as e:
+                    raise Exception("Impossibile approvare l'annuncio")
         except Exception as e:
             raise Exception(f"Impossibile trovare l'annuncio: {announcementID}")\
-
-    @staticmethod
-    def refuseAnnouncement(announcementID, user):
-        client = MongoManager.getInstance()
-        db = client[os.getenv("DB_NAME")]
-        approveCollection = db[os.getenv("APPROVE_COLLECTION")]
-
-        if (user['role'] != "admin"):
-            raise Exception("L'utente non è admin")
-        else:
-            try:
-                res = approveCollection.delete_one({"_id": ObjectId(announcementID)})
-                return res
-            except Exception:
-                raise Exception("Impossibile eliminare")
 
     @staticmethod
     def deleteUser(userID , user):

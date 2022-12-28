@@ -21,7 +21,6 @@ except Exception as e:
 try:
     accomodationList = list(accomodationCollection.find({} , {"_id" : 1 , "price" : 1 , "city" : "$location.city" , "host_id" : 1}))
     print("Fetch delle accomodations eseguito")    
-    print(accomodationList[0])
 except Exception as e:
     print("Impossibile ottenere utenti: " + str(e))
 

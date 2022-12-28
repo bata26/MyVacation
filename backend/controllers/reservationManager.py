@@ -67,7 +67,6 @@ class ReservationManager:
             query = {}
             if(type == "accomodation"):
                 if (startDate != "" and endDate != "" and endDate != None and startDate != None):
-                    print("DEBUG1")
                     # ottengo una lista di id di accomodations non occupate
                     # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
                     occupiedAccomodationsID = collection.distinct("destinationID", {"$or": [
@@ -83,15 +82,8 @@ class ReservationManager:
 
                     if ObjectId(destinationID) in occupiedAccomodationsID:
                         raise Exception("Accomodation Occupata, impossibile aggiornare")
-
-                    print("DEBUG2")
                     query = { '_id': ObjectId(reservationID) }
-                    #query["_id"] = ObjectId(reservationID)
-                    print("DEBUG3")
-                    print(query)
-                    #query["destinationID"]["$nin"] = occupiedAccomodationsID
                     result = collection.update_one({query}, {"$set": {'startDate': dateparser.parse(startDate), 'endDate': dateparser.parse(endDate)}})
-                    print("DEBUG4")
                     return result
             if(type == "activity"):
                 if (startDate != "" and startDate != None):
