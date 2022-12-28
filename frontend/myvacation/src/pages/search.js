@@ -14,7 +14,7 @@ import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import api from "../utility/api";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const theme = createTheme();
@@ -24,7 +24,6 @@ const Search = () => {
   const [first_id, setFirst_id] = React.useState(null);
   const [page, setPage] = React.useState(1);
   const [lastPage, setLastPage] = React.useState(null);
-  const navigate = useNavigate();
   const [search, setSearch] = React.useState(null);
   const [startDate, setStartDate] = React.useState(null);
   const [endDate, setEndDate] = React.useState(null);
@@ -33,6 +32,18 @@ const Search = () => {
   const [type, setType] = React.useState("accomodations");
   const today = new Date();
   const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  const [queryCity , setQueryCity] = React.useState(null);
+  const [queryDestinationType , setQueryDestinationType] = React.useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  React.useEffect( () =>{
+    const queryParams = new URLSearchParams(location.search);
+    const city = queryParams.get("city");
+    setQueryCity(city);
+    const type = queryParams.get("type");
+    setQueryDestinationType(type);
+  } , []);
 
   const handleChange = (event) => {
     setType(event.target.value);
@@ -191,7 +202,7 @@ const Search = () => {
                   fullWidth
                   id='type'
                   name='type'
-                  value={type}
+                  value={queryDestinationType ? queryDestinationType : type }
                   onChange={handleChange}
                 >
                   <MenuItem value={'activities'}>Activities</MenuItem>
@@ -204,6 +215,8 @@ const Search = () => {
                   name="city"
                   id="city"
                   label="City"
+                  defaultValue={queryCity ? queryCity : undefined}
+                  multiline
                 />
               </Grid>
               <Grid item xs={6} sm={2}>

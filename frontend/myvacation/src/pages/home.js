@@ -95,10 +95,10 @@ const Home = () => {
                                     </CardContent>
                                     <CardActions>
                                         <Button size="small" onClick={() => {
-                                            navigate("/search?city=" + item.city)
+                                            navigate("/search?city=" + item.city + "&type=accomodations")
                                         }}>Accomodations</Button>
                                         <Button size="small" onClick={() => {
-                                            navigate("/search?city=" + item.city)
+                                            navigate("/search?city=" + item.city + "&type=activities")
                                         }}>Activities</Button>
                                     </CardActions>
                                 </Card>
