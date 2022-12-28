@@ -14,10 +14,77 @@ import TableHead from '@mui/material/TableHead';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Paper from '@mui/material/Paper';
+import api from "../../utility/api";
 
 const theme = createTheme();
 
 const AdminPage = () => {
+
+    const [totalAdvertisement, setTotalAdvertisement] = React.useState([]);
+    const [bestHostAcc, setBestHostAcc] = React.useState([]);
+    const [bestHostAct, setBestHostAct] = React.useState([]);
+    const [accomodationAverage, setAccomodationAverage] = React.useState([]);
+    const [activityAverage, setActivityAverage] = React.useState([]);
+    const [usersForMonth, setUsersForMonth] = React.useState([]);
+
+    React.useEffect(() => {
+
+        //Richiesta per avere il numero di annunci pubblicati (Accomodations/Activities)
+        api.get("/analytics/totalAdvertisement")
+            .then(function (response) {
+                setTotalAdvertisement(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        //Richiesta per avere i top 10 host nel settore accomodation
+        api.get("analytics/bestHost/accomodation")
+            .then(function (response) {
+                setBestHostAcc(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        //Richiesta per avere i top 10 host nel settore activity
+        api.get("analytics/bestHost/activity")
+            .then(function (response) {
+                setBestHostAct(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        //Richiesta per avere la media dei prezzi per città delle accomodations
+        api.get("/analytics/averageAccomodations")
+            .then(function (response) {
+                setAccomodationAverage(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        //Richiesta per avere la media dei prezzi per città delle activities
+        api.get("/analytics/averageActivities")
+            .then(function (response) {
+                setActivityAverage(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        //Richiesta per avere il numero di iscritti in questo mese
+        api.get("/analytics/usersForMonth")
+            .then(function (response) {
+                setUsersForMonth(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    }, []);
+
 
     return (
         <ThemeProvider theme={theme}>
@@ -42,8 +109,6 @@ const AdminPage = () => {
                     </Container>
                 </Box>
 
-
-
                 <Container maxWidth="sm">
                     <Typography
                         component="h2"
@@ -56,125 +121,149 @@ const AdminPage = () => {
                     </Typography>
                 </Container>
 
-
-
                 <Container maxWidth="md" sx={{ mt: 4 }}>
-
-                    {/* Grafico andamento iscrizioni */}
+                    {/* Card iscrizioni mensili */}
                     <Card sx={{ mb: 4 }}>
                         <CardContent>
                             <Typography gutterBottom variant="h5" component="div" align='center'>
                                 This month subscribed
                             </Typography>
                             <Typography gutterBottom variant="h5" component="div" align='center'>
-                                10 users
+                                {usersForMonth} users
                             </Typography>
                         </CardContent>
                     </Card>
 
-                    <Grid container columnSpacing={1.4}>
+                    {/* Card totale annunci */}
+                    <Card sx={{ mb: 4 }}>
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div" align='center'>
+                                Number of advertisements
+                            </Typography>
+                            <Typography gutterBottom variant="h5" component="div" align='center'>
+                                Accomodations: {totalAdvertisement.totalAccomodations}
+                            </Typography>
+                            <Typography gutterBottom variant="h5" component="div" align='center'>
+                                Activities: {totalAdvertisement.totalActivities}
+                            </Typography>
+                        </CardContent>
+                    </Card>
 
-                        {/* Tabella città - media prezzi */}
-                        <Grid item xs={4} sm={2.7}>
+                    <Grid container columnSpacing={2}>
+                        <Container maxWidth="sm">
+                            <Typography
+                                component="h3"
+                                variant="h5"
+                                align="center"
+                                color="text.primary"
+                                gutterBottom
+                            >
+                                Average pricies Accomodation/Activity
+                            </Typography>
+                        </Container>
+                        {/* Tabella città - media prezzi ACCOMODATIONS */}
+                        <Grid item xs={4} sm={6}>
                             <TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
-                                <Table size="small">
+                                <Table sx={{ minWidth: 650 }} size="small">
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell align="center" style={{ fontWeight: 'bold' }}>Average price per city</TableCell>
-
+                                            <TableCell align="center" style={{ fontWeight: 'bold' }}>City</TableCell>
+                                            <TableCell align="center" style={{ fontWeight: 'bold' }}>Average cost</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-
-                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                            <TableCell align="center">Roma </TableCell>
-                                            <TableCell align="center">350€</TableCell>
-
-                                        </TableRow>
-
-                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                            <TableCell align="center">Milano</TableCell>
-                                            <TableCell align="center">650€</TableCell>
-
-                                        </TableRow>
-
-                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                            <TableCell align="center">Torino</TableCell>
-                                            <TableCell align="center">450€</TableCell>
-
-                                        </TableRow>
-
+                                        {accomodationAverage.map((accAv) => (
+                                            <TableRow key={accAv._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                                <TableCell align="center">{accAv.city} </TableCell>
+                                                <TableCell align="center">{accAv.averageCost}</TableCell>
+                                            </TableRow>
+                                        ))}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
                         </Grid>
 
-                        <Grid item xs={4} sm={2.7}>
-                            {/* Tabella top 10 host */}
+                        {/* Tabella città - media prezzi ACTIVITIES */}
+                        <Grid item xs={4} sm={6}>
                             <TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
-                                <Table size="small">
+                                <Table sx={{ minWidth: 650 }} size="small">
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell align="center" style={{ fontWeight: 'bold' }}>Top 10 hosts</TableCell>
-
+                                            <TableCell align="center" style={{ fontWeight: 'bold' }}>City</TableCell>
+                                            <TableCell align="center" style={{ fontWeight: 'bold' }}>Average cost</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-
-                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                            <TableCell align="center">Luca </TableCell>
-                                            <TableCell align="center">Rossi</TableCell>
-
-                                        </TableRow>
-
-                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                            <TableCell align="center">Matteo</TableCell>
-                                            <TableCell align="center">Verdi</TableCell>
-
-                                        </TableRow>
-
-                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                            <TableCell align="center">Mario</TableCell>
-                                            <TableCell align="center">Grossi</TableCell>
-
-                                        </TableRow>
-
+                                        {activityAverage.map((actAv) => (
+                                            <TableRow key={actAv._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                                <TableCell align="center">{actAv.city} </TableCell>
+                                                <TableCell align="center">{actAv.averageCost}</TableCell>
+                                            </TableRow>
+                                        ))}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+                        </Grid>
+                    </Grid>
 
+                    <Grid container columnSpacing={2}>
+                    <Container maxWidth="sm">
+                            <Typography
+                                component="h3"
+                                variant="h5"
+                                align="center"
+                                color="text.primary"
+                                gutterBottom
+                            >
+                                Top 10 hosts Accomodation/Activity
+                            </Typography>
+                        </Container>
 
+                        {/* Tabella top 10 host accomodations */}
+                        <Grid item xs={4} sm={6}>
+                            <TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
+                                <Table sx={{ minWidth: 650 }} size="small">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell align="center" style={{ fontWeight: 'bold' }}>HostID</TableCell>
+                                            <TableCell align="center" style={{ fontWeight: 'bold' }}>Average Rating</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {bestHostAcc.map((hostAcc) => (
+                                            <TableRow key={hostAcc._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                                <TableCell align="center">{hostAcc.hostID} </TableCell>
+                                                <TableCell align="center">{hostAcc.averageRating}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                         </Grid>
 
-                        {/* Card totale annunci */}
-                        <Grid item xs={4} sm={3.2}>
-                            <Card>
-                                <CardContent>
-                                    <Typography gutterBottom variant="h5" component="div" align='center'>
-                                        Number of advertisements
-                                    </Typography>
-                                    <Typography gutterBottom variant="h5" component="div" align='center'>
-                                        500
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        {/* Card totale utenti */}
-                        <Grid item xs={4} sm={3.2}>
-                            <Card>
-                                <CardContent>
-                                    <Typography gutterBottom variant="h5" component="div" align='center'>
-                                        Number of users
-                                    </Typography>
-                                    <Typography gutterBottom variant="h5" component="div" align='center'>
-                                        100
-                                    </Typography>
-                                </CardContent>
-                            </Card>
+                        {/* Tabella top 10 host activities */}
+                        <Grid item xs={4} sm={6}>
+                            <TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
+                                <Table sx={{ minWidth: 650 }} size="small">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell align="center" style={{ fontWeight: 'bold' }}>HostID</TableCell>
+                                            <TableCell align="center" style={{ fontWeight: 'bold' }}>Average Rating</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {bestHostAct.map((hostAct) => (
+                                            <TableRow key={hostAct._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                                <TableCell align="center">{hostAct.hostID} </TableCell>
+                                                <TableCell align="center">{hostAct.averageRating}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                         </Grid>
                     </Grid>
                 </Container>
-
 
                 <Container maxWidth="md" sx={{ mt: 4 }}>
                     <Typography
@@ -187,7 +276,7 @@ const AdminPage = () => {
                         Accomodations to be approved
                     </Typography>
                     {/* To be Approved List*/}
-                    <ToBeApprovedList destinationType={"accomodation"}/>
+                    <ToBeApprovedList destinationType={"accomodation"} />
                     <Typography
                         component="h2"
                         variant="h4"
@@ -198,7 +287,7 @@ const AdminPage = () => {
                     >
                         Activities to be approved
                     </Typography>
-                    <ToBeApprovedList destinationType={"activity"}/>
+                    <ToBeApprovedList destinationType={"activity"} />
                 </Container>
 
                 <Container maxWidth="md" sx={{ mt: 4 }}>
