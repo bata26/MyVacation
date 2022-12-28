@@ -74,12 +74,12 @@ class AdminManager():
 
         if index == "":
             # When it is first page
-            items = collection.find({"approved" : False}).sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
+            items = list(collection.find({"approved" : False}).sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE"))))
         else:
             if (direction == "next"):
-                items = collection.find({'_id': {'$gt': ObjectId(index)}, 'approved': False}).sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
+                items = list(collection.find({'_id': {'$gt': ObjectId(index)}, 'approved': False}).sort('_id', 1).limit(int(os.getenv("ADMIN_PAGE_SIZE"))))
             elif (direction == "previous"):
-                items = collection.find({'_id': {'$lt': ObjectId(index)}, 'approved': False}).sort('_id', -1).limit(int(os.getenv("ADMIN_PAGE_SIZE")))
+                items = list(collection.find({'_id': {'$lt': ObjectId(index)}, 'approved': False}).sort('_id', -1).limit(int(os.getenv("ADMIN_PAGE_SIZE"))))
         if(destinationType == "accomodation"):
             for item in items:
                 tempToApprove = Accomodation(
@@ -95,15 +95,14 @@ class AdminManager():
                     item["beds"] ,
                     item["price"] ,
                     item["minimum_nights"] ,
-                    0 ,
-                    0 ,
+                    item["number_of_reviews"] ,
+                    item["review_scores_rating"] ,
                     item["approved"] ,
-                    [] ,
-                    [] ,
-                    str(item["_id"]) ,
-                    [])
+                    _id = str(item["_id"]) ,
+                    )
                 result.append(Serializer.serializeAccomodation(tempToApprove))
         else:
+            print("Sono nella query")
             for item in items:
                 tempToApprove = Activity(
                     str(item["host_id"]) ,
@@ -112,15 +111,14 @@ class AdminManager():
                     item["description"] ,
                     item["duration"] ,
                     item["price"] ,
-                    0 ,
-                    0 ,
+                    item["number_of_reviews"] ,
+                    item["review_scores_rating"] ,
                     None ,
                     item["name"] ,
                     item["approved"] ,
-                    [] ,
-                    [] ,
-                    str(item["_id"]))
+                    _id = str(item["_id"]))
                 result.append(Serializer.serializeActivity(tempToApprove))
+            print(result)
         return result
 
     @staticmethod

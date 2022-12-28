@@ -359,7 +359,6 @@ def insertActivity():
     )
     activityID = ActivityManager.insertNewActivity(activity)
     return {"activityID": str(activityID)}, 200
-    return "", 500
 
 
 @application.route('/reviews/<review_id>', methods=['GET'])
@@ -507,8 +506,8 @@ def getUsers(user):
 
 
 @application.route('/admin/announcements/<destination_type>', methods=['GET'])
-# @required_token
-def getAnnouncementsToBeApproved(destination_type):
+@required_token
+def getAnnouncementsToBeApproved(destination_type , user={}):
     try:
         print("DEBUG12")
         args = request.args
@@ -518,7 +517,8 @@ def getAnnouncementsToBeApproved(destination_type):
         result = AdminManager.getAnnouncementsToApprove(index, direction, destination_type)
         return result, 200
     except Exception as e:
-        return e, 500
+        print(str(e))
+        return str(e), 500
 
 
 @application.route('/admin/announcement/<destination_type>/<announcementID>', methods=['GET'])

@@ -13,7 +13,7 @@ import { Container } from '@mui/system';
 import { Grid } from '@mui/material';
 
 
-export default function ToBeApprovedList({destinationType}) {
+export default function ToBeApprovedList({ destinationType }) {
     const [last_id, setLast_id] = React.useState(null);
     const [first_id, setFirst_id] = React.useState(null);
     const [page, setPage] = React.useState(1);
@@ -23,13 +23,14 @@ export default function ToBeApprovedList({destinationType}) {
 
 
     React.useEffect(() => {
-        api.get("/admin/announcements/" + destinationType + "?index=")
+        api.get("/admin/announcements/" + destinationType + "?index=&direction=")
             .then(function (response) {
+                console.log(response.data);
                 setToBeApprovedList(response.data);
-                    setLast_id(response.data[response.data.length - 1]._id);
-                    setFirst_id(response.data[0]._id);
-                    if (response.data.length === parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE))
-                        setLastPage(false)
+                setLast_id(response.data[response.data.length - 1]._id);
+                setFirst_id(response.data[0]._id);
+                if (response.data.length === parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE))
+                    setLastPage(false)
 
             })
             .catch(function (error) {
@@ -86,6 +87,7 @@ export default function ToBeApprovedList({destinationType}) {
         setPage(1);
         api.get("/admin/announcements/" + destinationType + "?index=")
             .then(function (response) {
+                console.log(response.data);
                 setToBeApprovedList(response.data);
                 setLast_id(response.data[response.data.length - 1]._id);
                 setFirst_id(0);
