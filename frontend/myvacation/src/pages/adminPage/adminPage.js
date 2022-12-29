@@ -15,6 +15,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Paper from '@mui/material/Paper';
 import api from "../../utility/api";
+import Config from "../../utility/config";
 
 const theme = createTheme();
 
@@ -134,7 +135,7 @@ const AdminPage = () => {
 									color="text.primary"
 									gutterBottom
 								>
-									Subscribed users per month
+									User subscription per month
 								</Typography>
 							</Container>
 
@@ -147,10 +148,9 @@ const AdminPage = () => {
 										</TableRow>
 									</TableHead>
 									<tbody>
-										{usersForMonth.map((item) => (
-
-											<TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-												<TableCell align="center">{item.month}</TableCell>
+										{usersForMonth && usersForMonth.map((item, index) => (
+											<TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+												<TableCell align="center">{Config.MONTHS[item.month-1]}</TableCell>
 												<TableCell align="center">{item.users}</TableCell>
 											</TableRow>
 										))}
@@ -172,7 +172,7 @@ const AdminPage = () => {
 									Number of advertisements
 								</Typography>
 							</Container>
-
+							{totalAdvertisement &&
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
 								<Table size="small">
 									<TableHead>
@@ -189,23 +189,24 @@ const AdminPage = () => {
 									</tbody>
 								</Table>
 							</TableContainer>
+							}
 						</Grid>
 					</Grid>
 
 					<Grid container columnSpacing={2}>
-						<Container maxWidth="sm">
-							<Typography
-								component="h3"
-								variant="h5"
-								align="center"
-								color="text.primary"
-								gutterBottom
-							>
-								Average pricies Accomodation/Activity
-							</Typography>
-						</Container>
 						{/* Tabella città - media prezzi ACCOMODATIONS */}
 						<Grid item xs={4} sm={6}>
+							<Container maxWidth="sm">
+								<Typography
+									component="h3"
+									variant="h5"
+									align="center"
+									color="text.primary"
+									gutterBottom
+								>
+									Average Accomodations's prices
+								</Typography>
+							</Container>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
 								<Table size="small">
 									<TableHead>
@@ -215,8 +216,8 @@ const AdminPage = () => {
 										</TableRow>
 									</TableHead>
 									<tbody>
-										{accomodationAverage.map((accAv) => (
-											<TableRow key={accAv._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+										{accomodationAverage && accomodationAverage.map((accAv, index) => (
+											<TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 												<TableCell align="left">{accAv.city} </TableCell>
 												<TableCell align="right">{accAv.averageCost}</TableCell>
 											</TableRow>
@@ -228,6 +229,17 @@ const AdminPage = () => {
 
 						{/* Tabella città - media prezzi ACTIVITIES */}
 						<Grid item xs={4} sm={6}>
+							<Container maxWidth="sm">
+								<Typography
+									component="h3"
+									variant="h5"
+									align="center"
+									color="text.primary"
+									gutterBottom
+								>
+									Average Activities's prices
+								</Typography>
+							</Container>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
 								<Table size="small">
 									<TableHead>
@@ -237,8 +249,8 @@ const AdminPage = () => {
 										</TableRow>
 									</TableHead>
 									<tbody>
-										{activityAverage.map((actAv) => (
-											<TableRow key={actAv._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+										{activityAverage && activityAverage.map((actAv, index) => (
+											<TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 												<TableCell align="left">{actAv.city} </TableCell>
 												<TableCell align="right">{actAv.averageCost}</TableCell>
 											</TableRow>
@@ -250,20 +262,21 @@ const AdminPage = () => {
 					</Grid>
 
 					<Grid container columnSpacing={2}>
-						<Container maxWidth="sm">
-							<Typography
-								component="h3"
-								variant="h5"
-								align="center"
-								color="text.primary"
-								gutterBottom
-							>
-								Top 10 hosts Accomodation/Activity
-							</Typography>
-						</Container>
+
 
 						{/* Tabella top 10 host accomodations */}
 						<Grid item xs={4} sm={6}>
+							<Container maxWidth="sm">
+								<Typography
+									component="h4"
+									variant="h5"
+									align="center"
+									color="text.primary"
+									gutterBottom
+								>
+									Top 10 Accomodation's hosts
+								</Typography>
+							</Container>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
 								<Table size="small">
 									<TableHead>
@@ -273,8 +286,8 @@ const AdminPage = () => {
 										</TableRow>
 									</TableHead>
 									<tbody>
-										{bestHostAcc.map((hostAcc) => (
-											<TableRow key={hostAcc._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+										{bestHostAcc && bestHostAcc.map((hostAcc, index) => (
+											<TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 												<TableCell align="left">{hostAcc.hostID} </TableCell>
 												<TableCell align="right">{hostAcc.averageRating}</TableCell>
 											</TableRow>
@@ -286,6 +299,17 @@ const AdminPage = () => {
 
 						{/* Tabella top 10 host activities */}
 						<Grid item xs={4} sm={6}>
+							<Container maxWidth="sm">
+								<Typography
+									component="h4"
+									variant="h5"
+									align="center"
+									color="text.primary"
+									gutterBottom
+								>
+									Top 10 Activity's hosts
+								</Typography>
+							</Container>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
 								<Table size="small">
 									<TableHead>
@@ -295,8 +319,8 @@ const AdminPage = () => {
 										</TableRow>
 									</TableHead>
 									<tbody>
-										{bestHostAct.map((hostAct) => (
-											<TableRow key={hostAct._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+										{bestHostAct && bestHostAct.map((hostAct, index) => (
+											<TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 												<TableCell align="left">{hostAct.hostID} </TableCell>
 												<TableCell align="right">{hostAct.averageRating}</TableCell>
 											</TableRow>

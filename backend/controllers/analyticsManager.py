@@ -68,6 +68,7 @@ class AnalyticsManager:
                         }
                     }
                 },
+                {'$sort': {'users': -1}},
                 {
                     "$project": {"month": "$_id", "users": "$users", "_id": 0}
                 }]))
@@ -168,7 +169,8 @@ class AnalyticsManager:
                      "averageCost": {"$avg": "$price"}
                  }
                  },
-                {"$project": {"_id": 0, "city": "$_id", "averageCost": 1}}
+                {'$sort': {'averageCost': -1}},
+                {"$project": {"_id": 0, "city": "$_id", "averageCost": {"$round": ["$averageCost", 2]}}}
 
             ]))
             return result
@@ -188,7 +190,8 @@ class AnalyticsManager:
                      "averageCost": {"$avg": "$price"}
                  }
                  },
-                {"$project": {"_id": 0, "city": "$_id", "averageCost": 1}}
+                {'$sort': {'averageCost': -1}},
+                {"$project": {"_id": 0, "city": "$_id", "averageCost": {"$round": ["$averageCost", 2]}}}
 
             ]))
             return result
@@ -322,7 +325,7 @@ class AnalyticsManager:
                     '$avg': '$review_scores_rating'}}},
                 {'$sort': {'avg': -1}},
                 {'$limit': 10},
-                {"$project" : {"_id" : 0 , "hostID" : "$_id" , "averageRating" : "$avg"}}
+                {"$project" : {"_id" : 0 , "hostID" : "$_id" , "averageRating" : {"$round": ["$avg", 2]}}}
             ]))
 
             for host in hostList:
