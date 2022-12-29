@@ -122,34 +122,75 @@ const AdminPage = () => {
 				</Container>
 
 				<Container maxWidth="md" sx={{ mt: 4 }}>
-					{/* Card iscrizioni mensili */}
-					<Card sx={{ mb: 4 }}>
-						<CardContent>
-							<Typography gutterBottom variant="h5" component="div" align='center'>
-								This month subscribed
-							</Typography>
-							<Typography gutterBottom variant="h5" component="div" align='center'>
-								{usersForMonth.map((item) => (
-									item.users
-								))} users
-							</Typography>
-						</CardContent>
-					</Card>
+					<Grid container columnSpacing={2}>
+						<Grid item xs={4} sm={6}>
 
-					{/* Card totale annunci */}
-					<Card sx={{ mb: 4 }}>
-						<CardContent>
-							<Typography gutterBottom variant="h5" component="div" align='center'>
-								Number of advertisements
-							</Typography>
-							<Typography gutterBottom variant="h5" component="div" align='center'>
-								Accomodations: {totalAdvertisement.totalAccomodations}
-							</Typography>
-							<Typography gutterBottom variant="h5" component="div" align='center'>
-								Activities: {totalAdvertisement.totalActivities}
-							</Typography>
-						</CardContent>
-					</Card>
+							{/* Card iscrizioni mensili */}
+							<Container maxWidth="sm">
+								<Typography
+									component="h3"
+									variant="h5"
+									align="center"
+									color="text.primary"
+									gutterBottom
+								>
+									Subscribed users per month
+								</Typography>
+							</Container>
+
+							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
+								<Table size="small">
+									<TableHead>
+										<TableRow>
+											<TableCell align="center" style={{ fontWeight: 'bold' }}>Month</TableCell>
+											<TableCell align="center" style={{ fontWeight: 'bold' }}>User</TableCell>
+										</TableRow>
+									</TableHead>
+									<tbody>
+										{usersForMonth.map((item) => (
+
+											<TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+												<TableCell align="center">{item.month}</TableCell>
+												<TableCell align="center">{item.users}</TableCell>
+											</TableRow>
+										))}
+									</tbody>
+								</Table>
+							</TableContainer>
+						</Grid>
+
+						<Grid item xs={4} sm={6}>
+							{/* Card totale annunci */}
+							<Container maxWidth="sm">
+								<Typography
+									component="h3"
+									variant="h5"
+									align="center"
+									color="text.primary"
+									gutterBottom
+								>
+									Number of advertisements
+								</Typography>
+							</Container>
+
+							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
+								<Table size="small">
+									<TableHead>
+										<TableRow>
+											<TableCell align="center" style={{ fontWeight: 'bold' }}>Accomodation</TableCell>
+											<TableCell align="center" style={{ fontWeight: 'bold' }}>Activity</TableCell>
+										</TableRow>
+									</TableHead>
+									<tbody>
+										<TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+											<TableCell align="center">{totalAdvertisement.totalAccomodations}</TableCell>
+											<TableCell align="center">{totalAdvertisement.totalActivities}</TableCell>
+										</TableRow>
+									</tbody>
+								</Table>
+							</TableContainer>
+						</Grid>
+					</Grid>
 
 					<Grid container columnSpacing={2}>
 						<Container maxWidth="sm">
@@ -165,44 +206,44 @@ const AdminPage = () => {
 						</Container>
 						{/* Tabella città - media prezzi ACCOMODATIONS */}
 						<Grid item xs={4} sm={6}>
-							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
-								<Table sx={{ minWidth: 650 }} size="small">
+							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
+								<Table size="small">
 									<TableHead>
 										<TableRow>
-											<TableCell align="center" style={{ fontWeight: 'bold' }}>City</TableCell>
-											<TableCell align="center" style={{ fontWeight: 'bold' }}>Average cost</TableCell>
+											<TableCell align="left" style={{ fontWeight: 'bold' }}>City</TableCell>
+											<TableCell align="right" style={{ fontWeight: 'bold' }}>Average cost</TableCell>
 										</TableRow>
 									</TableHead>
-									<TableBody>
+									<tbody>
 										{accomodationAverage.map((accAv) => (
 											<TableRow key={accAv._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-												<TableCell align="center">{accAv.city} </TableCell>
-												<TableCell align="center">{accAv.averageCost}</TableCell>
+												<TableCell align="left">{accAv.city} </TableCell>
+												<TableCell align="right">{accAv.averageCost}</TableCell>
 											</TableRow>
 										))}
-									</TableBody>
+									</tbody>
 								</Table>
 							</TableContainer>
 						</Grid>
 
 						{/* Tabella città - media prezzi ACTIVITIES */}
 						<Grid item xs={4} sm={6}>
-							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
+							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
 								<Table size="small">
 									<TableHead>
 										<TableRow>
 											<TableCell align="left" style={{ fontWeight: 'bold' }}>City</TableCell>
-											<TableCell align="left" style={{ fontWeight: 'bold' }}>Average cost</TableCell>
+											<TableCell align="right" style={{ fontWeight: 'bold' }}>Average cost</TableCell>
 										</TableRow>
 									</TableHead>
-									<TableBody>
+									<tbody>
 										{activityAverage.map((actAv) => (
 											<TableRow key={actAv._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-												<TableCell align="center">{actAv.city} </TableCell>
-												<TableCell align="center">{actAv.averageCost}</TableCell>
+												<TableCell align="left">{actAv.city} </TableCell>
+												<TableCell align="right">{actAv.averageCost}</TableCell>
 											</TableRow>
 										))}
-									</TableBody>
+									</tbody>
 								</Table>
 							</TableContainer>
 						</Grid>
@@ -224,21 +265,21 @@ const AdminPage = () => {
 						{/* Tabella top 10 host accomodations */}
 						<Grid item xs={4} sm={6}>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
-								<Table sx={{ minWidth: 650 }} size="small">
+								<Table size="small">
 									<TableHead>
 										<TableRow>
-											<TableCell align="center" style={{ fontWeight: 'bold' }}>HostID</TableCell>
-											<TableCell align="center" style={{ fontWeight: 'bold' }}>Average Rating</TableCell>
+											<TableCell align="left" style={{ fontWeight: 'bold' }}>HostID</TableCell>
+											<TableCell align="right" style={{ fontWeight: 'bold' }}>Average Rating</TableCell>
 										</TableRow>
 									</TableHead>
-									<TableBody>
+									<tbody>
 										{bestHostAcc.map((hostAcc) => (
 											<TableRow key={hostAcc._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-												<TableCell align="center">{hostAcc.hostID} </TableCell>
-												<TableCell align="center">{hostAcc.averageRating}</TableCell>
+												<TableCell align="left">{hostAcc.hostID} </TableCell>
+												<TableCell align="right">{hostAcc.averageRating}</TableCell>
 											</TableRow>
 										))}
-									</TableBody>
+									</tbody>
 								</Table>
 							</TableContainer>
 						</Grid>
@@ -246,21 +287,21 @@ const AdminPage = () => {
 						{/* Tabella top 10 host activities */}
 						<Grid item xs={4} sm={6}>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
-								<Table sx={{ minWidth: 650 }} size="small">
+								<Table size="small">
 									<TableHead>
 										<TableRow>
-											<TableCell align="center" style={{ fontWeight: 'bold' }}>HostID</TableCell>
-											<TableCell align="center" style={{ fontWeight: 'bold' }}>Average Rating</TableCell>
+											<TableCell align="left" style={{ fontWeight: 'bold' }}>HostID</TableCell>
+											<TableCell align="right" style={{ fontWeight: 'bold' }}>Average Rating</TableCell>
 										</TableRow>
 									</TableHead>
-									<TableBody>
+									<tbody>
 										{bestHostAct.map((hostAct) => (
 											<TableRow key={hostAct._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-												<TableCell align="center">{hostAct.hostID} </TableCell>
-												<TableCell align="center">{hostAct.averageRating}</TableCell>
+												<TableCell align="left">{hostAct.hostID} </TableCell>
+												<TableCell align="right">{hostAct.averageRating}</TableCell>
 											</TableRow>
 										))}
-									</TableBody>
+									</tbody>
 								</Table>
 							</TableContainer>
 						</Grid>
