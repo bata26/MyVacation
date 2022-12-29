@@ -26,7 +26,6 @@ const ToApprove = () => {
     console.log(advertisementID)
 
     React.useEffect(() => {
-        console.log("LOGUSEEFFECT",advertisementID)
         api.get("/admin/announcement/" + type + "/" + advertisementID)
             .then(function (response) {
                 console.log(response.data)
@@ -92,7 +91,6 @@ const ToApprove = () => {
                     </Box>
                 </Box>
             </Container>
-
             {/* Immagini */}
             <Container maxWidth='lg'>
                 <ImageList
@@ -134,7 +132,6 @@ const ToApprove = () => {
                         >
                             Description
                         </Typography>
-
                         <Typography
                             component="h2"
                             variant="h6"
@@ -144,9 +141,7 @@ const ToApprove = () => {
                             {ReactHtmlParser(advertisement.description)}
                         </Typography>
                     </Grid>
-
                     <Grid item xs={6}>
-
                         <Typography
                             component="h3"
                             variant="h4"
@@ -176,30 +171,30 @@ const ToApprove = () => {
                         </Typography>
 
                         <Typography align='right' sx={{ mb: 2 }}>
-                            Host: {advertisement.host_name}
+                            <b>Host</b>: {advertisement.host_name}
                             <br />
                         </Typography>
                         {type === "accomodation" ?
                             (<Typography align='right' sx={{ mb: 2 }}>
-                                Beds: {advertisement.beds}
+                                <b>Beds</b>: {advertisement.beds}
                                 <br />
-                                Minimum nights: {advertisement.minimum_nights}
+                                <b>Minimum nights</b>: {advertisement.minimum_nights}
                                 <br />
-                                Guests: {advertisement.accommodates}
+                                <b>Guests</b>: {advertisement.accommodates}
                                 <br />
-                                Bedrooms: {advertisement.bedrooms}
+                                <b>Bedrooms</b>: {advertisement.bedrooms}
                             </Typography>) :
                             (<Typography align='right' sx={{ mb: 2 }}>
-                                Duration: {advertisement.duration}
+                                <b>Duration</b>: {advertisement.duration}
                             </Typography>)
                         }
                         <Typography align='right' sx={{ mb: 2 }}>
                             <br />
-                            Address: {advertisement.location.address}
+                            <b>Country</b>: {advertisement.location.country}
                             <br />
-                            Country: {advertisement.location.country}
+                            <b>City</b>: {advertisement.location.city}
                             <br />
-                            City: {advertisement.location.city}
+                            <b>Address</b>: {advertisement.location.address}
                         </Typography>
                         <Button
                             fullWidth

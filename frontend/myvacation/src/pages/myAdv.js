@@ -75,6 +75,7 @@ const MyAdv = () => {
                                     <TableCell align="center" style={{ fontWeight: 'bold' }}>Type</TableCell>
                                     <TableCell align="center" style={{ fontWeight: 'bold' }}>City</TableCell>
                                     <TableCell align="right" style={{ fontWeight: 'bold' }}>Price</TableCell>
+                                    <TableCell align="right" style={{ fontWeight: 'bold' }}>Approved</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -89,6 +90,7 @@ const MyAdv = () => {
                                     <TableCell align="center">Accomodation</TableCell>
                                     <TableCell align="center">{item.location.city}</TableCell>
                                     <TableCell align="right">{item.price}€</TableCell>
+                                    <TableCell align="right">{item.approved ? "Approved" : "Not yet approved"}</TableCell>
                                 </TableRow>
                                 ))}
 
@@ -102,6 +104,7 @@ const MyAdv = () => {
                                     <TableCell align="center">Activity</TableCell>
                                     <TableCell align="center">{item.location.city}</TableCell>
                                     <TableCell align="right">{item.price}€</TableCell>
+                                    <TableCell align="right">{item.approved ? "Approved" : "Not yet approved"}</TableCell>
                                 </TableRow>
                                 ))}
 

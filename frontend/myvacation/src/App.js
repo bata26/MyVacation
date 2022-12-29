@@ -21,6 +21,7 @@ import  Activity from "./pages/activity";
 import InsertActivity from "./pages/insertActivity";
 import MyAdv from "./pages/myAdv";
 import ToApprove from "./pages/toApprove";
+import Unauthorized from "./pages/unauthorized";
 
 function App() {
   useEffect(() => {
@@ -34,23 +35,20 @@ function App() {
         <ResponsiveAppBar />
         <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/myadv" element={<MyAdv />} />
+            <Route path="/signin" element={localStorage.getItem("userID") == null ? <SignIn /> : <Profile/>} />
+            <Route path="/signup" element={localStorage.getItem("userID") == null ? <SignUp /> : <Profile/>} />
+            <Route path="/profile" element={localStorage.getItem("userID") != null ? <Profile /> : <Unauthorized/>} />
+            <Route path="/myadv" element={localStorage.getItem("userID") != null ? <MyAdv /> : <Unauthorized/>} />
             <Route path="/search" element={<Search />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/accomodation/:accomodationID" element={<Accomodation />} />
-            {
-                localStorage.getItem("role") === "admin" &&
-                <Route path="/toApprove/:advertisementID" element={<ToApprove />} />
-            }
-            <Route path="/insert/accomodation" element={<InsertAccomodation />} />
-            <Route path="/insert/activity" element={<InsertActivity />} />
-            <Route path="/edit/accomodation/:accomodationID" element={<EditAccomodation />} />
-            <Route path="/edit/activity/:activityID" element={<EditActivity />} />
+            <Route path="/toApprove/:advertisementID" element={localStorage.getItem("role") === "admin" ? <ToApprove /> : <Unauthorized/>} />
+            <Route path="/insert/accomodation" element={localStorage.getItem("userID") != null ? <InsertAccomodation /> : <Unauthorized/>} />
+            <Route path="/insert/activity" element={localStorage.getItem("userID") != null ? <InsertActivity /> : <Unauthorized/>} />
+            <Route path="/edit/accomodation/:accomodationID" element={localStorage.getItem("userID") != null || localStorage.getItem("role") !== "admin" ? <EditAccomodation />: <Unauthorized/>} />
+            <Route path="/edit/activity/:activityID" element={localStorage.getItem("userID") != null || localStorage.getItem("role") !== "admin" ? <EditActivity /> : <Unauthorized/>} />
             <Route path="/activity/:activityID" element={<Activity />} />
-            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/admin" element={localStorage.getItem("role") === "admin" ? <AdminPage /> : <Unauthorized/>} />
         </Routes>
       </>
   );

@@ -17,8 +17,10 @@ import api from "../utility/api";
 import Moment from 'moment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditReservationModal from "../components/editReservationModal";
+import EditProfileModal from "../components/editProfileModal";
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
+
 
 
 const theme = createTheme();
@@ -28,6 +30,7 @@ const Profile = () => {
   let [reservations, setReservations] = React.useState([]);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
   //TODO FIXARE STA ROBA
   const profileID = (searchParams.get("userId") != null && localStorage.getItem("role") === "admin") ? searchParams.get("userId") : localStorage.getItem("userID");
 
@@ -59,12 +62,13 @@ const Profile = () => {
     await api.delete("/reservations/" + reservationID)
       .then(function (response) {
         console.log(response.data);
+        window.location.reload(true);
       })
       .catch(function (error) {
         console.log(error);
       });
-      window.location.reload(false);
     }
+
     const deleteProfile = async (profileID) => {
       await api.delete("/users/" + profileID)
       .then(function (response) {
@@ -106,7 +110,8 @@ const Profile = () => {
                   margin='normal'
                   fullWidth
                   disabled
-                  id="outlined-disabled"
+                  name="name"
+                  id="name"
                   label="Name"
                   defaultValue={profile.name}
                 />
@@ -116,7 +121,8 @@ const Profile = () => {
                   margin='normal'
                   fullWidth
                   disabled
-                  id="outlined-disabled"
+                  id="surname"
+                  name="surname"
                   label="Surname"
                   defaultValue={profile.surname}
                 />
@@ -126,7 +132,8 @@ const Profile = () => {
               margin="normal"
               fullWidth
               disabled
-              id="outlined-disabled"
+              id="gender"
+              name="gender"
               label="Gender"
               defaultValue={profile.gender}
             />
@@ -134,7 +141,8 @@ const Profile = () => {
               margin="normal"
               fullWidth
               disabled
-              id="outlined-disabled"
+              id="dateOfBirth"
+              name="dateOfBirth"
               label="Date of birth"
               defaultValue={Moment(profile.dateOfBirth).utc().format('MMM DD YYYY')}
             />
@@ -142,9 +150,30 @@ const Profile = () => {
               margin="normal"
               fullWidth
               disabled
-              id="outlined-disabled"
+              id="username"
+              name="username"
               label="Username"
               defaultValue={profile.username}
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              disabled
+              id="nationality"
+              name="nationality"
+              label="Nationality"
+              defaultValue={profile.nationality}
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              disabled
+              id="knownLanguages"
+              name="knownLanguages"
+              label="Languages"
+              defaultValue={profile.knownLanguages}
               style={{ marginBottom: 50 + 'px' }}
               autoFocus
             />
@@ -156,16 +185,17 @@ const Profile = () => {
             </Grid>
           </Box>
         </Box>
-        {localStorage.getItem("role") == "admin" ? (
+        {localStorage.getItem("role") === "admin" ? (
           <Button fullWidth
             variant="contained"
             color='error'
-            onClick={() => { deleteProfile(profile._id) }}>elimina profilo</Button>
+            onClick={() => { deleteProfile(profile._id) }}>Delete Profile</Button>
         ) : <></>
         }
-
+        {(localStorage.getItem("role") === "admin" || localStorage.getItem("userID") === profile._id) ? (
+            <EditProfileModal id={profile._id} name={profile.name} surname={profile.surname} gender={profile.gender} dateOfBirth={profile.dateOfBirth} nationality={profile.nationality} knownLanguages={profile.knownLanguages}/>
+        ) : <></>}
       </Container>
-
       <Box
         sx={{
           pt: 8,

@@ -43,11 +43,9 @@ const EditAccomodation = () => {
 		//console.log("form: ", data.get("bedrooms"));
 		//const headers = { 'Content-type': 'multipart/form-data' };
 		const result = await api.post('/edit/accomodations/' + accomodationID,
-			data,
-		)
-			.then(function (response) {
+			data).then(function (response) {
 				console.log(response.data);
-				navigate("/accomodation/" + accomodationID);
+				navigate("/myadv");
 			})
 			.catch(function (error) {
 				console.log("errore");

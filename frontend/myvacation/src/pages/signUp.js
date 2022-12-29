@@ -107,7 +107,6 @@ const SignUp = () => {
             <Grid container columnSpacing={1.4}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  //autoComplete="given-name"
                   name="name"
                   required
                   fullWidth
@@ -123,7 +122,6 @@ const SignUp = () => {
                   id="surname"
                   label="Surname"
                   name="surname"
-                  //autoComplete="family-name"
                 />
               </Grid>
             </Grid>
@@ -147,7 +145,6 @@ const SignUp = () => {
               name="dateOfBirth"
               type="date"
               id="dateOfBirth"
-              //autoComplete="dateOfBirth"
               autoFocus
             />
             <TextField
@@ -157,7 +154,6 @@ const SignUp = () => {
               id="username"
               label="Username"
               name="username"
-              //autoComplete="username"
               autoFocus
             />
             <TextField
@@ -168,7 +164,6 @@ const SignUp = () => {
               label="Password"
               type="password"
               id="password"
-              //autoComplete="current-password"
             />
             <InputLabel id="demo-simple-select-label">Age</InputLabel>
             <Select
@@ -180,7 +175,7 @@ const SignUp = () => {
               required
             >
               {Config.NATIONALITY_LIST.map((item, index) => {
-                return <MenuItem value={index}>{item}</MenuItem>
+                return <MenuItem value={item} key={index}>{item}</MenuItem>
               })}
             </Select>
             <InputLabel id="demo-simple-select-label">Languages</InputLabel>
@@ -195,7 +190,7 @@ const SignUp = () => {
               required
             >
               {Config.LANGUAGE_LIST.map((item, index) => {
-                return <MenuItem key={index} value={index}>{item}</MenuItem>
+                return <MenuItem key={index} value={item}>{item}</MenuItem>
               })}
             </Select>
             <Button

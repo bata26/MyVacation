@@ -10,7 +10,7 @@ from models.review import Review
 
 class AccomodationsManager:
     @staticmethod
-    def editAccomodation(accomodationID , accomodation,  user):
+    def updateAccomodation(accomodationID , accomodation,  user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]

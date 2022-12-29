@@ -92,224 +92,242 @@ const Accomodation = () => {
 
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xl">
-        <CssBaseline />
-        <Box>
-          <Box
-            sx={{
-              pt: 8,
-              pb: 6,
-            }}
-          >
-            <Container maxWidth="xl">
-              <Typography
-                component="h1"
-                variant="h2"
-                align="center"
-                color="text.primary"
-                gutterBottom
-              >
-                {accomodation.name}
-              </Typography>
-            </Container>
-          </Box>
-        </Box>
-      </Container>
-
-      {/* Immagini */}
-      <Container maxWidth='lg'>
-        <ImageList
-          sx={{ width: 100 + '%', height: 99 + '%' }}
-          variant="quilted"
-          gap={5}
-          cols={3}
-          rowHeight={200}
-        >
-          <ImageListItem key={accomodation.mainPicture} cols={2} rows={3}>
-            <img
-              src={`data:image/jpeg;base64,${accomodation.mainPicture}`}
-              style={{ borderRadius: 10 + 'px' }}
-            />
-          </ImageListItem>
-          {accomodation.pictures.map((item) => (
-            <ImageListItem key={item}>
-              <img
-                src={`data:image/jpeg;base64,${item}`}
-                style={{ borderRadius: 10 + 'px' }}
-              />
-            </ImageListItem>
-          ))}
-        </ImageList>
-      </Container>
-
-      <Container maxWidth='lg'>
-        <Grid container spacing={24}>
-          <Grid item xs={6}>
-            <Typography
-              component="h2"
-              variant="h4"
-              align="left"
-              color="text.primary"
-              gutterBottom
-              sx={{ mt: 2 }}
-            >
-              Description
-            </Typography>
-
-            <Typography
-              component="h2"
-              variant="h6"
-              align="left"
-              color="text.primary"
-            >
-              {ReactHtmlParser(accomodation.description)}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={6}>
-
-            <Typography
-              component="h3"
-              variant="h4"
-              align="right"
-              color="text.primary"
-              gutterBottom
-            >
-              Price
-            </Typography>
-
-            <Typography
-              align='right'
-              component="h3"
-              variant="h5"
-              color="text.primary"
-              sx={{ mb: 2 }}
-            >
-              {accomodation.price}€
-            </Typography>
-
-            <Typography
-              component="h3"
-              variant="h4"
-              align="right"
-              color="text.primary"
-              gutterBottom
-            >
-              Other information
-            </Typography>
-
-            <Typography align='right' sx={{ mb: 2 }}>
-              Host: {accomodation.host_name}
-              <br />
-              Beds: {accomodation.beds}
-              <br />
-              Minimum nights: {accomodation.minimum_nights}
-              <br />
-              Guests: {accomodation.accommodates}
-              <br />
-              Bedrooms: {accomodation.bedrooms}
-              <br />
-              Address: {accomodation.location.address}
-              <br />
-              Country: {accomodation.location.country}
-              <br />
-              City: {accomodation.location.city}
-            </Typography>
-
-
-            <DateRangePicker startDate={startDate} endDate={endDate} />
-            {startDate != null && endDate != null && localStorage.getItem("userID") != null ?
-              <Button
-                fullWidth
-                variant="contained"
-                sx={{ mb: 2 }}
-                onClick={() => goToCheckout()}>
-                Book Accomodation
-              </Button> : <></>}
-
-            <ReviewForm destinationID={accomodation._id} destinationType={"accomodation"} />
-            {
-              localStorage.getItem("userID") === accomodation.host_id || localStorage.getItem("role") === "admin" ?
-                (
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color='error'
-                    sx={{ mt: 2 }}
-                    onClick={() => { deleteAccomodation(accomodation._id) }}
+      ((accomodation && accomodation.approved) || (accomodation && !accomodation.approved && localStorage.getItem("userID") === accomodation.host_id) || localStorage.getItem("role") === "admin") ?
+              (<ThemeProvider theme={theme}>
+          <Container component="main" maxWidth="xl">
+              <CssBaseline/>
+              <Box>
+                  <Box
+                      sx={{
+                          pt: 8,
+                          pb: 6,
+                      }}
                   >
-                    Delete Accomodation
-                  </Button>
-                )
-                :<></>
-            }
+                      <Container maxWidth="xl">
+                          <Typography
+                              component="h1"
+                              variant="h2"
+                              align="center"
+                              color="text.primary"
+                              gutterBottom
+                          >
+                              {accomodation.name}
+                          </Typography>
+                      </Container>
+                  </Box>
+              </Box>
+          </Container>
+
+          {/* Immagini */}
+          <Container maxWidth='lg'>
+              <ImageList
+                  sx={{width: 100 + '%', height: 99 + '%'}}
+                  variant="quilted"
+                  gap={5}
+                  cols={3}
+                  rowHeight={200}
+              >
+                  <ImageListItem key={accomodation.mainPicture} cols={2} rows={3}>
+                      <img
+                          src={`data:image/jpeg;base64,${accomodation.mainPicture}`}
+                          style={{borderRadius: 10 + 'px'}}
+                      />
+                  </ImageListItem>
+                  {accomodation.pictures.map((item) => (
+                      <ImageListItem key={item}>
+                          <img
+                              src={`data:image/jpeg;base64,${item}`}
+                              style={{borderRadius: 10 + 'px'}}
+                          />
+                      </ImageListItem>
+                  ))}
+              </ImageList>
+          </Container>
+
+          <Container maxWidth='lg'>
+              <Grid container spacing={24}>
+                  <Grid item xs={6}>
+                      <Typography
+                          component="h2"
+                          variant="h4"
+                          align="left"
+                          color="text.primary"
+                          gutterBottom
+                          sx={{mt: 2}}
+                      >
+                          Description
+                      </Typography>
+
+                      <Typography
+                          component="h2"
+                          variant="h6"
+                          align="left"
+                          color="text.primary"
+                      >
+                          {ReactHtmlParser(accomodation.description)}
+                      </Typography>
+                  </Grid>
+
+                  <Grid item xs={6}>
+
+                      <Typography
+                          component="h3"
+                          variant="h4"
+                          align="right"
+                          color="text.primary"
+                          gutterBottom
+                      >
+                          Price
+                      </Typography>
+
+                      <Typography
+                          align='right'
+                          component="h3"
+                          variant="h5"
+                          color="text.primary"
+                          sx={{mb: 2}}
+                      >
+                          {accomodation.price}€
+                      </Typography>
+
+                      <Typography
+                          component="h3"
+                          variant="h4"
+                          align="right"
+                          color="text.primary"
+                          gutterBottom
+                      >
+                          Other information
+                      </Typography>
+
+                      <Typography align='right' sx={{mb: 2}}>
+                          Host: {accomodation.host_name}
+                          <br/>
+                          Beds: {accomodation.beds}
+                          <br/>
+                          Minimum nights: {accomodation.minimum_nights}
+                          <br/>
+                          Guests: {accomodation.accommodates}
+                          <br/>
+                          Bedrooms: {accomodation.bedrooms}
+                          <br/>
+                          Address: {accomodation.location.address}
+                          <br/>
+                          Country: {accomodation.location.country}
+                          <br/>
+                          City: {accomodation.location.city}
+                      </Typography>
 
 
-          </Grid>
-        </Grid>
-      </Container>
+                      <DateRangePicker startDate={startDate} endDate={endDate}/>
+                      {startDate != null && endDate != null && localStorage.getItem("userID") != null && accomodation.approved ?
+                          <Button
+                              fullWidth
+                              variant="contained"
+                              color="success"
+                              sx={{mb: 2}}
+                              onClick={() => goToCheckout()}>
+                              Book Accomodation
+                          </Button> : <></>}
+                      {accomodation.approved ? <ReviewForm destinationID={accomodation._id} destinationType={"accomodation"}/> : <></>}
+                      {
+                          accomodation.approved && (localStorage.getItem("userID") === accomodation.host_id || localStorage.getItem("role") === "admin") ?
+                              (<>
+                                      <Button
+                                          fullWidth
+                                          variant="contained"
+                                          color='error'
+                                          sx={{mt: 2}}
+                                          onClick={() => {
+                                              deleteAccomodation(accomodation._id)
+                                          }}
+                                      >
+                                          Delete Accomodation
+                                      </Button>
+                                      <Button
+                                          fullWidth
+                                          variant="contained"
+                                          color='info'
+                                          sx={{mt: 2}}
+                                          onClick={() => {
+                                              navigate("/edit/accomodation/" + accomodationID)
+                                          }}
+                                      >
+                                          Edit Accomodation
+                                      </Button>
+                                  </>
+                              )
+                              : <></>
+                      }
 
-      <Box
-        sx={{
-          py: 3,
-          px: 2,
-          mt: 'auto',
-        }}
-      >
-      </Box>
-      <Container maxWidth='lg'>
-        <Typography
-          component="h2"
-          variant="h4"
-          align="center"
-          color="text.primary"
-          gutterBottom
-          sx={{ mt: 2 }}
-        >
-          Reviews
-        </Typography>
-        <Grid
-        sx={{ overflowY: "scroll", maxHeight: "1160px" }}
-        >
-        {reviews && reviews.map((item) => (
-          <Card key={item._id} sx={{ maxHeight: 150, marginTop: 2 }}>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {item.reviewer} - {item.score}
+
+                  </Grid>
+              </Grid>
+          </Container>
+
+          <Box
+              sx={{
+                  py: 3,
+                  px: 2,
+                  mt: 'auto',
+              }}
+          >
+          </Box>
+          {accomodation.approved ? (
+          <Container maxWidth='lg'>
+              <Typography
+                  component="h2"
+                  variant="h4"
+                  align="center"
+                  color="text.primary"
+                  gutterBottom
+                  sx={{mt: 2}}
+              >
+                  Reviews
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {item.description}
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button color='error' onClick={() => { deleteReview(item._id) }}>Delete</Button>
-            </CardActions>
-          </Card>
-        ))}
-        </Grid>
-          {enableButton ?
-              <Container maxWidth='sm'>
-                    <Button
-                fullWidth
-                variant="contained"
-                sx={{ mt: 2 }}
-                    onClick={() => getAllReviews()}
-                >
-                More reviews
-                </Button>
-              </Container> : <></>}
-      </Container>
-      <Box
-        sx={{
-          py: 3,
-          px: 2,
-          mt: 'auto',
-        }}
-      >
-      </Box>
-    </ThemeProvider>
-  );
+              <Grid
+                  sx={{overflowY: "scroll", maxHeight: "1160px"}}
+              >
+                  {reviews && reviews.map((item) => (
+                      <Card key={item._id} sx={{maxHeight: 150, marginTop: 2}}>
+                          <CardContent>
+                              <Typography gutterBottom variant="h5" component="div">
+                                  {item.reviewer} - {item.score}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                  {item.description}
+                              </Typography>
+                          </CardContent>
+                          <CardActions>
+                              <Button color='error' onClick={() => {
+                                  deleteReview(item._id)
+                              }}>Delete</Button>
+                          </CardActions>
+                      </Card>
+                  ))}
+              </Grid>
+              {enableButton ?
+                  <Container maxWidth='sm'>
+                      <Button
+                          fullWidth
+                          variant="contained"
+                          sx={{mt: 2}}
+                          onClick={() => getAllReviews()}
+                      >
+                          More reviews
+                      </Button>
+                  </Container> : <></>}
+          </Container>) : <></>}
+          <Box
+              sx={{
+                  py: 3,
+                  px: 2,
+                  mt: 'auto',
+              }}
+          >
+          </Box>
+      </ThemeProvider>) : alert("You don't have the right permission")
+);
 };
 
 export default Accomodation;

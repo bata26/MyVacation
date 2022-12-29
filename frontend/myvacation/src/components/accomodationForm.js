@@ -79,8 +79,6 @@ const AccomodationForm = ({ accomodation = null }) => {
                 label="Country"
                 id="country"
             />
-
-
             <Grid container columnSpacing={2}>
                 <Grid item xs={4} sm={4}>
 
@@ -108,9 +106,9 @@ const AccomodationForm = ({ accomodation = null }) => {
                         margin="normal"
                         required
                         fullWidth
-                        name="guests"
+                        name="accommodates"
                         label="Guests number"
-                        id="guests"
+                        id="accommodates"
                         type="number"
                     />
                 </Grid>
@@ -182,8 +180,6 @@ const AccomodationForm = ({ accomodation = null }) => {
                         type="number"
                     />
                 </Grid>
-
-
             </Grid>
         </Container>
 

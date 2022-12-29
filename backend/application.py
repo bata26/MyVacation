@@ -147,9 +147,9 @@ def deleteAccomodationById(accomodation_id, user={}):
 
 @application.route('/edit/accomodations/<accomodationID>', methods=['POST'])
 @required_token
-def editAccomodationById(accomodationID, user={}):
+def updateAccomodationById(accomodationID, user={}):
     print("dentro")
-    formData = dict(request.form)
+    formData = dict(request.json)
     formData["location"] = {}
     formData["location"]["city"] = formData["city"]
     formData["location"]["address"] = formData["address"]
@@ -158,7 +158,7 @@ def editAccomodationById(accomodationID, user={}):
     formData.pop("address")
     formData.pop("country")
     formData["approved"] = False
-    result = AccomodationsManager.editAccomodation(
+    result = AccomodationsManager.updateAccomodation(
         accomodationID, formData, user)
     return "", 200
 
@@ -230,6 +230,21 @@ def updateReservation(reservation_id, user={}):
         ReservationManager.updateReservation(
             startDate, endDate, type, reservationID, destinationID)
         # se la update è andata bene, aggiorno anche la collection accomodation/activi
+        return "", 200
+    except Exception as e:
+        return e, 500
+
+@application.route('/user/<user_id>', methods=['PATCH'])
+@required_token
+def updateUser(user_id, user={}):
+    updatedData = request.json
+    updatedData["dateOfBirth"] = dateparser.parse(updatedData["dateOfBirth"])
+    try:
+        if(user["role"] != "admin" and user["userID"] != user_id):
+            raise Exception("Impossibile aggiornare")
+        else:
+            UserManager.updateUser(updatedData, user_id)
+
         return "", 200
     except Exception as e:
         return e, 500
@@ -323,6 +338,9 @@ def insertAccomodations(user={}):
         False
     )
     accomodationID = AccomodationsManager.insertNewAccomodation(accomodation)
+    if (user["role"]!= "host" and user["role"]!= "admin"):
+        updatedRole = {"type": "host"}
+        UserManager.updateUser(updatedRole, host["_id"])
     return {"accomodationID": str(accomodationID)}, 200
     return "", 500
 
@@ -477,7 +495,7 @@ def signUp():
         surname,
         "user",
         gender,
-        datetime.strptime(dateOfBirth, "%Y-%m-%dT%H:%M:%S.%f%z"),
+        dateparser.parse(dateOfBirth),
         nationality,
         knownLanguages,
         [],

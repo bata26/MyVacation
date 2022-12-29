@@ -80,7 +80,8 @@ const Activity = () => {
   if (!activity) return null;
 
   return (
-    <ThemeProvider theme={theme}>
+    ((activity && activity.approved) || (activity && !activity.approved && localStorage.getItem("userID") === activity.host_id) || localStorage.getItem("role") === "admin") ?
+      (<ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xl">
         <CssBaseline />
         <Box>
@@ -166,37 +167,31 @@ const Activity = () => {
         </Typography>
 
         <Typography align='right' sx={{ mb: 2 }}>
-          Host: {activity.host_name}
+            <b>Host</b>: {activity.host_name}
           <br />
-          Duration: {activity.duration}H
+            <b>Duration</b>: {activity.duration}H
           <br />
-          Address: {activity.location.address}
+            <b>Address</b>: {activity.location.address}
           <br />
-          Country: {activity.location.country}
+            <b>Country</b>: {activity.location.country}
           <br />
-          City: {activity.location.city}
+            <b>City</b>: {activity.location.city}
         </Typography>
-
-
         <Box sx={{ ml: 35, mb: 2 }}>
           <DateRangePicker startDate={startDate} />
         </Box>
-
-        {startDate != null && localStorage.getItem("userID") != null && guests != null ?
+        {startDate != null && localStorage.getItem("userID") != null && guests != null && activity.approved ?
           <Button
             fullWidth
             variant="contained"
+            color="success"
             sx={{ mb: 2 }}
             onClick={() => goToCheckout()}>
             Book activity
           </Button> : <></>}
-
-        <ReviewForm destinationID={activity._id} destinationType={"activity"} />
-
-        {
-          localStorage.getItem("userID") === activity.host_id || localStorage.getItem("role") === "admin" ?
-            (
-              <Button
+        {(localStorage.getItem("userID") === activity.host_id || localStorage.getItem("role") === "admin") && activity.approved ?
+            (<>
+                <Button
                 fullWidth
                 variant="contained"
                 color='error'
@@ -205,8 +200,16 @@ const Activity = () => {
               >
                 Delete Activity
               </Button>
-            )
-            : <></>
+              <Button
+                  fullWidth
+                  variant="contained"
+                  color='info'
+                  sx={{ mt: 2 }}
+                  onClick={() => { navigate("/edit/activity/" + activityID) }}
+              >
+                  Edit Activity
+              </Button>
+            </>) : <></>
         }
       </Container>
       <Box
@@ -217,47 +220,49 @@ const Activity = () => {
         }}
       >
       </Box>
-
-      <Container maxWidth='lg'>
-        <Typography
-          component="h2"
-          variant="h4"
-          align="center"
-          color="text.primary"
-          gutterBottom
-          sx={{ mt: 2 }}
-        >
-          Reviews
-        </Typography>
-        <Grid
-          sx={{ overflowY: "scroll", maxHeight: "1160px" }}
-        >
-          {reviews && reviews.map((item) => (
-            <Card key={item._id} sx={{ maxHeight: 100, marginTop: 2 }}>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  {item.reviewer} - {item.score}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {item.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
-        </Grid>
-        {enableButton ?
-          <Container maxWidth='sm'>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2 }}
-              onClick={() => { getAllReviews() }}
+      {activity.approved ?
+      (<>
+          <ReviewForm destinationID={activity._id} destinationType={"activity"} />
+          <Container maxWidth='lg'>
+            <Typography
+            component="h2"
+            variant="h4"
+            align="center"
+            color="text.primary"
+            gutterBottom
+            sx={{ mt: 2 }}
             >
-              More reviews
-            </Button>
-          </Container> : <></>}
-      </Container>
-
+            Reviews
+            </Typography>
+            <Grid
+            sx={{ overflowY: "scroll", maxHeight: "1160px" }}
+            >
+            {reviews && reviews.map((item) => (
+                <Card key={item._id} sx={{ maxHeight: 100, marginTop: 2 }}>
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                            {item.reviewer} - {item.score}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {item.description}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            ))}
+            </Grid>
+            {enableButton ?
+            <Container maxWidth='sm'>
+                <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 2 }}
+                onClick={() => { getAllReviews() }}
+                >
+                More reviews
+                </Button>
+            </Container> : <></>}
+          </Container>
+      </>) : <></> }
       <Box
         sx={{
           py: 3,
@@ -266,8 +271,7 @@ const Activity = () => {
         }}
       >
       </Box>
-    </ThemeProvider>
-
+    </ThemeProvider>) : <></>
   );
 };
 

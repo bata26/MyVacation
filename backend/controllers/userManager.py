@@ -4,6 +4,7 @@ from models.user import User
 from bson.objectid import ObjectId
 from utility.serializer import Serializer
 import bcrypt
+import dateparser
 from flask import jsonify
 
 class UserManager:
@@ -65,3 +66,13 @@ class UserManager:
             collection.update_one({"_id" : ObjectId(reservation.userID)} , {"$push" : {"reservations" : reservation.getDictForUser()}})
         except Exception as e:
             raise Exception("Impossibile aggiungere la reservation: " + str(e))
+
+    @staticmethod
+    def updateUser(requestBody, userID):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("USERS_COLLECTION")]
+        try:
+            collection.update_one({"_id" : ObjectId(userID)} , {"$set" : requestBody})
+        except Exception as e:
+            raise Exception("Impossibile aggiornare l'utente: " + str(e))
