@@ -109,7 +109,6 @@ const AdminPage = () => {
 						</Typography>
 					</Container>
 				</Box>
-
 				<Container maxWidth="sm">
 					<Typography
 						component="h2"
@@ -121,11 +120,9 @@ const AdminPage = () => {
 						Analytics
 					</Typography>
 				</Container>
-
 				<Container maxWidth="md" sx={{ mt: 4 }}>
 					<Grid container columnSpacing={2}>
 						<Grid item xs={4} sm={6}>
-
 							{/* Card iscrizioni mensili */}
 							<Container maxWidth="sm">
 								<Typography
@@ -138,7 +135,6 @@ const AdminPage = () => {
 									User subscription per month
 								</Typography>
 							</Container>
-
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
 								<Table size="small">
 									<TableHead>
@@ -158,7 +154,6 @@ const AdminPage = () => {
 								</Table>
 							</TableContainer>
 						</Grid>
-
 						<Grid item xs={4} sm={6}>
 							{/* Card totale annunci */}
 							<Container maxWidth="sm">
@@ -192,7 +187,6 @@ const AdminPage = () => {
 							}
 						</Grid>
 					</Grid>
-
 					<Grid container columnSpacing={2}>
 						{/* Tabella città - media prezzi ACCOMODATIONS */}
 						<Grid item xs={4} sm={6}>
@@ -204,7 +198,7 @@ const AdminPage = () => {
 									color="text.primary"
 									gutterBottom
 								>
-									Average Accomodations's prices
+									Average Accomodations prices
 								</Typography>
 							</Container>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
@@ -226,7 +220,6 @@ const AdminPage = () => {
 								</Table>
 							</TableContainer>
 						</Grid>
-
 						{/* Tabella città - media prezzi ACTIVITIES */}
 						<Grid item xs={4} sm={6}>
 							<Container maxWidth="sm">
@@ -237,7 +230,7 @@ const AdminPage = () => {
 									color="text.primary"
 									gutterBottom
 								>
-									Average Activities's prices
+									Average Activities prices
 								</Typography>
 							</Container>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
@@ -260,10 +253,7 @@ const AdminPage = () => {
 							</TableContainer>
 						</Grid>
 					</Grid>
-
 					<Grid container columnSpacing={2}>
-
-
 						{/* Tabella top 10 host accomodations */}
 						<Grid item xs={4} sm={6}>
 							<Container maxWidth="sm">
@@ -274,7 +264,7 @@ const AdminPage = () => {
 									color="text.primary"
 									gutterBottom
 								>
-									Top 10 Accomodation's hosts
+									Top 10 Accomodation hosts
 								</Typography>
 							</Container>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
@@ -296,7 +286,6 @@ const AdminPage = () => {
 								</Table>
 							</TableContainer>
 						</Grid>
-
 						{/* Tabella top 10 host activities */}
 						<Grid item xs={4} sm={6}>
 							<Container maxWidth="sm">
@@ -307,7 +296,7 @@ const AdminPage = () => {
 									color="text.primary"
 									gutterBottom
 								>
-									Top 10 Activity's hosts
+									Top 10 Activities hosts
 								</Typography>
 							</Container>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
@@ -331,7 +320,6 @@ const AdminPage = () => {
 						</Grid>
 					</Grid>
 				</Container>
-
 				<Container maxWidth="md" sx={{ mt: 4 }}>
 					<Typography
 						component="h2"

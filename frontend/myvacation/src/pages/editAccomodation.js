@@ -40,6 +40,7 @@ const EditAccomodation = () => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 		//const formData = new FormData();
+
 		//console.log("form: ", data.get("bedrooms"));
 		//const headers = { 'Content-type': 'multipart/form-data' };
 		const result = await api.post('/edit/accomodations/' + accomodationID,

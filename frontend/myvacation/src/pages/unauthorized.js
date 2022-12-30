@@ -31,14 +31,16 @@ const Unauthorized = () => {
             <Grid sx={style}>
                 <Typography variant="h6" component="h1">Unauthorized</Typography>
                 <Typography>You do not have access to the requested page.</Typography>
-                <Button
-                    variant="contained"
-                    color='info'
-                    onClick={goToSignIn}
-                    align="center"
-                >
-                    Sign In
-                </Button>
+                {localStorage.getItem("userID") == null ?
+                    <Button
+                        variant="contained"
+                        color='info'
+                        onClick={goToSignIn}
+                        align="center"
+                    >
+                        Sign In
+                    </Button> : <></>
+                }
                 <Button
                     variant="contained"
                     color='error'

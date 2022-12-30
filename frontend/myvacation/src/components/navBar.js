@@ -60,6 +60,7 @@ function ResponsiveAppBar() {
       localStorage.clear();
       //localStorage.setItem("role", null);
       ChangePage('/');
+      window.location.reload(true)
     } else if (selectedSetting === 'MyAdv') {
       ChangePage('/myadv');
     }

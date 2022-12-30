@@ -30,6 +30,7 @@ const Home = () => {
             await api.get("/analytics/topcities")
                 .then(function (response) {
                     setCities(response.data);
+                    console.log("TopCities", response.data)
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -110,11 +111,10 @@ const Home = () => {
                         </Typography>
                     </Container>
                 </Box>
-
                 <Grid container columnSpacing={2}>
                     {
                         cities.map((item, index) => (
-                            <Grid item xs={4} sm={4}>
+                            <Grid item xs={4} sm={4} key={index}>
                                 <Card sx={{ maxWidth: 345 }}>
                                     <CardContent>
                                         <Typography gutterBottom variant="h5" component="div">
@@ -157,7 +157,7 @@ const Home = () => {
                 <Grid container spacing={4}>
                     {
                         accomodations.map((item, index) => (
-                            <Grid item xs={12} sm={6} md={4}>
+                            <Grid item xs={12} sm={6} md={4} key={index}>
                                 <Card
                                     sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                                 >
@@ -207,7 +207,7 @@ const Home = () => {
                 <Grid container spacing={4}>
                 {
                         activities.map((item, index) => (
-                            <Grid item xs={12} sm={6} md={4}>
+                            <Grid item xs={12} sm={6} md={4} key={index}>
                                 <Card
                                     sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                                 >

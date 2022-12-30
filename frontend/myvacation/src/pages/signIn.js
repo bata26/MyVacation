@@ -52,6 +52,7 @@ const SignIn = () => {
       localStorage.setItem("role" , response.data.role);
       localStorage.setItem("username" , response.data.username);
       navigate(from, { replace: true });
+      window.location.reload(true)
 
 
     } catch (err) {

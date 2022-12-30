@@ -91,9 +91,9 @@ const AccomodationForm = ({ accomodation = null }) => {
                         margin="normal"
                         required
                         fullWidth
-                        name="propertyType"
+                        name="property_type"
                         label="Tipo di proprietà"
-                        id="propertyType"
+                        id="property_type"
                     />
                 </Grid>
                 <Grid item xs={4} sm={4}>
@@ -157,14 +157,13 @@ const AccomodationForm = ({ accomodation = null }) => {
                         margin="normal"
                         required
                         fullWidth
-                        name="minimumNights"
+                        name="minimum_nights"
                         label="Minimum nights"
-                        id="minimumNights"
+                        id="minimum_nights"
                         type="number"
                     />
                 </Grid>
                 <Grid item xs={4} sm={4}>
-
                     <TextField
                         multiline
                         InputLabelProps={{

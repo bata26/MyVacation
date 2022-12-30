@@ -8,7 +8,7 @@ import dateparser
 class ActivityManager:
 
     @staticmethod
-    def editActivity(activityID, activity,  user):
+    def updateActivity(activityID, activity,  user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]

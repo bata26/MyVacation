@@ -210,7 +210,7 @@ def deleteAccomodationById(accomodation_id, user={}):
 
 @application.route('/edit/accomodations/<accomodationID>', methods=['POST'])
 @required_token
-def editAccomodationById(accomodationID, user={}):
+def updateAccomodationById(accomodationID, user={}):
     formData = dict(request.json)
     formData["location"] = {}
     formData["location"]["city"] = formData["city"]
@@ -219,8 +219,7 @@ def editAccomodationById(accomodationID, user={}):
     formData.pop("city")
     formData.pop("address")
     formData.pop("country")
-    formData["accommodates"] = formData["guests"]
-    formData.pop("guests")
+    formData["accommodates"] = formData["accommodates"]
     formData["approved"] = False
     
     result = AccomodationsManager.updateAccomodation(
@@ -230,8 +229,8 @@ def editAccomodationById(accomodationID, user={}):
 
 @application.route('/edit/activities/<activityID>', methods=['POST'])
 @required_token
-def editActivityById(activityID, user={}):
-    formData = dict(request.form)
+def updateActivityById(activityID, user={}):
+    formData = dict(request.json)
     formData["location"] = {}
     formData["location"]["city"] = formData["city"]
     formData["location"]["address"] = formData["address"]
@@ -240,7 +239,7 @@ def editActivityById(activityID, user={}):
     formData.pop("address")
     formData.pop("country")
     formData["approved"] = False
-    result = ActivityManager.editActivity(
+    result = ActivityManager.updateActivity(
         activityID, formData, user)
     return "", 200
 
