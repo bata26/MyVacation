@@ -179,7 +179,7 @@ const Home = () => {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button fullWidth>View</Button>
+                                        <Button fullWidth onClick={()=> navigate("/accomodation/" + item._id)}>View</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
@@ -229,7 +229,7 @@ const Home = () => {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button fullWidth>View</Button>
+                                        <Button fullWidth onClick={()=> navigate("/activity/" + item._id)}>View</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>

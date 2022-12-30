@@ -64,10 +64,16 @@ export default function UsersList() {
         console.log(url);
         api.get("/users" + url)
             .then(function (response) {
-                setUserList(response.data);
-                setLast_id(response.data[4]._id);
-                setFirst_id(response.data[0]);
-                console.log(response.data);
+                if (response && response.data.length > 0) {
+                    setUserList(response.data);
+                    setLast_id(response.data[response.data.length - 1]._id);
+                    setFirst_id(response.data[0]._id);
+                    console.log(response.data);
+                    setLastPage(false)
+                }
+                else{
+                    setLastPage(true)
+                }
             })
             .catch(function (error) {
                 console.log(error);
