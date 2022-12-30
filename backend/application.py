@@ -478,11 +478,13 @@ def insertReview(user={}):
         return str(e), 200
 
 
-@application.route('/reviews/<reviewID>', methods=['DELETE'])
+@application.route('/reviews/<destinationType>/<destinationID>/<reviewID>', methods=['DELETE'])
 @required_token
-def deleteReviewByID(reviewID, user={}):
+def deleteReviewByID(destinationType, destinationID, reviewID , user={}):
     reviewID = escape(reviewID)
-    result = ReviewManager.deleteReview(reviewID, user)
+    destinationType = escape(destinationType)
+    destinationID = escape(destinationID)
+    result = ReviewManager.deleteReview(reviewID, destinationID, destinationType, user)
     return "", 200
 
 

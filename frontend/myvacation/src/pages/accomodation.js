@@ -61,7 +61,7 @@ const Accomodation = () => {
 
   //Metodo per eliminare review
   const deleteReview = async (reviewID) => {
-    await api.delete("/reviews/" + reviewID)
+    await api.delete("/reviews/accomodation/" + accomodationID+ "/" + reviewID)
       .then(function (response) {
         console.log(response.data);
       })

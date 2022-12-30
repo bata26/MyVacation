@@ -101,4 +101,3 @@ const EditAccomodation = () => {
 };
 
 export default EditAccomodation;
-export default EditAccomodation;

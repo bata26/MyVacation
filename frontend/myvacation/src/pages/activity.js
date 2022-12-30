@@ -5,7 +5,7 @@ import ReactHtmlParser from 'react-html-parser';
 import api from "../utility/api";
 import ReviewForm from '../components/reviewForm';
 import Button from '@mui/material/Button';
-import { Typography } from '@mui/material';
+import {CardActions, Typography } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -17,10 +17,10 @@ import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 
 
+
 const theme = createTheme();
 
 const Activity = () => {
-  const [activity, setActivity] = React.useState(null);
   const [activity, setActivity] = React.useState(null);
   const [reviews, setReviews] = React.useState(null);
   const [enableButton, setEnableButton] = React.useState(null);
@@ -31,41 +31,36 @@ const Activity = () => {
 
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    api.get("/activities/" + activityID)
+      .then(function (response) {
+        setActivity(response.data);
+        setReviews(response.data.reviews)
+        console.log(response.data)
+        console.log(response.data.reviews.length)
+        console.log(parseInt(process.env.REACT_APP_REVIEWS_SIZE))
+        if (response.data.reviews.length >= parseInt(process.env.REACT_APP_REVIEWS_SIZE))
+          setEnableButton(true)
+        else
+          setEnableButton(false)
+      })
+      .catch(function (err) {
+        console.log(err);
+      })
+  }, []);
 
-  React.useEffect(() => {
-    api.get("/activities/" + activityID)
+
+  //Metodo per eliminare review
+  const deleteReview = async (reviewID) => {
+    await api.delete("/reviews/activity/" + activityID+ "/" + reviewID)
       .then(function (response) {
-        setActivity(response.data);
-        setReviews(response.data.reviews)
-        console.log(response.data)
-        console.log(response.data.reviews.length)
-        console.log(parseInt(process.env.REACT_APP_REVIEWS_SIZE))
-        if (response.data.reviews.length >= parseInt(process.env.REACT_APP_REVIEWS_SIZE))
-          setEnableButton(true)
-        else
-          setEnableButton(false)
+        console.log(response.data);
       })
-      .catch(function (err) {
-        console.log(err);
-      })
-  }, []);
-  React.useEffect(() => {
-    api.get("/activities/" + activityID)
-      .then(function (response) {
-        setActivity(response.data);
-        setReviews(response.data.reviews)
-        console.log(response.data)
-        console.log(response.data.reviews.length)
-        console.log(parseInt(process.env.REACT_APP_REVIEWS_SIZE))
-        if (response.data.reviews.length >= parseInt(process.env.REACT_APP_REVIEWS_SIZE))
-          setEnableButton(true)
-        else
-          setEnableButton(false)
-      })
-      .catch(function (err) {
-        console.log(err);
-      })
-  }, []);
+      .catch(function (error) {
+        console.log(error);
+      });
+    window.location.reload(false);
+  }
 
   //Metodo per eliminare activity
   const deleteActivity = (activityID) => {
@@ -100,116 +95,116 @@ const Activity = () => {
   return (
     ((activity && activity.approved) || (activity && !activity.approved && localStorage.getItem("userID") === activity.host_id) || localStorage.getItem("role") === "admin") ?
       (<ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xl">
-        <CssBaseline />
-        <Box>
-          <Box
-            sx={{
-              pt: 8,
-              pb: 6,
-            }}
-          >
-            <Container maxWidth="xl">
-              <Typography
-                component="h1"
-                variant="h2"
-                align="center"
-                color="text.primary"
-                gutterBottom
-              >
-                {activity.name}
-              </Typography>
-            </Container>
+        <Container component="main" maxWidth="xl">
+          <CssBaseline />
+          <Box>
+            <Box
+              sx={{
+                pt: 8,
+                pb: 6,
+              }}
+            >
+              <Container maxWidth="xl">
+                <Typography
+                  component="h1"
+                  variant="h2"
+                  align="center"
+                  color="text.primary"
+                  gutterBottom
+                >
+                  {activity.name}
+                </Typography>
+              </Container>
+            </Box>
           </Box>
-        </Box>
-      </Container>
+        </Container>
 
-      {/* Immagine */}
-      <Container maxWidth='lg'>
-        <img
-          src={`data:image/jpeg;base64,${activity.mainPicture}`}
-          style={{ borderRadius: 10 + 'px', height: 100 + '%', width: 99 + '%', marginTop: 3 + 'px' }}
-        />
-      </Container>
+        {/* Immagine */}
+        <Container maxWidth='lg'>
+          <img
+            src={`data:image/jpeg;base64,${activity.mainPicture}`}
+            style={{ borderRadius: 10 + 'px', height: 100 + '%', width: 99 + '%', marginTop: 3 + 'px' }}
+          />
+        </Container>
 
-      <Container maxWidth='lg'>
-        <Typography
-          component="h2"
-          variant="h4"
-          align="left"
-          color="text.primary"
-          gutterBottom
-          sx={{ mt: 2 }}
-        >
-          Description
-        </Typography>
+        <Container maxWidth='lg'>
+          <Typography
+            component="h2"
+            variant="h4"
+            align="left"
+            color="text.primary"
+            gutterBottom
+            sx={{ mt: 2 }}
+          >
+            Description
+          </Typography>
 
-        <Typography
-          component="h2"
-          variant="h6"
-          align="left"
-          color="text.primary"
-        >
-          {ReactHtmlParser(activity.description)}
-        </Typography>
+          <Typography
+            component="h2"
+            variant="h6"
+            align="left"
+            color="text.primary"
+          >
+            {ReactHtmlParser(activity.description)}
+          </Typography>
 
 
-        <Typography
-          component="h3"
-          variant="h4"
-          align="right"
-          color="text.primary"
-          gutterBottom
-        >
-          Price
-        </Typography>
+          <Typography
+            component="h3"
+            variant="h4"
+            align="right"
+            color="text.primary"
+            gutterBottom
+          >
+            Price
+          </Typography>
 
-        <Typography
-          align='right'
-          component="h3"
-          variant="h5"
-          color="text.primary"
-          sx={{ mb: 2 }}
-        >
-          {activity.price}€
-        </Typography>
-
-        <Typography
-          component="h3"
-          variant="h4"
-          align="right"
-          color="text.primary"
-          gutterBottom
-        >
-          Other information
-        </Typography>
-
-        <Typography align='right' sx={{ mb: 2 }}>
-            <b>Host</b>: {activity.host_name}
-          <br />
-            <b>Duration</b>: {activity.duration}H
-          <br />
-            <b>Address</b>: {activity.location.address}
-          <br />
-            <b>Country</b>: {activity.location.country}
-          <br />
-            <b>City</b>: {activity.location.city}
-        </Typography>
-        <Box sx={{ ml: 35, mb: 2 }}>
-          <DateRangePicker startDate={startDate} />
-        </Box>
-        {startDate != null && localStorage.getItem("userID") != null && guests != null && activity.approved ?
-          <Button
-            fullWidth
-            variant="contained"
-            color="success"
+          <Typography
+            align='right'
+            component="h3"
+            variant="h5"
+            color="text.primary"
             sx={{ mb: 2 }}
-            onClick={() => goToCheckout()}>
-            Book activity
-          </Button> : <></>}
-        {(localStorage.getItem("userID") === activity.host_id || localStorage.getItem("role") === "admin") && activity.approved ?
+          >
+            {activity.price}€
+          </Typography>
+
+          <Typography
+            component="h3"
+            variant="h4"
+            align="right"
+            color="text.primary"
+            gutterBottom
+          >
+            Other information
+          </Typography>
+
+          <Typography align='right' sx={{ mb: 2 }}>
+            <b>Host</b>: {activity.host_name}
+            <br />
+            <b>Duration</b>: {activity.duration}H
+            <br />
+            <b>Address</b>: {activity.location.address}
+            <br />
+            <b>Country</b>: {activity.location.country}
+            <br />
+            <b>City</b>: {activity.location.city}
+          </Typography>
+          <Box sx={{ ml: 35, mb: 2 }}>
+            <DateRangePicker startDate={startDate} />
+          </Box>
+          {startDate != null && localStorage.getItem("userID") != null && guests != null && activity.approved ?
+            <Button
+              fullWidth
+              variant="contained"
+              color="success"
+              sx={{ mb: 2 }}
+              onClick={() => goToCheckout()}>
+              Book activity
+            </Button> : <></>}
+          {(localStorage.getItem("userID") === activity.host_id || localStorage.getItem("role") === "admin") && activity.approved ?
             (<>
-                <Button
+              <Button
                 fullWidth
                 variant="contained"
                 color='error'
@@ -219,77 +214,82 @@ const Activity = () => {
                 Delete Activity
               </Button>
               <Button
-                  fullWidth
-                  variant="contained"
-                  color='info'
-                  sx={{ mt: 2 }}
-                  onClick={() => { navigate("/edit/activity/" + activityID) }}
-              >
-                  Edit Activity
-              </Button>
-            </>) : <></>
-        }
-      </Container>
-      <Box
-        sx={{
-          py: 3,
-          px: 2,
-          mt: 'auto',
-        }}
-      >
-      </Box>
-      {activity.approved ?
-      (<>
-          <ReviewForm destinationID={activity._id} destinationType={"activity"} />
-          <Container maxWidth='lg'>
-            <Typography
-            component="h2"
-            variant="h4"
-            align="center"
-            color="text.primary"
-            gutterBottom
-            sx={{ mt: 2 }}
-            >
-            Reviews
-            </Typography>
-            <Grid
-            sx={{ overflowY: "scroll", maxHeight: "1160px" }}
-            >
-            {reviews && reviews.map((item) => (
-                <Card key={item._id} sx={{ maxHeight: 100, marginTop: 2 }}>
-                    <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                            {item.reviewer} - {item.score}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            {item.description}
-                        </Typography>
-                    </CardContent>
-                </Card>
-            ))}
-            </Grid>
-            {enableButton ?
-            <Container maxWidth='sm'>
-                <Button
                 fullWidth
                 variant="contained"
+                color='info'
                 sx={{ mt: 2 }}
-                onClick={() => { getAllReviews() }}
-                >
-                More reviews
-                </Button>
-            </Container> : <></>}
-          </Container>
-      </>) : <></> }
-      <Box
-        sx={{
-          py: 3,
-          px: 2,
-          mt: 'auto',
-        }}
-      >
-      </Box>
-    </ThemeProvider>) : <></>
+                onClick={() => { navigate("/edit/activity/" + activityID) }}
+              >
+                Edit Activity
+              </Button>
+            </>) : <></>
+          }
+        </Container>
+        <Box
+          sx={{
+            py: 3,
+            px: 2,
+            mt: 'auto',
+          }}
+        >
+        </Box>
+        {activity.approved ?
+          (<>
+            <ReviewForm destinationID={activity._id} destinationType={"activity"} />
+            <Container maxWidth='lg'>
+              <Typography
+                component="h2"
+                variant="h4"
+                align="center"
+                color="text.primary"
+                gutterBottom
+                sx={{ mt: 2 }}
+              >
+                Reviews
+              </Typography>
+              <Grid
+                sx={{ overflowY: "scroll", maxHeight: "1160px" }}
+              >
+                {reviews && reviews.map((item) => (
+                  <Card key={item._id} sx={{ maxHeight: 100, marginTop: 2 }}>
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {item.reviewer} - {item.score}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {item.description}
+                      </Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button color='error' onClick={() => {
+                        deleteReview(item._id)
+                      }}>Delete</Button>
+                    </CardActions>
+                  </Card>
+                ))}
+              </Grid>
+              {enableButton ?
+                <Container maxWidth='sm'>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 2 }}
+                    onClick={() => { getAllReviews() }}
+                  >
+                    More reviews
+                  </Button>
+                </Container> : <></>}
+            </Container>
+          </>) : <></>}
+        <Box
+          sx={{
+            py: 3,
+            px: 2,
+            mt: 'auto',
+          }}
+        >
+        </Box>
+      </ThemeProvider>) : <></>
   );
 };
 

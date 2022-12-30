@@ -77,16 +77,6 @@ const Profile = () => {
       .catch(function (error) {
         console.log(error);
       });
-      window.location.reload(false);
-    }
-    const deleteProfile = async (profileID) => {
-      await api.delete("/users/" + profileID)
-      .then(function (response) {
-        console.log(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
       navigate("/admin");
   }
 
@@ -239,7 +229,7 @@ const Profile = () => {
             </TableHead>
             <TableBody>
               {reservations.map((item) => (
-                <TableRow key={item._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                <TableRow key={item._id} style={{ cursor: "pointer" }} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/"+item.destinationType+"/"+item.destinationID)}>
                   <TableCell align="left">{item._id}</TableCell>
                   <TableCell align="center">{item.destinationType}</TableCell>
                   <TableCell align="center">{Moment(item.startDate).utc().format('MMM DD YYYY')}</TableCell>
