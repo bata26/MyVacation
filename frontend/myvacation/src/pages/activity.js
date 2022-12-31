@@ -4,12 +4,11 @@ import ReactHtmlParser from 'react-html-parser';
 import api from "../utility/api";
 import ReviewForm from '../components/reviewForm';
 import Button from '@mui/material/Button';
-import {CardActions, Typography } from '@mui/material';
+import { CardActions, Typography } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import DateRangePicker from "../components/datePicker";
 import { useNavigate } from "react-router-dom";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -38,16 +37,13 @@ const Activity = () => {
       .then(function (response) {
         setActivity(response.data);
         setReviews(response.data.reviews)
-        console.log(response.data)
-        console.log(response.data.reviews.length)
-        console.log(parseInt(process.env.REACT_APP_REVIEWS_SIZE))
         if (response.data.reviews.length >= parseInt(process.env.REACT_APP_REVIEWS_SIZE))
           setEnableButton(true)
         else
           setEnableButton(false)
       })
       .catch(function (err) {
-        console.log(err);
+        alert("Ops, something went wrong :(" + "\n" + error);
       })
 
     api.get("/users/liking/activity")
@@ -65,12 +61,9 @@ const Activity = () => {
 
   //Metodo per eliminare review
   const deleteReview = async (reviewID) => {
-    await api.delete("/reviews/activity/" + activityID+ "/" + reviewID)
-      .then(function (response) {
-        console.log(response.data);
-      })
+    await api.delete("/reviews/activity/" + activityID + "/" + reviewID)
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
     window.location.reload(false);
   }
@@ -78,10 +71,8 @@ const Activity = () => {
   //Metodo per eliminare activity
   const deleteActivity = (activityID) => {
     api.delete("/activities/" + activityID)
-      .then(function (response) {
-        console.log(response.data);
-      }).catch(function (error) {
-        console.log(error);
+      .catch(function (error) {
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
     navigate('/search')
   }
@@ -121,10 +112,9 @@ const Activity = () => {
       .then(function (response) {
         setReviews(response.data)
         setEnableButton(false)
-        console.log(response.data)
       })
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
   }
 
@@ -217,19 +207,18 @@ const Activity = () => {
           </Typography>
 
           <Typography align='right' sx={{ mb: 2 }}>
-            <b>Host</b>: {activity.host_name}
+            <b>Host:</b> {activity.host_name}
             <br />
-            <b>Duration</b>: {activity.duration}H
+            <b>Duration:</b> {activity.duration}H
             <br />
-            <b>Address</b>: {activity.location.address}
+            <b>Address:</b> {activity.location.address}
             <br />
-            <b>Country</b>: {activity.location.country}
+            <b>Country:</b> {activity.location.country}
             <br />
-            <b>City</b>: {activity.location.city}
+            <b>City:</b> {activity.location.city}
+            <br />
+            <b>Start date:</b> {startDate}
           </Typography>
-          <Box sx={{ ml: 35, mb: 2 }}>
-            <DateRangePicker startDate={startDate} />
-          </Box>
           {startDate != null && localStorage.getItem("userID") != null && guests != null && activity.approved ?
             <Button
               fullWidth
