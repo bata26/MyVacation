@@ -23,20 +23,15 @@ const ToApprove = () => {
     const { advertisementID } = useParams();
     const type = searchParams.get("type");
     const navigate = useNavigate();
-    console.log(advertisementID)
 
     React.useEffect(() => {
-        console.log("LOGUSEEFFECT",advertisementID)
         api.get("/admin/announcement/" + type + "/" + advertisementID)
         api.get("/admin/announcement/" + type + "/" + advertisementID)
             .then(function (response) {
-                console.log(response.data)
-                console.log(type)
                 setAdvertisement(response.data);
             })
             .catch(function (error) {
-                console.log(error);
-                console.log(advertisementID)
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
     }, []);
 
@@ -45,25 +40,22 @@ const ToApprove = () => {
     const notApproveAdvertisement = (advertisementID) => {
         api.delete("/admin/announcement/" + type + "/" + advertisementID)
             .then(function (response) {
-                console.log(response.data);
-                alert("The advertisement has not been approved")
+                alert("The advertisement has not been approved");
                 navigate('/admin')
             })
             .catch(function (error) {
-                console.log(error);
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
     }
 
     const approveAdvertisement = (advertisementID) => {
         api.post("/admin/announcement/" + advertisementID, {"destinationType" : type})
             .then(function (response) {
-                console.log(response.data);
-                alert("The advertisement has been approved")
+                alert("The advertisement has been approved");
                 navigate('/admin')
             })
             .catch(function (error) {
-                console.log(error);
-                alert("Impossible to approve the announcement")
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
     }
     

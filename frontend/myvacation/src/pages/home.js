@@ -30,10 +30,9 @@ const Home = () => {
             await api.get("/analytics/topcities")
                 .then(function (response) {
                     setCities(response.data);
-                    console.log("TopCities", response.data)
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    alert("Ops, something went wrong :(" + "\n" + error);
                 })
 
             await api.get("/analytics/topadv")
@@ -43,7 +42,6 @@ const Home = () => {
                         "accomodationsID": [],
                         "activitiesID": []
                     };
-                    console.log(requestBody);
                     requestBody.accomodationsID.map(accomodationID => request.accomodationsID.push(accomodationID._id));
                     requestBody.activitiesID.map(activityID => request.activitiesID.push(activityID._id));
 
@@ -53,11 +51,11 @@ const Home = () => {
                             setActivities(response.data["activities"]);
                         })
                         .catch(function (error) {
-                            console.log(error);
+                            alert("Ops, something went wrong :(" + "\n" + error);
                         })
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    alert("Ops, something went wrong :(" + "\n" + error);
                 })
 
             await api.get("/recommendations/user")
@@ -65,7 +63,7 @@ const Home = () => {
                     setRecommendedUsers(response.data);
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    alert("Ops, something went wrong :(" + "\n" + error);
                 })
 
             await api.get("/recommendations/accomodation")
@@ -73,7 +71,7 @@ const Home = () => {
                     setRecommendedAccomodations(response.data);
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    alert("Ops, something went wrong :(" + "\n" + error);
                 })
 
             await api.get("/recommendations/activity")
@@ -81,7 +79,7 @@ const Home = () => {
                     setRecommendedActivities(response.data);
                 })
                 .catch(function (error) {
-                    console.log(error);
+                    alert("Ops, something went wrong :(" + "\n" + error);
                 })
         }
         getHomeData();
@@ -179,7 +177,7 @@ const Home = () => {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button fullWidth onClick={()=> navigate("/accomodation/" + item._id)}>View</Button>
+                                        <Button fullWidth onClick={() => navigate("/accomodation/" + item._id)}>View</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
@@ -205,7 +203,7 @@ const Home = () => {
                     </Container>
                 </Box>
                 <Grid container spacing={4}>
-                {
+                    {
                         activities.map((item, index) => (
                             <Grid item xs={12} sm={6} md={4} key={index}>
                                 <Card
@@ -229,12 +227,12 @@ const Home = () => {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button fullWidth onClick={()=> navigate("/activity/" + item._id)}>View</Button>
+                                        <Button fullWidth onClick={() => navigate("/activity/" + item._id)}>View</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
                         ))
-                    }                                       
+                    }
                 </Grid>
                 {/* Profili suggeriti */}
                 <Box
@@ -266,7 +264,7 @@ const Home = () => {
                                         {item.username}
                                     </Typography>
                                 </CardContent>
-                                <PersonIcon/>
+                                <PersonIcon />
                                 <CardActions>
                                     <Button
                                         fullWidth

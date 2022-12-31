@@ -27,10 +27,6 @@ const SignIn = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      username: data.get('username'),
-      password: data.get('password'),
-    });
 
     try {
       const response = await api.post(LOGIN_URL,
@@ -43,13 +39,12 @@ const SignIn = () => {
             withCredentials: true
           }
       );
-      console.log(response.data);
 
-      //const accessToken = response?.data?.accessToken;
       localStorage.setItem("userID" , response.data.userID);
       localStorage.setItem("role" , response.data.role);
       localStorage.setItem("username" , response.data.username);
       navigate(from, { replace: true });
+      window.location.reload(false);
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No Server Response');
@@ -60,7 +55,6 @@ const SignIn = () => {
       } else {
         setErrMsg('Login Failed');
       }
-      //Do stuff with errorMsg
     }
   };
 

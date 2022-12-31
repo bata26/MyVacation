@@ -47,16 +47,6 @@ const SignUp = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      surname: data.get('surname'),
-      gender: data.get('gender'),
-      dateOfBirth: data.get('dateOfBirth'),
-      username: data.get('username'),
-      password: data.get('password'),
-      languages: data.get('password'),
-      nationality: data.get('nationality'),
-    });
     try {
       const response = await api.post(REGISTER_URL, JSON.stringify({
         name: data.get('name'),
@@ -73,8 +63,6 @@ const SignUp = () => {
           withCredentials: true
         }
       );
-      console.log(response?.data);
-      console.log(JSON.stringify(response));
       navigate("/signin", { replace: true });
     } catch (err) {
       if (!err?.response) {

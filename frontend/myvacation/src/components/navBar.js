@@ -42,13 +42,11 @@ function ResponsiveAppBar() {
   };
 
   const ChangePage = (pagePath) => {
-    console.log("sono dentro -> path : ", pagePath);
     pagePath = (pagePath === "/home") ? "/" : pagePath;
     navigate(pagePath);
   }
 
   const handleCloseUserMenu = (selectedSetting) => {
-    console.log(selectedSetting);
 
     if (selectedSetting === 'Profile') {
       if (localStorage.getItem("role") === "admin")
@@ -66,10 +64,6 @@ function ResponsiveAppBar() {
     }
     setAnchorElUser(null);
   };
-
-  React.useEffect(() => {
-    console.log(localStorage.getItem("userID"));
-  });
 
   return (
     <AppBar position="static">

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import AccomodationForm from "../components/accomodationForm";
 import FormData from 'form-data';
 import api from '../utility/api';
 import { useNavigate } from "react-router-dom";
@@ -8,7 +7,7 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ActivityForm from '../components/activityForm';
 
 
@@ -29,29 +28,24 @@ const EditActivity = () => {
 	React.useEffect(() => {
 		api.get('/activities/' + activityID)
 			.then(function (response) {
-				console.log(response.data);
 				setActivity(response.data);
 			})
 			.catch(function (error) {
-				console.log("errore");
+				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 	}, []);
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		//const formData = new FormData();
-		//console.log("form: ", data.get("bedrooms"));
-		//const headers = { 'Content-type': 'multipart/form-data' };
 		const result = await api.post('/edit/activities/' + activityID,
 			data,
 		)
 			.then(function (response) {
-				console.log(response.data);
 				navigate("/activity/" + activityID);
 			})
 			.catch(function (error) {
-				console.log("errore");
+				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 	};
 

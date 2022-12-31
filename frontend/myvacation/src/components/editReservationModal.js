@@ -48,9 +48,7 @@ const EditReservationModal = ({reservation}) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log("ci sonoooo");
         const data = new FormData(event.currentTarget);
-        console.log(data);
         let updatedData;
         if(reservation.destinationType === "accomodation") {
             updatedData = {
@@ -58,7 +56,6 @@ const EditReservationModal = ({reservation}) => {
                 "endDate": data.get("endDate"),
                 "reservation" : reservation
             }
-            console.log(updatedData)
         }
         else {
             updatedData = {
@@ -74,7 +71,6 @@ const EditReservationModal = ({reservation}) => {
                 window.location.reload(true);
             })
             .catch(function(error){
-                console.log(error);
                 alert("Already booked for this period/date");
             })
     }

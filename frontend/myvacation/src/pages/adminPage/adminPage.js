@@ -7,12 +7,9 @@ import ToBeApprovedList from './toBeApprovedList';
 import UsersList from "./usersList";
 import { Grid, TableContainer, Typography } from '@mui/material';
 import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import Paper from '@mui/material/Paper';
 import api from "../../utility/api";
 import Config from "../../utility/config";
@@ -36,7 +33,7 @@ const AdminPage = () => {
 				setTotalAdvertisement(response.data);
 			})
 			.catch(function (error) {
-				console.log(error);
+				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 
 		//Richiesta per avere i top 10 host nel settore accomodation
@@ -45,7 +42,7 @@ const AdminPage = () => {
 				setBestHostAcc(response.data);
 			})
 			.catch(function (error) {
-				console.log(error);
+				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 
 		//Richiesta per avere i top 10 host nel settore activity
@@ -54,7 +51,7 @@ const AdminPage = () => {
 				setBestHostAct(response.data);
 			})
 			.catch(function (error) {
-				console.log(error);
+				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 
 		//Richiesta per avere la media dei prezzi per città delle accomodations
@@ -63,7 +60,7 @@ const AdminPage = () => {
 				setAccomodationAverage(response.data);
 			})
 			.catch(function (error) {
-				console.log(error);
+				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 
 		//Richiesta per avere la media dei prezzi per città delle activities
@@ -72,7 +69,7 @@ const AdminPage = () => {
 				setActivityAverage(response.data);
 			})
 			.catch(function (error) {
-				console.log(error);
+				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 
 		//Richiesta per avere il numero di iscritti in questo mese
@@ -81,7 +78,7 @@ const AdminPage = () => {
 				setUsersForMonth(response.data);
 			})
 			.catch(function (error) {
-				console.log(error);
+				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 
 	}, []);

@@ -1,4 +1,4 @@
-import React  from "react";
+import React from "react";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import api from "../utility/api";
 import Moment from 'moment';
 import Grid from "@mui/material/Grid";
-import {FormControl} from "@mui/material";
+import { FormControl } from "@mui/material";
 import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -31,7 +31,7 @@ const style = {
 };
 
 
-const EditProfileModal = ({id, name, surname, gender, dateOfBirth, nationalityProp, knownLanguages}) => {
+const EditProfileModal = ({ id, name, surname, gender, dateOfBirth, nationalityProp, knownLanguages }) => {
     const [open, setOpen] = React.useState(false);
     const [languages, setLanguages] = React.useState([]);
     const [nationality, setNationality] = React.useState(nationalityProp);
@@ -59,34 +59,31 @@ const EditProfileModal = ({id, name, surname, gender, dateOfBirth, nationalityPr
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log("ci sonoooo");
         const data = new FormData(event.currentTarget);
-        console.log(data);
 
         const updatedData = {
-                "name": data.get("name"),
-                "surname": data.get("surname"),
-                "dateOfBirth": data.get("dateOfBirth"),
-                "nationality": nationality,
-                "knownLanguages": languages,
-                "gender": data.get("gender")
+            "name": data.get("name"),
+            "surname": data.get("surname"),
+            "dateOfBirth": data.get("dateOfBirth"),
+            "nationality": nationality,
+            "knownLanguages": languages,
+            "gender": data.get("gender")
         }
-
-
-        api.patch("/user/" + id , updatedData)
-            .then(function(response){
+        console.log(updatedData);
+        api.patch("/user/" + id, updatedData)
+            .then(function (response) {
                 alert("Profile updated correctly");
                 setOpen(false);
                 window.location.reload(true);
             })
-            .catch(function(error){
-                console.log(error);
+            .catch(function (error) {
+                alert("Ops, something went wrong :(" + "\n" + error);
             })
     }
 
     return (
         <div>
-            <Button color="info" variant="contained" fullWidth onClick={handleOpen} sx={{mt : 2}}>Update Profile</Button>
+            <Button color="info" variant="contained" fullWidth onClick={handleOpen} sx={{ mt: 2 }}>Update Profile</Button>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -94,7 +91,7 @@ const EditProfileModal = ({id, name, surname, gender, dateOfBirth, nationalityPr
                 aria-describedby="modal-modal-description"
             >
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{mb : 2}}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
                         Update your Profile
                     </Typography>
                     <Grid container columnSpacing={1.4}>
@@ -142,8 +139,8 @@ const EditProfileModal = ({id, name, surname, gender, dateOfBirth, nationalityPr
                         onFocus={(e) => (e.target.type = "date")}
                         onBlur={(e) => (e.target.type = "text")}
                         placeholder={Moment(dateOfBirth).utc().format('MMM DD YYYY')}
-                        style={{width:100+'%', marginTop:10}}
-                        InputProps={{ inputProps: { min:"", max:`${date}`} }}
+                        style={{ width: 100 + '%', marginTop: 10 }}
+                        InputProps={{ inputProps: { min: "", max: `${date}` } }}
                     />
                     <InputLabel id="demo-simple-select-label">Nationality</InputLabel>
                     <Select
@@ -175,8 +172,8 @@ const EditProfileModal = ({id, name, surname, gender, dateOfBirth, nationalityPr
                             return <MenuItem key={index} value={item}>{item}</MenuItem>
                         })}
                     </Select>
-                    <Button variant="contained" type = "submit" style={{width:100+'%', marginTop:10}} >Update</Button>
-                    <Button variant="contained" color= "error" style={{width:100+'%', marginTop:10}} onClick={()=>{window.location.reload(true)}} >Cancel</Button>
+                    <Button variant="contained" type="submit" style={{ width: 100 + '%', marginTop: 10 }} >Update</Button>
+                    <Button variant="contained" color="error" style={{ width: 100 + '%', marginTop: 10 }} onClick={() => { window.location.reload(true) }} >Cancel</Button>
                     <Grid container>
                         <Grid item xs>
                         </Grid>

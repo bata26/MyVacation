@@ -18,7 +18,7 @@ import Moment from 'moment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditReservationModal from "../components/editReservationModal";
 import EditProfileModal from "../components/editProfileModal";
-import {useNavigate, useParams, useSearchParams} from 'react-router-dom';
+import { Link,useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import Button from '@mui/material/Button';
 
 
@@ -33,7 +33,8 @@ const Profile = () => {
   const [listLikedAcc, setListLikedAcc] = React.useState([]);
   const [listLikedAct, setListLikedAct] = React.useState([]);
   const navigate = useNavigate();
-  const { profileID } = useParams();
+
+  const profileID = (searchParams.get("userId") != null && localStorage.getItem("role") === "admin") ? searchParams.get("userId") : localStorage.getItem("userID");
 
   React.useEffect(() => {
     //Richiesta per recuperare le informazioni dell'utente
@@ -42,7 +43,7 @@ const Profile = () => {
         setProfile(response.data);
       })
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
 
     //Richiesta per recuperare le prenotazioni
@@ -52,7 +53,7 @@ const Profile = () => {
         console.log(response.data);
       })
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
 
     //Richiesta per recuperare le persone seguite dall'utente
@@ -65,7 +66,7 @@ const Profile = () => {
           setFollowedUser(false)
       })
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
 
     //Richiesta per recuperare gli alloggi piaciuti all'utente
@@ -74,7 +75,7 @@ const Profile = () => {
               setListLikedAcc(response.data)
           })
           .catch(function (error) {
-              console.log(error);
+              alert("Ops, something went wrong :(" + "\n" + error);
           });
 
     //Richiesta per recuperare le attività piaciute all'utente
@@ -83,7 +84,7 @@ const Profile = () => {
             setListLikedAct(response.data)
         })
         .catch(function (error) {
-            console.log(error);
+            alert("Ops, something went wrong :(" + "\n" + error);
         });
 
   }, []);
@@ -94,21 +95,17 @@ const Profile = () => {
   const deleteReservation = async (reservationID) => {
     await api.delete("/reservations/" + reservationID)
       .then(function (response) {
-        console.log(response.data);
         window.location.reload(true);
       })
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
     }
 
     const deleteProfile = async (profileID) => {
       await api.delete("/users/" + profileID)
-      .then(function (response) {
-        console.log(response.data);
-      })
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
       navigate("/admin");
   }
@@ -123,7 +120,7 @@ const Profile = () => {
         setFollowedUser(true)
       })
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
   }
 
@@ -137,7 +134,7 @@ const Profile = () => {
         setFollowedUser(false)
       })
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
   }
 

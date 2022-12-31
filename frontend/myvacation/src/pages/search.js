@@ -14,7 +14,7 @@ import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import api from "../utility/api";
-import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
+import { useNavigate, useSearchParams} from 'react-router-dom';
 
 
 const theme = createTheme();
@@ -56,7 +56,6 @@ const Search = () => {
     setCity(city)
     setGuests(guests)
     const url = "?startDate=" + formStartDate + "&endDate=" + formEndDate + "&city=" + city + "&guestsNumber=" + guests + "&index=";
-    console.log(url);
 
     api.get("/" + type + url)
       .then(function (response) {
@@ -72,14 +71,13 @@ const Search = () => {
         }
       })
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
   };
 
   const handlePreviousPage = async () => {
     setPage(page - 1)
     const url = "?startDate=" + startDate + "&endDate=" + endDate + "&city=" + city + "&guestsNumber=" + guests + "&index=" + first_id + "&direction=previous";
-    console.log(url);
     await api.get("/" + type + url)
       .then(function (response) {
         setSearch(response.data);
@@ -88,39 +86,28 @@ const Search = () => {
           setLast_id(response.data[0]._id);
           setFirst_id(response.data[response.data.length - 1]._id);
         }
-        //console.log(response.data);
-        console.log(first_id)
-        console.log(last_id)
       })
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
   };
 
   const handleNextPage = async () => {
     const url = "?startDate=" + startDate + "&endDate=" + endDate + "&city=" + city + "&guestsNumber=" + guests + "&index=" + last_id + "&direction=next";
-    console.log(url);
     await api.get("/" + type + url)
       .then(function (response) {
         if (response && response.data.length > 0) {
-          console.log("length response:", response.data.length)
           setLast_id(response.data[response.data.length - 1]._id);
           setFirst_id(response.data[0]._id);
           setSearch(response.data);
           setPage(page + 1);
-          response.data.forEach((elem, index) => {
-            console.log("ID" + index, elem._id);
-          })
         }
         else {
           setLastPage(true)
         }
-        console.log(response.data);
-        console.log(first_id)
-        console.log(last_id)
       })
       .catch(function (error) {
-        console.log(error);
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
   };
 
@@ -128,19 +115,15 @@ const Search = () => {
     setPage(1);
     const url = "?startDate=" + startDate + "&endDate=" + endDate + "&city=" + city + "&guestsNumber=" + guests + "&index=";
 
-    console.log(url);
     await api.get("/" + type + url)
       .then(function (response) {
         setSearch(response.data);
         setLast_id(response.data[response.data.length - 1]._id);
         setFirst_id(0);
-        //console.log(response.data);
         setLastPage(false)
       })
       .catch(function (error) {
-        console.log(error);
-        console.log(first_id)
-        console.log(last_id)
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
 
   };

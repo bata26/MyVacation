@@ -34,22 +34,18 @@ export default function Checkout() {
         api.get("/" + type + "/" + reservedId)
             .then(function (response) {
                 setReserved(response.data);
-                console.log(response.data);
-                console.log(startDate);
-                console.log(endDate);
                 if (type === "accomodations") {
                     const timeStart = moment(startDate);
                     const timeEnd = moment(endDate);
                     const diff = timeEnd.diff(timeStart);
                     const diffDuration = moment.duration(diff);
-                    setTotalExpense(response.data.price * diffDuration.days())
+                    setTotalExpense(response.data.price * diffDuration.days());
                 }
                 else if (type === "activities")
-                    //setTotalExpense(response.data.price * guests)
-                    setTotalExpense(response.data.price)
+                    setTotalExpense(response.data.price);
             })
             .catch(function (error) {
-                console.log(error);
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
     }, []);
 
@@ -77,12 +73,11 @@ export default function Checkout() {
             };
             await api.post("/book/accomodation", bodyRequest)
                 .then(function (response) {
-                    alert("Prenotazione avvenuta con successo!")
+                    alert("Booked!");
                     navigate("/", { replace: true });
                 })
                 .catch(function (error) {
-                    console.log("error : ", error);
-                    alert("Impossibile prenotare, riprova più tardi");
+                    alert("Ops, something went wrong :(" + "\n" + error);
                 });
         }
         else if (type === "activities") {
@@ -98,12 +93,11 @@ export default function Checkout() {
             };
             await api.post("/book/activity", bodyRequest)
                 .then(function (response) {
-                    alert("Prenotazione avvenuta con successo!")
+                    alert("Booked!");
                     navigate("/", { replace: true });
                 })
                 .catch(function (error) {
-                    console.log("error : ", error);
-                    alert("Impossibile prenotare, riprova più tardi");
+                    alert("Ops, something went wrong :(" + "\n" + error);
                 })
         }
     }

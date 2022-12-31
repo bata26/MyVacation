@@ -36,21 +36,19 @@ const ReviewForm = ({destinationID , destinationType}) => {
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = async () => {
-    console.log("Aspetta");
-    console.log("DestinationType",destinationType)
 
     await api.get("/review/check/"+destinationID+"?destinationType="+destinationType).then(function(response){
       if(response.data.result === true){
         setOpen(true);
       }else{
-        alert("Impossibile inserire una nuova recensione: " +
-            "è possibile recensire solo annuncio che si è prenotato; " +
-            "è possibile recensire un annuncio solo una volta");
+        alert("Error: " +
+            "you can review only a booked advertisement; " +
+            "you can review only one time");
       }
     })
     .catch(function(error){
-        console.log("Errore: ",  error);
-        return false;
+      alert("Ops, something went wrong :(" + "\n" + error);
+      return false;
     });
   }
 
@@ -58,9 +56,7 @@ const ReviewForm = ({destinationID , destinationType}) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("ci sonoooo");
     const data = new FormData(event.currentTarget);
-    console.log(data);
     const review = {
       "destinationType" : destinationType,
       "destinationID" : destinationID,
@@ -71,17 +67,18 @@ const ReviewForm = ({destinationID , destinationType}) => {
 
     api.put("/reviews" , review)
     .then(function(response){
-      if(response.status === 200) alert("Recensione inserita con successo");
+      if(response.status === 200);
       setOpen(false);
+      window.location.reload(false);
     })  
     .catch(function(error){
-      alert("Impossibile inserire la recensione, riprova più tardi");
+      alert("Ops, something went wrong :(" + "\n" + error);
     })
   }
 
   return (
     <div>
-      {localStorage.getItem("userID") != null ? <Button variant="outlined" style={{width:100+'%'}} onClick={handleOpen}>Lascia una recensione</Button> : <></>}
+      {localStorage.getItem("userID") != null ? <Button variant="outlined" style={{width:100+'%'}} onClick={handleOpen}>Leave a review</Button> : <></>}
       <Modal
         open={open}
         onClose={handleClose}
@@ -103,7 +100,7 @@ const ReviewForm = ({destinationID , destinationType}) => {
                 id="description"
                 autoFocus
                 />
-            <Button variant="outlined" type = "submit" style={{width:100+'%'}} >conferma</Button>
+            <Button variant="outlined" type = "submit" style={{width:100+'%'}} >Confirm</Button>
             </form>
         </Box>
       </Modal>

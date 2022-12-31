@@ -32,8 +32,8 @@ const MyAdv = () => {
             setAccomodations(response.data);
         })
         .catch(function (error) {
-            console.log(error);
-            }
+            alert("Ops, something went wrong :(" + "\n" + error);
+        }
         );
 
         //Richiesta per recuperare le activities dell'utente
@@ -42,8 +42,8 @@ const MyAdv = () => {
             setActivities(response.data);
         })
         .catch(function (error) {
-            console.log(error);
-            }
+            alert("Ops, something went wrong :(" + "\n" + error);
+        }
         );
     } , []);
 

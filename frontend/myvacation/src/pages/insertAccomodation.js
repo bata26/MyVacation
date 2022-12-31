@@ -38,7 +38,6 @@ const InsertAccomodation = () => {
     const data = new FormData(event.currentTarget);
     //const formData = new FormData();
     const images = document.getElementById("images").files;
-    console.log("images: ", images);
     let convertedImages = [];
     let counter = 0;
 
@@ -49,18 +48,15 @@ const InsertAccomodation = () => {
       data.append(label, elem);
     }
     data.append("imagesLength", images.length);
-    console.log("form: ", data);
     const headers = { 'Content-type': 'multipart/form-data' };
     const result = await api.post('/insert/accomodation',
       data,
-      //{headers: headers}
     )
       .then(function (response) {
-        console.log(response.data);
         navigate("/accomodation/" + response.data.accomodationID);
       })
       .catch(function (error) {
-        console.log("errore");
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
   };
 

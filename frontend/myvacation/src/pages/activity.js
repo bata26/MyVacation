@@ -42,7 +42,7 @@ const Activity = () => {
         else
           setEnableButton(false)
       })
-      .catch(function (err) {
+      .catch(function (error) {
         alert("Ops, something went wrong :(" + "\n" + error);
       })
 

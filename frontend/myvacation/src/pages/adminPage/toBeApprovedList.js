@@ -25,7 +25,6 @@ export default function ToBeApprovedList({ destinationType }) {
     React.useEffect(() => {
         api.get("/admin/announcements/" + destinationType + "?index=&direction=")
             .then(function (response) {
-                console.log(response.data);
                 setToBeApprovedList(response.data);
                 setLast_id(response.data[response.data.length - 1]._id);
                 setFirst_id(response.data[0]._id);
@@ -34,14 +33,13 @@ export default function ToBeApprovedList({ destinationType }) {
 
             })
             .catch(function (error) {
-                console.log(error);
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
     }, []);
 
     const handlePreviousPage = () => {
         setPage(page - 1)
         const url = "?index=" + first_id + "&direction=previous";
-        console.log(url);
         api.get("/admin/announcements/" + destinationType + url)
             .then(function (response) {
                 setToBeApprovedList(response.data);
@@ -50,18 +48,14 @@ export default function ToBeApprovedList({ destinationType }) {
                     setLast_id(response.data[0]._id);
                     setFirst_id(response.data[response.data.length - 1]._id);
                 }
-                console.log(response.data);
-                console.log(first_id)
-                console.log(last_id)
             })
             .catch(function (error) {
-                console.log(error);
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
     };
 
     const handleNextPage = () => {
         const url = "?index=" + last_id + "&direction=next";
-        console.log(url);
         api.get("/admin/announcements/" + destinationType + url)
             .then(function (response) {
                 if (response && response.data.length > 0) {
@@ -73,12 +67,9 @@ export default function ToBeApprovedList({ destinationType }) {
                 else {
                     setLastPage(true)
                 }
-                console.log(response.data);
-                console.log(first_id)
-                console.log(last_id)
             })
             .catch(function (error) {
-                console.log(error);
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
 
     };
@@ -87,17 +78,13 @@ export default function ToBeApprovedList({ destinationType }) {
         setPage(1);
         api.get("/admin/announcements/" + destinationType + "?index=")
             .then(function (response) {
-                console.log(response.data);
                 setToBeApprovedList(response.data);
                 setLast_id(response.data[response.data.length - 1]._id);
                 setFirst_id(0);
                 setLastPage(false)
-                console.log(response.data);
             })
             .catch(function (error) {
-                console.log(error);
-                console.log(first_id)
-                console.log(last_id)
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
     };
 

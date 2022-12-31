@@ -1,8 +1,6 @@
 import * as React from 'react';
-import Grid from '@mui/material/Unstable_Grid2';
 import Button from '@mui/material/Button';
 import ActivityForm from "../components/activityForm";
-import FileInput from "../components/inputFile";
 import FormData from 'form-data';
 import api from '../utility/api';
 import { useNavigate } from "react-router-dom";
@@ -20,7 +18,6 @@ const InsertActivity = () => {
     const data = new FormData(event.currentTarget);
     //const formData = new FormData();
     const images = document.getElementById("images").files;
-    console.log("images: ", images);
     let convertedImages = [];
     let counter = 0;
 
@@ -31,18 +28,16 @@ const InsertActivity = () => {
       data.append(label, elem);
     }
     data.append("imagesLength", images.length);
-    console.log("form: ", data);
     const headers = { 'Content-type': 'multipart/form-data' };
     const result = await api.post('/insert/activity',
       data,
       //{headers: headers}
     )
       .then(function (response) {
-        console.log(response.data);
         navigate("/activity/" + response.data.activityID);
       })
       .catch(function (error) {
-        console.log("errore");
+        alert("Ops, something went wrong :(" + "\n" + error);
       });
   };
 

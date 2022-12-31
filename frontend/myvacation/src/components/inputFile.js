@@ -14,7 +14,6 @@ const FileInput = ({ label, onChange }) => {
     const files = Array.from(event.target.files);
     const [file] = files;
     setAttachment(file);
-    console.log(files);
   };
 
   return (

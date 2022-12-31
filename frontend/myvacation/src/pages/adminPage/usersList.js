@@ -30,19 +30,16 @@ export default function UsersList() {
 
 
     React.useEffect(() => {
-        console.log("env: ", process.env.REACT_APP_ADMIN_PAGE_SIZE);
         api.get("/users?index=")
             .then(function (response) {
-                console.log(response.data);
                 setUserList(response.data);
                 setLast_id(response.data[response.data.length - 1]._id);
                 setFirst_id(response.data[0]._id);
-                console.log(response);
                 if (response.data.length === parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE))
                     setLastPage(false)
             })
             .catch(function (error) {
-                console.log(error);
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
     }, []);
 
@@ -50,25 +47,18 @@ export default function UsersList() {
         event.preventDefault();
         setPage(1);
         const data = new FormData(event.currentTarget);
-        console.log({
-            userId: data.get('userId'),
-            name: data.get('name'),
-            surname: data.get('surname')
-        });
         const name = data.get('name');
         const surname = data.get('surname');
         const id = data.get('userId');
 
         const url = "?id=" + id + "&name=" + name + "&surname=" + surname + "&index=";
 
-        console.log(url);
         api.get("/users" + url)
             .then(function (response) {
                 if (response && response.data.length > 0) {
                     setUserList(response.data);
                     setLast_id(response.data[response.data.length - 1]._id);
                     setFirst_id(response.data[0]._id);
-                    console.log(response.data);
                     setLastPage(false)
                 }
                 else{
@@ -76,14 +66,13 @@ export default function UsersList() {
                 }
             })
             .catch(function (error) {
-                console.log(error);
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
     };
 
     const handlePreviousPage = () => {
         setPage(page - 1)
         const url = "?id=" + id + "&name=" + name + "&surname=" + surname + "&index=" + first_id + "&direction=previous";
-        console.log(url);
         api.get("/users" + url)
             .then(function (response) {
                 setUserList(response.data);
@@ -92,18 +81,14 @@ export default function UsersList() {
                     setLast_id(response.data[0]._id);
                     setFirst_id(response.data[response.data.length - 1]._id);
                 }
-                console.log(response.data);
-                console.log(first_id)
-                console.log(last_id)
             })
             .catch(function (error) {
-                console.log(error);
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
     };
 
     const handleNextPage = () => {
         const url = "?id=" + id + "&name=" + name + "&surname=" + surname + "&index=" + last_id + "&direction=next";
-        console.log(url);
         api.get("/users" + url)
             .then(function (response) {
                 if (response && response.data.length > 0) {
@@ -115,12 +100,9 @@ export default function UsersList() {
                 else {
                     setLastPage(true)
                 }
-                console.log(response.data);
-                console.log(first_id)
-                console.log(last_id)
             })
             .catch(function (error) {
-                console.log(error);
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
 
     };
@@ -129,19 +111,15 @@ export default function UsersList() {
         setPage(1);
         const url = "?id=" + id + "&name=" + name + "&surname=" + surname + "&index=";
 
-        console.log(url);
         api.get("/users" + url)
             .then(function (response) {
                 setUserList(response.data);
                 setLast_id(response.data[response.data.length - 1]._id);
                 setFirst_id(0);
-                console.log(response.data);
                 setLastPage(false)
             })
             .catch(function (error) {
-                console.log(error);
-                console.log(first_id)
-                console.log(last_id)
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
 
     };
