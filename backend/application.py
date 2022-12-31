@@ -67,7 +67,6 @@ def required_token(f):
 @required_token
 def testValidation(user={}):
     requestBody = dict(request.json)
-
     userNode = UserNode(requestBody["userID"] , requestBody["username"])
     UserManager.createUserNode(userNode)
     return "" , 200
@@ -174,16 +173,22 @@ def getBestHost(destinationType , user={}):
 @required_token
 def deleteActivityByID(activity_id, user={}):
     activityID = escape(activity_id)
-    result = ActivityManager.deleteActivity(activityID, user)
-    return "", 200
+    try:
+        result = ActivityManager.deleteActivity(activityID, user)
+        return "", 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/activities/<activity_id>', methods=['GET'])
 # @required_token
 def getActivityByID(activity_id):
     activityID = escape(activity_id)
-    result = ActivityManager.getActivityFromID(activityID)
-    return result, 200
+    try:
+        result = ActivityManager.getActivityFromID(activityID)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/activities', methods=['GET'])
@@ -195,17 +200,23 @@ def getActivities(user={}):
     start_date = args.get("startDate")
     index = args.get("index")
     direction = args.get("direction")
-    result = ActivityManager.getFilteredActivity(
-        start_date, city, guests, index, direction)
-    return result, 200
+    try:
+        result = ActivityManager.getFilteredActivity(
+            start_date, city, guests, index, direction)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/accomodations/<accomodation_id>', methods=['DELETE'])
 @required_token
 def deleteAccomodationById(accomodation_id, user={}):
     accomodationId = escape(accomodation_id)
-    result = AccomodationsManager.deleteAccomodation(accomodationId, user)
-    return "", 200
+    try:
+        result = AccomodationsManager.deleteAccomodation(accomodationId, user)
+        return "", 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/edit/accomodations/<accomodationID>', methods=['POST'])
@@ -221,10 +232,12 @@ def updateAccomodationById(accomodationID, user={}):
     formData.pop("country")
     formData["accommodates"] = formData["accommodates"]
     formData["approved"] = False
-    
-    result = AccomodationsManager.updateAccomodation(
-        accomodationID, formData, user)
-    return "", 200
+    try:
+        result = AccomodationsManager.updateAccomodation(
+            accomodationID, formData, user)
+        return "", 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/edit/activities/<activityID>', methods=['POST'])
@@ -239,17 +252,23 @@ def updateActivityById(activityID, user={}):
     formData.pop("address")
     formData.pop("country")
     formData["approved"] = False
-    result = ActivityManager.updateActivity(
-        activityID, formData, user)
-    return "", 200
+    try:
+        result = ActivityManager.updateActivity(
+            activityID, formData, user)
+        return "", 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/accomodations/<accomodation_id>', methods=['GET'])
 # @required_token
 def getAccomodationById(accomodation_id):
     accomodationId = escape(accomodation_id)
-    result = AccomodationsManager.getAccomodationFromId(accomodationId)
-    return result, 200
+    try:
+        result = AccomodationsManager.getAccomodationFromId(accomodationId)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/book/accomodation', methods=['POST'])
@@ -270,7 +289,6 @@ def bookAccomodation(user={}):
         reservationID = ReservationManager.book(reservation)
         return "OK", 200
     except Exception as e:
-        print("Errore: " + str(e))
         return str(e), 500
 
 
@@ -299,14 +317,13 @@ def updateUser(user_id, user={}):
     updatedData = request.json
     updatedData["dateOfBirth"] = dateparser.parse(updatedData["dateOfBirth"])
     try:
-        if(user["role"] != "admin" and user["userID"] != user_id):
+        if(user["role"] != "admin" and user["_id"] != user_id):
             raise Exception("Impossibile aggiornare")
         else:
             UserManager.updateUser(updatedData, user_id)
-
         return "", 200
     except Exception as e:
-        return e, 500
+        return str(e), 500
 
 @application.route('/user/following', methods=['GET'])
 @required_token
@@ -319,7 +336,7 @@ def getFollowedUsersByUserID(user={}):
         UserNodeManager.getFollowedUser(userNode)
         return "", 200
     except Exception as e:
-        return e, 500
+        return str(e), 500
 
 @application.route('/user/following', methods=['POST'])
 @required_token
@@ -337,7 +354,7 @@ def followUser(user={}):
         FollowRelationManager.addFollowRelation(userNode, followedUserNode)
         return "", 200
     except Exception as e:
-        return e, 500
+        return str(e), 500
 
 @application.route('/users/unfollowing', methods=['POST'])
 @required_token
@@ -355,7 +372,7 @@ def unfollowUser(user={}):
         FollowRelationManager.removeFollowRelation(userNode, unfollowedUserNode)
         return "", 200
     except Exception as e:
-        return e, 500
+        return str(e), 500
 
 @application.route('/users/liking/<destination_type>', methods=['GET'])
 @required_token
@@ -368,7 +385,7 @@ def getLikedAdvsByUserID(destination_type, user={}):
         UserNodeManager.getLikedAdvs(userNode, destination_type)
         return "", 200
     except Exception as e:
-        return e, 500
+        return str(e), 500
 
 @application.route('/users/liking', methods=['POST'])
 @required_token
@@ -393,7 +410,7 @@ def likeAdv(user={}):
             LikeRelationManager.addLikeRelation(userNode, activityNode=likedAdv)
         return "", 200
     except Exception as e:
-        return e, 500
+        return str(e), 500
 
 @application.route('/users/unliking', methods=['POST'])
 @required_token
@@ -419,7 +436,7 @@ def unlikeAdv(user={}):
 
         return "", 200
     except Exception as e:
-        return e, 500
+        return str(e), 500
 
 @application.route('/recommendations/<destination_type>', methods=['GET'])
 @required_token
@@ -432,7 +449,7 @@ def getrecommendedAdvs(destination_type, user={}):
         UserNodeManager.getRecommendedAdvs(userNode, destination_type)
         return "", 200
     except Exception as e:
-        return e, 500
+        return str(e), 500
 
 @application.route('/recommendations/user', methods=['GET'])
 @required_token
@@ -463,7 +480,6 @@ def bookActivity(user={}):
         ActivityManager.addReservation(reservation)
         return "OK", 200
     except Exception as e:
-        print("Errore: " + str(e))
         return str(e), 500
 
 
@@ -471,16 +487,22 @@ def bookActivity(user={}):
 # @required_token
 def getReservationsByUserID(user_id):
     userID = escape(user_id)
-    result = ReservationManager.getReservationsByUser(userID)
-    return result, 200
+    try:
+        result = ReservationManager.getReservationsByUser(userID)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/reservations/<reservation_id>', methods=['DELETE'])
 @required_token
-def deleteReservation(reservation_id , user={}):
+def deleteReservation(reservation_id, user={}):
     reservationID = escape(reservation_id)
-    result = ReservationManager.deleteReservationByID(reservationID , user)
-    return "OK", 200
+    try:
+        result = ReservationManager.deleteReservationByID(reservationID)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/accomodations', methods=['GET'])
@@ -493,9 +515,12 @@ def getAccomodations():
     end_date = args.get("end_date")
     index = args.get("index")
     direction = args.get("direction")
-    result = AccomodationsManager.getFilteredAccomodation(
-        start_date, end_date, city, guests, index, direction)
-    return result, 200
+    try:
+        result = AccomodationsManager.getFilteredAccomodation(
+            start_date, end_date, city, guests, index, direction)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/insert/accomodation', methods=['POST'])
@@ -533,18 +558,19 @@ def insertAccomodations(user={}):
         0,
         False
     )
-    accomodationID = AccomodationsManager.insertNewAccomodation(accomodation)
-    if (user["role"]!= "host" and user["role"]!= "admin"):
-        updatedRole = {"type": "host"}
-        UserManager.updateUser(updatedRole, host["_id"])
-    return {"accomodationID": str(accomodationID)}, 200
-    return "", 500
+    try:
+        accomodationID = AccomodationsManager.insertNewAccomodation(accomodation)
+        if (user["role"]!= "host" and user["role"]!= "admin"):
+            updatedRole = {"type": "host"}
+            UserManager.updateUser(updatedRole, host["_id"])
+        return {"accomodationID": str(accomodationID)}, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/insert/activity', methods=['POST'])
-# @required_token
-def insertActivity():
-    global user
+@required_token
+def insertActivity(user={}):
     formData = dict(request.form)
     host = UserManager.getUserFromId(user["_id"])
     pictures = []
@@ -571,24 +597,33 @@ def insertActivity():
         formData["category"],
         False
     )
-    activityID = ActivityManager.insertNewActivity(activity)
-    return {"activityID": str(activityID)}, 200
+    try:
+        activityID = ActivityManager.insertNewActivity(activity)
+        return {"activityID": str(activityID)}, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/reviews/<review_id>', methods=['GET'])
 # @required_token
 def getReviewByID(review_id):
     reviewID = escape(review_id)
-    result = ReviewManager.getReviewFromID(reviewID)
-    return result, 200
+    try:
+        result = ReviewManager.getReviewFromID(reviewID)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/reviewsByDestination/<destination_id>', methods=['GET'])
 # @required_token
 def getReviewByAd(destination_id):
     destinationID = escape(destination_id)
-    result = ReviewManager.getReviewFromDestinationID(destinationID)
-    return result, 200
+    try:
+        result = ReviewManager.getReviewFromDestinationID(destinationID)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/reviews', methods=['PUT'])
@@ -620,24 +655,33 @@ def deleteReviewByID(destinationType, destinationID, reviewID , user={}):
     reviewID = escape(reviewID)
     destinationType = escape(destinationType)
     destinationID = escape(destinationID)
-    result = ReviewManager.deleteReview(reviewID, destinationID, destinationType, user)
-    return "", 200
+    try:
+        result = ReviewManager.deleteReview(reviewID, destinationID, destinationType, user)
+        return "", 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/users/<user_id>', methods=['DELETE'])
 @required_token
 def deleteUserById(user_id, user={}):
     userId = escape(user_id)
-    result = AdminManager.deleteUser(userId, user)
-    return "", 200
+    try:
+        result = AdminManager.deleteUser(userId, user)
+        return "", 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/users/<user_id>', methods=['GET'])
 @required_token
 def getUserById(user_id, user={}):
     userId = escape(user_id)
-    result = UserManager.getUserFromId(userId)
-    return result, 200
+    try:
+        result = UserManager.getUserFromId(userId)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/review/check/<destination_id>', methods=['GET'])
@@ -647,13 +691,13 @@ def getIfCanReview(destination_id, user={}):
     user = json.loads(request.headers.get('Authorization'))
     args = request.args
     destinationType = args["destinationType"]
-    print(f"sto controllando se posso recensire")
-    print(f"user dentro getIFCanReview: {user}")
-    #global user
     result = {"result": False}
-    if ReviewManager.checkIfCanReview(str(destinationID), destinationType, user):
-        result = {"result": True}
-    return result, 200
+    try:
+        if ReviewManager.checkIfCanReview(str(destinationID), destinationType, user):
+            result = {"result": True}
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/login', methods=['POST'])
@@ -661,8 +705,6 @@ def getIfCanReview(destination_id, user={}):
 def loginUser():
     username = request.json["username"]
     password = request.json["password"]
-    print(f"username : {username}")
-    print(f"password : {password}")
     try:
         userID, userType, name = UserManager.authenicateUser(
             username, password)
@@ -674,7 +716,6 @@ def loginUser():
 @application.route('/signup', methods=['POST'])
 # @required_token
 def signUp():
-    # print(request.)
     username = request.json["username"]
     password = request.json["password"]
     name = request.json["name"]
@@ -715,25 +756,24 @@ def getUsers(user):
     surname = args.get("surname")
     index = args.get("index")
     direction = args.get("direction")
-    print(f"user : {user}")
-    result = AdminManager.getFilteredUsers(
-        user, id, name, surname, index, direction)
-    return result, 200
+    try:
+        result = AdminManager.getFilteredUsers(
+            user, id, name, surname, index, direction)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/admin/announcements/<destination_type>', methods=['GET'])
 @required_token
 def getAnnouncementsToBeApproved(destination_type , user={}):
+    args = request.args
+    index = args.get("index")
+    direction = args.get("direction")
     try:
-        print("DEBUG12")
-        args = request.args
-        index = args.get("index")
-        direction = args.get("direction")
-        print(f"destinationType:{destination_type}")
         result = AdminManager.getAnnouncementsToApprove(index, direction, destination_type)
         return result, 200
     except Exception as e:
-        print(str(e))
         return str(e), 500
 
 
@@ -743,13 +783,10 @@ def getAnnouncementToBeApprovedByID(destination_type, announcementID):
     try:
         if (not (validateObjecID(announcementID))):
             return "Announcement non valido", 500
-        print(announcementID)
-
-        print(f"DDDDDDDD:{destination_type}")
         result = AdminManager.getAnnouncementToApproveByID(announcementID, destination_type)
         return result, 200
     except Exception as e:
-        return e, 500
+        return str(e), 500
 
 
 @application.route('/admin/announcement/<announcementID>', methods=['POST'])
@@ -763,7 +800,7 @@ def approveAnnouncement(announcementID, user={}):
         AdminManager.approveAnnouncement(announcementID, user, destinationType)
         return "", 200
     except Exception as e:
-        return e, 500
+        return str(e), 500
 
 
 @application.route('/admin/announcement/<destination_type>/<announcementID>', methods=['DELETE'])
@@ -778,23 +815,29 @@ def refuseAnnouncement(destination_type, announcementID, user={}):
             ActivityManager.deleteActivity(announcementID, user)
         return "", 200
     except Exception as e:
-        return e, 500
+        return str(e), 500
 
 
 @application.route('/myadvacc/<user_id>', methods=['GET'])
 # @required_token
 def getAccomodationsByUserID(user_id):
     userID = escape(user_id)
-    result = AccomodationsManager.getAccomodationsByUserID(userID)
-    return result, 200
+    try:
+        result = AccomodationsManager.getAccomodationsByUserID(userID)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 @application.route('/myadvact/<user_id>', methods=['GET'])
 # @required_token
 def getActivitiesByUserID(user_id):
     userID = escape(user_id)
-    result = ActivityManager.getActivityByUserID(userID)
-    return result, 200
+    try:
+        result = ActivityManager.getActivityByUserID(userID)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
 
 
 if __name__ == "__main__":
