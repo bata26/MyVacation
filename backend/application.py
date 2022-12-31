@@ -18,6 +18,7 @@ from models.reservation import Reservation
 from models.activity import Activity
 from models.user import User
 from models.userNode import UserNode
+from models.userNode import UserNode
 from flask_cors import CORS, cross_origin
 import json
 from functools import wraps
@@ -67,6 +68,7 @@ def required_token(f):
 @required_token
 def testValidation(user={}):
     requestBody = dict(request.json)
+
     userNode = UserNode(requestBody["userID"] , requestBody["username"])
     UserManager.createUserNode(userNode)
     return "" , 200
