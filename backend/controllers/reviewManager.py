@@ -66,12 +66,12 @@ class ReviewManager:
             if (str(review["userID"]) != user["_id"]):
                 raise Exception("L'utente non possiede la review")
         try:
-            #with client.start_session() as session:
-            #    with session.start_transaction():
-            #        reviewCollection.delete_one({"_id" : ObjectId(reviewID)}, session=session)
-            #        destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$pull" : {"reviews": {"_id" : ObjectId(reviewID)}}}, session=session)
-            reviewCollection.delete_one({"_id" : ObjectId(reviewID)})
-            destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$pull" : {"reviews": {"_id" : ObjectId(reviewID)}}})
+            with client.start_session() as session:
+                with session.start_transaction():
+                    reviewCollection.delete_one({"_id" : ObjectId(reviewID)}, session=session)
+                    destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$pull" : {"reviews": {"_id" : ObjectId(reviewID)}}}, session=session)
+            #reviewCollection.delete_one({"_id" : ObjectId(reviewID)})
+            #destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$pull" : {"reviews": {"_id" : ObjectId(reviewID)}}})
 
         except Exception as e:
             raise Exception("Impossibile eliminare : " + str(e))

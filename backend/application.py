@@ -12,6 +12,7 @@ from models.accomodation import Accomodation
 from models.reservation import Reservation
 from models.activity import Activity
 from models.user import User
+from models.userNode import UserNode
 from flask_cors import CORS, cross_origin
 import json
 from functools import wraps
@@ -57,16 +58,14 @@ def required_token(f):
     return decorator
 
 
-@application.route("/test", methods=["GET"])
+@application.route("/test", methods=["POST"])
 @required_token
 def testValidation(user={}):
-    res = AnalyticsManager.getReservationByMonth(user)
-    print(res)
-@required_token
-def testValidation(user={}):
-    res = AnalyticsManager.getReservationByMonth(user)
-    print(res)
-    return "OK", 200
+    requestBody = dict(request.json)
+
+    userNode = UserNode(requestBody["userID"] , requestBody["username"])
+    UserManager.createUserNode(userNode)
+    return "" , 200
 
 
 @application.route("/analytics/topcities", methods=["GET"])
@@ -265,9 +264,6 @@ def bookAccomodation(user={}):
                               startDatetime, totalExpense, city, hostID, endDatetime)
     try:
         reservationID = ReservationManager.book(reservation)
-        reservation._id = reservationID
-        AccomodationsManager.addReservation(reservation)
-        UserManager.addReservation(reservation)
         return "OK", 200
     except Exception as e:
         print("Errore: " + str(e))
@@ -281,7 +277,6 @@ def updateReservation(reservation_id, user={}):
     newStartDate = requestBody["startDate"]
     reservation = requestBody["reservation"]
     newEndDate = None
-    print(reservation)
     if (reservation['destinationType'] == "accomodation"):
         newEndDate = requestBody["endDate"]
     try:
@@ -339,12 +334,11 @@ def getReservationsByUserID(user_id):
 
 
 @application.route('/reservations/<reservation_id>', methods=['DELETE'])
-# @required_token
-def deleteReservation(reservation_id):
+@required_token
+def deleteReservation(reservation_id , user={}):
     reservationID = escape(reservation_id)
-    global user
-    result = ReservationManager.deleteReservationByID(reservationID)
-    return result, 200
+    result = ReservationManager.deleteReservationByID(reservationID , user)
+    return "OK", 200
 
 
 @application.route('/accomodations', methods=['GET'])

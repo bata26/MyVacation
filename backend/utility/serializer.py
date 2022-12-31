@@ -146,4 +146,6 @@ class Serializer:
         if reservation.destinationType == "accomodation":
             result["endDate"] = reservation.endDate 
         return result
-            
+    
+    #@staticmethod
+    #def serializeAccomodationNode(accomodation):

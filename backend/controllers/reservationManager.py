@@ -15,10 +15,17 @@ class ReservationManager:
     def book(reservation):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("RESERVATIONS_COLLECTION")]
+        reservationCollection = db[os.getenv("RESERVATIONS_COLLECTION")]
+        destinationCollection = db[os.getenv("ACCOMODATIONS_COLLECTION")] if reservation.destinationType == "accomodation" else db[os.getenv("ACTIVITIES_COLLECTION")]
+        usersCollection = db[os.getenv("USERS_COLLECTION")]
         try:
-            res = collection.insert_one(reservation.getDictToUpload())
-            return res.inserted_id
+            with client.start_session() as session:
+                with session.start_transaction():
+                    insertedReservation = reservationCollection.insert_one(reservation.getDictToUpload(), session=session)
+                    reservation._id = insertedReservation.inserted_id
+                    destinationCollection.update_one({"_id" : ObjectId(reservation.destinationID)} , {"$push" : {"reservations": reservation.getDictForAdvertisement()}}, session=session)
+                    usersCollection.update_one({"_id" : ObjectId(reservation.userID)} , {"$push" : {"reservations" : reservation.getDictForUser()}})
+            return insertedReservation.inserted_id
         except Exception as e:
             raise Exception("Impossibile prenotare: " + str(e) )
 
@@ -117,13 +124,24 @@ class ReservationManager:
 
 
     @staticmethod
-    def deleteReservationByID(reservationID):
+    def deleteReservationByID(reservationID , user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("RESERVATIONS_COLLECTION")]
-
+        reservationCollection = db[os.getenv("RESERVATIONS_COLLECTION")]
+        
         try:
-            collection.delete_one({"_id" : ObjectId(reservationID)})
-            return "OK"
+            reservation = dict(reservationCollection.find_one({"_id" : ObjectId(reservationID)}))
+            print(reservation)
+            print(user)
+            if(user["role"] != "admin" and str(reservation["userID"]) != user["_id"]):
+                raise Exception("Non si possiedono i privilegi necessari")
+            
+            destinationCollection = db[os.getenv("ACCOMODATIONS_COLLECTION")] if reservation["destinationType"] == "accomodation" else db[os.getenv("ACTIVITIES_COLLECTION")]
+
+            with client.start_session() as session:
+                with session.start_transaction():
+                    reservationCollection.delete_one({"_id" : ObjectId(reservationID)}, session=session)
+                    destinationCollection.update_one({"_id" : ObjectId(reservation["destinationID"])} , {"$pull" : {"reservations": {"_id" : ObjectId(reservationID)}}}, session=session)
+
         except Exception as e:
             raise Exception("Impossibile eliminarte prenotazione "+reservationID+": " + str(e))
