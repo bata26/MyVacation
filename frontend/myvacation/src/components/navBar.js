@@ -54,7 +54,7 @@ function ResponsiveAppBar() {
       if (localStorage.getItem("role") === "admin")
         ChangePage('/admin')
       else
-        ChangePage('/profile')
+        ChangePage('/profile/' + localStorage.getItem("userID"))
     }
     else if (selectedSetting === 'Logout') {
       localStorage.clear();

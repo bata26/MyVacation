@@ -16,6 +16,8 @@ import Box from '@mui/material/Box';
 import { useNavigate } from "react-router-dom";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 
 const theme = createTheme();
@@ -24,6 +26,7 @@ const Accomodation = () => {
   const [accomodation, setAccomodation] = React.useState(null);
   const [reviews, setReviews] = React.useState(null);
   const [enableButton, setEnableButton] = React.useState(null);
+  const [likedAdv, setLikedAdv] = React.useState(null);
   const [searchParams] = useSearchParams();
   const { accomodationID } = useParams();
   const [startDate, setStartDate] = React.useState(searchParams.get("startDate") === "" ? null : searchParams.get("startDate"))
@@ -44,7 +47,18 @@ const Accomodation = () => {
       .catch(function (error) {
         console.log(error);
       });
-  }, []);
+
+    api.get("/users/liking/accomodation")
+        .then(function (response) {
+            if(response.data.includes(accomodationID))
+                setLikedAdv(true)
+            else
+                setLikedAdv(false)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }, []);
 
 
   //Metodo per eliminare accomodation
@@ -90,6 +104,34 @@ const Accomodation = () => {
           });
   }
 
+
+    const likeAdv = async (likedAdvID, likedAdvName) => {
+        await api.post("/users/liking", {
+            "likedAdvID" : likedAdvID,
+            "likedAdvName" : likedAdvName,
+            "destinationType" : "accomodation"
+        }).then(function (response) {
+                console.log(response.data);
+                setLikedAdv(true)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    const unlikeAdv = async (unlikedAdvID, unlikedAdvName) => {
+        await api.post("/users/unliking", {
+            "unlikedAdvID" : unlikedAdvID,
+            "unlikedAdvName" : unlikedAdvName,
+            "destinationType" : "accomodation"
+        }).then(function (response) {
+                console.log(response.data);
+                setLikedAdv(false)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
   return (
       ((accomodation && accomodation.approved) || (accomodation && !accomodation.approved && localStorage.getItem("userID") === accomodation.host_id) || localStorage.getItem("role") === "admin") ?
@@ -253,34 +295,28 @@ const Accomodation = () => {
                                               navigate("/edit/accomodation/" + accomodationID)
                                           }}
                                       >
-                                          Edit Accomodation
+                                          Update Accomodation
                                       </Button>
+                                      {localStorage.getItem("userID") != null ?
+                                          (!likedAdv?
+                                                  <ThumbUpAltIcon
+                                                      variant="filled"
+                                                      onClick={() => { likeAdv(accomodation._id, accomodation.name)}}
+                                                  />
+                                                  :
+                                                  <ThumbUpOffAltIcon
+                                                      variant="filled"
+                                                      onClick={() => { unlikeAdv(accomodation._id, accomodation.name)}}
+                                                  />
+                                          ) : <></>
+                                      }
                                   </>
                               )
                               : <></>
                       }
-
-            {
-              localStorage.getItem("userID") === accomodation.host_id || localStorage.getItem("role") === "admin" ?
-                (
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color='error'
-                    sx={{ mt: 2 }}
-                    onClick={() => { deleteAccomodation(accomodation._id) }}
-                  >
-                    Delete Accomodation
-                  </Button>
-                )
-                :<></>
-            }
-
-
                   </Grid>
               </Grid>
           </Container>
-
           <Box
               sx={{
                   py: 3,
@@ -305,7 +341,7 @@ const Accomodation = () => {
                   sx={{overflowY: "scroll", maxHeight: "1160px"}}
               >
                   {reviews && reviews.map((item) => (
-                      <Card key={item._id} sx={{maxHeight: 150, marginTop: 2}}>
+                      <Card key={item._id} sx={{maxHeight: 180, marginTop: 2}} >
                           <CardContent>
                               <Typography gutterBottom variant="h5" component="div">
                                   {item.reviewer} - {item.score}
@@ -315,9 +351,15 @@ const Accomodation = () => {
                               </Typography>
                           </CardContent>
                           <CardActions>
-                              <Button color='error' onClick={() => {
-                                  deleteReview(item._id)
-                              }}>Delete</Button>
+                              {localStorage.getItem("userID") && (localStorage.getItem("userID") === item.userID ||  localStorage.getItem("role") === "admin") ?
+                                  <Button color='error' onClick={() => {deleteReview(item._id)}}
+                                  >
+                                      Delete
+                                  </Button> : <></>
+                              }
+                              <Button color='info' onClick={()=> navigate("/profile/" + item.userID)}>
+                                  Show Profile
+                              </Button>
                           </CardActions>
                       </Card>
                   ))}

@@ -37,7 +37,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/signin" element={localStorage.getItem("userID") == null ? <SignIn /> : <Profile/>} />
             <Route path="/signup" element={localStorage.getItem("userID") == null ? <SignUp /> : <Profile/>} />
-            <Route path="/profile" element={localStorage.getItem("userID") != null ? <Profile /> : <Unauthorized/>} />
+            <Route path="/profile/:profileID" element={localStorage.getItem("userID") != null ? <Profile /> : <Unauthorized/>} />
             <Route path="/myadv" element={localStorage.getItem("userID") != null ? <MyAdv /> : <Unauthorized/>} />
             <Route path="/search" element={<Search />} />
             <Route path="/checkout" element={<Checkout />} />

@@ -3,9 +3,11 @@ import axios from "axios";
 const BASE_URL = "http://127.0.0.1:5000";
 const userID = localStorage.getItem("userID");
 const role = localStorage.getItem("role");
+const username = localStorage.getItem("username");
 const authorizationObject = {
     "_id": userID,
-    "role": role
+    "role": role,
+    "username" : username
 };
 const instance = axios.create({
     baseURL: BASE_URL,

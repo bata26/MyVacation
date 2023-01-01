@@ -50,7 +50,7 @@ const SignIn = () => {
       //const accessToken = response?.data?.accessToken;
       localStorage.setItem("userID" , response.data.userID);
       localStorage.setItem("role" , response.data.role);
-      localStorage.setItem("name" , response.data.name);
+      localStorage.setItem("username" , response.data.username);
       navigate(from, { replace: true });
 
 

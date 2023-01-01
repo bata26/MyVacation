@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
+import PersonIcon from '@mui/icons-material/Person';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import api from '../utility/api';
@@ -18,6 +19,9 @@ const Home = () => {
     const [accomodations, setAccomodations] = React.useState([]);
     const [activities, setActivities] = React.useState([]);
     const [cities, setCities] = React.useState([]);
+    const [recommendedUsers, setRecommendedUsers] = React.useState([]);
+    const [recommendedAccomodations, setRecommendedAccomodations] = React.useState([]);
+    const [recommendedActivities, setRecommendedActivities] = React.useState([]);
     const navigate = useNavigate();
 
     React.useEffect(() => {
@@ -41,7 +45,7 @@ const Home = () => {
                     console.log(requestBody);
                     requestBody.accomodationsID.map(accomodationID => request.accomodationsID.push(accomodationID._id));
                     requestBody.activitiesID.map(activityID => request.activitiesID.push(activityID._id));
-                    console.log(request);
+
                     await api.post("/analytics/advinfo", JSON.stringify(request))
                         .then(function (response) {
                             setAccomodations(response.data["accomodations"]);
@@ -50,6 +54,30 @@ const Home = () => {
                         .catch(function (error) {
                             console.log(error);
                         })
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+
+            await api.get("/recommendations/user")
+                .then(function (response) {
+                    setRecommendedUsers(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+
+            await api.get("/recommendations/accomodation")
+                .then(function (response) {
+                    setRecommendedAccomodations(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+
+            await api.get("/recommendations/activity")
+                .then(function (response) {
+                    setRecommendedActivities(response.data);
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -145,7 +173,7 @@ const Home = () => {
                                         <Typography variant='span'>
                                             <b>{item.location.city}</b>
                                             <br />
-                                            <i>{item.location.city}</i>
+                                            <i>{item.location.address}</i>
                                             <br />
                                             {item.price}€
                                         </Typography>
@@ -158,7 +186,6 @@ const Home = () => {
                         ))
                     }
                 </Grid>
-
                 <Box
                     sx={{
                         pt: 8,
@@ -177,7 +204,6 @@ const Home = () => {
                         </Typography>
                     </Container>
                 </Box>
-
                 <Grid container spacing={4}>
                 {
                         activities.map((item, index) => (
@@ -197,7 +223,7 @@ const Home = () => {
                                         <Typography variant='span'>
                                             <b>{item.location.city}</b>
                                             <br />
-                                            <i>{item.location.city}</i>
+                                            <i>{item.location.address}</i>
                                             <br />
                                             {item.price}€
                                         </Typography>
@@ -210,10 +236,162 @@ const Home = () => {
                         ))
                     }                                       
                 </Grid>
+                {/* Profili suggeriti */}
+                <Box
+                    sx={{
+                        pt: 8,
+                        pb: 6,
+                    }}
+                >
+                    <Container maxWidth="sm">
+                        <Typography
+                            component="h2"
+                            variant="h3"
+                            align="center"
+                            color="text.primary"
+                            gutterBottom
+                        >
+                            Recommended Users
+                        </Typography>
+                    </Container>
+                </Box>
+                <Grid container spacing={4}>
+                    {recommendedUsers && recommendedUsers.map((item, index) => (
+                        <Grid item xs={12} sm={6} md={4} key={index}>
+                            <Card
+                                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+                            >
+                                <CardContent sx={{ flexGrow: 1 }}>
+                                    <Typography gutterBottom variant="h5" component="h2">
+                                        {item.username}
+                                    </Typography>
+                                </CardContent>
+                                <PersonIcon/>
+                                <CardActions>
+                                    <Button
+                                        fullWidth
+                                        onClick={() => navigate("/profile/" + item._id)}
+                                    >
+                                        View
+                                    </Button>
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    ))
+                    }
+                </Grid>
+                {/*Alloggi suggeriti */}
+                <Box
+                    sx={{
+                        pt: 8,
+                        pb: 6,
+                    }}
+                >
+                    <Container maxWidth="sm">
+                        <Typography
+                            component="h2"
+                            variant="h3"
+                            align="center"
+                            color="text.primary"
+                            gutterBottom
+                        >
+                            Recommended Accomodations
+                        </Typography>
+                    </Container>
+                </Box>
 
+                <Grid container spacing={4}>
+                    {recommendedAccomodations && recommendedAccomodations.map((item, index) => (
+                        <Grid item xs={12} sm={6} md={4} key={index}>
+                            <Card
+                                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+                            >
+                                <CardContent sx={{ flexGrow: 1 }}>
+                                    <Typography gutterBottom variant="h5" component="h2">
+                                        {item.name}
+                                    </Typography>
+                                </CardContent>
+                                <img
+                                    src={`data:image/jpeg;base64,${item.mainPicture}`}
+                                />
+                                <CardContent sx={{ flexGrow: 1 }}>
+                                    <Typography variant='span'>
+                                        <b>{item.location.city}</b>
+                                        <br />
+                                        <i>{item.location.address}</i>
+                                        <br />
+                                        {item.price}€
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button
+                                        fullWidth
+                                        onClick={() => navigate("/accomodation/" + item._id)}
+                                    >
+                                        View
+                                    </Button>
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    ))
+                    }
+                </Grid>
+                {/* Attività suggerite */}
+                <Box
+                    sx={{
+                        pt: 8,
+                        pb: 6,
+                    }}
+                >
+                    <Container maxWidth="sm">
+                        <Typography
+                            component="h2"
+                            variant="h3"
+                            align="center"
+                            color="text.primary"
+                            gutterBottom
+                        >
+                            Recommended Activities
+                        </Typography>
+                    </Container>
+                </Box>
+                <Grid container spacing={4}>
+                    {recommendedActivities && recommendedActivities.map((item, index) => (
+                        <Grid item xs={12} sm={6} md={4} key={index}>
+                            <Card
+                                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+                            >
+                                <CardContent sx={{ flexGrow: 1 }}>
+                                    <Typography gutterBottom variant="h5" component="h2">
+                                        {item.name}
+                                    </Typography>
+                                </CardContent>
+                                <img
+                                    src={`data:image/jpeg;base64,${item.mainPicture}`}
+                                />
+                                <CardContent sx={{ flexGrow: 1 }}>
+                                    <Typography variant='span'>
+                                        <b>{item.location.city}</b>
+                                        <br />
+                                        <i>{item.location.address}</i>
+                                        <br />
+                                        {item.price}€
+                                    </Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button
+                                        fullWidth
+                                        onClick={() => navigate("/activity/" + item._id)}
+                                    >
+                                        View
+                                    </Button>
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    ))
+                    }
+                </Grid>
             </Container>
-
-
             <Box
                 sx={{
                     py: 3,

@@ -6,6 +6,11 @@ from markupsafe import escape
 from controllers.activityManager import ActivityManager
 from controllers.reviewManager import ReviewManager
 from controllers.userManager import UserManager
+from controllers.userNodeManager import UserNodeManager
+from controllers.followRelationManager import FollowRelationManager
+from controllers.likeRelationManager import LikeRelationManager
+from models.accomodationNode import AccomodationNode
+from models.activityNode import ActivityNode
 from controllers.adminManager import AdminManager
 from controllers.reservationManager import ReservationManager
 from models.accomodation import Accomodation
@@ -69,7 +74,7 @@ def testValidation(user={}):
 
 
 @application.route("/analytics/topcities", methods=["GET"])
-@required_token
+#@required_token
 def getBestCities(user={}):
     try:
         res = AnalyticsManager.getTopCities()
@@ -79,7 +84,7 @@ def getBestCities(user={}):
 
 
 @application.route("/analytics/topadv", methods=["GET"])
-@required_token
+#@required_token
 def getBestAdv(user={}):
     try:
         res = AnalyticsManager.getTopAdv()
@@ -89,7 +94,7 @@ def getBestAdv(user={}):
 
 
 @application.route("/analytics/advinfo", methods=["POST"])
-@required_token
+#@required_token
 def getBestAdvInfo(user={}):
     try:
         requestBody = request.json
@@ -304,6 +309,144 @@ def updateUser(user_id, user={}):
     except Exception as e:
         return e, 500
 
+@application.route('/user/following', methods=['GET'])
+@required_token
+def getFollowedUsersByUserID(user={}):
+    try:
+        userNode = UserNode(
+            user["_id"] ,
+            user["username"]
+        )
+        UserNodeManager.getFollowedUser(userNode)
+        return "", 200
+    except Exception as e:
+        return e, 500
+
+@application.route('/user/following', methods=['POST'])
+@required_token
+def followUser(user={}):
+    try:
+        requestBody = request.json
+        userNode = UserNode(
+            user["_id"] ,
+            user["username"]
+        )
+        followedUserNode = UserNode(
+            requestBody["followedUserID"],
+            requestBody["followedUsername"]
+        )
+        FollowRelationManager.addFollowRelation(userNode, followedUserNode)
+        return "", 200
+    except Exception as e:
+        return e, 500
+
+@application.route('/users/unfollowing', methods=['POST'])
+@required_token
+def unfollowUser(user={}):
+    try:
+        requestBody = request.json
+        userNode = UserNode(
+            user["_id"] ,
+            user["username"]
+        )
+        unfollowedUserNode = UserNode(
+            requestBody["unfollowedUserID"],
+            requestBody["unfollowedUsername"]
+        )
+        FollowRelationManager.removeFollowRelation(userNode, unfollowedUserNode)
+        return "", 200
+    except Exception as e:
+        return e, 500
+
+@application.route('/users/liking/<destination_type>', methods=['GET'])
+@required_token
+def getLikedAdvsByUserID(destination_type, user={}):
+    try:
+        userNode = UserNode(
+            user["_id"] ,
+            user["username"]
+        )
+        UserNodeManager.getLikedAdvs(userNode, destination_type)
+        return "", 200
+    except Exception as e:
+        return e, 500
+
+@application.route('/users/liking', methods=['POST'])
+@required_token
+def likeAdv(user={}):
+    try:
+        requestBody = request.json
+        userNode = UserNode(
+            user["_id"] ,
+            user["username"]
+        )
+        if(requestBody["destinationType"] == "accomodation"):
+            likedAdv = AccomodationNode(
+            requestBody["likedAdvID"],
+            requestBody["likedAdvName"]
+            )
+            LikeRelationManager.addLikeRelation(userNode, accomodationNode=likedAdv)
+        elif(requestBody["destinationType"] == "activity"):
+            likedAdv = ActivityNode(
+                requestBody["likedAdvID"],
+                requestBody["likedAdvName"]
+            )
+            LikeRelationManager.addLikeRelation(userNode, activityNode=likedAdv)
+        return "", 200
+    except Exception as e:
+        return e, 500
+
+@application.route('/users/unliking', methods=['POST'])
+@required_token
+def unlikeAdv(user={}):
+    try:
+        requestBody = request.json
+        userNode = UserNode(
+            user["_id"] ,
+            user["username"]
+        )
+        if(requestBody["destinationType"] == "accomodation"):
+            unlikedAdv = AccomodationNode(
+                requestBody["unlikedAdvID"],
+                requestBody["unlikedAdvName"]
+            )
+            LikeRelationManager.removeLikeRelation(userNode, accomodationNode=unlikedAdv)
+        elif(requestBody["destinationType"] == "activity"):
+            unlikedAdv = ActivityNode(
+                requestBody["unlikedAdvID"],
+                requestBody["unlikedAdvName"]
+            )
+            LikeRelationManager.removeLikeRelation(userNode, activityNode=unlikedAdv)
+
+        return "", 200
+    except Exception as e:
+        return e, 500
+
+@application.route('/recommendations/<destination_type>', methods=['GET'])
+@required_token
+def getrecommendedAdvs(destination_type, user={}):
+    try:
+        userNode = UserNode(
+            user["_id"] ,
+            user["username"]
+        )
+        UserNodeManager.getRecommendedAdvs(userNode, destination_type)
+        return "", 200
+    except Exception as e:
+        return e, 500
+
+@application.route('/recommendations/user', methods=['GET'])
+@required_token
+def getRecommendedUsers(user={}):
+    try:
+        userNode = UserNode(
+            user["_id"] ,
+            user["username"]
+        )
+        UserNodeManager.getRecommendedUsers(userNode)
+        return "", 200
+    except Exception as e:
+        return e, 500
 
 @application.route('/book/activity', methods=['POST'])
 @required_token

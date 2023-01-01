@@ -66,7 +66,7 @@ const ReviewForm = ({destinationID , destinationType}) => {
       "destinationID" : destinationID,
       "score" : data.get("rating"),
       "description" : data.get("description"),
-      "reviewer" : localStorage.getItem("name")
+      "reviewer" : localStorage.getItem("username")
     }
 
     api.put("/reviews" , review)

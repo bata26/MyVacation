@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import Config from '../utility/config';
 import ReactHtmlParser from 'react-html-parser';
 import api from "../utility/api";
 import ReviewForm from '../components/reviewForm';
@@ -15,6 +14,8 @@ import { useNavigate } from "react-router-dom";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 
 
@@ -24,6 +25,7 @@ const Activity = () => {
   const [activity, setActivity] = React.useState(null);
   const [reviews, setReviews] = React.useState(null);
   const [enableButton, setEnableButton] = React.useState(null);
+  const [likedAdv, setLikedAdv] = React.useState(null);
   const [searchParams] = useSearchParams();
   const { activityID } = useParams();
   const [startDate, setStartDate] = React.useState(searchParams.get("startDate") === "" ? null : searchParams.get("startDate"))
@@ -47,6 +49,17 @@ const Activity = () => {
       .catch(function (err) {
         console.log(err);
       })
+
+    api.get("/users/liking/activity")
+        .then(function (response) {
+            if(response.data.includes(activityID))
+                setLikedAdv(true)
+            else
+                setLikedAdv(false)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
   }, []);
 
 
@@ -67,11 +80,36 @@ const Activity = () => {
     api.delete("/activities/" + activityID)
       .then(function (response) {
         console.log(response.data);
-      })
-      .catch(function (error) {
+      }).catch(function (error) {
         console.log(error);
       });
     navigate('/search')
+  }
+
+  const likeAdv = async (likedAdvID, likedAdvName) => {
+      await api.post("/users/liking", {
+          "likedAdvID" : likedAdvID,
+          "likedAdvName" : likedAdvName,
+          "destinationType" : "activity"
+      }).then(function (response) {
+          console.log(response.data);
+          setLikedAdv(true)
+      }).catch(function (error) {
+          console.log(error);
+      });
+  }
+
+  const unlikeAdv = async (unlikedAdvID, unlikedAdvName) => {
+      await api.post("/users/unliking", {
+          "unlikedAdvID" : unlikedAdvID,
+          "unlikedAdvName" : unlikedAdvName,
+          "destinationType" : "activity"
+      }).then(function (response) {
+          console.log(response.data);
+          setLikedAdv(false)
+      }).catch(function (error) {
+              console.log(error);
+      });
   }
 
   function goToCheckout() {
@@ -126,7 +164,6 @@ const Activity = () => {
             style={{ borderRadius: 10 + 'px', height: 100 + '%', width: 99 + '%', marginTop: 3 + 'px' }}
           />
         </Container>
-
         <Container maxWidth='lg'>
           <Typography
             component="h2"
@@ -220,8 +257,21 @@ const Activity = () => {
                 sx={{ mt: 2 }}
                 onClick={() => { navigate("/edit/activity/" + activityID) }}
               >
-                Edit Activity
+                Update Activity
               </Button>
+                {localStorage.getItem("userID") != null ?
+                    (!likedAdv?
+                            <ThumbUpAltIcon
+                                variant="filled"
+                                onClick={() => { likeAdv(activity._id, activity.name)}}
+                            />
+                            :
+                            <ThumbUpOffAltIcon
+                                variant="filled"
+                                onClick={() => { unlikeAdv(activity._id, activity.name)}}
+                            />
+                    ) : <></>
+                }
             </>) : <></>
           }
         </Container>
@@ -261,9 +311,11 @@ const Activity = () => {
                       </Typography>
                     </CardContent>
                     <CardActions>
-                      <Button color='error' onClick={() => {
-                        deleteReview(item._id)
-                      }}>Delete</Button>
+                        {localStorage.getItem("userID") && (localStorage.getItem("userID") === item.userID || localStorage.getItem("role") === "admin") ?
+                            <Button color='error' onClick={() => {
+                                deleteReview(item._id)
+                            }}>Delete</Button> : <></>
+                        }
                     </CardActions>
                   </Card>
                 ))}

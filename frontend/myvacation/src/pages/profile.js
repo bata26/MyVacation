@@ -18,7 +18,7 @@ import Moment from 'moment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditReservationModal from "../components/editReservationModal";
 import EditProfileModal from "../components/editProfileModal";
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import {useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import Button from '@mui/material/Button';
 
 
@@ -27,12 +27,13 @@ const theme = createTheme();
 
 const Profile = () => {
   const [profile, setProfile] = React.useState(null);
-  let [reservations, setReservations] = React.useState([]);
-  const [searchParams] = useSearchParams();
+  const [reservations, setReservations] = React.useState([]);
+  const [followedUser, setFollowedUser] = React.useState(null);
+  const [listFollowedUsers, setListFollowedUsers] = React.useState([]);
+  const [listLikedAcc, setListLikedAcc] = React.useState([]);
+  const [listLikedAct, setListLikedAct] = React.useState([]);
   const navigate = useNavigate();
-
-  //TODO FIXARE STA ROBA
-  const profileID = (searchParams.get("userId") != null && localStorage.getItem("role") === "admin") ? searchParams.get("userId") : localStorage.getItem("userID");
+  const { profileID } = useParams();
 
   React.useEffect(() => {
     //Richiesta per recuperare le informazioni dell'utente
@@ -53,6 +54,38 @@ const Profile = () => {
       .catch(function (error) {
         console.log(error);
       });
+
+    //Richiesta per recuperare le persone seguite dall'utente
+    api.get("/users/following")
+      .then(function (response) {
+        setListFollowedUsers(response.data)
+        if(response.data.includes(profileID))
+          setFollowedUser(true)
+        else
+          setFollowedUser(false)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    //Richiesta per recuperare gli alloggi piaciuti all'utente
+      api.get("/users/liking/accomodation")
+          .then(function (response) {
+              setListLikedAcc(response.data)
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
+
+    //Richiesta per recuperare le attività piaciute all'utente
+    api.get("/users/liking/activity")
+        .then(function (response) {
+            setListLikedAct(response.data)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
   }, []);
 
   if (!profile) return null;
@@ -78,6 +111,34 @@ const Profile = () => {
         console.log(error);
       });
       navigate("/admin");
+  }
+
+  const followProfile = async (followedUserID, followedUsername) => {
+      await api.post("/users/following", {
+        "followedID" : followedUserID,
+        "followedUsername" : followedUsername
+      })
+      .then(function (response) {
+        console.log(response.data);
+        setFollowedUser(true)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  const unfollowProfile = async (unfollowedUserID, unfollowedUsername) => {
+      await api.post("/users/unfollowing", {
+        "unfollowedID" : unfollowedUserID,
+        "unfollowedUsername" : unfollowedUsername
+      })
+      .then(function (response) {
+        console.log(response.data);
+        setFollowedUser(false)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
   return (
@@ -185,6 +246,22 @@ const Profile = () => {
             </Grid>
           </Box>
         </Box>
+        {localStorage.getItem("userID") !== profileID ?
+            (!followedUser?
+                <Button
+                    fullWidth
+                    variant="contained"
+                    color='success'
+                    onClick={() => { followProfile(profile._id, profile.username)}}>Follow +
+                </Button>
+                :
+                <Button
+                    fullWidth
+                    variant="contained"
+                    color='error'
+                    onClick={() => { unfollowProfile(profile._id, profileID.username)}}>Unfollow -
+                </Button>) : <></>
+        }
         {localStorage.getItem("role") === "admin" ? (
           <Button fullWidth
             variant="contained"
@@ -194,72 +271,151 @@ const Profile = () => {
         }
         {(localStorage.getItem("role") === "admin" || localStorage.getItem("userID") === profile._id) ? (
             <EditProfileModal id={profile._id} name={profile.name} surname={profile.surname} gender={profile.gender} dateOfBirth={profile.dateOfBirth} nationality={profile.nationality} knownLanguages={profile.knownLanguages}/>
-        ) : <></>}
+        ) : <></>
+        }
       </Container>
-      <Box
-        sx={{
-          pt: 8,
-          pb: 6,
-        }}
-      >
-        <Container maxWidth="sm">
-          <Typography
-            component="h1"
-            variant="h2"
-            align="center"
-            color="text.primary"
-            gutterBottom
-          >
-            Reservations
-          </Typography>
-        </Container>
-      </Box>
-      <Container maxWidth="md">
-        <TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
-          <Table sx={{ minWidth: 650 }} size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
-                <TableCell align="center" style={{ fontWeight: 'bold' }}>Type</TableCell>
-                <TableCell align="center" style={{ fontWeight: 'bold' }}>Start Date</TableCell>
-                <TableCell align="center" style={{ fontWeight: 'bold' }}>End Date</TableCell>
-                <TableCell align="right" style={{ fontWeight: 'bold' }}></TableCell>
-                <TableCell align="right" style={{ fontWeight: 'bold' }}></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {reservations.map((item) => (
-                <TableRow key={item._id} style={{ cursor: "pointer" }} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/"+item.destinationType+"/"+item.destinationID)}>
-                  <TableCell align="left">{item._id}</TableCell>
-                  <TableCell align="center">{item.destinationType}</TableCell>
-                  <TableCell align="center">{Moment(item.startDate).utc().format('MMM DD YYYY')}</TableCell>
-                  {item.endDate ?
-                    <TableCell align="center">{Moment(item.endDate).utc().format('MMM DD YYYY')}</TableCell>
-                    :
-                    <TableCell align="center"></TableCell>
-                  }
-                  <TableCell align='right'>
-                    <DeleteIcon color='error' style={{ cursor: "pointer" }} onClick={() => { deleteReservation(item._id) }}></DeleteIcon>
-                  </TableCell>
-                  {profileID === localStorage.getItem("userID") ?
-                      (<TableCell align='right'>
-                        <EditReservationModal reservation={item}></EditReservationModal>
-                      </TableCell>
-                      ) : <></>}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Container>
-      <Box
-        sx={{
-          py: 3,
-          px: 2,
-          mt: 'auto',
-        }}
-      >
-      </Box>
+      {localStorage.getItem("userID") === profileID || localStorage.getItem("role") === "admin" ?
+          <>
+            <Box
+                sx={{
+                  pt: 8,
+                  pb: 6,
+                }}
+            >
+              <Container maxWidth="sm">
+                <Typography
+                    component="h1"
+                    variant="h2"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                >
+                  Reservations
+                </Typography>
+              </Container>
+            </Box>
+            <Container maxWidth="md">
+              <TableContainer component={Paper} style={{marginBottom: 50 + 'px'}}>
+                <Table sx={{minWidth: 650}} size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="left" style={{fontWeight: 'bold'}}>ID</TableCell>
+                      <TableCell align="center" style={{fontWeight: 'bold'}}>Type</TableCell>
+                      <TableCell align="center" style={{fontWeight: 'bold'}}>Start Date</TableCell>
+                      <TableCell align="center" style={{fontWeight: 'bold'}}>End Date</TableCell>
+                      <TableCell align="right" style={{fontWeight: 'bold'}}/>
+                      <TableCell align="right" style={{fontWeight: 'bold'}}/>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {reservations.map((item) => (
+                        <TableRow key={item._id} style={{cursor: "pointer"}}
+                                  sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                  onClick={() => navigate("/" + item.destinationType + "/" + item.destinationID)}>
+                          <TableCell align="left">{item._id}</TableCell>
+                          <TableCell align="center">{item.destinationType}</TableCell>
+                          <TableCell align="center">{Moment(item.startDate).utc().format('MMM DD YYYY')}</TableCell>
+                          {item.endDate ?
+                              <TableCell align="center">{Moment(item.endDate).utc().format('MMM DD YYYY')}</TableCell>
+                              :
+                              <TableCell align="center"/>
+                          }
+                          <TableCell align='right'>
+                            <DeleteIcon color='error' style={{cursor: "pointer"}} onClick={() => {deleteReservation(item._id)}}/>
+                          </TableCell>
+                          {profileID === localStorage.getItem("userID") ?
+                              (<TableCell align='right'>
+                                    <EditReservationModal reservation={item}/>
+                                  </TableCell>
+                              ) : <></>}
+                        </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Container>
+            <Box
+                sx={{
+                  py: 3,
+                  px: 2,
+                  mt: 'auto',
+                }}
+            >
+            </Box>
+          </> : <></>
+      }
+        <Grid container columnSpacing={2}>
+            {/* Tabella persone seguite */}
+            <Grid item xs={4} sm={6}>
+                <Container maxWidth="sm">
+                    <Typography
+                        component="h3"
+                        variant="h5"
+                        align="center"
+                        color="text.primary"
+                        gutterBottom
+                    >
+                        Followed Users
+                    </Typography>
+                </Container>
+                <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
+                                <TableCell align="right" style={{ fontWeight: 'bold' }}>Username</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <tbody>
+                        {listFollowedUsers && listFollowedUsers.map((item, index) => (
+                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/profile/" + item._id)}>
+                                <TableCell align="left">{item._id} </TableCell>
+                                <TableCell align="right">{item.username}</TableCell>
+                            </TableRow>
+                        ))}
+                        </tbody>
+                    </Table>
+                </TableContainer>
+            </Grid>
+            {/* Tabella annunci piaciuti */}
+            <Grid item xs={4} sm={6}>
+                <Container maxWidth="sm">
+                    <Typography
+                        component="h3"
+                        variant="h5"
+                        align="center"
+                        color="text.primary"
+                        gutterBottom
+                    >
+                        Liked Advs
+                    </Typography>
+                </Container>
+                <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
+                                <TableCell align="right" style={{ fontWeight: 'bold' }}>Name</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <tbody>
+                        {listLikedAcc && listLikedAcc.map((item, index) => (
+                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/accomodation/" + item._id)}>
+                                <TableCell align="left">{item._id} </TableCell>
+                                <TableCell align="right">{item.name}</TableCell>
+                            </TableRow>
+                        ))}
+                        {listLikedAct && listLikedAct.map((item, index) => (
+                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/activity/" + item._id)}>
+                                <TableCell align="left">{item._id} </TableCell>
+                                <TableCell align="right">{item.name}</TableCell>
+                            </TableRow>
+                        ))}
+                        </tbody>
+                    </Table>
+                </TableContainer>
+            </Grid>
+        </Grid>
     </ThemeProvider>
   );
 }
