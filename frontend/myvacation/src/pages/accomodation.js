@@ -17,6 +17,8 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 
 const theme = createTheme();
@@ -90,7 +92,6 @@ const Accomodation = () => {
             .then(function (response) {
                 setReviews(response.data);
                 setEnableButton(false);
-                console.log(response.data);
             })
             .catch(function (error) {
                 alert("Ops, something went wrong :(" + "\n" + error);
@@ -122,7 +123,7 @@ const Accomodation = () => {
                 setLikedAdv(false)
             })
             .catch(function (error) {
-                            });
+                alert("Ops, something went wrong :(" + "\n" + error);
             });
     }
 

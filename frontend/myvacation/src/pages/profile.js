@@ -19,6 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditReservationModal from "../components/editReservationModal";
 import EditProfileModal from "../components/editProfileModal";
 import { Link,useNavigate, useParams, useSearchParams} from 'react-router-dom';
+import { Link,useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import Button from '@mui/material/Button';
 
 
@@ -75,7 +76,7 @@ const Profile = () => {
               setListLikedAcc(response.data)
           })
           .catch(function (error) {
-              alert("Ops, something went wrong :(" + "\n" + error);
+            alert("Ops, something went wrong :(" + "\n" + error);
           });
 
     //Richiesta per recuperare le attività piaciute all'utente
@@ -84,7 +85,7 @@ const Profile = () => {
             setListLikedAct(response.data)
         })
         .catch(function (error) {
-            alert("Ops, something went wrong :(" + "\n" + error);
+          alert("Ops, something went wrong :(" + "\n" + error);
         });
 
   }, []);
@@ -104,6 +105,9 @@ const Profile = () => {
 
     const deleteProfile = async (profileID) => {
       await api.delete("/users/" + profileID)
+      .then(function (response) {
+        console.log(response.data);
+      })
       .catch(function (error) {
         alert("Ops, something went wrong :(" + "\n" + error);
       });
@@ -120,7 +124,7 @@ const Profile = () => {
         setFollowedUser(true)
       })
       .catch(function (error) {
-        alert("Ops, something went wrong :(" + "\n" + error);
+        console.log(error);
       });
   }
 
@@ -134,7 +138,7 @@ const Profile = () => {
         setFollowedUser(false)
       })
       .catch(function (error) {
-        alert("Ops, something went wrong :(" + "\n" + error);
+        console.log(error);
       });
   }
 

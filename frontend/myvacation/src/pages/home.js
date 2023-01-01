@@ -8,6 +8,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import PersonIcon from '@mui/icons-material/Person';
+import PersonIcon from '@mui/icons-material/Person';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import api from '../utility/api';
