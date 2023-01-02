@@ -92,17 +92,28 @@ class ActivityManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
-        activity = dict(collection.find_one(
-            {"_id": ObjectId(activityID)}, {"_id": 1, "host_id": 1}))
-
+        try:
+            activity = dict(collection.find_one({"_id": ObjectId(activityID)}, {"_id": 1, "host_id": 1}))
+        except Exception as e:
+            raise Exception(str(e))
+            
         if (user['role'] != "admin" and str(activity["host_id"]) != user['_id']):
             raise Exception("L'utente non possiede l'activity")
         else:
             try:
-                res = collection.delete_one({"_id": ObjectId(activityID)})
-                return res
+                collection.delete_one({"_id": ObjectId(activityID)})
+                return True
             except Exception:
                 raise Exception("Impossibile eliminare")
+
+    @staticmethod
+    def getOccupiedActivities(start_date):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("RESERVATIONS_COLLECTION")]
+
+        occupiedActivitiesID = collection.distinct("destinationId",{"destinationType" : "activity" , "startDate": dateparser.parse(start_date)})
+        return occupiedActivitiesID
 
     @staticmethod
     def getFilteredActivity(start_date="", city="", guestNumbers="", index="", direction=""):
@@ -121,9 +132,7 @@ class ActivityManager:
         # Deve essere stato inserito il periodo di svolgimento
         if (start_date != "" and start_date != None):
             collection = db[os.getenv("RESERVATIONS_COLLECTION")]
-            occupiedActivitiesID = collection.distinct("destinationId",
-                                                       {"startDate": start_date}
-                                                       )
+            occupiedActivitiesID = ActivityManager.getOccupiedActivities(start_date)
         query["_id"] = {}
         query["_id"]["$nin"] = occupiedActivitiesID
         projection = {
@@ -139,12 +148,10 @@ class ActivityManager:
         else:
             if (direction == "next"):
                 query["_id"]["$gt"] = ObjectId(index)
-                activities = list(collection.find(query, projection).sort(
-                    '_id', 1).limit(int(os.getenv("PAGE_SIZE"))))
+                activities = list(collection.find(query, projection).sort('_id', 1).limit(int(os.getenv("PAGE_SIZE"))))
             elif (direction == "previous"):
                 query["_id"]["$lt"] = ObjectId(index)
-                activities = list(collection.find(query, projection).sort(
-                    '_id', -1).limit(int(os.getenv("PAGE_SIZE"))))
+                activities = list(collection.find(query, projection).sort('_id', -1).limit(int(os.getenv("PAGE_SIZE"))))
 
         for activity in activities:
             activityResult = Activity(

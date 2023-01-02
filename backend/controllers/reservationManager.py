@@ -8,6 +8,8 @@ from datetime import datetime
 import dateparser
 from bson.objectid import ObjectId
 from utility.serializer import Serializer
+from controllers.accomodationsManager import AccomodationsManager
+from controllers.activityManager import ActivityManager
 
 class ReservationManager:
 
@@ -19,6 +21,11 @@ class ReservationManager:
         destinationCollection = db[os.getenv("ACCOMODATIONS_COLLECTION")] if reservation.destinationType == "accomodation" else db[os.getenv("ACTIVITIES_COLLECTION")]
         usersCollection = db[os.getenv("USERS_COLLECTION")]
         try:
+            if(reservation.destinationType == "accomodation" and str(reservation.destinationID) in AccomodationsManager.getOccupiedAccomodationIDs(reservation.startDate , reservation.endDate)):
+                raise Exception("accomodation occupata")
+            elif (reservation.destinationType == "activity" and str(reservation.destinationID) in ActivityManager.getOccupiedActivities(reservation.startDate)):
+                raise Exception("activity occupata")
+                
             with client.start_session() as session:
                 with session.start_transaction():
                     insertedReservation = reservationCollection.insert_one(reservation.getDictToUpload(), session=session)
@@ -75,9 +82,10 @@ class ReservationManager:
         reservationID = reservation["_id"]
         prevTotalExpense = int(reservation["totalExpense"])
         destinationType = reservation["destinationType"]
+        destinationCollection = db[os.getenv("ACCOMODATIONS_COLLECTION")] if reservation.destinationType == "accomodation" else db[os.getenv("ACTIVITIES_COLLECTION")]
+        usersCollection = db[os.getenv("USERS_COLLECTION")]
         try:
             query = {}
-            print(f"DestinationType: {destinationType}")
             if( destinationType == "accomodation"):
                 if (newStartDate != "" and newEndDate != "" and newEndDate != None and newStartDate != None):
                     prevEndDate = reservation["endDate"]
@@ -85,29 +93,19 @@ class ReservationManager:
 
                     # ottengo una lista di id di accomodations non occupate
                     # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
-                    occupiedAccomodationsID = collection.distinct("destinationID",{
-                        "$and" : [
-                            {"_id": {"$ne":ObjectId(reservationID)}},
-                            {"$or": [
-                                {"$and": [
-                                    {"startDate": {"$lte": dateparser.parse(newEndDate)}},
-                                    {"startDate": {"$gte": dateparser.parse(newStartDate)}}
-                                ]},
-                                {"$and": [
-                                    {"endDate": {"$lte": dateparser.parse(newEndDate)}},
-                                    {"endDate": {"$gte": dateparser.parse(newStartDate)}}
-                                ]}
-                            ]}]})
+                    occupiedAccomodationsID = AccomodationsManager.getOccupiedAccomodationIDs(newStartDate , newEndDate)
 
                     if ObjectId(destinationID) in occupiedAccomodationsID:
-                        print("Accomodation Occupata!")
                         raise Exception("Accomodation Occupata, impossibile aggiornare")
                     newNightNumber = (((dateparser.parse(newEndDate) - dateparser.parse(newStartDate)).days))
                     newTotalExpense = newNightNumber*price
                     query = { '_id': ObjectId(reservationID) }
-                    result = collection.update_one(query, {"$set": {'startDate': dateparser.parse(newStartDate), 'endDate': dateparser.parse(newEndDate), "totalExpense" : newTotalExpense}})
-
-                    return result
+                   
+                    with client.start_session() as session:
+                        with session.start_transaction():
+                            collection.update_one(query, {"$set": {'startDate': dateparser.parse(newStartDate), 'endDate': dateparser.parse(newEndDate), "totalExpense" : newTotalExpense}} , session=session)
+                            destinationCollection.update_one({"_id" : ObjectId(reservation.destinationID) , "reservations._id" : ObjectId(reservation._id)} , {"$set" : {"reservations.$.startDate" : newStartDate , "reservations.$.endDate" : newEndDate}}, session=session)
+                            usersCollection.update_one({"_id" : ObjectId(reservation.userID) , "reservations._id" : ObjectId(reservation._id)} , {"$set" : {"reservations.$.startDate" : newStartDate , "reservations.$.endDate" : newEndDate}} , session=session)
             elif(destinationType == "activity"):
                 if (newStartDate != "" and newStartDate != None):
                     occupiedActivitiesID = collection.distinct("_id" , {"destinationID" : ObjectId(destinationID) , "startDate": dateparser.parse(newStartDate)})
@@ -116,9 +114,13 @@ class ReservationManager:
                         print("Activity Occupata!")
                         raise Exception("Accomodation Occupata, impossibile aggiornare")
 
-                    query["_id"] = ObjectId(reservationID)
-                    result = collection.update_one(query, {"$set": {'startDate': dateparser.parse(newStartDate)}})
-                    return result
+                    query = { '_id': ObjectId(reservationID) }
+                    with client.start_session() as session:
+                        with session.start_transaction():
+                            collection.update_one(query, {"$set": {'startDate': dateparser.parse(newStartDate),  "totalExpense" : reservation.price }} , session=session)
+                            destinationCollection.update_one({"_id" : ObjectId(reservation.destinationID) , "reservations._id" : ObjectId(reservation._id)} , {"$set" : {"reservations.$.startDate" : newStartDate }}, session=session)
+                            usersCollection.update_one({"_id" : ObjectId(reservation.userID) , "reservations._id" : ObjectId(reservation._id)} , {"$set" : {"reservations.$.startDate" : newStartDate }} , session=session)
+            
         except Exception as e:
             raise Exception("Impossibile aggiornare prenotazione "+reservationID+": " + str(e))
 
@@ -131,8 +133,7 @@ class ReservationManager:
         
         try:
             reservation = dict(reservationCollection.find_one({"_id" : ObjectId(reservationID)}))
-            print(reservation)
-            print(user)
+
             if(user["role"] != "admin" and str(reservation["userID"]) != user["_id"]):
                 raise Exception("Non si possiedono i privilegi necessari")
             

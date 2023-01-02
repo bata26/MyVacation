@@ -31,22 +31,6 @@ class MongoManager:
         global server , pickedPort
         pickedPort = getFreePort()
 
-        print("CREO TUNNEL SSH")
-
-        #try:
-        #    server = SSHTunnelForwarder(
-        #        (os.getenv("IP_EC2"), 22),
-        #        ssh_username="ubuntu",
-        #        ssh_pkey = os.getenv("SSH_PKEY"),
-        #        remote_bind_address=(os.getenv("REMOTE_BIND_ADDRESS") , 27017),
-        #        local_bind_address=('0.0.0.0', pickedPort))
-        #    print("TUNNEL SSH CREATO")
-#
-        #except Exception as e:
-        #    server = None
-        #    print(f"IMPOSSIBILE CREARE TUNNEL SSH:{e}")
-
-
      def __init__(self):
         print("MONGO MANAGER INIT")
         try:

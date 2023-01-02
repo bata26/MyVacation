@@ -9,18 +9,26 @@ class ActivityNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                session.run("CREATE (a:Activity {activityID: '%s', name: '%s'})" % (
-                    activityNode.userID, activityNode.name))
+                checkQuery = "MATCH (a:Activity {activityID : '%s'}) return COUNT(a) as total" %activityNode.accomodationID
+                checkResult = list(session.run(checkQuery))[0]
+
+                if checkResult.value("total") == 0:
+                    query = "CREATE (a:Activity {activityID: '%s', name: '%s'})" % ( activityNode.userID, activityNode.name)
+                    session.run(query)
+                
+                else:
+                    ActivityNodeManager.updateActivityNode(activityNode)
+
 
         except Exception as e:
             raise Exception("Impossibile inserire il nodo activity: " + str(e))
 
     @staticmethod
-    def deleteActivityNode(activityNode):
+    def deleteActivityNode(activityNodeID):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH (a:Activity {activityID: '%s'}) DELETE a" % activityNode.activityID
+                query = "MATCH (a:Activity {activityID: '%s'}) DELETE a" % activityNodeID
                 session.run(query)
 
         except Exception as e:

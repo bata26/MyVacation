@@ -179,6 +179,7 @@ class AdminManager():
     def approveAnnouncement(announcementID, user, destinationType):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
+
         if(destinationType == "accomodation"):
             collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
         else:
@@ -187,35 +188,27 @@ class AdminManager():
             if (user['role'] != "admin"):
                 raise Exception("L'utente non è admin")
             else:
-                ann = approveCollection.find_one({"_id" : ObjectId(announcementID)})
-                if(ann):
-                    if(ann["type"] == "activity"):
-                        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
-                    else:
-                        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
-                    try:
-                        ann.pop("_id")
-                        ann.pop("type")
-                        ann.update({
-                            'number_of_reviews' : 0,
-                            'review_scores_rating' : 0,
-                            'reviews' : [],
-                            'reservations' : []
-                        })
-                        insertedID = collection.insert_one(ann) # inserisco nella nuova collection
-                        print(f"inserito {insertedID}")
-                        try:
-                            res = approveCollection.delete_one({"_id" : ObjectId(announcementID)})
-                            print(res)
-                        except Exception as e:
-                            # impossibile eliminare da approvations quindi eseguo il rollback
-                            collection.delete_one({"_id" : ObjectId(insertedID)})
-                    except Exception as e:
-                        raise Exception("Impossibile inserire nella collection destinataria")
-                else:
-                    raise Exception("L'announcementID non esiste")
+                collection.update_one({"_id" : ObjectId(announcementID)} , {"$set" : {"approved" : True}})
         except Exception as e:
-            raise Exception(f"Impossibile trovare l'annuncio: {announcementID}")\
+            raise Exception(f"Impossibile trovare l'annuncio: {announcementID}")
+
+    @staticmethod
+    def removeApprovalAnnouncement(announcementID, user, destinationType):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+
+        if(destinationType == "accomodation"):
+            collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        else:
+            collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        try:
+            if (user['role'] != "admin"):
+                raise Exception("L'utente non è admin")
+            else:
+                collection.update_one({"_id" : ObjectId(announcementID)} , {"$set" : {"approved" : False}})
+        except Exception as e:
+            raise Exception(f"Impossibile trovare l'annuncio: {announcementID}")
+
 
     @staticmethod
     def deleteUser(userID , user):

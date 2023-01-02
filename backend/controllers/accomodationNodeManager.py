@@ -9,8 +9,16 @@ class AccomodationNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                session.run("CREATE (a:Accomodation {accomodationID: '%s', name: '%s'})" % (
-                    accomodationNode.userID, accomodationNode.name))
+                checkQuery = "MATCH (a:Accomodation {accomodationID : '%s'}) return COUNT(a) as total" %accomodationNode.accomodationID
+                checkResult = list(session.run(checkQuery))[0]
+
+                if checkResult.value("total") == 0:
+                    query = "CREATE (a:Accomodation {accomodationID: '%s', name: '%s'})" % (
+                        accomodationNode.userID, accomodationNode.name)
+                    session.run(query)
+                
+                else:
+                    AccomodationNodeManager.updateAccomodationNode(accomodationNode)
 
         except Exception as e:
             raise Exception(

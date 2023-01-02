@@ -32,6 +32,7 @@ import json
 from werkzeug.datastructures import ImmutableMultiDict
 import dateparser
 from datetime import datetime
+from utility.logger import Logger
 
 # user = {
 #   "_id": "637ce1a04ed62608566c5fa7"
@@ -67,14 +68,13 @@ def required_token(f):
     return decorator
 
 
-@application.route("/test", methods=["POST"])
+@application.route("/test", methods=["GET"])
 @required_token
 def testValidation(user={}):
-    requestBody = dict(request.json)
-
-    userNode = UserNode(requestBody["userID"], requestBody["username"])
-    result = UserNodeManager.getRecommendedUsers(userNode)
-    return result, 200
+    activityID = "325342tfwregregf"
+    nodeToDelete = {"type"  :"activity" , "_id" : activityID}
+    Logger.writeOnFile(json.dumps(nodeToDelete))
+    return "", 200
 
 
 @application.route("/analytics/topcities", methods=["GET"])
@@ -190,14 +190,22 @@ def getBestHost(destinationType, user={}):
 def deleteActivityByID(activity_id, user={}):
     activityID = escape(activity_id)
     try:
-        result = ActivityManager.deleteActivity(activityID, user)
-        return "", 200
+        deleteResult = ActivityManager.deleteActivity(activityID, user)
     except Exception as e:
         return str(e), 500
+    # provo ad eliminare il nodo
+    try:
+        if deleteResult:
+            ActivityNodeManager.deleteActivityNode(activityID)
+            return "OK" , 200
+    except Exception as e:
+        # ho eliminato il documento ma non il nodo, aggiungo al logger
+        Logger.addNodeToFile("activity" , activityID)
+        return str(e) , 500
+
 
 
 @application.route('/activities/<activity_id>', methods=['GET'])
-# @required_token
 def getActivityByID(activity_id):
     activityID = escape(activity_id)
     try:
@@ -208,7 +216,6 @@ def getActivityByID(activity_id):
 
 
 @application.route('/activities', methods=['GET'])
-# @required_token
 def getActivities(user={}):
     args = request.args
     city = args.get("city")
@@ -227,12 +234,20 @@ def getActivities(user={}):
 @application.route('/accomodations/<accomodation_id>', methods=['DELETE'])
 @required_token
 def deleteAccomodationById(accomodation_id, user={}):
-    accomodationId = escape(accomodation_id)
+    accomodationID = escape(accomodation_id)
     try:
-        result = AccomodationsManager.deleteAccomodation(accomodationId, user)
-        return "", 200
+        deleteResult = AccomodationsManager.deleteAccomodation(accomodationID, user)
     except Exception as e:
         return str(e), 500
+    # provo ad eliminare il nodo
+    try:
+        if deleteResult:
+            AccomodationNodeManager.deleteAccomodationNode(accomodationID)
+            return "OK" , 200
+    except Exception as e:
+        # ho eliminato il documento ma non il nodo, aggiungo al logger
+        Logger.addNodeToFile("accomodation" , accomodationID)
+        return str(e) , 500
 
 
 @application.route('/update/accomodation/<accomodationID>', methods=['POST'])
@@ -249,8 +264,7 @@ def updateAccomodationById(accomodationID, user={}):
     formData["accommodates"] = formData["accommodates"]
     formData["approved"] = False
     try:
-        result = AccomodationsManager.updateAccomodation(
-            accomodationID, formData, user)
+        AccomodationsManager.updateAccomodation(accomodationID, formData, user)
         return "", 200
     except Exception as e:
         return str(e), 500
@@ -269,19 +283,17 @@ def updateActivityById(activityID, user={}):
     formData.pop("country")
     formData["approved"] = False
     try:
-        result = ActivityManager.updateActivity(
-            activityID, formData, user)
+        ActivityManager.updateActivity(activityID, formData, user)
         return "", 200
     except Exception as e:
         return str(e), 500
 
 
 @application.route('/accomodations/<accomodation_id>', methods=['GET'])
-# @required_token
 def getAccomodationById(accomodation_id):
-    accomodationId = escape(accomodation_id)
+    accomodationID = escape(accomodation_id)
     try:
-        result = AccomodationsManager.getAccomodationFromId(accomodationId)
+        result = AccomodationsManager.getAccomodationFromId(accomodationID)
         return result, 200
     except Exception as e:
         return str(e), 500
@@ -303,14 +315,14 @@ def bookAccomodation(user={}):
                               startDatetime, totalExpense, city, hostID, endDatetime)
     try:
         reservationID = ReservationManager.book(reservation)
-        return "OK", 200
+        return reservationID , 200
     except Exception as e:
         return str(e), 500
 
 
-@application.route('/reservation/<reservation_id>', methods=['PATCH'])
+@application.route('/reservation', methods=['PATCH'])
 @required_token
-def updateReservation(reservation_id, user={}):
+def updateReservation(user={}):
     requestBody = request.json
     newStartDate = requestBody["startDate"]
     reservation = requestBody["reservation"]
@@ -318,13 +330,7 @@ def updateReservation(reservation_id, user={}):
     if (reservation['destinationType'] == "accomodation"):
         newEndDate = requestBody["endDate"]
     try:
-        ReservationManager.updateReservation(
-            reservation, newStartDate, newEndDate)
-        if (reservation['destinationType'] == "accomodation"):
-            AccomodationsManager.updateReservation(
-                reservation, newStartDate, newEndDate)
-        else:
-            ActivityManager.updateReservation(reservation, newStartDate)
+        ReservationManager.updateReservation(reservation, newStartDate, newEndDate)
         return "", 200
     except Exception as e:
         return e, 500
@@ -348,7 +354,6 @@ def updateUser(user_id, user={}):
 @application.route('/users/following', methods=['GET'])
 @required_token
 def getFollowedUsersByUserID(user={}):
-    print("Egomi")
     try:
         userNode = UserNode(
             user["_id"],
@@ -540,9 +545,7 @@ def bookActivity(user={}):
         user['_id'], activity["_id"], "activity", startDate, activity["price"], city, hostID)
     try:
         reservationID = ReservationManager.book(reservation)
-        reservation._id = reservationID
-        ActivityManager.addReservation(reservation)
-        return "OK", 200
+        return reservationID, 200
     except Exception as e:
         return str(e), 500
 
@@ -589,7 +592,6 @@ def getAccomodations():
 
 @application.route('/insert/accomodation', methods=['POST'])
 @required_token
-# TODO Da rivedere
 def insertAccomodations(user={}):
     formData = dict(request.form)
     host = UserManager.getUserFromId(user["_id"])
@@ -623,8 +625,7 @@ def insertAccomodations(user={}):
         False
     )
     try:
-        accomodationID = AccomodationsManager.insertNewAccomodation(
-            accomodation)
+        accomodationID = AccomodationsManager.insertNewAccomodation(accomodation)
         if (user["role"] != "host" and user["role"] != "admin"):
             updatedRole = {"type": "host"}
             UserManager.updateUser(updatedRole, host["_id"])
@@ -808,9 +809,15 @@ def signUp():
     )
     try:
         insertedID = UserManager.insertNewUser(user)
-        return "", 200
     except Exception as e:
         return str(e), 500
+    # documento inserito nel document, tento creazione nodo
+    try:
+        userNode = UserNode(insertedID , username)
+        UserNodeManager.createUserNode(userNode)
+    except Exception as e:
+        Logger.addNodeToFile("user" , insertedID , "CREATE" , username)
+        return str(e) , 500
 
 
 @application.route('/users', methods=['GET'])
@@ -865,7 +872,24 @@ def approveAnnouncement(announcementID, user={}):
     try:
         requestBody = request.json
         destinationType = requestBody["destinationType"]
-        AdminManager.approveAnnouncement(announcementID, user, destinationType)
+        destinationName = requestBody["destinationName"]
+        try:
+            # provo ad approvare
+            AdminManager.approveAnnouncement(announcementID, user, destinationType)
+        except Exception as e:
+            raise Exception(str(e))
+        # se l'approvazione è andata bene provo a creare il nodo accomodation
+        try:
+            if destinationType == "accomodation":
+                accomodationNode = AccomodationNode(announcementID , destinationName)
+                AccomodationNodeManager.createAccomodationNode(accomodationNode)
+            else:
+                activityNode = ActivityNode(announcementID , destinationName)
+                ActivityNodeManager.createActivityNode(activityNode)
+        except Exception as e:
+            # eseguo il rollback se non riesco a creare il nodo
+            AdminManager.removeApprovalAnnouncement(announcementID, user, destinationType)
+            raise Exception(str(e))
         return "", 200
     except Exception as e:
         return str(e), 500
