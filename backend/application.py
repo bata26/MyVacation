@@ -390,19 +390,11 @@ def likeAdv(user={}):
             user["username"]
         )
         if (requestBody["destinationType"] == "accomodation"):
-            likedAdv = AccomodationNode(
-                requestBody["likedAdvID"],
-                requestBody["likedAdvName"]
-            )
-            LikeRelationManager.addLikeRelation(
-                userNode, accomodationNode=likedAdv)
+            likedAdv = AccomodationNode(requestBody["likedAdvID"],requestBody["likedAdvName"])
+            LikeRelationManager.addLikeRelation(userNode, accomodationNode=likedAdv)
         elif (requestBody["destinationType"] == "activity"):
-            likedAdv = ActivityNode(
-                requestBody["likedAdvID"],
-                requestBody["likedAdvName"]
-            )
-            LikeRelationManager.addLikeRelation(
-                userNode, activityNode=likedAdv)
+            likedAdv = ActivityNode(requestBody["likedAdvID"],requestBody["likedAdvName"])
+            LikeRelationManager.addLikeRelation(userNode, activityNode=likedAdv)
         return "", 200
     except Exception as e:
         return str(e), 500

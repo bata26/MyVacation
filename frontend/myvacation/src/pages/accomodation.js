@@ -61,7 +61,7 @@ const Accomodation = () => {
 
       api.get('/likenumber/accomodation/' + accomodationID)
           .then(function (response) {
-              setTotLikes(response.data)
+              setTotLikes(response.data.likes)
           })
           .catch(function (error) {
               alert("Ops, something went wrong :(" + "\n" + error);
