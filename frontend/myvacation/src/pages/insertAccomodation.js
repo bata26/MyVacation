@@ -49,9 +49,7 @@ const InsertAccomodation = () => {
     }
     data.append("imagesLength", images.length);
     const headers = { 'Content-type': 'multipart/form-data' };
-    const result = await api.post('/insert/accomodation',
-      data,
-    )
+    const result = await api.post('/insert/accomodation', data)
       .then(function (response) {
         navigate("/accomodation/" + response.data.accomodationID);
       })

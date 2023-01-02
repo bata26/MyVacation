@@ -13,7 +13,7 @@ const AccomodationForm = ({ accomodation = null }) => {
             <TextField
                 multiline
                 InputLabelProps={{
-                    shrink: accomodation ? true : false,
+                    shrink: accomodation ? true : undefined,
                 }}
                 defaultValue={accomodation ? accomodation.name : undefined}
                 margin="normal"
@@ -28,7 +28,7 @@ const AccomodationForm = ({ accomodation = null }) => {
             <TextField
                 multiline
                 InputLabelProps={{
-                    shrink: accomodation ? true : false,
+                    shrink: accomodation ? true : undefined,
                 }}
                 defaultValue={accomodation ? accomodation.description : undefined}
                 margin="normal"
@@ -42,7 +42,7 @@ const AccomodationForm = ({ accomodation = null }) => {
             <TextField
                 multiline
                 InputLabelProps={{
-                    shrink: accomodation ? true : false,
+                    shrink: accomodation ? true : undefined,
                 }}
                 defaultValue={accomodation ? accomodation.location.address : undefined}
                 margin="normal"
@@ -56,7 +56,7 @@ const AccomodationForm = ({ accomodation = null }) => {
             <TextField
                 multiline
                 InputLabelProps={{
-                    shrink: accomodation ? true : false,
+                    shrink: accomodation ? true : undefined,
                 }}
                 defaultValue={accomodation ? accomodation.location.city : undefined}
                 margin="normal"
@@ -69,7 +69,7 @@ const AccomodationForm = ({ accomodation = null }) => {
             <TextField
                 multiline
                 InputLabelProps={{
-                    shrink: accomodation ? true : false,
+                    shrink: accomodation ? true : undefined,
                 }}
                 defaultValue={accomodation ? accomodation.location.country : undefined}
                 margin="normal"
@@ -85,7 +85,7 @@ const AccomodationForm = ({ accomodation = null }) => {
                     <TextField
                         multiline
                         InputLabelProps={{
-                            shrink: accomodation ? true : false,
+                            shrink: accomodation ? true : undefined,
                         }}
                         defaultValue={accomodation ? accomodation.property_type : undefined}
                         margin="normal"
@@ -100,7 +100,7 @@ const AccomodationForm = ({ accomodation = null }) => {
                     <TextField
                         multiline
                         InputLabelProps={{
-                            shrink: accomodation ? true : false,
+                            shrink: accomodation ? true : undefined,
                         }}
                         defaultValue={accomodation ? accomodation.accommodates : undefined}
                         margin="normal"
@@ -117,7 +117,7 @@ const AccomodationForm = ({ accomodation = null }) => {
                     <TextField
                         multiline
                         InputLabelProps={{
-                            shrink: accomodation ? true : false,
+                            shrink: accomodation ? true : undefined,
                         }}
                         defaultValue={accomodation ? accomodation.beds : undefined}
                         margin="normal"
@@ -134,7 +134,7 @@ const AccomodationForm = ({ accomodation = null }) => {
                     <TextField
                         multiline
                         InputLabelProps={{
-                            shrink: accomodation ? true : false,
+                            shrink: accomodation ? true : undefined,
                         }}
                         defaultValue={accomodation ? accomodation.price : undefined}
                         margin="normal"
@@ -151,7 +151,7 @@ const AccomodationForm = ({ accomodation = null }) => {
                     <TextField
                         multiline
                         InputLabelProps={{
-                            shrink: accomodation ? true : false,
+                            shrink: accomodation ? true : undefined,
                         }}
                         defaultValue={accomodation ? accomodation.minimum_nights : undefined}
                         margin="normal"
@@ -167,7 +167,7 @@ const AccomodationForm = ({ accomodation = null }) => {
                     <TextField
                         multiline
                         InputLabelProps={{
-                            shrink: accomodation ? true : false,
+                            shrink: accomodation ? true : undefined,
                         }}
                         defaultValue={accomodation ? accomodation.bedrooms : undefined} 
                         margin="normal"

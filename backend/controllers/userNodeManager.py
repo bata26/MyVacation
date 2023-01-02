@@ -54,7 +54,6 @@ class UserNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                print("pre query")
                 if (destinationType == "accomodation"):
                     query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Accomodation) return liked" % userNode.userID
                 else:
@@ -66,16 +65,11 @@ class UserNodeManager:
                 for item in queryResult:
                     node = item.get("liked")
                     if (destinationType == "accomodation"):
-                        resultAccomodationNode = AccomodationNode(
-                            node["accomodationID"], node["name"])
-                        result.append(Serializer.serializeAccomodationNode(
-                            resultAccomodationNode))
+                        resultAccomodationNode = AccomodationNode(node["accomodationID"], node["name"])
+                        result.append(Serializer.serializeAccomodationNode(resultAccomodationNode))
                     else:
-                        resultActivityNode = ActivityNode(
-                            node["activityID"], node["name"])
-                        result.append(
-                            Serializer.serializeActivityNode(resultActivityNode))
-
+                        resultActivityNode = ActivityNode(node["activityID"], node["name"])
+                        result.append(Serializer.serializeActivityNode(resultActivityNode))
                 return result
 
         except Exception as e:

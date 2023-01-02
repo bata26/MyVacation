@@ -14,7 +14,7 @@ const ActivityForm = ({ activity = null }) => {
             <TextField
                 multiline
                 InputLabelProps={{
-                    shrink: activity ? true : false,
+                    shrink: activity ? true : undefined,
                 }}
                 defaultValue={activity ? activity.name : undefined}
                 margin="normal"
@@ -30,7 +30,7 @@ const ActivityForm = ({ activity = null }) => {
             <TextField
                 multiline
                 InputLabelProps={{
-                    shrink: activity ? true : false,
+                    shrink: activity ? true : undefined,
                 }}
                 defaultValue={activity ? activity.description : undefined}
                 margin="normal"
@@ -44,7 +44,7 @@ const ActivityForm = ({ activity = null }) => {
             <TextField
                 multiline
                 InputLabelProps={{
-                    shrink: activity ? true : false,
+                    shrink: activity ? true : undefined,
                 }}
                 defaultValue={activity ? activity.location.address : undefined}
                 margin="normal"
@@ -58,7 +58,7 @@ const ActivityForm = ({ activity = null }) => {
             <TextField
                 multiline
                 InputLabelProps={{
-                    shrink: activity ? true : false,
+                    shrink: activity ? true : undefined,
                 }}
                 defaultValue={activity ? activity.location.city : undefined}
                 margin="normal"
@@ -71,7 +71,7 @@ const ActivityForm = ({ activity = null }) => {
             <TextField
                 multiline
                 InputLabelProps={{
-                    shrink: activity ? true : false,
+                    shrink: activity ? true : undefined,
                 }}
                 defaultValue={activity ? activity.location.country : undefined}
                 margin="normal"
@@ -86,7 +86,7 @@ const ActivityForm = ({ activity = null }) => {
                     <TextField
                         multiline
                         InputLabelProps={{
-                            shrink: activity ? true : false,
+                            shrink: activity ? true : undefined,
                         }}
                         defaultValue={activity ? activity.duration : undefined}
                         margin="normal"
@@ -103,7 +103,7 @@ const ActivityForm = ({ activity = null }) => {
                     <TextField
                         multiline
                         InputLabelProps={{
-                            shrink: activity ? true : false,
+                            shrink: activity ? true : undefined,
                         }}
                         defaultValue={activity ? activity.price : undefined}
                         margin="normal"

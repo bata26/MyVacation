@@ -4,21 +4,44 @@ from .graphConnection import GraphManager
 class LikeRelationManager:
 
     @staticmethod
+    def checkIfExists(likeRelation):
+        client = GraphManager.getInstance()
+
+        try:
+            query = "MATCH (u:User {userID: '%s'})-[r:LIKE]->" %likeRelation.user.userID
+            if(hasattr(likeRelation  , "accomodation")):
+                query = query + "(a: Accomodation{accomodationID : '%s'}) " %likeRelation.accomodation.accomodationID
+            elif(hasattr(likeRelation  , "activity")):
+                query = query + "(a: Activity{activityID : '%s'}) " %likeRelation.activity.activityID
+            else:
+                raise Exception("invalid likeRelation")
+            query = query + "return COUNT(r) as total"
+            with client.session() as session:
+                session.run(query)
+
+        except Exception as e:
+            raise Exception("Impossibile inserire la relazione: " + str(e))
+
+    @staticmethod
     def addLikeRelation(likeRelation):
         client = GraphManager.getInstance()
 
         try:
+            if(not(LikeRelationManager.checkIfExists(likeRelation))):
+                raise Exception("Già messo like")
+
             query = "MATCH (u:User {userID: '%s'}) " %likeRelation.user.userID
             if(hasattr(likeRelation  , "accomodation")):
-                query = query + "MATCH (a: Accomodation{accomodationID : '%s'}) " &likeRelation.accomodation.accomodationID
+                query = query + "MATCH (a: Accomodation{accomodationID : '%s'}) " %likeRelation.accomodation.accomodationID
             elif(hasattr(likeRelation  , "activity")):
-                query = query + "MATCH (a: Activity{activityID : '%s'}) " &likeRelation.activity.activityID
+                query = query + "MATCH (a: Activity{activityID : '%s'}) " %likeRelation.activity.activityID
             else:
                 raise Exception("invalid likeRelation")
             query = query + "CREATE (u)-[:LIKE]->(a)"
-
+            
             with client.session() as session:
-                session.run(query)
+                result = list(session.run(query))[0]
+                return result.value("total") > 0
 
         except Exception as e:
             raise Exception("Impossibile inserire la relazione: " + str(e))
@@ -28,11 +51,12 @@ class LikeRelationManager:
         client = GraphManager.getInstance()
 
         try:
+            
             query = "MATCH (u:User {userID: '%s'})-[r:LIKE]->" %likeRelation.user.userID
             if(hasattr(likeRelation  , "accomodation")):
-                query = query + "(a: Accomodation{accomodationID : '%s'}) " &likeRelation.accomodation.accomodationID
+                query = query + "(a: Accomodation{accomodationID : '%s'}) " %likeRelation.accomodation.accomodationID
             elif(hasattr(likeRelation  , "activity")):
-                query = query + "(a: Activity{activityID : '%s'}) " &likeRelation.activity.activityID
+                query = query + "(a: Activity{activityID : '%s'}) " %likeRelation.activity.activityID
             else:
                 raise Exception("invalid likeRelation")
             query = query + "DELETE r"

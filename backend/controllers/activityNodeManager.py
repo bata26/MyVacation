@@ -49,12 +49,13 @@ class ActivityNodeManager:
                 "Impossibile aggiornare il nodo activity: " + str(e))
 
     @staticmethod
-    def getTotalLikes(activityNode):
+    def getTotalLikes(activityNodeID):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH(a: Activity)<-[r:LIKE]-(u: User) WHERE a.activityID = '%s' return COUNT(r) as total" % activityNode.activityID
+                query = "MATCH(a: Activity)<-[r:LIKE]-(u:User) WHERE a.activityID = '%s' return  COUNT(r) as total" % activityNodeID
                 result = list(session.run(query))[0]
+                
                 return result.value("total")
 
         except Exception as e:

@@ -49,10 +49,12 @@ const Activity = () => {
 
     api.get("/users/liking/activity")
         .then(function (response) {
-            if(response.data.includes(activityID))
-                setLikedAdv(true)
-            else
-                setLikedAdv(false)
+          const activityIDList = [];
+          response.data.map((item) => activityIDList.push(item.activityID));
+          if(activityIDList.includes(activityID))
+              setLikedAdv(true)
+          else
+              setLikedAdv(false)
         })
         .catch(function (error) {
             console.log(error);
@@ -60,7 +62,7 @@ const Activity = () => {
 
     api.get('/likenumber/activity/' + activityID)
         .then(function (response) {
-            setTotLikes(response.data)
+            setTotLikes(response.data.likes)
         })
         .catch(function (error) {
             alert("Ops, something went wrong :(" + "\n" + error);
