@@ -24,6 +24,7 @@ const theme = createTheme();
 const Accomodation = () => {
   const [accomodation, setAccomodation] = React.useState(null);
   const [reviews, setReviews] = React.useState(null);
+  const [totLikes, setTotLikes] = React.useState(null);
   const [enableButton, setEnableButton] = React.useState(null);
   const [likedAdv, setLikedAdv] = React.useState(null);
   const [searchParams] = useSearchParams();
@@ -57,6 +58,14 @@ const Accomodation = () => {
         .catch(function (error) {
             alert("Ops, something went wrong :(" + "\n" + error);
         });
+
+      api.get('/likenumber/accomodation/' + accomodationID)
+          .then(function (response) {
+              setTotLikes(response.data)
+          })
+          .catch(function (error) {
+              alert("Ops, something went wrong :(" + "\n" + error);
+          });
     }, []);
 
 
@@ -104,8 +113,9 @@ const Accomodation = () => {
             "destinationType" : "accomodation"
         }).then(function (response) {
                 console.log(response.data);
-                setLikedAdv(true)
-            })
+                setLikedAdv(true);
+                setTotLikes(totLikes + 1);
+        })
             .catch(function (error) {
                 alert("Ops, something went wrong :(" + "\n" + error);
             });
@@ -118,7 +128,8 @@ const Accomodation = () => {
             "destinationType" : "accomodation"
         }).then(function (response) {
                 console.log(response.data);
-                setLikedAdv(false)
+                setLikedAdv(false);
+                setTotLikes(totLikes - 1)
             })
             .catch(function (error) {
                 alert("Ops, something went wrong :(" + "\n" + error);
@@ -176,6 +187,26 @@ const Accomodation = () => {
                             </ImageListItem>
                         ))}
                     </ImageList>
+                    <Grid alignItems={"left"}>
+                    {localStorage.getItem("userID") != null && accomodation.approved ?
+                        (!likedAdv?
+                                <ThumbUpOffAltIcon
+                                    variant="filled"
+                                    onClick={() => { likeAdv(accomodation._id, accomodation.name)}}
+                                    sx={{ fontSize: 40 }}
+                                />
+                                :
+                                <ThumbUpAltIcon
+                                    variant="filled"
+                                    onClick={() => { unlikeAdv(accomodation._id, accomodation.name)}}
+                                    sx={{ fontSize: 40 }}
+                                />
+                        ) : <></>
+                    }
+                    <Typography>
+                        <b>{totLikes}</b>
+                    </Typography>
+                    </Grid>
                 </Container>
 
                 <Container maxWidth='lg'>
@@ -203,7 +234,6 @@ const Accomodation = () => {
                         </Grid>
 
                         <Grid item xs={6}>
-
                             <Typography
                                 component="h3"
                                 variant="h4"
@@ -251,11 +281,18 @@ const Accomodation = () => {
                                 <br />
                                 <b>City:</b> {accomodation.location.city}
                                 <br/>
-                                <b>Start date:</b> {startDate}
-                                <br/>
-                                <b>End date:</b> {endDate}
+                                {startDate ?
+                                    <>
+                                        <b>Start date:</b> {startDate}
+                                    </> : <></>
+                                }
+                                {endDate ?
+                                    <>
+                                        <br/>
+                                        <b>End date:</b> {endDate}
+                                    </> : <></>
+                                }
                             </Typography>
-
                             {startDate != null && endDate != null && localStorage.getItem("userID") != null && accomodation.approved ?
                                 <Button
                                     fullWidth
@@ -286,10 +323,10 @@ const Accomodation = () => {
                                             color='info'
                                             sx={{ mt: 2 }}
                                             onClick={() => {
-                                                navigate("/edit/accomodation/" + accomodationID)
+                                                navigate("/update/accomodation/" + accomodationID)
                                             }}
                                         >
-                                            Edit Accomodation
+                                            Update Accomodation
                                         </Button>
                                     </>
                                     )
@@ -320,10 +357,10 @@ const Accomodation = () => {
                             Reviews
                         </Typography>
                         <Grid
-                            sx={{ overflowY: "scroll", maxHeight: "1160px" }}
+                            sx={{ overflowY: "scroll", maxHeight: "1460px" }}
                         >
                             {reviews && reviews.map((item) => (
-                                <Card key={item._id} sx={{ maxHeight: 150, marginTop: 2 }}>
+                                <Card key={item._id} sx={{ maxHeight: 180, marginTop: 2 }}>
                                     <CardContent>
                                         <Typography gutterBottom variant="h5" component="div">
                                             {item.reviewer} - {item.score}
@@ -333,9 +370,16 @@ const Accomodation = () => {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button color='error' onClick={() => {
-                                            deleteReview(item._id)
-                                        }}>Delete</Button>
+                                        {localStorage.getItem("userID") && (localStorage.getItem("userID") === item.userID || localStorage.getItem("role") === "admin") ?
+                                            <Button color='error' onClick={() => {deleteReview(item._id)}}>
+                                                Delete
+                                            </Button> : <></>
+                                        }
+                                        {localStorage.getItem("userID") ?
+                                            <Button color='info' onClick={() => navigate("/profile/" + item.userID)}>
+                                                View Profile
+                                            </Button> : <></>
+                                        }
                                     </CardActions>
                                 </Card>
                             ))}

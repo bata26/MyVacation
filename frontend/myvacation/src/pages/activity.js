@@ -23,6 +23,7 @@ const theme = createTheme();
 const Activity = () => {
   const [activity, setActivity] = React.useState(null);
   const [reviews, setReviews] = React.useState(null);
+  const [totLikes, setTotLikes] = React.useState(null);
   const [enableButton, setEnableButton] = React.useState(null);
   const [likedAdv, setLikedAdv] = React.useState(null);
   const [searchParams] = useSearchParams();
@@ -56,6 +57,15 @@ const Activity = () => {
         .catch(function (error) {
             console.log(error);
         });
+
+    api.get('/likenumber/activity/' + activityID)
+        .then(function (response) {
+            setTotLikes(response.data)
+        })
+        .catch(function (error) {
+            alert("Ops, something went wrong :(" + "\n" + error);
+        });
+
   }, []);
 
 
@@ -84,7 +94,8 @@ const Activity = () => {
           "destinationType" : "activity"
       }).then(function (response) {
           console.log(response.data);
-          setLikedAdv(true)
+          setLikedAdv(true);
+          setTotLikes(totLikes + 1)
       }).catch(function (error) {
           console.log(error);
       });
@@ -97,7 +108,8 @@ const Activity = () => {
           "destinationType" : "activity"
       }).then(function (response) {
           console.log(response.data);
-          setLikedAdv(false)
+          setLikedAdv(false);
+          setTotLikes(totLikes - 1)
       }).catch(function (error) {
               console.log(error);
       });
@@ -153,6 +165,26 @@ const Activity = () => {
             src={`data:image/jpeg;base64,${activity.mainPicture}`}
             style={{ borderRadius: 10 + 'px', height: 100 + '%', width: 99 + '%', marginTop: 3 + 'px' }}
           />
+          <Grid alignItems={"left"}>
+            {localStorage.getItem("userID") != null && activity.approved ?
+                (!likedAdv?
+                        <ThumbUpOffAltIcon
+                            variant="filled"
+                            onClick={() => { likeAdv(activity._id, activity.name)}}
+                            sx={{ fontSize: 40 }}
+                        />
+                        :
+                        <ThumbUpAltIcon
+                            variant="filled"
+                            onClick={() => { unlikeAdv(activity._id, activity.name)}}
+                            sx={{ fontSize: 40 }}
+                        />
+                ) : <></>
+            }
+            <Typography>
+                <b>{totLikes}</b>
+            </Typography>
+        </Grid>
         </Container>
         <Container maxWidth='lg'>
           <Typography
@@ -174,8 +206,6 @@ const Activity = () => {
           >
             {ReactHtmlParser(activity.description)}
           </Typography>
-
-
           <Typography
             component="h3"
             variant="h4"
@@ -217,7 +247,11 @@ const Activity = () => {
             <br />
             <b>City:</b> {activity.location.city}
             <br />
-            <b>Start date:</b> {startDate}
+            {startDate ?
+                <>
+                    <b>Start date:</b> {startDate}
+                </> : <></>
+            }
           </Typography>
           {startDate != null && localStorage.getItem("userID") != null && guests != null && activity.approved ?
             <Button
@@ -244,23 +278,10 @@ const Activity = () => {
                 variant="contained"
                 color='info'
                 sx={{ mt: 2 }}
-                onClick={() => { navigate("/edit/activity/" + activityID) }}
+                onClick={() => { navigate("/update/activity/" + activityID) }}
               >
                 Update Activity
               </Button>
-                {localStorage.getItem("userID") != null ?
-                    (!likedAdv?
-                            <ThumbUpAltIcon
-                                variant="filled"
-                                onClick={() => { likeAdv(activity._id, activity.name)}}
-                            />
-                            :
-                            <ThumbUpOffAltIcon
-                                variant="filled"
-                                onClick={() => { unlikeAdv(activity._id, activity.name)}}
-                            />
-                    ) : <></>
-                }
             </>) : <></>
           }
         </Container>
@@ -287,10 +308,10 @@ const Activity = () => {
                 Reviews
               </Typography>
               <Grid
-                sx={{ overflowY: "scroll", maxHeight: "1160px" }}
+                sx={{ overflowY: "scroll", maxHeight: "1460px" }}
               >
                 {reviews && reviews.map((item) => (
-                  <Card key={item._id} sx={{ maxHeight: 100, marginTop: 2 }}>
+                  <Card key={item._id} sx={{ maxHeight: 180, marginTop: 2 }}>
                     <CardContent>
                       <Typography gutterBottom variant="h5" component="div">
                         {item.reviewer} - {item.score}
@@ -301,9 +322,14 @@ const Activity = () => {
                     </CardContent>
                     <CardActions>
                         {localStorage.getItem("userID") && (localStorage.getItem("userID") === item.userID || localStorage.getItem("role") === "admin") ?
-                            <Button color='error' onClick={() => {
-                                deleteReview(item._id)
-                            }}>Delete</Button> : <></>
+                            <Button color='error' onClick={() => {deleteReview(item._id)}}>
+                                Delete
+                            </Button> : <></>
+                        }
+                        {localStorage.getItem("userID") ?
+                            <Button color='info' onClick={() => navigate("/profile/" + item.userID)}>
+                                View Profile
+                            </Button> : <></>
                         }
                     </CardActions>
                   </Card>

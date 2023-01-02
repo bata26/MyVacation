@@ -129,4 +129,4 @@ class UserNodeManager:
                     result.append(Serializer.serializeUserNode(resultUserNode))
                 return result
         except Exception as e:
-            raise Exception("Impossibile ottenere lista annunci: " + str(e))
+            raise Exception("Impossibile ottenere lista utenti: " + str(e))

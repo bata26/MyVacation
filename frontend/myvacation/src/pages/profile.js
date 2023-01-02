@@ -32,10 +32,10 @@ const Profile = () => {
   const [listFollowedUsers, setListFollowedUsers] = React.useState([]);
   const [listLikedAcc, setListLikedAcc] = React.useState([]);
   const [listLikedAct, setListLikedAct] = React.useState([]);
+  const [listCommonLikedAcc, setListCommonLikedAcc] = React.useState([]);
+  const [listCommonLikedAct, setListCommonLikedAct] = React.useState([]);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  const profileID = (searchParams.get("userId") != null && localStorage.getItem("role") === "admin") ? searchParams.get("userId") : localStorage.getItem("userID");
+  const { profileID } = useParams();
 
   React.useEffect(() => {
     //Richiesta per recuperare le informazioni dell'utente
@@ -88,7 +88,25 @@ const Profile = () => {
           alert("Ops, something went wrong :(" + "\n" + error);
         });
 
-  }, []);
+
+    //Richiesta per recuperare gli alloggi piaciuti all'utente in comune
+    api.get("/commonadvs/accomodation/" + profileID)
+        .then(function (response) {
+            setListCommonLikedAcc(response.data)
+        })
+        .catch(function (error) {
+            alert("Ops, something went wrong :(" + "\n" + error);
+        });
+
+    //Richiesta per recuperare le attività piaciute all'utente in comune
+    api.get("/commonadvs/activity/" + profileID)
+        .then(function (response) {
+            setListCommonLikedAct(response.data)
+        })
+        .catch(function (error) {
+            alert("Ops, something went wrong :(" + "\n" + error);
+        });
+      }, []);
 
   if (!profile) return null;
 
@@ -267,6 +285,7 @@ const Profile = () => {
           <Button fullWidth
             variant="contained"
             color='error'
+            sx={{mt: 2}}
             onClick={() => { deleteProfile(profile._id) }}>Delete Profile</Button>
         ) : <></>
         }
@@ -416,6 +435,48 @@ const Profile = () => {
                     </Table>
                 </TableContainer>
             </Grid>
+            {/* Tabella annunci piaciuti in comune */}
+            {localStorage.getItem("userID") !== profileID ?
+                <>
+                    <Grid item xs={4} sm={6} alignContent={"center"}>
+                        <Container maxWidth="sm">
+                            <Typography
+                            component="h3"
+                            variant="h5"
+                            align="center"
+                            color="text.primary"
+                            gutterBottom
+                            >
+                                Common Liked Advs
+                            </Typography>
+                        </Container>
+                        <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
+                            <Table size="small">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
+                                        <TableCell align="right" style={{ fontWeight: 'bold' }}>Name</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <tbody>
+                                {listCommonLikedAcc && listCommonLikedAcc.map((item, index) => (
+                                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/accomodation/" + item.accomodationID)}>
+                                        <TableCell align="left">{item.accomodationID} </TableCell>
+                                        <TableCell align="right">{item.name}</TableCell>
+                                    </TableRow>
+                                ))}
+                                {listCommonLikedAct && listCommonLikedAct.map((item, index) => (
+                                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/activity/" + item.accomodationID)}>
+                                        <TableCell align="left">{item.activityID} </TableCell>
+                                        <TableCell align="right">{item.name}</TableCell>
+                                    </TableRow>
+                                ))}
+                                </tbody>
+                            </Table>
+                        </TableContainer>
+                    </Grid>
+                </> : <></>
+            }
         </Grid>
     </ThemeProvider>
   );

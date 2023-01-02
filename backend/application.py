@@ -235,7 +235,7 @@ def deleteAccomodationById(accomodation_id, user={}):
         return str(e), 500
 
 
-@application.route('/edit/accomodations/<accomodationID>', methods=['POST'])
+@application.route('/update/accomodation/<accomodationID>', methods=['POST'])
 @required_token
 def updateAccomodationById(accomodationID, user={}):
     formData = dict(request.json)
@@ -256,7 +256,7 @@ def updateAccomodationById(accomodationID, user={}):
         return str(e), 500
 
 
-@application.route('/edit/activities/<activityID>', methods=['POST'])
+@application.route('/update/activity/<activityID>', methods=['POST'])
 @required_token
 def updateActivityById(activityID, user={}):
     formData = dict(request.json)
@@ -402,7 +402,7 @@ def likeAdv(user={}):
     except Exception as e:
         return str(e), 500
 
-@application.route('/commonadv/<destination_type>/<user_id>', methods=['GET'])
+@application.route('/commonadvs/<destination_type>/<user_id>', methods=['GET'])
 @required_token
 def getCommonAdv(destination_type, user_id,user={}):
     destinationType = escape(destination_type)

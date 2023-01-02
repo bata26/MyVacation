@@ -78,7 +78,15 @@ const ReviewForm = ({destinationID , destinationType}) => {
 
   return (
     <div>
-      {localStorage.getItem("userID") != null ? <Button variant="outlined" style={{width:100+'%'}} onClick={handleOpen}>Leave a review</Button> : <></>}
+      {localStorage.getItem("userID") != null ?
+          <Button
+              variant="outlined"
+              style={{width:100+'%'}}
+              onClick={handleOpen}
+          >
+            Leave a review
+          </Button> : <></>
+      }
       <Modal
         open={open}
         onClose={handleClose}
@@ -88,7 +96,7 @@ const ReviewForm = ({destinationID , destinationType}) => {
         <Box sx={style}>
             <form onSubmit={handleSubmit}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Lascia una recensione
+            Leave a review
           </Typography>
           <Rating name="rating" defaultValue={2.5} precision={0.5} />
           <TextField
