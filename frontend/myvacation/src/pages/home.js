@@ -8,7 +8,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import PersonIcon from '@mui/icons-material/Person';
-import PersonIcon from '@mui/icons-material/Person';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import api from '../utility/api';
@@ -269,7 +268,7 @@ const Home = () => {
                                 <CardActions>
                                     <Button
                                         fullWidth
-                                        onClick={() => navigate("/profile/" + item._id)}
+                                        onClick={() => navigate("/profile/" + item.userID)}
                                     >
                                         View
                                     </Button>
@@ -310,22 +309,10 @@ const Home = () => {
                                         {item.name}
                                     </Typography>
                                 </CardContent>
-                                <img
-                                    src={`data:image/jpeg;base64,${item.mainPicture}`}
-                                />
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography variant='span'>
-                                        <b>{item.location.city}</b>
-                                        <br />
-                                        <i>{item.location.address}</i>
-                                        <br />
-                                        {item.price}€
-                                    </Typography>
-                                </CardContent>
                                 <CardActions>
                                     <Button
                                         fullWidth
-                                        onClick={() => navigate("/accomodation/" + item._id)}
+                                        onClick={() => navigate("/accomodation/" + item.accomodationID)}
                                     >
                                         View
                                     </Button>
@@ -365,22 +352,10 @@ const Home = () => {
                                         {item.name}
                                     </Typography>
                                 </CardContent>
-                                <img
-                                    src={`data:image/jpeg;base64,${item.mainPicture}`}
-                                />
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography variant='span'>
-                                        <b>{item.location.city}</b>
-                                        <br />
-                                        <i>{item.location.address}</i>
-                                        <br />
-                                        {item.price}€
-                                    </Typography>
-                                </CardContent>
                                 <CardActions>
                                     <Button
                                         fullWidth
-                                        onClick={() => navigate("/activity/" + item._id)}
+                                        onClick={() => navigate("/activity/" + item.activityID)}
                                     >
                                         View
                                     </Button>

@@ -19,7 +19,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditReservationModal from "../components/editReservationModal";
 import EditProfileModal from "../components/editProfileModal";
 import { Link,useNavigate, useParams, useSearchParams} from 'react-router-dom';
-import { Link,useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import Button from '@mui/material/Button';
 
 
@@ -34,6 +33,7 @@ const Profile = () => {
   const [listLikedAcc, setListLikedAcc] = React.useState([]);
   const [listLikedAct, setListLikedAct] = React.useState([]);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const profileID = (searchParams.get("userId") != null && localStorage.getItem("role") === "admin") ? searchParams.get("userId") : localStorage.getItem("userID");
 
@@ -369,8 +369,8 @@ const Profile = () => {
                         </TableHead>
                         <tbody>
                         {listFollowedUsers && listFollowedUsers.map((item, index) => (
-                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/profile/" + item._id)}>
-                                <TableCell align="left">{item._id} </TableCell>
+                            <TableRow key={index} style={{cursor:'pointer'}}sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/profile/" + item.userID)}>
+                                <TableCell align="left">{item.userID} </TableCell>
                                 <TableCell align="right">{item.username}</TableCell>
                             </TableRow>
                         ))}
@@ -401,14 +401,14 @@ const Profile = () => {
                         </TableHead>
                         <tbody>
                         {listLikedAcc && listLikedAcc.map((item, index) => (
-                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/accomodation/" + item._id)}>
-                                <TableCell align="left">{item._id} </TableCell>
+                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/accomodation/" + item.accomodationID)}>
+                                <TableCell align="left">{item.accomodationID} </TableCell>
                                 <TableCell align="right">{item.name}</TableCell>
                             </TableRow>
                         ))}
                         {listLikedAct && listLikedAct.map((item, index) => (
-                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/activity/" + item._id)}>
-                                <TableCell align="left">{item._id} </TableCell>
+                            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/activity/" + item.activityID)}>
+                                <TableCell align="left">{item.activityID} </TableCell>
                                 <TableCell align="right">{item.name}</TableCell>
                             </TableRow>
                         ))}

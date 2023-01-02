@@ -1,16 +1,21 @@
 from .graphConnection import GraphManager
+from models.userNode import UserNode
+from models.activityNode import ActivityNode
+from models.accomodationNode import AccomodationNode
+from utility.serializer import Serializer
 
 
 class UserNodeManager:
-       
+
     @staticmethod
     def createUserNode(userNode):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "CREATE (u:User {userID: '%s', username: '%s'})" %(userNode.userID , userNode.username)
+                query = "CREATE (u:User {userID: '%s', username: '%s'})" % (
+                    userNode.userID, userNode.username)
                 session.run(query)
-            
+
         except Exception as e:
             raise Exception("Impossibile inserire il nodo utente: " + str(e))
 
@@ -19,62 +24,109 @@ class UserNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH (u:User {userID: '%s'}) DETACH DELETE u" %userNode.userID
+                query = "MATCH (u:User {userID: '%s'}) DETACH DELETE u" % userNode.userID
                 session.run(query)
-            
+
         except Exception as e:
             raise Exception("Impossibile eliminare il nodo utente: " + str(e))
-
 
     @staticmethod
     def getFollowedUser(userNode):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH(u:User {userID: '%s' })-[:FOLLOW]->(followed: User) return followed" %userNode.userID
-                result = session.run(query)
-            
+                query = "MATCH(u:User {userID: '%s' })-[:FOLLOW]->(followed: User) return followed" % userNode.userID
+                queryResult = list(session.run(query))
+
+                result = []
+
+                for item in queryResult:
+                    node = item.get("followed")
+                    resultUserNode = UserNode(node["userID"], node["username"])
+                    result.append(Serializer.serializeUserNode(resultUserNode))
+                return result
+
         except Exception as e:
             raise Exception("Impossibile ottenere lista follower: " + str(e))
 
-    #TODO: ControllareQuery
     @staticmethod
     def getLikedAdvs(userNode, destinationType):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                if(destinationType == "accomodation"):
-                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Accomodation) return followed" %userNode.userID
+                print("pre query")
+                if (destinationType == "accomodation"):
+                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Accomodation) return liked" % userNode.userID
                 else:
-                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Activity) return followed" %userNode.userID
-                result = session.run(query)
+                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Activity) return liked" % userNode.userID
+
+                queryResult = list(session.run(query))
+                
+                result = []
+                for item in queryResult:
+                    node = item.get("liked")
+                    if (destinationType == "accomodation"):
+                        resultAccomodationNode = AccomodationNode(
+                            node["accomodationID"], node["name"])
+                        result.append(Serializer.serializeAccomodationNode(
+                            resultAccomodationNode))
+                    else:
+                        resultActivityNode = ActivityNode(
+                            node["activityID"], node["name"])
+                        result.append(
+                            Serializer.serializeActivityNode(resultActivityNode))
+
+                return result
 
         except Exception as e:
-            raise Exception("Impossibile ottenere lista follower: " + str(e))
+            raise Exception("Impossibile ottenere annunci: " + str(e))
 
-    #TODO: ControllareQuery
+    # recommended adv: annunci che non piacciono a noi ma che piacciono ad account che seguiamo
     @staticmethod
     def getRecommendedAdvs(userNode, destinationType):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                if(destinationType == "accomodation"):
-                    query = ""
+                if (destinationType == "accomodation"):
+                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Accomodation) WHERE NOT (u)-[:LIKE]->(a) return a" % userNode.userID
                 else:
-                    query = ""
-                result = session.run(query)
+                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Activity) WHERE NOT (u)-[:LIKE]->(a) return a" % userNode.userID
+                queryResult = list(session.run(query))
+                result = []
+
+                for item in queryResult:
+                    node = item.get("a")
+                    if (destinationType == "accomodation"):
+                        resultAccomodationNode = AccomodationNode(
+                            node["accomodationID"], node["name"])
+                        result.append(Serializer.serializeAccomodationNode(
+                            resultAccomodationNode))
+                    else:
+                        resultActivityNode = ActivityNode(
+                            node["activityID"], node["name"])
+                        result.append(
+                            Serializer.serializeActivityNode(resultActivityNode))
+
+                return result
 
         except Exception as e:
             raise Exception("Impossibile ottenere lista annunci: " + str(e))
 
-    #TODO: ControllareQuery
+    # Utenti raccomandati: Utenti che non seguiamo ma che vengono seguiti da utenti che seguiamo
+
     @staticmethod
     def getRecommendedUsers(userNode):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = ""
-                result = session.run(query)
+                query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:FOLLOW]->(u3:User) WHERE NOT (u)-[:FOLLOW]->(u3) return u3" % userNode.userID
+                queryResult = list(session.run(query))
+                result = []
 
+                for item in queryResult:
+                    node = item.get("u3")
+                    resultUserNode = UserNode(node["userID"], node["username"])
+                    result.append(Serializer.serializeUserNode(resultUserNode))
+                return result
         except Exception as e:
             raise Exception("Impossibile ottenere lista annunci: " + str(e))

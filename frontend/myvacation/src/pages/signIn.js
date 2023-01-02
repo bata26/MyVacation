@@ -43,6 +43,7 @@ const SignIn = () => {
       localStorage.setItem("userID" , response.data.userID);
       localStorage.setItem("role" , response.data.role);
       localStorage.setItem("username" , response.data.username);
+      localStorage.setItem("name" , response.data.name);
       navigate(from, { replace: true });
       window.location.reload(false);
     } catch (err) {

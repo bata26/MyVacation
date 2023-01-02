@@ -7,13 +7,12 @@ from controllers.activityManager import ActivityManager
 from controllers.reviewManager import ReviewManager
 from controllers.userManager import UserManager
 from controllers.userNodeManager import UserNodeManager
-from controllers.followRelationManager import FollowRelationManager
-from controllers.likeRelationManager import LikeRelationManager
 from models.accomodationNode import AccomodationNode
 from models.activityNode import ActivityNode
-from controllers.userNodeManager import UserNodeManager
 from controllers.followRelationManager import FollowRelationManager
 from controllers.likeRelationManager import LikeRelationManager
+from controllers.accomodationNodeManager import AccomodationNodeManager
+from controllers.activityNodeManager import ActivityNodeManager
 from models.accomodationNode import AccomodationNode
 from models.activityNode import ActivityNode
 from controllers.adminManager import AdminManager
@@ -22,7 +21,6 @@ from models.accomodation import Accomodation
 from models.reservation import Reservation
 from models.activity import Activity
 from models.user import User
-from models.userNode import UserNode
 from models.userNode import UserNode
 from flask_cors import CORS, cross_origin
 import json
@@ -74,13 +72,13 @@ def required_token(f):
 def testValidation(user={}):
     requestBody = dict(request.json)
 
-    userNode = UserNode(requestBody["userID"] , requestBody["username"])
-    UserManager.createUserNode(userNode)
-    return "" , 200
+    userNode = UserNode(requestBody["userID"], requestBody["username"])
+    result = UserNodeManager.getRecommendedUsers(userNode)
+    return result, 200
 
 
 @application.route("/analytics/topcities", methods=["GET"])
-#@required_token
+# @required_token
 def getBestCities(user={}):
     try:
         res = AnalyticsManager.getTopCities()
@@ -90,7 +88,7 @@ def getBestCities(user={}):
 
 
 @application.route("/analytics/topadv", methods=["GET"])
-#@required_token
+# @required_token
 def getBestAdv(user={}):
     try:
         res = AnalyticsManager.getTopAdv()
@@ -100,18 +98,21 @@ def getBestAdv(user={}):
 
 
 @application.route("/analytics/advinfo", methods=["POST"])
-#@required_token
+# @required_token
 def getBestAdvInfo(user={}):
     try:
         requestBody = request.json
         accomodationsID = requestBody["accomodationsID"]
         activitiesID = requestBody["activitiesID"]
         result = {}
-        result["accomodations"] = AccomodationsManager.getAccomodationsFromIdList(accomodationsID)
-        result["activities"] = ActivityManager.getActivitiesFromIdList(activitiesID)
+        result["accomodations"] = AccomodationsManager.getAccomodationsFromIdList(
+            accomodationsID)
+        result["activities"] = ActivityManager.getActivitiesFromIdList(
+            activitiesID)
         return result, 200
     except Exception as e:
         return str(e), 500
+
 
 @application.route("/analytics/monthReservations", methods=["GET"])
 @required_token
@@ -121,7 +122,8 @@ def getMonthReservations(user={}):
         return res
     except Exception as e:
         return str(e), 500
-    
+
+
 @application.route("/analytics/usersForMonth", methods=["GET"])
 @required_token
 def getUsersForMonth(user={}):
@@ -130,6 +132,7 @@ def getUsersForMonth(user={}):
         return res
     except Exception as e:
         return str(e), 500
+
 
 @application.route("/analytics/averageAccomodations", methods=["GET"])
 @required_token
@@ -140,6 +143,7 @@ def getAccomodationsAverageCost(user={}):
     except Exception as e:
         return str(e), 500
 
+
 @application.route("/analytics/averageActivities", methods=["GET"])
 @required_token
 def getActivitiesAverageCost(user={}):
@@ -148,6 +152,7 @@ def getActivitiesAverageCost(user={}):
         return res
     except Exception as e:
         return str(e), 500
+
 
 @application.route("/analytics/totalReservations", methods=["GET"])
 @required_token
@@ -158,6 +163,7 @@ def getTotalReservations(user={}):
     except Exception as e:
         return str(e), 500
 
+
 @application.route("/analytics/totalAdvertisement", methods=["GET"])
 @required_token
 def getTotalAdvs(user={}):
@@ -167,14 +173,17 @@ def getTotalAdvs(user={}):
     except Exception as e:
         return str(e), 500
 
+
 @application.route("/analytics/bestHost/<destinationType>", methods=["GET"])
 @required_token
-def getBestHost(destinationType , user={}):
+def getBestHost(destinationType, user={}):
     try:
-        res = AnalyticsManager.getBestAdvertisers(user , escape(destinationType))
+        res = AnalyticsManager.getBestAdvertisers(
+            user, escape(destinationType))
         return res
     except Exception as e:
         return str(e), 500
+
 
 @application.route('/activities/<activity_id>', methods=['DELETE'])
 @required_token
@@ -199,7 +208,7 @@ def getActivityByID(activity_id):
 
 
 @application.route('/activities', methods=['GET'])
-#@required_token
+# @required_token
 def getActivities(user={}):
     args = request.args
     city = args.get("city")
@@ -309,14 +318,17 @@ def updateReservation(reservation_id, user={}):
     if (reservation['destinationType'] == "accomodation"):
         newEndDate = requestBody["endDate"]
     try:
-        ReservationManager.updateReservation(reservation, newStartDate, newEndDate)
-        if(reservation['destinationType'] == "accomodation"):
-            AccomodationsManager.updateReservation(reservation, newStartDate, newEndDate)
+        ReservationManager.updateReservation(
+            reservation, newStartDate, newEndDate)
+        if (reservation['destinationType'] == "accomodation"):
+            AccomodationsManager.updateReservation(
+                reservation, newStartDate, newEndDate)
         else:
-             ActivityManager.updateReservation(reservation, newStartDate)
+            ActivityManager.updateReservation(reservation, newStartDate)
         return "", 200
     except Exception as e:
         return e, 500
+
 
 @application.route('/user/<user_id>', methods=['PATCH'])
 @required_token
@@ -324,7 +336,7 @@ def updateUser(user_id, user={}):
     updatedData = request.json
     updatedData["dateOfBirth"] = dateparser.parse(updatedData["dateOfBirth"])
     try:
-        if(user["role"] != "admin" and user["_id"] != user_id):
+        if (user["role"] != "admin" and user["_id"] != user_id):
             raise Exception("Impossibile aggiornare")
         else:
             UserManager.updateUser(updatedData, user_id)
@@ -332,31 +344,107 @@ def updateUser(user_id, user={}):
     except Exception as e:
         return str(e), 500
 
-@application.route('/user/following', methods=['GET'])
+
+@application.route('/users/following', methods=['GET'])
 @required_token
 def getFollowedUsersByUserID(user={}):
+    print("Egomi")
     try:
         userNode = UserNode(
-            user["_id"] ,
+            user["_id"],
             user["username"]
         )
-        UserNodeManager.getFollowedUser(userNode)
+        result = UserNodeManager.getFollowedUser(userNode)
+        return result , 200
+    except Exception as e:
+        return str(e), 500
+
+
+@application.route('/users/liking/<destination_type>', methods=['GET'])
+@required_token
+def getLikedAdvsByUserID(destination_type, user={}):
+    destinationType = escape(destination_type)
+    try:
+        userNode = UserNode(
+            user["_id"],
+            user["username"]
+        )
+        result = UserNodeManager.getLikedAdvs(userNode, destinationType)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
+
+
+@application.route('/users/liking', methods=['POST'])
+@required_token
+def likeAdv(user={}):
+    try:
+        requestBody = request.json
+        userNode = UserNode(
+            user["_id"],
+            user["username"]
+        )
+        if (requestBody["destinationType"] == "accomodation"):
+            likedAdv = AccomodationNode(
+                requestBody["likedAdvID"],
+                requestBody["likedAdvName"]
+            )
+            LikeRelationManager.addLikeRelation(
+                userNode, accomodationNode=likedAdv)
+        elif (requestBody["destinationType"] == "activity"):
+            likedAdv = ActivityNode(
+                requestBody["likedAdvID"],
+                requestBody["likedAdvName"]
+            )
+            LikeRelationManager.addLikeRelation(
+                userNode, activityNode=likedAdv)
         return "", 200
     except Exception as e:
         return str(e), 500
 
-@application.route('/user/following', methods=['GET'])
+@application.route('/commonadv/<destination_type>/<user_id>', methods=['GET'])
 @required_token
-def getFollowedUsersByUserID(user={}):
+def getCommonAdv(destination_type, user_id,user={}):
+    destinationType = escape(destination_type)
+    userID = escape(user_id) 
+
+    userNode = UserNode(user["_id"] , user["username"])
     try:
-        userNode = UserNode(
-            user["_id"] ,
-            user["username"]
-        )
-        UserNodeManager.getFollowedUser(userNode)
-        return "", 200
+        if(destinationType == "accomodation"):
+            result = AccomodationNodeManager.getCommonLikedAccomodation(userNode , userID)
+        else:
+            result = ActivityNodeManager.getCommonLikedActivity(userNode , userID)
+        return result, 200
     except Exception as e:
         return str(e), 500
+
+@application.route('/likenumber/<destination_type>/<destination_id>', methods=['GET'])
+@required_token
+def getTotalLike(destination_type, destination_id,user={}):
+    destinationType = escape(destination_type)
+    destinationID = escape(destination_id) 
+    try:
+        if(destinationType == "accomodation"):
+            total = AccomodationNodeManager.getTotalLikes(destinationID)
+        else:
+            total = ActivityNodeManager.getTotalLikes(destinationID)
+        return {"likes" : total}, 200
+    except Exception as e:
+        return str(e), 500
+
+@application.route('/recommendations/user', methods=['GET'])
+@required_token
+def getRecommendedUsers(user={}):
+    try:
+        userNode = UserNode(
+            user["_id"],
+            user["username"]
+        )
+        result = UserNodeManager.getRecommendedUsers(userNode)
+        return result, 200
+    except Exception as e:
+        return str(e), 500
+
 
 @application.route('/user/following', methods=['POST'])
 @required_token
@@ -364,7 +452,7 @@ def followUser(user={}):
     try:
         requestBody = request.json
         userNode = UserNode(
-            user["_id"] ,
+            user["_id"],
             user["username"]
         )
         followedUserNode = UserNode(
@@ -376,130 +464,6 @@ def followUser(user={}):
     except Exception as e:
         return str(e), 500
 
-@application.route('/users/unfollowing', methods=['POST'])
-@required_token
-def unfollowUser(user={}):
-    try:
-        requestBody = request.json
-        userNode = UserNode(
-            user["_id"] ,
-            user["username"]
-        )
-        unfollowedUserNode = UserNode(
-            requestBody["unfollowedUserID"],
-            requestBody["unfollowedUsername"]
-        )
-        FollowRelationManager.removeFollowRelation(userNode, unfollowedUserNode)
-        return "", 200
-    except Exception as e:
-        return str(e), 500
-
-@application.route('/users/liking/<destination_type>', methods=['GET'])
-@required_token
-def getLikedAdvsByUserID(destination_type, user={}):
-    try:
-        userNode = UserNode(
-            user["_id"] ,
-            user["username"]
-        )
-        UserNodeManager.getLikedAdvs(userNode, destination_type)
-        return "", 200
-    except Exception as e:
-        return str(e), 500
-
-@application.route('/users/liking', methods=['POST'])
-@required_token
-def likeAdv(user={}):
-    try:
-        requestBody = request.json
-        userNode = UserNode(
-            user["_id"] ,
-            user["username"]
-        )
-        if(requestBody["destinationType"] == "accomodation"):
-            likedAdv = AccomodationNode(
-            requestBody["likedAdvID"],
-            requestBody["likedAdvName"]
-            )
-            LikeRelationManager.addLikeRelation(userNode, accomodationNode=likedAdv)
-        elif(requestBody["destinationType"] == "activity"):
-            likedAdv = ActivityNode(
-                requestBody["likedAdvID"],
-                requestBody["likedAdvName"]
-            )
-            LikeRelationManager.addLikeRelation(userNode, activityNode=likedAdv)
-        return "", 200
-    except Exception as e:
-        return str(e), 500
-
-@application.route('/users/unliking', methods=['POST'])
-@required_token
-def unlikeAdv(user={}):
-    try:
-        requestBody = request.json
-        userNode = UserNode(
-            user["_id"] ,
-            user["username"]
-        )
-        if(requestBody["destinationType"] == "accomodation"):
-            unlikedAdv = AccomodationNode(
-                requestBody["unlikedAdvID"],
-                requestBody["unlikedAdvName"]
-            )
-            LikeRelationManager.removeLikeRelation(userNode, accomodationNode=unlikedAdv)
-        elif(requestBody["destinationType"] == "activity"):
-            unlikedAdv = ActivityNode(
-                requestBody["unlikedAdvID"],
-                requestBody["unlikedAdvName"]
-            )
-            LikeRelationManager.removeLikeRelation(userNode, activityNode=unlikedAdv)
-
-        return "", 200
-    except Exception as e:
-        return str(e), 500
-
-@application.route('/recommendations/<destination_type>', methods=['GET'])
-@required_token
-def getrecommendedAdvs(destination_type, user={}):
-    try:
-        userNode = UserNode(
-            user["_id"] ,
-            user["username"]
-        )
-        UserNodeManager.getRecommendedAdvs(userNode, destination_type)
-        return "", 200
-    except Exception as e:
-        return str(e), 500
-
-@application.route('/recommendations/user', methods=['GET'])
-@required_token
-def getRecommendedUsers(user={}):
-    try:
-        userNode = UserNode(
-            user["_id"] ,
-            user["username"]
-        )
-        UserNodeManager.getRecommendedUsers(userNode)
-        return "", 200
-    except Exception as e:
-        return str(e), 500
-@application.route('/user/following', methods=['POST'])
-@required_token
-def followUser(user={}):
-    try:
-        requestBody = request.json
-        userNode = UserNode(
-            user["_id"] ,
-            user["username"]
-        )
-        followedUserNode = UserNode(
-            requestBody["followedUserID"],
-            requestBody["followedUsername"]
-        )
-        FollowRelationManager.addFollowRelation(userNode, followedUserNode)
-        return "", 200
-    except Exception as e:
-        return str(e), 500
 
 @application.route('/users/unfollowing', methods=['POST'])
 @required_token
@@ -507,55 +471,19 @@ def unfollowUser(user={}):
     try:
         requestBody = request.json
         userNode = UserNode(
-            user["_id"] ,
+            user["_id"],
             user["username"]
         )
         unfollowedUserNode = UserNode(
             requestBody["unfollowedUserID"],
             requestBody["unfollowedUsername"]
         )
-        FollowRelationManager.removeFollowRelation(userNode, unfollowedUserNode)
+        FollowRelationManager.removeFollowRelation(
+            userNode, unfollowedUserNode)
         return "", 200
     except Exception as e:
         return str(e), 500
 
-@application.route('/users/liking/<destination_type>', methods=['GET'])
-@required_token
-def getLikedAdvsByUserID(destination_type, user={}):
-    try:
-        userNode = UserNode(
-            user["_id"] ,
-            user["username"]
-        )
-        UserNodeManager.getLikedAdvs(userNode, destination_type)
-        return "", 200
-    except Exception as e:
-        return str(e), 500
-
-@application.route('/users/liking', methods=['POST'])
-@required_token
-def likeAdv(user={}):
-    try:
-        requestBody = request.json
-        userNode = UserNode(
-            user["_id"] ,
-            user["username"]
-        )
-        if(requestBody["destinationType"] == "accomodation"):
-            likedAdv = AccomodationNode(
-            requestBody["likedAdvID"],
-            requestBody["likedAdvName"]
-            )
-            LikeRelationManager.addLikeRelation(userNode, accomodationNode=likedAdv)
-        elif(requestBody["destinationType"] == "activity"):
-            likedAdv = ActivityNode(
-                requestBody["likedAdvID"],
-                requestBody["likedAdvName"]
-            )
-            LikeRelationManager.addLikeRelation(userNode, activityNode=likedAdv)
-        return "", 200
-    except Exception as e:
-        return str(e), 500
 
 @application.route('/users/unliking', methods=['POST'])
 @required_token
@@ -563,51 +491,42 @@ def unlikeAdv(user={}):
     try:
         requestBody = request.json
         userNode = UserNode(
-            user["_id"] ,
+            user["_id"],
             user["username"]
         )
-        if(requestBody["destinationType"] == "accomodation"):
+        if (requestBody["destinationType"] == "accomodation"):
             unlikedAdv = AccomodationNode(
                 requestBody["unlikedAdvID"],
                 requestBody["unlikedAdvName"]
             )
-            LikeRelationManager.removeLikeRelation(userNode, accomodationNode=unlikedAdv)
-        elif(requestBody["destinationType"] == "activity"):
+            LikeRelationManager.removeLikeRelation(
+                userNode, accomodationNode=unlikedAdv)
+        elif (requestBody["destinationType"] == "activity"):
             unlikedAdv = ActivityNode(
                 requestBody["unlikedAdvID"],
                 requestBody["unlikedAdvName"]
             )
-            LikeRelationManager.removeLikeRelation(userNode, activityNode=unlikedAdv)
+            LikeRelationManager.removeLikeRelation(
+                userNode, activityNode=unlikedAdv)
 
         return "", 200
     except Exception as e:
         return str(e), 500
+
 
 @application.route('/recommendations/<destination_type>', methods=['GET'])
 @required_token
-def getrecommendedAdvs(destination_type, user={}):
+def getRecommendedAdvs(destination_type, user={}):
     try:
         userNode = UserNode(
-            user["_id"] ,
+            user["_id"],
             user["username"]
         )
-        UserNodeManager.getRecommendedAdvs(userNode, destination_type)
-        return "", 200
+        result = UserNodeManager.getRecommendedAdvs(userNode, destination_type)
+        return result, 200
     except Exception as e:
         return str(e), 500
 
-@application.route('/recommendations/user', methods=['GET'])
-@required_token
-def getRecommendedUsers(user={}):
-    try:
-        userNode = UserNode(
-            user["_id"] ,
-            user["username"]
-        )
-        UserNodeManager.getRecommendedUsers(userNode)
-        return "", 200
-    except Exception as e:
-        return e, 500
 
 @application.route('/book/activity', methods=['POST'])
 @required_token
@@ -651,7 +570,7 @@ def deleteReservation(reservation_id, user={}):
 
 
 @application.route('/accomodations', methods=['GET'])
-#@required_token
+# @required_token
 def getAccomodations():
     args = request.args
     city = args.get("city")
@@ -704,8 +623,9 @@ def insertAccomodations(user={}):
         False
     )
     try:
-        accomodationID = AccomodationsManager.insertNewAccomodation(accomodation)
-        if (user["role"]!= "host" and user["role"]!= "admin"):
+        accomodationID = AccomodationsManager.insertNewAccomodation(
+            accomodation)
+        if (user["role"] != "host" and user["role"] != "admin"):
             updatedRole = {"type": "host"}
             UserManager.updateUser(updatedRole, host["_id"])
         return {"accomodationID": str(accomodationID)}, 200
@@ -796,12 +716,13 @@ def insertReview(user={}):
 
 @application.route('/reviews/<destinationType>/<destinationID>/<reviewID>', methods=['DELETE'])
 @required_token
-def deleteReviewByID(destinationType, destinationID, reviewID , user={}):
+def deleteReviewByID(destinationType, destinationID, reviewID, user={}):
     reviewID = escape(reviewID)
     destinationType = escape(destinationType)
     destinationID = escape(destinationID)
     try:
-        result = ReviewManager.deleteReview(reviewID, destinationID, destinationType, user)
+        result = ReviewManager.deleteReview(
+            reviewID, destinationID, destinationType, user)
         return "", 200
     except Exception as e:
         return str(e), 500
@@ -851,9 +772,9 @@ def loginUser():
     username = request.json["username"]
     password = request.json["password"]
     try:
-        userID, userType, name = UserManager.authenicateUser(
+        userID, userType, username, name = UserManager.authenicateUser(
             username, password)
-        return {"userID": userID, "role": userType, "name": name}, 200
+        return {"userID": userID, "role": userType, "name": name, "username": username}, 200
     except Exception as e:
         return str(e), 500
 
@@ -911,12 +832,13 @@ def getUsers(user):
 
 @application.route('/admin/announcements/<destination_type>', methods=['GET'])
 @required_token
-def getAnnouncementsToBeApproved(destination_type , user={}):
+def getAnnouncementsToBeApproved(destination_type, user={}):
     args = request.args
     index = args.get("index")
     direction = args.get("direction")
     try:
-        result = AdminManager.getAnnouncementsToApprove(index, direction, destination_type)
+        result = AdminManager.getAnnouncementsToApprove(
+            index, direction, destination_type)
         return result, 200
     except Exception as e:
         return str(e), 500
@@ -928,7 +850,8 @@ def getAnnouncementToBeApprovedByID(destination_type, announcementID):
     try:
         if (not (validateObjecID(announcementID))):
             return "Announcement non valido", 500
-        result = AdminManager.getAnnouncementToApproveByID(announcementID, destination_type)
+        result = AdminManager.getAnnouncementToApproveByID(
+            announcementID, destination_type)
         return result, 200
     except Exception as e:
         return str(e), 500
@@ -954,9 +877,9 @@ def refuseAnnouncement(destination_type, announcementID, user={}):
     if (not (validateObjecID(announcementID))):
         return "Announcement non valido", 500
     try:
-        if(destination_type == "accomodation"):
+        if (destination_type == "accomodation"):
             AccomodationsManager.deleteAccomodation(announcementID, user)
-        elif(destination_type == "activity"):
+        elif (destination_type == "activity"):
             ActivityManager.deleteActivity(announcementID, user)
         return "", 200
     except Exception as e:

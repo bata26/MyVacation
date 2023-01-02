@@ -147,5 +147,23 @@ class Serializer:
             result["endDate"] = reservation.endDate 
         return result
     
-    #@staticmethod
-    #def serializeAccomodationNode(accomodation):
+    @staticmethod
+    def serializeAccomodationNode(accomodationNode):
+        return {
+            "accomodationID" : accomodationNode.accomodationID,
+            "name" : accomodationNode.name,
+        }
+
+    @staticmethod
+    def serializeActivityNode(activityNode):
+        return {
+            "activityID" : activityNode.activityID,
+            "name" : activityNode.name,
+        }
+    
+    @staticmethod
+    def serializeUserNode(userNode):
+        return {
+            "userID" : userNode.userID,
+            "username" : userNode.username,
+        }

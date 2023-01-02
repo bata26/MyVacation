@@ -1,5 +1,6 @@
 from .graphConnection import GraphManager
-
+from models.activityNode import ActivityNode
+from utility.serializer import Serializer
 
 class ActivityNodeManager:
 
@@ -40,37 +41,33 @@ class ActivityNodeManager:
                 "Impossibile aggiornare il nodo activity: " + str(e))
 
     @staticmethod
-    def getActivityLikedByUser(userNode):
-        client = GraphManager.getInstance()
-        try:
-            with client.session() as session:
-                query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(a: Activity) return a" % userNode.userID
-                session.run(query)
-
-        except Exception as e:
-            raise Exception(
-                "Impossibile eseguire la query: " + str(e))
-
-    @staticmethod
     def getTotalLikes(activityNode):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH(a: Activity)<-[r:LIKE]-(u: User) WHERE a.activityID = '%s' return COUNT(r)" % activityNode.activityID
-                session.run(query)
+                query = "MATCH(a: Activity)<-[r:LIKE]-(u: User) WHERE a.activityID = '%s' return COUNT(r) as total" % activityNode.activityID
+                result = list(session.run(query))[0]
+                return result.value("total")
 
         except Exception as e:
             raise Exception(
                 "Impossibile ottenere i likes totali: " + str(e))
 
     @staticmethod
-    def getCommonLikedActivity(firstUserNode, secondUserNode):
+    def getCommonLikedActivity(firstUserNode, secondUserID):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
                 query = "MATCH(u1: User {userID: '%s' })-[:LIKE]->(a: Activity)<-[:LIKE]-(u2: User {userID: '%s' }) return a" % (
-                    firstUserNode.userID, secondUserNode.userID)
-                result = session.run(query)
+                    firstUserNode.userID, secondUserID)
+                queryResult = list(session.run(query))
+                result = []
+                
+                for item in queryResult:
+                    node = item.get("a")
+                    activityNode = ActivityNode(node["accomodationID"], node["name"])
+                    result.append(Serializer.serializeAccomodationNode(activityNode))
+                
                 return result
         except Exception as e:
             raise Exception("Impossibile eseguire la query: " + str(e))

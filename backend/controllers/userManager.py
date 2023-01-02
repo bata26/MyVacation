@@ -51,7 +51,7 @@ class UserManager:
             cursor = dict(collection.find_one({"username" : username}))
 
             if(bcrypt.checkpw(password.encode('utf-8') , cursor["password"].encode('utf-8'))):
-                return str(cursor["_id"]) , cursor["type"], cursor["name"]
+                return str(cursor["_id"]) , cursor["type"], cursor["username"] , cursor["name"]
             else:
                 raise Exception("Credenziali non valide")
         except Exception:
