@@ -33,6 +33,15 @@ const Activity = () => {
 
   const navigate = useNavigate();
 
+  function getTotalLikes() {
+    api.get('/likenumber/activity/' + activityID)
+      .then(function (response) {
+        setTotLikes(response.data.likes)
+      })
+      .catch(function (error) {
+        alert("Ops, something went wrong :(" + "\n" + error);
+      });
+  }
   React.useEffect(() => {
     api.get("/activities/" + activityID)
       .then(function (response) {
@@ -47,26 +56,17 @@ const Activity = () => {
         alert("Ops, something went wrong :(" + "\n" + error);
       })
 
-    api.get("/users/liking/activity")
-        .then(function (response) {
-          const activityIDList = [];
-          response.data.map((item) => activityIDList.push(item.activityID));
-          if(activityIDList.includes(activityID))
-              setLikedAdv(true)
-          else
-              setLikedAdv(false)
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+    api.get("/users/liking/activity/" + activityID)
+      .then(function (response) {
 
-    api.get('/likenumber/activity/' + activityID)
-        .then(function (response) {
-            setTotLikes(response.data.likes)
-        })
-        .catch(function (error) {
-            alert("Ops, something went wrong :(" + "\n" + error);
-        });
+        setLikedAdv(response.data.liked)
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    getTotalLikes();
+
 
   }, []);
 
@@ -90,31 +90,31 @@ const Activity = () => {
   }
 
   const likeAdv = async (likedAdvID, likedAdvName) => {
-      await api.post("/users/liking", {
-          "likedAdvID" : likedAdvID,
-          "likedAdvName" : likedAdvName,
-          "destinationType" : "activity"
-      }).then(function (response) {
-          console.log(response.data);
-          setLikedAdv(true);
-          setTotLikes(totLikes + 1)
-      }).catch(function (error) {
-          console.log(error);
-      });
+    await api.post("/users/liking", {
+      "likedAdvID": likedAdvID,
+      "likedAdvName": likedAdvName,
+      "destinationType": "activity"
+    }).then(function (response) {
+      console.log(response.data);
+      setLikedAdv(true);
+      getTotalLikes();
+    }).catch(function (error) {
+      console.log(error);
+    });
   }
 
   const unlikeAdv = async (unlikedAdvID, unlikedAdvName) => {
-      await api.post("/users/unliking", {
-          "unlikedAdvID" : unlikedAdvID,
-          "unlikedAdvName" : unlikedAdvName,
-          "destinationType" : "activity"
-      }).then(function (response) {
-          console.log(response.data);
-          setLikedAdv(false);
-          setTotLikes(totLikes - 1)
-      }).catch(function (error) {
-              console.log(error);
-      });
+    await api.post("/users/unliking", {
+      "unlikedAdvID": unlikedAdvID,
+      "unlikedAdvName": unlikedAdvName,
+      "destinationType": "activity"
+    }).then(function (response) {
+      console.log(response.data);
+      setLikedAdv(false);
+      getTotalLikes();
+    }).catch(function (error) {
+      console.log(error);
+    });
   }
 
   function goToCheckout() {
@@ -167,26 +167,30 @@ const Activity = () => {
             src={`data:image/jpeg;base64,${activity.mainPicture}`}
             style={{ borderRadius: 10 + 'px', height: 100 + '%', width: 99 + '%', marginTop: 3 + 'px' }}
           />
+        </Container>
+        <Container maxWidth='lg'>
           <Grid alignItems={"left"}>
             {localStorage.getItem("userID") != null && activity.approved ?
-                (!likedAdv?
-                        <ThumbUpOffAltIcon
-                            variant="filled"
-                            onClick={() => { likeAdv(activity._id, activity.name)}}
-                            sx={{ fontSize: 40 }}
-                        />
-                        :
-                        <ThumbUpAltIcon
-                            variant="filled"
-                            onClick={() => { unlikeAdv(activity._id, activity.name)}}
-                            sx={{ fontSize: 40 }}
-                        />
-                ) : <></>
+              (!likedAdv ?
+                <Button onClick={() => { likeAdv(activity._id, activity.name) }}>
+                  <ThumbUpOffAltIcon
+                    variant="filled"
+                    sx={{ fontSize: 40 }}
+                  />
+                </Button>
+                :
+                <Button onClick={() => { unlikeAdv(activity._id, activity.name) }}>
+                  <ThumbUpAltIcon
+                    variant="filled"
+                    sx={{ fontSize: 40 }}
+                  />
+                </Button>
+              ) : <></>
             }
             <Typography>
-                <b>{totLikes}</b>
+              <b>{totLikes}</b>
             </Typography>
-        </Grid>
+          </Grid>
         </Container>
         <Container maxWidth='lg'>
           <Typography
@@ -250,9 +254,9 @@ const Activity = () => {
             <b>City:</b> {activity.location.city}
             <br />
             {startDate ?
-                <>
-                    <b>Start date:</b> {startDate}
-                </> : <></>
+              <>
+                <b>Start date:</b> {startDate}
+              </> : <></>
             }
           </Typography>
           {startDate != null && localStorage.getItem("userID") != null && guests != null && activity.approved ?
@@ -323,16 +327,16 @@ const Activity = () => {
                       </Typography>
                     </CardContent>
                     <CardActions>
-                        {localStorage.getItem("userID") && (localStorage.getItem("userID") === item.userID || localStorage.getItem("role") === "admin") ?
-                            <Button color='error' onClick={() => {deleteReview(item._id)}}>
-                                Delete
-                            </Button> : <></>
-                        }
-                        {localStorage.getItem("userID") ?
-                            <Button color='info' onClick={() => navigate("/profile/" + item.userID)}>
-                                View Profile
-                            </Button> : <></>
-                        }
+                      {localStorage.getItem("userID") && (localStorage.getItem("userID") === item.userID || localStorage.getItem("role") === "admin") ?
+                        <Button color='error' onClick={() => { deleteReview(item._id) }}>
+                          Delete
+                        </Button> : <></>
+                      }
+                      {localStorage.getItem("userID") ?
+                        <Button color='info' onClick={() => navigate("/profile/" + item.userID)}>
+                          View Profile
+                        </Button> : <></>
+                      }
                     </CardActions>
                   </Card>
                 ))}

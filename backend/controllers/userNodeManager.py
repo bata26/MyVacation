@@ -6,6 +6,22 @@ from utility.serializer import Serializer
 
 
 class UserNodeManager:
+    @staticmethod
+    def checkIfIsFollowing(userID , followedID):
+        client = GraphManager.getInstance()
+        try:
+            with client.session() as session:
+                query = "MATCH (u:User {userID : '%s'})-[r:FOLLOW]->(u2:User {userID : '%s'}) return COUNT(r) as total" %(userID , followedID)
+                result = list(session.run(query))[0].value("total")
+
+                if(result == 0):
+                    return False
+                else:
+                    return True
+
+        except Exception as e:
+            raise Exception("Impossibile inserire il nodo utente: " + str(e))
+
 
     @staticmethod
     def createUserNode(userNode):
@@ -50,14 +66,34 @@ class UserNodeManager:
             raise Exception("Impossibile ottenere lista follower: " + str(e))
 
     @staticmethod
-    def getLikedAdvs(userNode, destinationType):
+    def checkIfUserLikesDestination(userNodeID, destinationID, destinationType):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
                 if (destinationType == "accomodation"):
-                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Accomodation) return liked" % userNode.userID
+                    query = "MATCH(u:User {userID: '%s' })-[r:LIKE]->(liked: Accomodation { accomodationID: '%s'}) return COUNT(r) as total" % (userNodeID , destinationID)
                 else:
-                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Activity) return liked" % userNode.userID
+                    query = "MATCH(u:User {userID: '%s' })-[r:LIKE]->(liked: Activity { activityID: '%s'}) return COUNT(r) as total" % (userNodeID , destinationID)
+                print(query)
+                queryResult = list(session.run(query))[0].value("total")
+                print(queryResult)
+                
+                if(queryResult > 0):
+                    return True
+                elif (queryResult == 0):
+                    return False
+        except Exception as e:
+            raise Exception("Impossibile ottenere annunci: " + str(e))
+
+    @staticmethod
+    def getLikedAdvs(userNodeID, destinationType):
+        client = GraphManager.getInstance()
+        try:
+            with client.session() as session:
+                if (destinationType == "accomodation"):
+                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Accomodation) return liked" % userNodeID
+                else:
+                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Activity) return liked" % userNodeID
 
                 queryResult = list(session.run(query))
                 

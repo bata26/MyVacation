@@ -34,6 +34,16 @@ const Accomodation = () => {
 	const [guests, setGuests] = React.useState(searchParams.get("guests") === "" ? null : searchParams.get("guests"))
 	const navigate = useNavigate();
 
+	function getTotalLikes() {
+		api.get('/likenumber/accomodation/' + accomodationID)
+			.then(function (response) {
+				setTotLikes(response.data.likes)
+			})
+			.catch(function (error) {
+				alert("Ops, something went wrong :(" + "\n" + error);
+			});
+	}
+
 	React.useEffect(() => {
 		api.get("/accomodations/" + accomodationID)
 			.then(function (response) {
@@ -48,26 +58,15 @@ const Accomodation = () => {
 				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 
-		api.get("/users/liking/accomodation")
+		api.get('/users/liking/accomodation/' + accomodationID)
 			.then(function (response) {
-				const accomodationIDList = [];
-				response.data.map((item) => accomodationIDList.push(item.accomodationID));
-				if (accomodationIDList.includes(accomodationID))
-					setLikedAdv(true)
-				else
-					setLikedAdv(false)
+				setLikedAdv(response.data.liked)
 			})
 			.catch(function (error) {
 				alert("Ops, something went wrong :(" + "\n" + error);
 			});
+		getTotalLikes();
 
-		api.get('/likenumber/accomodation/' + accomodationID)
-			.then(function (response) {
-				setTotLikes(response.data.likes)
-			})
-			.catch(function (error) {
-				alert("Ops, something went wrong :(" + "\n" + error);
-			});
 	}, []);
 
 
@@ -116,7 +115,7 @@ const Accomodation = () => {
 		}).then(function (response) {
 			console.log(response.data);
 			setLikedAdv(true);
-			setTotLikes(totLikes + 1);
+			getTotalLikes();
 		})
 			.catch(function (error) {
 				alert("Ops, something went wrong :(" + "\n" + error);
@@ -131,7 +130,7 @@ const Accomodation = () => {
 		}).then(function (response) {
 			console.log(response.data);
 			setLikedAdv(false);
-			setTotLikes(totLikes - 1)
+			getTotalLikes();
 		})
 			.catch(function (error) {
 				alert("Ops, something went wrong :(" + "\n" + error);
@@ -189,20 +188,24 @@ const Accomodation = () => {
 							</ImageListItem>
 						))}
 					</ImageList>
+				</Container>
+				<Container maxWidth='lg'>
 					<Grid alignItems={"left"}>
 						{localStorage.getItem("userID") != null && accomodation.approved ?
 							(!likedAdv ?
-								<ThumbUpOffAltIcon
-									variant="filled"
-									onClick={() => { likeAdv(accomodation._id, accomodation.name) }}
-									sx={{ fontSize: 40 }}
-								/>
+								<Button onClick={() => { likeAdv(accomodation._id, accomodation.name) }}>
+									<ThumbUpOffAltIcon
+										variant="filled"
+										sx={{ fontSize: 40 }}
+									/>
+								</Button>
 								:
-								<ThumbUpAltIcon
-									variant="filled"
-									onClick={() => { unlikeAdv(accomodation._id, accomodation.name) }}
-									sx={{ fontSize: 40 }}
-								/>
+								<Button onClick={() => { unlikeAdv(accomodation._id, accomodation.name) }}>
+									<ThumbUpAltIcon
+										variant="filled"
+										sx={{ fontSize: 40 }}
+									/>
+								</Button>
 							) : <></>
 						}
 						<Typography>
@@ -210,7 +213,6 @@ const Accomodation = () => {
 						</Typography>
 					</Grid>
 				</Container>
-
 				<Container maxWidth='lg'>
 					<Grid container spacing={24}>
 						<Grid item xs={6}>

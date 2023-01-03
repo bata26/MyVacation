@@ -28,12 +28,12 @@ const theme = createTheme();
 const Profile = () => {
   const [profile, setProfile] = React.useState(null);
   const [reservations, setReservations] = React.useState([]);
-  const [followedUser, setFollowedUser] = React.useState(null);
   const [listFollowedUsers, setListFollowedUsers] = React.useState([]);
   const [listLikedAcc, setListLikedAcc] = React.useState([]);
   const [listLikedAct, setListLikedAct] = React.useState([]);
   const [listCommonLikedAcc, setListCommonLikedAcc] = React.useState([]);
   const [listCommonLikedAct, setListCommonLikedAct] = React.useState([]);
+  const [isFollowing , setIsFollowing] = React.useState(null);
   const navigate = useNavigate();
   const { profileID } = useParams();
 
@@ -61,22 +61,27 @@ const Profile = () => {
         });
     }
 
-
     //Richiesta per recuperare le persone seguite dall'utente
     api.get("/users/following/" + profileID)
       .then(function (response) {
-        setListFollowedUsers(response.data)
-        if (response.data.includes(profileID))
-          setFollowedUser(true)
-        else
-          setFollowedUser(false)
+        setListFollowedUsers(response.data);
+      })
+      .catch(function (error) {
+        alert("Ops, something went wrong :(" + "\n" + error);
+      });
+
+
+    //Richiesta per recuperare le persone seguite dall'utente
+    api.get("/users/isfollowing/" + profileID)
+      .then(function (response) {
+        setIsFollowing(response.data.following);
       })
       .catch(function (error) {
         alert("Ops, something went wrong :(" + "\n" + error);
       });
 
     //Richiesta per recuperare gli alloggi piaciuti all'utente
-    api.get("/users/liking/accomodation")
+    api.get("/users/liked/accomodation/"+profileID)
       .then(function (response) {
         setListLikedAcc(response.data)
       })
@@ -85,7 +90,7 @@ const Profile = () => {
       });
 
     //Richiesta per recuperare le attività piaciute all'utente
-    api.get("/users/liking/activity")
+    api.get("/users/liked/activity/"+profileID)
       .then(function (response) {
         setListLikedAct(response.data)
       })
@@ -144,7 +149,7 @@ const Profile = () => {
       "username": followedUsername
     })
       .then(function (response) {
-        setFollowedUser(true)
+        setIsFollowing(true)
       })
       .catch(function (error) {
         alert("Ops, something went wrong :(" + "\n" + error);
@@ -158,7 +163,7 @@ const Profile = () => {
     })
       .then(function (response) {
         console.log(response.data);
-        setFollowedUser(false)
+        setIsFollowing(false)
       })
       .catch(function (error) {
         alert("Ops, something went wrong :(" + "\n" + error);
@@ -271,7 +276,7 @@ const Profile = () => {
           </Box>
         </Box>
         {localStorage.getItem("userID") !== profileID ?
-          (!followedUser ?
+          (!isFollowing ?
             <Button
               fullWidth
               variant="contained"

@@ -20,7 +20,7 @@ const pages = ["signIn", "signUp"];
 
 // Pagine a tendina logo utente
 const account = ['Profile', 'MyAdv', 'Logout'];
-const hostPages = ["accomodation" , "activity"];
+const hostPages = ["accomodation", "activity"];
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
@@ -151,7 +151,7 @@ function ResponsiveAppBar() {
             {
               (localStorage.getItem("userID") == null || !localStorage.getItem("userID")) ?
                 (
-                  pages.map( page => (
+                  pages.map(page => (
                     <Button
                       key={page}
                       onClick={() => ChangePage("/" + page)}
@@ -170,7 +170,7 @@ function ResponsiveAppBar() {
               search
             </Button>
             {
-              (localStorage.getItem("role") == "host") ? 
+              (localStorage.getItem("userID")) ? 
               (
                 hostPages.map( page => (
                   <Button
@@ -181,7 +181,7 @@ function ResponsiveAppBar() {
                     {page}
                   </Button>
                 ))
-              ) : <></>
+              ) :<></>
             }
             
           </Box>

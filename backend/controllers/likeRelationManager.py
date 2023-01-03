@@ -16,8 +16,12 @@ class LikeRelationManager:
             else:
                 raise Exception("invalid likeRelation")
             query = query + "return COUNT(r) as total"
+            
+            print(query)
             with client.session() as session:
-                session.run(query)
+                result = list(session.run(query))[0].value("total")
+            
+            return result == 0
 
         except Exception as e:
             raise Exception("Impossibile inserire la relazione: " + str(e))
@@ -25,7 +29,7 @@ class LikeRelationManager:
     @staticmethod
     def addLikeRelation(likeRelation):
         client = GraphManager.getInstance()
-
+        print("sono dentro")
         try:
             if(not(LikeRelationManager.checkIfExists(likeRelation))):
                 raise Exception("Già messo like")
@@ -38,10 +42,9 @@ class LikeRelationManager:
             else:
                 raise Exception("invalid likeRelation")
             query = query + "CREATE (u)-[:LIKE]->(a)"
-            
+            print(query)
             with client.session() as session:
-                result = list(session.run(query))[0]
-                return result.value("total") > 0
+                session.run(query)
 
         except Exception as e:
             raise Exception("Impossibile inserire la relazione: " + str(e))

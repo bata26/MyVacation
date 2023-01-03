@@ -361,6 +361,16 @@ def updateUser(user_id, user={}):
         return str(e), 500
 
 
+@application.route("/users/isfollowing/<user_id>", methods=["GET"])
+@required_token
+def checkIfIsFollowing(user_id , user={}):
+    try:
+        result = UserNodeManager.checkIfIsFollowing(user["_id"] , escape(user_id))
+        return {"following" : result}, 200
+    except Exception as e:
+        return str(e), 500
+
+
 @application.route("/users/following/<user_id>", methods=["GET"])
 @required_token
 def getFollowedUsersByUserID(user_id , user={}):
@@ -383,14 +393,23 @@ def followUser(user={}):
     except Exception as e:
         return str(e), 500
 
-
-@application.route("/users/liking/<destination_type>", methods=["GET"])
+@application.route("/users/liking/<destination_type>/<destination_id>", methods=["GET"])
 @required_token
-def getLikedAdvsByUserID(destination_type, user={}):
+def checkIfUserLikesDestination(destination_type, destination_id , user={}):
     destinationType = escape(destination_type)
     try:
-        userNode = UserNode(user["_id"], user["username"])
-        result = UserNodeManager.getLikedAdvs(userNode, destinationType)
+        result = UserNodeManager.checkIfUserLikesDestination(user["_id"], escape(destination_id), destinationType)
+        return {"liked" : result}, 200
+    except Exception as e:
+        return str(e), 500
+
+
+@application.route("/users/liked/<destination_type>/<user_id>", methods=["GET"])
+@required_token
+def getLikedAdvsByUserID(destination_type,user_id, user={}):
+    destinationType = escape(destination_type)
+    try:
+        result = UserNodeManager.getLikedAdvs(escape(user_id), destinationType)
         return result, 200
     except Exception as e:
         return str(e), 500
@@ -403,14 +422,10 @@ def likeAdv(user={}):
         requestBody = request.json
         userNode = UserNode(user["_id"], user["username"])
         if requestBody["destinationType"] == "accomodation":
-            accomodationNode = AccomodationNode(
-                requestBody["likedAdvID"], requestBody["likedAdvName"]
-            )
+            accomodationNode = AccomodationNode(requestBody["likedAdvID"], requestBody["likedAdvName"])
             likeRelation = LikeRelation(userNode, accomodationNode=accomodationNode)
         elif requestBody["destinationType"] == "activity":
-            activityNode = ActivityNode(
-                requestBody["likedAdvID"], requestBody["likedAdvName"]
-            )
+            activityNode = ActivityNode(requestBody["likedAdvID"], requestBody["likedAdvName"])
             likeRelation = LikeRelation(userNode, activityNode=activityNode)
 
         LikeRelationManager.addLikeRelation(likeRelation)
