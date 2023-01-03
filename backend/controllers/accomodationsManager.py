@@ -100,6 +100,9 @@ class AccomodationsManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
+        if not(isinstance(start_date, str) and isinstance(end_date, str)):
+            start_date = start_date.strftime("%Y-%m-%d")
+            end_date = end_date.strftime("%Y-%m-%d")
         occupiedAccomodationsID = collection.distinct(
             "destinationID",
             {   
@@ -134,7 +137,6 @@ class AccomodationsManager:
                 ]
             },
         )
-
         return occupiedAccomodationsID
 
     # we can filter for:
@@ -158,7 +160,6 @@ class AccomodationsManager:
             query["accommodates"] = {}
             query["accommodates"]["$gte"] = int(guestNumbers)
 
-        occupiedAccomodationsID = []
         if ( start_date != "" and end_date != "" and end_date != None and start_date != None):
             # ottengo una lista di id di accomodations non occupate
             # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti

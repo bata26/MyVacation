@@ -112,6 +112,8 @@ class ActivityManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
 
+        if not(isinstance(start_date, str) ):
+            start_date = start_date.strftime("%Y-%m-%d")
         occupiedActivitiesID = collection.distinct("destinationId",{"destinationType" : "activity" , "startDate": dateparser.parse(start_date)})
         return occupiedActivitiesID
 

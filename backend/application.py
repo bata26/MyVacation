@@ -13,6 +13,7 @@ from controllers.followRelationManager import FollowRelationManager
 from controllers.likeRelationManager import LikeRelationManager
 from controllers.accomodationNodeManager import AccomodationNodeManager
 from controllers.activityNodeManager import ActivityNodeManager
+from controllers.followRelationManager import FollowRelationManager
 from models.accomodationNode import AccomodationNode
 from models.activityNode import ActivityNode
 from controllers.adminManager import AdminManager
@@ -23,6 +24,7 @@ from models.activity import Activity
 from models.user import User
 from models.userNode import UserNode
 from models.likeRelation import LikeRelation
+from models.followRelation import FollowRelation
 from flask_cors import CORS, cross_origin
 import json
 from functools import wraps
@@ -305,11 +307,10 @@ def getAccomodationById(accomodation_id):
 def bookAccomodation(user={}):
     requestBody = request.json
     accomodation = requestBody["accomodation"]
-    user = json.loads(request.headers.get("Authorization"))
     startDatetime = dateparser.parse(requestBody["startDate"])
     endDatetime = dateparser.parse(requestBody["endDate"])
     nightNumber = (endDatetime - startDatetime).days
-    totalExpense = nightNumber * accomodation["price"]
+    totalExpense = nightNumber * int(accomodation["price"])
     city = accomodation["city"]
     hostID = accomodation["hostID"]
     reservation = Reservation(
@@ -320,11 +321,11 @@ def bookAccomodation(user={}):
         totalExpense,
         city,
         hostID,
-        endDatetime,
+        endDate=endDatetime,
     )
     try:
         reservationID = ReservationManager.book(reservation)
-        return reservationID, 200
+        return "OK", 200
     except Exception as e:
         return str(e), 500
 
@@ -360,13 +361,25 @@ def updateUser(user_id, user={}):
         return str(e), 500
 
 
-@application.route("/users/following", methods=["GET"])
+@application.route("/users/following/<user_id>", methods=["GET"])
 @required_token
-def getFollowedUsersByUserID(user={}):
+def getFollowedUsersByUserID(user_id , user={}):
     try:
-        userNode = UserNode(user["_id"], user["username"])
-        result = UserNodeManager.getFollowedUser(userNode)
+        result = UserNodeManager.getFollowedUser(escape(user_id))
         return result, 200
+    except Exception as e:
+        return str(e), 500
+
+@application.route("/users/follow", methods=["POST"])
+@required_token
+def followUser(user={}):
+    requestBody = dict(request.json)
+    try:
+        followerNode = UserNode(user["_id"], user["username"])
+        followedNode = UserNode(requestBody["userID"] , requestBody["username"])
+        followRelation = FollowRelation(followerNode , followedNode)
+        FollowRelationManager.addFollowRelation(followRelation)
+        return "OK", 200
     except Exception as e:
         return str(e), 500
 
@@ -415,9 +428,7 @@ def getCommonAdv(destination_type, user_id, user={}):
     userNode = UserNode(user["_id"], user["username"])
     try:
         if destinationType == "accomodation":
-            result = AccomodationNodeManager.getCommonLikedAccomodation(
-                userNode, userID
-            )
+            result = AccomodationNodeManager.getCommonLikedAccomodation(userNode, userID)
         else:
             result = ActivityNodeManager.getCommonLikedActivity(userNode, userID)
         return result, 200
@@ -451,31 +462,15 @@ def getRecommendedUsers(user={}):
         return str(e), 500
 
 
-@application.route("/user/following", methods=["POST"])
-@required_token
-def followUser(user={}):
-    try:
-        requestBody = request.json
-        userNode = UserNode(user["_id"], user["username"])
-        followedUserNode = UserNode(
-            requestBody["followedUserID"], requestBody["followedUsername"]
-        )
-        FollowRelationManager.addFollowRelation(userNode, followedUserNode)
-        return "", 200
-    except Exception as e:
-        return str(e), 500
-
-
-@application.route("/users/unfollowing", methods=["POST"])
+@application.route("/users/unfollow", methods=["POST"])
 @required_token
 def unfollowUser(user={}):
     try:
         requestBody = request.json
         userNode = UserNode(user["_id"], user["username"])
-        unfollowedUserNode = UserNode(
-            requestBody["unfollowedUserID"], requestBody["unfollowedUsername"]
-        )
-        FollowRelationManager.removeFollowRelation(userNode, unfollowedUserNode)
+        unfollowedUserNode = UserNode(requestBody["userID"], requestBody["username"])
+        followRelation = FollowRelation(userNode,unfollowedUserNode)
+        FollowRelationManager.removeFollowRelation(followRelation)
         return "", 200
     except Exception as e:
         return str(e), 500
@@ -552,8 +547,8 @@ def getReservationsByUserID(user_id):
 def deleteReservation(reservation_id, user={}):
     reservationID = escape(reservation_id)
     try:
-        result = ReservationManager.deleteReservationByID(reservationID)
-        return result, 200
+        ReservationManager.deleteReservationByID(reservationID , user)
+        return "OK", 200
     except Exception as e:
         return str(e), 500
 
@@ -564,8 +559,8 @@ def getAccomodations():
     args = request.args
     city = args.get("city")
     guests = args.get("guestsNumber")
-    start_date = args.get("start_date")
-    end_date = args.get("end_date")
+    start_date = args.get("startDate")
+    end_date = args.get("endDate")
     index = args.get("index")
     direction = args.get("direction")
     try:
@@ -813,6 +808,7 @@ def signUp():
     try:
         userNode = UserNode(insertedID, username)
         UserNodeManager.createUserNode(userNode)
+        return "OK" , 200
     except Exception as e:
         Logger.addNodeToFile("user", insertedID, "CREATE", username)
         return str(e), 500

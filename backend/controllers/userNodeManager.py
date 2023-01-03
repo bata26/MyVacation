@@ -31,11 +31,11 @@ class UserNodeManager:
             raise Exception("Impossibile eliminare il nodo utente: " + str(e))
 
     @staticmethod
-    def getFollowedUser(userNode):
+    def getFollowedUser(userNodeID):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH(u:User {userID: '%s' })-[:FOLLOW]->(followed: User) return followed" % userNode.userID
+                query = "MATCH(u:User {userID: '%s' })-[:FOLLOW]->(followed: User) return followed" % userNodeID
                 queryResult = list(session.run(query))
 
                 result = []
@@ -113,7 +113,14 @@ class UserNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:FOLLOW]->(u3:User) WHERE NOT (u)-[:FOLLOW]->(u3) return u3" % userNode.userID
+                queryTotalFollowed = "MATCH (u:User {userID: '%s'})-[r:FOLLOW]->(:User) return COUNT(r) as total" % userNode.userID
+                totalFollowed = list(session.run(queryTotalFollowed))[0].value("total")
+                
+                if(totalFollowed == 0):
+                    query = "MATCH (u3 : User) WHERE NOT u3.userID = '%s' return u3 LIMIT 3"  % userNode.userID
+                else:
+                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:FOLLOW]->(u3:User) WHERE NOT (u)-[:FOLLOW]->(u3) return u3 LIMIT 3" % userNode.userID
+                
                 queryResult = list(session.run(query))
                 result = []
 

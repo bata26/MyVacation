@@ -21,18 +21,19 @@ class ReservationManager:
         destinationCollection = db[os.getenv("ACCOMODATIONS_COLLECTION")] if reservation.destinationType == "accomodation" else db[os.getenv("ACTIVITIES_COLLECTION")]
         usersCollection = db[os.getenv("USERS_COLLECTION")]
         try:
-            if(reservation.destinationType == "accomodation" and str(reservation.destinationID) in AccomodationsManager.getOccupiedAccomodationIDs(reservation.startDate , reservation.endDate)):
+            if(reservation.destinationType == "accomodation" and ObjectId(reservation.destinationID) in AccomodationsManager.getOccupiedAccomodationIDs(reservation.startDate , reservation.endDate)):
                 raise Exception("accomodation occupata")
-            elif (reservation.destinationType == "activity" and str(reservation.destinationID) in ActivityManager.getOccupiedActivities(reservation.startDate)):
+            elif (reservation.destinationType == "activity" and ObjectId(reservation.destinationID) in ActivityManager.getOccupiedActivities(reservation.startDate)):
                 raise Exception("activity occupata")
-                
+
             with client.start_session() as session:
                 with session.start_transaction():
                     insertedReservation = reservationCollection.insert_one(reservation.getDictToUpload(), session=session)
                     reservation._id = insertedReservation.inserted_id
+                    
                     destinationCollection.update_one({"_id" : ObjectId(reservation.destinationID)} , {"$push" : {"reservations": reservation.getDictForAdvertisement()}}, session=session)
-                    usersCollection.update_one({"_id" : ObjectId(reservation.userID)} , {"$push" : {"reservations" : reservation.getDictForUser()}})
-            return insertedReservation.inserted_id
+                    usersCollection.update_one({"_id" : ObjectId(reservation.userID)} , {"$push" : {"reservations" : reservation.getDictForUser()}}, session=session)
+                    return insertedReservation.inserted_id
         except Exception as e:
             raise Exception("Impossibile prenotare: " + str(e) )
 
@@ -130,7 +131,8 @@ class ReservationManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         reservationCollection = db[os.getenv("RESERVATIONS_COLLECTION")]
-        
+        usersCollection = db[os.getenv("USERS_COLLECTION")]
+
         try:
             reservation = dict(reservationCollection.find_one({"_id" : ObjectId(reservationID)}))
 
@@ -143,6 +145,7 @@ class ReservationManager:
                 with session.start_transaction():
                     reservationCollection.delete_one({"_id" : ObjectId(reservationID)}, session=session)
                     destinationCollection.update_one({"_id" : ObjectId(reservation["destinationID"])} , {"$pull" : {"reservations": {"_id" : ObjectId(reservationID)}}}, session=session)
-
+                    usersCollection.update_one({"_id" : ObjectId(reservation["userID"])} , {"$pull" : {"reservations": {"_id" : ObjectId(reservationID)}}}, session=session)
+                    
         except Exception as e:
             raise Exception("Impossibile eliminarte prenotazione "+reservationID+": " + str(e))
