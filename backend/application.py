@@ -818,14 +818,14 @@ def signUp():
 @required_token
 def getUsers(user):
     args = request.args
-    id = args.get("id")
+    username = args.get("username")
     name = args.get("name")
     surname = args.get("surname")
     index = args.get("index")
     direction = args.get("direction")
     try:
         result = AdminManager.getFilteredUsers(
-            user, id, name, surname, index, direction
+            user, username, name, surname, index, direction
         )
         return result, 200
     except Exception as e:

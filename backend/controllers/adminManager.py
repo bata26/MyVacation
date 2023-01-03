@@ -10,10 +10,11 @@ from bson.objectid import ObjectId
 class AdminManager():
 
     # we can filter for:
+    #   - username
     #   - name
     #   - surname
     @staticmethod
-    def getFilteredUsers(user , id = "" , name = "" , surname = "" , index = "", direction  = ""):
+    def getFilteredUsers(user , username = "" , name = "" , surname = "" , index = "", direction  = ""):
         if (user["role"] != "admin"):
             raise Exception("L'utente non possiede i privilegi di admin")
 
@@ -22,8 +23,8 @@ class AdminManager():
         db = client[os.getenv("DB_NAME")]
         result = []
 
-        if(id != "" and id != None):
-            query["_id"] = ObjectId(id)
+        if(username != "" and username != None):
+            query["username"] = username
         if(name != "" and name != None):
             query["name"] = name
         if(surname != "" and surname != None):

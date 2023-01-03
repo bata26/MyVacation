@@ -23,9 +23,9 @@ export default function UsersList() {
     const [page, setPage] = React.useState(1);
     const navigate = useNavigate();
     const [userList, setUserList] = React.useState(null);
-    const [name, setName] = React.useState("");
-    const [surname, setSurname] = React.useState("");
-    const [id, setId] = React.useState("");
+    const [name, setName] = React.useState(null);
+    const [surname, setSurname] = React.useState(null);
+    const [username, setUsername] = React.useState(null);
     const [lastPage, setLastPage] = React.useState(null);
 
 
@@ -49,9 +49,12 @@ export default function UsersList() {
         const data = new FormData(event.currentTarget);
         const name = data.get('name');
         const surname = data.get('surname');
-        const id = data.get('userId');
+        const username = data.get('username');
+        setName(name);
+        setUsername(username);
+        setSurname(surname);
 
-        const url = "?id=" + id + "&name=" + name + "&surname=" + surname + "&index=";
+        const url = "?username=" + username + "&name=" + name + "&surname=" + surname + "&index=";
 
         api.get("/users" + url)
             .then(function (response) {
@@ -72,7 +75,7 @@ export default function UsersList() {
 
     const handlePreviousPage = () => {
         setPage(page - 1)
-        const url = "?id=" + id + "&name=" + name + "&surname=" + surname + "&index=" + first_id + "&direction=previous";
+        const url = "?username=" + username + "&name=" + name + "&surname=" + surname + "&index=" + first_id + "&direction=previous";
         api.get("/users" + url)
             .then(function (response) {
                 setUserList(response.data);
@@ -88,7 +91,7 @@ export default function UsersList() {
     };
 
     const handleNextPage = () => {
-        const url = "?id=" + id + "&name=" + name + "&surname=" + surname + "&index=" + last_id + "&direction=next";
+        const url = "?username=" + username + "&name=" + name + "&surname=" + surname + "&index=" + last_id + "&direction=next";
         api.get("/users" + url)
             .then(function (response) {
                 if (response && response.data.length > 0) {
@@ -109,7 +112,7 @@ export default function UsersList() {
 
     const handleFirstPage = () => {
         setPage(1);
-        const url = "?id=" + id + "&name=" + name + "&surname=" + surname + "&index=";
+        const url = "?username=" + username + "&name=" + name + "&surname=" + surname + "&index=";
 
         api.get("/users" + url)
             .then(function (response) {
@@ -136,9 +139,9 @@ export default function UsersList() {
                         <Grid item sm={4}>
                             <TextField
                                 fullWidth
-                                id="userId"
-                                name="userId"
-                                label="ID"
+                                id="username"
+                                name="username"
+                                label="Username"
                             />
                         </Grid>
                         <Grid item sm={4}>
@@ -171,7 +174,7 @@ export default function UsersList() {
             <Table sx={{ minWidth: 500 }} size='small'>
                 <TableHead>
                     <TableRow>
-                        <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
+                        <TableCell align="left" style={{ fontWeight: 'bold' }}>Username</TableCell>
                         <TableCell align="center" style={{ fontWeight: 'bold' }}>Name</TableCell>
                         <TableCell align="center" style={{ fontWeight: 'bold' }}>Surname</TableCell>
                         <TableCell align="center" style={{ fontWeight: 'bold' }}>Date Of Birth</TableCell>
@@ -180,8 +183,8 @@ export default function UsersList() {
                 </TableHead>
                 <TableBody>
                     {userList && userList.map((item) => (
-                        <TableRow key={item._id} onClick={() => { navigate("/profile?userId=" + item._id) }} style={{ cursor: "pointer" }}>
-                            <TableCell align='left'>{item._id}</TableCell>
+                        <TableRow key={item._id} onClick={() => { navigate("/profile/" + item._id) }} style={{ cursor: "pointer" }}>
+                            <TableCell align='left'>{item.username}</TableCell>
                             <TableCell align='center'>{item.name}</TableCell>
                             <TableCell align='center'>{item.surname}</TableCell>
                             <TableCell align='center'>{Moment(item.dateOfBirth).utc().format('MMM DD YYYY')}</TableCell>
