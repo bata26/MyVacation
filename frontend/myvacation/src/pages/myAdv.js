@@ -13,7 +13,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import api from "../utility/api";
 import { useNavigate } from 'react-router-dom';
-import Config from '../utility/config';
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -28,10 +27,11 @@ const MyAdv = () => {
     const [activities, setActivities] = React.useState([]);
     let selectedCities = [];
     const [stateCities, setStateCities] = React.useState([]);
-    const [menuCity , setMenuCity] = React.useState(null);
+    const [city, setCity] = React.useState([]);
+
 
     React.useEffect(() => {
-        setMenuCity(1);
+        setCity(1);
         //Richiesta per recuperare le accommodations dell'utente
         api.get("/myadvacc/" + profileID)
             .then(function (response) {
@@ -72,11 +72,11 @@ const MyAdv = () => {
             }
             );
         setStateCities(selectedCities);
-        setMenuCity(stateCities[0]);
+        setCity(stateCities[0]);
     }, []);
 
     const handleChange = (event) => {
-        setMenuCity(event.target.value);
+        setCity(event.target.value);
     }
 
     return (
@@ -97,15 +97,15 @@ const MyAdv = () => {
                         </Typography>
                     </Container>
                 </Box>
-
+                
                 <Container maxWidth="md">
-                {stateCities && 
                     <Select
-                        labelId="City"
-                        id="cityReservation"
-                        value={menuCity}
-                        onChange={handleChange}
                         fullWidth
+                        id='city'
+                        name='city'
+                        value={city || ''}
+                        onChange={handleChange}
+                        style={{ marginBottom: 20 + 'px' }}
                     >
                         {stateCities &&
                             stateCities.map((city, index) => {
@@ -113,11 +113,50 @@ const MyAdv = () => {
                             })
                         }
                     </Select>
-                }
+
+                    {/* Valori statici per statistiche */}
+                    <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }}>
+                        <Table sx={{ minWidth: 650 }} size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Jan</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Feb</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Mar</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Apr</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>May</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Jun</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Jul</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Aug</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Sep</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Oct</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Nov</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Dec</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+
+                                <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell align="center">1</TableCell>
+                                    <TableCell align="center">4</TableCell>
+                                    <TableCell align="center">21</TableCell>
+                                    <TableCell align="center">3</TableCell>
+                                    <TableCell align="center">33</TableCell>
+                                    <TableCell align="center">98</TableCell>
+                                    <TableCell align="center">5</TableCell>
+                                    <TableCell align="center">17</TableCell>
+                                    <TableCell align="center">7</TableCell>
+                                    <TableCell align="center">86</TableCell>
+                                    <TableCell align="center">23</TableCell>
+                                    <TableCell align="center">69</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
                 </Container>
 
                 <Container maxWidth="md">
-                    <TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
+                    <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }}>
                         <Table sx={{ minWidth: 650 }} size="small">
                             <TableHead>
                                 <TableRow>
