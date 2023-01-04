@@ -107,7 +107,7 @@ class ReservationManager:
                     occupiedActivitiesID = collection.distinct("_id" , {"destinationID" : ObjectId(destinationID) , "startDate": dateparser.parse(newStartDate)})
                     
                     if len(occupiedActivitiesID) != 0:
-                        print("Activity Occupata!")
+                        #print("Activity Occupata!")
                         raise Exception("Accommodation Occupata, impossibile aggiornare")
 
                     query = { '_id': ObjectId(reservationID) }

@@ -93,9 +93,9 @@ def generateRandomActivity():
 
 
 hostList = getHostList()
-print(f"hostList ottenuta")
+#print(f"hostList ottenuta")
 cityList = getCitiesList()
-print("cityList ottenuta")
+#print("cityList ottenuta")
 client = MongoManager.getInstance()
 db = client["myvacation"]
 collection = db["activities"]
@@ -105,6 +105,6 @@ for i in range(0 , 150):
     activities.append(activity)
 
 res = collection.insert_many(activities)
-print(f"post inserimento : {res}")
+#print(f"post inserimento : {res}")
 
     

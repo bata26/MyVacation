@@ -15,6 +15,7 @@ import api from "../utility/api";
 import { useNavigate } from 'react-router-dom';
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import config from '../utility/config';
 
 const theme = createTheme();
 
@@ -26,12 +27,13 @@ const MyAdv = () => {
     const [accommodations, setAccommodations] = React.useState([]);
     const [activities, setActivities] = React.useState([]);
     let selectedCities = [];
+    let selectedCity;
     const [stateCities, setStateCities] = React.useState([]);
     const [city, setCity] = React.useState([]);
+    const [listToPlot, setListToPlot] = React.useState([]);
 
 
     React.useEffect(() => {
-        setCity(1);
         //Richiesta per recuperare le accommodations dell'utente
         api.get("/myadvacc/" + profileID)
             .then(function (response) {
@@ -65,7 +67,6 @@ const MyAdv = () => {
         api.get("/analytics/monthReservations")
             .then(function (response) {
                 setMonthReservation(response.data);
-                console.log(monthReservation);
             })
             .catch(function (error) {
                 alert("Ops, something went wrong :(" + "\n" + error);
@@ -77,6 +78,12 @@ const MyAdv = () => {
 
     const handleChange = (event) => {
         setCity(event.target.value);
+        selectedCity = monthReservation.find( item => item.city === event.target.value);
+        let baseList = [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ];
+        selectedCity.stats.map( (item , index) => (
+            baseList[item.month - 1] = item.total
+        ))
+        setListToPlot(baseList);
     }
 
     return (
@@ -97,7 +104,17 @@ const MyAdv = () => {
                         </Typography>
                     </Container>
                 </Box>
-                
+                <Container maxWidth="sm">
+                        <Typography
+                            component="h2"
+                            variant="h5"
+                            align="center"
+                            color="text.primary"
+                            gutterBottom
+                        >
+                            Reservations per city
+                        </Typography>
+                    </Container>
                 <Container maxWidth="md">
                     <Select
                         fullWidth
@@ -106,7 +123,8 @@ const MyAdv = () => {
                         value={city || ''}
                         onChange={handleChange}
                         style={{ marginBottom: 20 + 'px' }}
-                    >
+                        >
+
                         {stateCities &&
                             stateCities.map((city, index) => {
                                 return <MenuItem value={city} key={index}>{city}</MenuItem>
@@ -119,35 +137,21 @@ const MyAdv = () => {
                         <Table sx={{ minWidth: 650 }} size="small">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Jan</TableCell>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Feb</TableCell>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Mar</TableCell>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Apr</TableCell>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>May</TableCell>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Jun</TableCell>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Jul</TableCell>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Aug</TableCell>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Sep</TableCell>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Oct</TableCell>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Nov</TableCell>
-                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Dec</TableCell>
+                                    {
+                                        config.SHORT_MONTHS.map((month , index) => (
+                                            <TableCell align="center" key = {index} style={{ fontWeight: 'bold' }}>{month}</TableCell>        
+                                        ))
+                                    }                                   
                                 </TableRow>
                             </TableHead>
                             <TableBody>
 
                                 <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    <TableCell align="center">1</TableCell>
-                                    <TableCell align="center">4</TableCell>
-                                    <TableCell align="center">21</TableCell>
-                                    <TableCell align="center">3</TableCell>
-                                    <TableCell align="center">33</TableCell>
-                                    <TableCell align="center">98</TableCell>
-                                    <TableCell align="center">5</TableCell>
-                                    <TableCell align="center">17</TableCell>
-                                    <TableCell align="center">7</TableCell>
-                                    <TableCell align="center">86</TableCell>
-                                    <TableCell align="center">23</TableCell>
-                                    <TableCell align="center">69</TableCell>
+                                    {
+                                        listToPlot && listToPlot.map((month , index) => (
+                                            <TableCell align="center" id={"month-" + index} key = {index} style={{ fontWeight: 'bold' }}>{month}</TableCell>        
+                                        ))
+                                    }
                                 </TableRow>
                             </TableBody>
                         </Table>

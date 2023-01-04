@@ -62,7 +62,7 @@ def getAddress(latitude , longitude):
         return location
     except Exception:
         return None
-    #print(data["results"])
+    ##print(data["results"])
 
     
 
@@ -77,13 +77,13 @@ if __name__ == "__main__":
         os.chdir(directory)
 
         listingDataFrame = pd.read_csv(LISTING_FILENAME)
-        print("LISTING OK")
-        #print(list(listingDataFrame.columns.values))
-        #print("====================\n\n")
+        #print("LISTING OK")
+        ##print(list(listingDataFrame.columns.values))
+        ##print("====================\n\n")
         reviewsDataFrame = pd.read_csv(REVIEWS_FILENAME)
-        print("REVIEWS OK")
-        #print(list(reviewsDataFrame.columns.values))
-        #print("====================\n\n")
+        #print("REVIEWS OK")
+        ##print(list(reviewsDataFrame.columns.values))
+        ##print("====================\n\n")
         address = []
         city = []
         country = []
@@ -96,9 +96,9 @@ if __name__ == "__main__":
             try:
                 picture = base64.b64encode(requests.get(row["picture_url"]).content)
                 host_picture = base64.b64encode(requests.get(row["host_picture_url"]).content)
-                #print(row["host_picture_url"])
-                #print(requests.get(row["host_picture_url"]).content)
-                #print(base64.b64encode(requests.get(row["host_picture_url"]).content))
+                ##print(row["host_picture_url"])
+                ##print(requests.get(row["host_picture_url"]).content)
+                ##print(base64.b64encode(requests.get(row["host_picture_url"]).content))
                 id = row["id"]
                 collection.update_one({"old_id" : id} , {"$set" : {"mainPicture" : picture}})
                 
@@ -133,11 +133,11 @@ if __name__ == "__main__":
 
 
                         collection.insert_one(obj)
-                        print(f"oggetto {index} inserito correttamente")
+                        #print(f"oggetto {index} inserito correttamente")
                     except Exception as e:
-                        print(f"impossibile inserire : {e}")    
+                        #print(f"impossibile inserire : {e}")    
             except Exception as e:
-                print(f"ERRORE:{e}")     
+                #print(f"ERRORE:{e}")     
             #break
         os.chdir("..")
         break

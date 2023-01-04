@@ -55,7 +55,7 @@ def main():
                     UserNodeManager.createUserNode(userNode)
         except Exception as e:
             Logger.logWorkerError(f"Impossibile eseguire operazione su {item['_id']}")
-            print(str(e))    
+            #print(str(e))    
 
 if __name__ == "__main__":
     main()

@@ -12,7 +12,7 @@ def getFreePort():
     with socket() as s:
         s.bind(('',0))
         port = s.getsockname()[1]
-        print(f"Selezionata la porta {port}")
+        #print(f"Selezionata la porta {port}")
         return port
 
 # Singleton client per le connesioni al DB
@@ -26,7 +26,7 @@ class GraphManager:
          return GraphManager.__instance
 
      def __init__(self):
-        print("MONGO MANAGER INIT")
+        #print("MONGO MANAGER INIT")
         try:
             global server , pickedPort
             if(os.getenv("LOCATION") == "remote"):
@@ -40,14 +40,14 @@ class GraphManager:
                                         ssl_ca_certs=os.getenv("SSL_CA_CERTS"),
                                         ssl_match_hostname=False,
                                         retryWrites=False)
-                print("CONNESSIONE AL DB RIUSCITA")
+                #print("CONNESSIONE AL DB RIUSCITA")
             else:
-                print("CONNESSO AL DB LOCALE")
+                #print("CONNESSO AL DB LOCALE")
                 myclient = GraphDatabase.driver(
                     os.getenv("GRAPH_LOCAL_ADDRESS"), 
                     auth = (os.getenv("GRAPH_USER") , os.getenv("GRAPH_PASSWORD")))
             GraphManager.__instance = myclient
 
         except Exception as e:
-            print(f"IMPOSSIBILE CONNETTERSI AL DB:{e} ")
+            #print(f"IMPOSSIBILE CONNETTERSI AL DB:{e} ")
             GraphManager.__instance = None

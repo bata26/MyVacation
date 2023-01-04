@@ -74,9 +74,9 @@ class UserNodeManager:
                     query = "MATCH(u:User {userID: '%s' })-[r:LIKE]->(liked: Accommodation { accommodationID: '%s'}) return COUNT(r) as total" % (userNodeID , destinationID)
                 else:
                     query = "MATCH(u:User {userID: '%s' })-[r:LIKE]->(liked: Activity { activityID: '%s'}) return COUNT(r) as total" % (userNodeID , destinationID)
-                print(query)
+                #print(query)
                 queryResult = list(session.run(query))[0].value("total")
-                print(queryResult)
+                #print(queryResult)
                 
                 if(queryResult > 0):
                     return True
@@ -118,9 +118,9 @@ class UserNodeManager:
         try:
             with client.session() as session:
                 if (destinationType == "accommodation"):
-                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Accommodation) WHERE NOT (u)-[:LIKE]->(a) LIMIT 3 return a" % userNode.userID
+                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Accommodation) MATCH (u3:User)-[r:LIKE]->(a)  WHERE NOT (u)-[:LIKE]->(a)  return a , COUNT(r) as liked ORDER BY liked DESC LIMIT 3" % userNode.userID
                 else:
-                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Activity) WHERE NOT (u)-[:LIKE]->(a) LIMIT 3 return a" % userNode.userID
+                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Activity) MATCH (u3:User)-[r:LIKE]->(a)  WHERE NOT (u)-[:LIKE]->(a)  return a , COUNT(r) as liked ORDER BY liked DESC LIMIT 3" % userNode.userID
                 queryResult = list(session.run(query))
                 result = []
 
@@ -155,7 +155,7 @@ class UserNodeManager:
                 if(totalFollowed == 0):
                     query = "MATCH (u3 : User) WHERE NOT u3.userID = '%s' return u3 LIMIT 3"  % userNode.userID
                 else:
-                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:FOLLOW]->(u3:User) WHERE NOT (u)-[:FOLLOW]->(u3) return u3 LIMIT 3" % userNode.userID
+                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:FOLLOW]->(u3:User) MATCH (u2)-[:FOLLOW]->(u3:User) MATCH (u4)-[r:FOLLOW]->(u3)  WHERE NOT (u)-[:FOLLOW]->(u3)return u3 , COUNT(r) as followed ORDER BY followed DESC LIMIT 3" % userNode.userID
                 
                 queryResult = list(session.run(query))
                 result = []

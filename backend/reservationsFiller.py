@@ -13,22 +13,22 @@ START_TIMESTAMP = 1577869341
 END_TIMESTAMP = 1704099741
 try:
     usersList = list(userCollection.distinct("_id" , {"type" : {"$nin" : ["unregistered" , "admin"]}}))
-    print("Fetch degli utenti eseguito")    
+    #print("Fetch degli utenti eseguito")    
 except Exception as e:
-    print("Impossibile ottenere utenti: " + str(e))
+    #print("Impossibile ottenere utenti: " + str(e))
 
 
 try:
     accommodationList = list(accommodationCollection.find({} , {"_id" : 1 , "price" : 1 , "city" : "$location.city" , "hostID" : 1}))
-    print("Fetch delle accommodations eseguito")    
+    #print("Fetch delle accommodations eseguito")    
 except Exception as e:
-    print("Impossibile ottenere utenti: " + str(e))
+    #print("Impossibile ottenere utenti: " + str(e))
 
 try:
     activityList = list(activityCollection.find({} , {"_id" : 1 , "price" : 1 , "city" : "$location.city" , "hostID" : 1}))
-    print("Fetch delle accommodations eseguito")    
+    #print("Fetch delle accommodations eseguito")    
 except Exception as e:
-    print("Impossibile ottenere utenti: " + str(e))
+    #print("Impossibile ottenere utenti: " + str(e))
 
 reservationList = []
 for i in range(0 , 1200):
@@ -67,11 +67,11 @@ for i in range(0 , 1200):
 
     reservationList.append(reservation)
 
-print("Inserisco nel db")
+#print("Inserisco nel db")
 try:
     reservationCollection.insert_many(reservationList)
 except Exception as e:
-    print("Impossibile inserire tutte")
+    #print("Impossibile inserire tutte")
 
 
 

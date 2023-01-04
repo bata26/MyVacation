@@ -9,7 +9,7 @@ accommodationsCollection = db["accommodations"]
 activitiesCollection = db["activities"]
 
 usersList = list(usersCollection.find({} , {"_id" : 1 , "username" : 1}))
-print(usersList)
+#print(usersList)
 accommodationsList = list(accommodationsCollection.find({} , {"_id" : 1 , "name" : 1 , "type" : "accommodation"}))
 activitiesList = list(activitiesCollection.find({} , {"_id" : 1 , "name" : 1 , "type" : "activity"}))
 
@@ -42,7 +42,7 @@ for user in usersList:
         }
         # i < 7 accommodation
         if i < 7:
-            print("accommodation")
+            #print("accommodation")
             accommodation = accommodationsList[randint(0 , len(accommodationsList) - 1)]
             obj["accommodationID"] = str(accommodation["_id"])
             obj["accommodationName"] = str(accommodation["name"])

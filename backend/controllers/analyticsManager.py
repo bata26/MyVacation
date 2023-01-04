@@ -94,7 +94,8 @@ class AnalyticsManager:
             ]))
             return result
         except Exception as e:
-            print("impossibile ottenere: " + str(e))
+            raise Exception("Impossibile ottenere: " + str(e))
+            #print("impossibile ottenere: " + str(e))
 
     @staticmethod
     def getAccommodationAverageCost(user):
@@ -115,7 +116,8 @@ class AnalyticsManager:
             ]))
             return result
         except Exception as e:
-            print("Impossibile eseguire la query: " + str(e))
+            raise Exception("Impossibile ottenere: " + str(e))
+            #print("Impossibile eseguire la query: " + str(e))
 
     @staticmethod
     def getActivityAverageCost(user):
@@ -136,7 +138,8 @@ class AnalyticsManager:
             ]))
             return result
         except Exception as e:
-            print("Impossibile eseguire la query: " + str(e))
+            raise Exception("Impossibile ottenere: " + str(e))
+            #print("Impossibile eseguire la query: " + str(e))
 
     # Ottieni i tre annunci più prenotati di sempre
     @staticmethod
@@ -250,4 +253,5 @@ class AnalyticsManager:
             }
             return result
         except Exception as e:
-            print("Impossibile eseguire la query: " + str(e))
+            raise Exception("Impossibile ottenere: " + str(e))
+            #print("Impossibile eseguire la query: " + str(e))

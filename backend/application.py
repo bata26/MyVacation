@@ -56,9 +56,9 @@ def required_token(f):
     def decorator(*args, **kwargs):
         if "Authorization" not in request.headers:
             return Response(json.dumps(f"Authorization token not found"), 401)
-        print(request.headers.get("Authorization"))
+        #print(request.headers.get("Authorization"))
         parsedUserObj = json.loads(request.headers.get("Authorization"))
-        print(parsedUserObj)
+        #print(parsedUserObj)
         userID = parsedUserObj["_id"]
         if not (validateObjecID(userID)):
             return Response(json.dumps("userID non valido"), 403)

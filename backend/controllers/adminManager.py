@@ -148,7 +148,7 @@ class AdminManager:
                     _id=str(item["_id"]),
                 )
                 result.append(Serializer.serializeActivity(tempToApprove))
-            print(result)
+            #print(result)
         return result
 
     @staticmethod

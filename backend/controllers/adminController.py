@@ -10,5 +10,5 @@ def getAnnouncementToBeApproved():
 @application.route('/admin/annuncements/<announcementID>' , methods = ['POST'])
 #@required_token
 def getAnnouncementToBeApproved(announcementID):
-    print(announcementID)
+    #print(announcementID)
     return result , 200

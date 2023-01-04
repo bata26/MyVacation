@@ -14,10 +14,10 @@ class ActivityManager:
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
 
         try:
-            print("pre edit")
+            #print("pre edit")
             res = collection.update_one(
                 {"_id": ObjectId(activityID)}, {"$set": activity})
-            print(res)
+            #print(res)
         except Exception as e:
             raise Exception("Impossibile aggiornare: " + str(e))
 

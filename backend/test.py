@@ -4,8 +4,8 @@
 #pwd = "AdminAdmin"
 #salt = bcrypt.gensalt(12)
 #dbHash = bcrypt.hashpw(pwd.encode('utf-8'), salt).decode('utf-8')
-#print(dbHash)
-#print(bcrypt.checkpw(pwd.encode('utf-8'), dbHash.encode('utf8')))
+##print(dbHash)
+##print(bcrypt.checkpw(pwd.encode('utf-8'), dbHash.encode('utf8')))
 from controllers.connection import MongoManager
 from random import randint
 import pymongo
@@ -55,6 +55,6 @@ for accommodation in cursor:
     user = users[randint(0 , len(users)- 1)]
     try:
         accommodationCollection.update_one({"_id" : accommodation["_id"]} , {"$set" : {"hostID" : ObjectId(user["_id"]) , "hostName" : user["name"]}})
-        print(f"Inserito correttamente: {counter}")
+        #print(f"Inserito correttamente: {counter}")
     except Exception as e:
-        print(f"Impossibile aggiornare : {e}" )
+        #print(f"Impossibile aggiornare : {e}" )
