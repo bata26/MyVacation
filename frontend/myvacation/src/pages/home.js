@@ -58,7 +58,7 @@ const Home = () => {
 					alert("Ops, something went wrong :(" + "\n" + error);
 				})
 
-			if (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== undefined) {
+			if (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== undefined && localStorage.getItem("role") !== "admin") {
 				await api.get("/recommendations/user")
 					.then(function (response) {
 						setRecommendedUsers(response.data);
@@ -237,6 +237,8 @@ const Home = () => {
 						))
 					}
 				</Grid>
+				{localStorage.getItem("role") !== "admin" && localStorage.getItem("userID") != null ?
+				<>
 				{/* Profili suggeriti */}
 				<Box
 					sx={{
@@ -368,6 +370,8 @@ const Home = () => {
 					))
 					}
 				</Grid>
+				</> : <></>
+				}
 			</Container>
 			<Box
 				sx={{

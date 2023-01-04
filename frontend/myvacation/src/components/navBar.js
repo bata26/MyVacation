@@ -167,7 +167,7 @@ function ResponsiveAppBar() {
               search
             </Button>
             {
-              (localStorage.getItem("userID")) ? 
+              localStorage.getItem("userID") && localStorage.getItem("role") !== "admin" ?
               (
                 loggedPages.map( page => (
                   <Button
