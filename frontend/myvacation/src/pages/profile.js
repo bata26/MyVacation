@@ -20,7 +20,7 @@ import EditReservationModal from "../components/editReservationModal";
 import EditProfileModal from "../components/editProfileModal";
 import { useNavigate, useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
-
+import Link from '@mui/material/Link';
 
 const theme = createTheme();
 
@@ -32,13 +32,13 @@ const Profile = () => {
   const [listLikedAct, setListLikedAct] = React.useState([]);
   const [listCommonLikedAcc, setListCommonLikedAcc] = React.useState([]);
   const [listCommonLikedAct, setListCommonLikedAct] = React.useState([]);
-  const [isFollowing , setIsFollowing] = React.useState(null);
+  const [isFollowing, setIsFollowing] = React.useState(null);
   const navigate = useNavigate();
   const { profileID } = useParams();
 
-  
+
   React.useEffect(() => {
-    
+
     //Richiesta per recuperare le informazioni dell'utente
     api.get("/users/" + profileID)
       .then(function (response) {
@@ -68,7 +68,7 @@ const Profile = () => {
       });
 
     //Richiesta per recuperare gli alloggi piaciuti all'utente
-    api.get("/users/liked/accommodation/"+profileID)
+    api.get("/users/liked/accommodation/" + profileID)
       .then(function (response) {
         setListLikedAcc(response.data)
       })
@@ -77,7 +77,7 @@ const Profile = () => {
       });
 
     //Richiesta per recuperare le attività piaciute all'utente
-    api.get("/users/liked/activity/"+profileID)
+    api.get("/users/liked/activity/" + profileID)
       .then(function (response) {
         setListLikedAct(response.data)
       })
@@ -326,10 +326,12 @@ const Profile = () => {
                 </TableHead>
                 <TableBody>
                   {profile.reservations.map((item) => (
-                    <TableRow key={item._id} style={{ cursor: "pointer" }}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      onClick={() => navigate("/" + item.destinationType + "/" + item.destinationID)}>
-                      <TableCell align="left">{item._id}</TableCell>
+                    <TableRow key={item._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }}>
+                      <TableCell align="left">
+                        <Link style={{ cursor: "pointer" }} onClick={() => navigate("/" + item.destinationType + "/" + item.destinationID)}>
+                          {item._id}
+                        </Link>
+                      </TableCell>
                       <TableCell align="center">{item.destinationType}</TableCell>
                       <TableCell align="center">{Moment(item.startDate).utc().format('MMM DD YYYY')}</TableCell>
                       {item.endDate ?
@@ -361,120 +363,149 @@ const Profile = () => {
           </Box>
         </> : <></>
       }
-      <Grid container columnSpacing={2}>
-        {/* Tabella persone seguite */}
-        <Grid item xs={4} sm={6}>
-          <Container maxWidth="sm">
-            <Typography
-              component="h3"
-              variant="h5"
-              align="center"
-              color="text.primary"
-              gutterBottom
-            >
-              Followed Users
-            </Typography>
-          </Container>
-          <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
-                  <TableCell align="right" style={{ fontWeight: 'bold' }}>Username</TableCell>
-                </TableRow>
-              </TableHead>
-              <tbody>
-                {listFollowedUsers && listFollowedUsers.map((item, index) => (
-                  <TableRow key={index} style={{ cursor: 'pointer' }} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() =>{ navigate("/profile/" + item.userID);window.location.reload(false);}}>
-                    <TableCell align="left">{item.userID} </TableCell>
-                    <TableCell align="right">{item.username}</TableCell>
+      <Container maxWidth='md'>
+        <Grid container columnSpacing={2}>
+          {/* Tabella persone seguite */}
+          <Grid item xs={4} sm={6}>
+            <Container maxWidth="sm">
+              <Typography
+                component="h3"
+                variant="h5"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+                Followed Users
+              </Typography>
+            </Container>
+            <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
+                    <TableCell align="right" style={{ fontWeight: 'bold' }}>Username</TableCell>
                   </TableRow>
-                ))}
-              </tbody>
-            </Table>
-          </TableContainer>
-        </Grid>
-        {/* Tabella annunci piaciuti */}
-        <Grid item xs={4} sm={6}>
-          <Container maxWidth="sm">
-            <Typography
-              component="h3"
-              variant="h5"
-              align="center"
-              color="text.primary"
-              gutterBottom
-            >
-              Liked Advs
-            </Typography>
-          </Container>
-          <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
-                  <TableCell align="right" style={{ fontWeight: 'bold' }}>Name</TableCell>
-                </TableRow>
-              </TableHead>
-              <tbody>
-                {listLikedAcc && listLikedAcc.map((item, index) => (
-                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/accommodation/" + item.accommodationID)}>
-                    <TableCell align="left">{item.accommodationID} </TableCell>
-                    <TableCell align="right">{item.name}</TableCell>
-                  </TableRow>
-                ))}
-                {listLikedAct && listLikedAct.map((item, index) => (
-                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/activity/" + item.activityID)}>
-                    <TableCell align="left">{item.activityID} </TableCell>
-                    <TableCell align="right">{item.name}</TableCell>
-                  </TableRow>
-                ))}
-              </tbody>
-            </Table>
-          </TableContainer>
-        </Grid>
-        {/* Tabella annunci piaciuti in comune */}
-        {localStorage.getItem("userID") !== profileID ?
-          <>
-            <Grid item xs={4} sm={6} alignContent={"center"}>
-              <Container maxWidth="sm">
-                <Typography
-                  component="h3"
-                  variant="h5"
-                  align="center"
-                  color="text.primary"
-                  gutterBottom
-                >
-                  Common Liked Advs
-                </Typography>
-              </Container>
-              <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
-                      <TableCell align="right" style={{ fontWeight: 'bold' }}>Name</TableCell>
+                </TableHead>
+                <tbody>
+                  {listFollowedUsers && listFollowedUsers.map((item, index) => (
+                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                      <TableCell align="left">
+                        <Link style={{ cursor: 'pointer' }} onClick={() => { navigate("/profile/" + item.userID); window.location.reload(false); }}>
+                          {item.userID}
+                        </Link>
+                      </TableCell>
+                      <TableCell align="right">{item.username}</TableCell>
                     </TableRow>
-                  </TableHead>
-                  <tbody>
-                    {listCommonLikedAcc && listCommonLikedAcc.map((item, index) => (
-                      <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/accommodation/" + item.accommodationID)}>
-                        <TableCell align="left">{item.accommodationID} </TableCell>
-                        <TableCell align="right">{item.name}</TableCell>
+                  ))}
+                </tbody>
+              </Table>
+            </TableContainer>
+          </Grid>
+          {/* Tabella annunci piaciuti */}
+          <Grid item xs={4} sm={6}>
+            <Container maxWidth="sm">
+              <Typography
+                component="h3"
+                variant="h5"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+                Liked Advs
+              </Typography>
+            </Container>
+            <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
+                    <TableCell align="right" style={{ fontWeight: 'bold' }}>Name</TableCell>
+                  </TableRow>
+                </TableHead>
+                <tbody>
+                  {listLikedAcc && listLikedAcc.map((item, index) => (
+                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                      <TableCell align="left">
+                        <Link style={{ cursor: 'pointer' }} onClick={() => navigate("/accommodation/" + item.accommodationID)} >
+                          {item.accommodationID}
+                        </Link>
+                      </TableCell>
+                      <TableCell align="right">{item.name}</TableCell>
+                    </TableRow>
+                  ))}
+                  {listLikedAct && listLikedAct.map((item, index) => (
+                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                      <TableCell align="left">
+                        <Link style={{ cursor: 'pointer' }} onClick={() => navigate("/activity/" + item.activityID)}>
+                          {item.activityID}
+                        </Link>
+                      </TableCell>
+                      <TableCell align="right">{item.name}</TableCell>
+                    </TableRow>
+                  ))}
+                </tbody>
+              </Table>
+            </TableContainer>
+          </Grid>
+          {/* Tabella annunci piaciuti in comune */}
+          {localStorage.getItem("userID") !== profileID ?
+            <>
+              <Grid item xs={4} sm={6} alignContent={"center"}>
+                <Container maxWidth="sm">
+                  <Typography
+                    component="h3"
+                    variant="h5"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                  >
+                    Common Liked Advs
+                  </Typography>
+                </Container>
+                <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
+                        <TableCell align="right" style={{ fontWeight: 'bold' }}>Name</TableCell>
                       </TableRow>
-                    ))}
-                    {listCommonLikedAct && listCommonLikedAct.map((item, index) => (
-                      <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/activity/" + item.accommodationID)}>
-                        <TableCell align="left">{item.activityID} </TableCell>
-                        <TableCell align="right">{item.name}</TableCell>
-                      </TableRow>
-                    ))}
-                  </tbody>
-                </Table>
-              </TableContainer>
-            </Grid>
-          </> : <></>
-        }
-      </Grid>
+                    </TableHead>
+                    <tbody>
+                      {listCommonLikedAcc && listCommonLikedAcc.map((item, index) => (
+                        <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                          <TableCell align="left">
+                            <Link style={{ cursor: 'pointer' }} onClick={() => navigate("/accommodation/" + item.accommodationID)}>
+                              {item.accommodationID}
+                            </Link>
+                          </TableCell>
+                          <TableCell align="right">{item.name}</TableCell>
+                        </TableRow>
+                      ))}
+                      {listCommonLikedAct && listCommonLikedAct.map((item, index) => (
+                        <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                          <TableCell align="left">
+                            <Link style={{ cursor: 'pointer' }} onClick={() => navigate("/activity/" + item.accommodationID)}>
+                              {item.activityID}
+                            </Link>
+                          </TableCell>
+                          <TableCell align="right">{item.name}</TableCell>
+                        </TableRow>
+                      ))}
+                    </tbody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+            </> : <></>
+          }
+        </Grid>
+      </Container>
+      <Box
+        sx={{
+          py: 3,
+          px: 2,
+          mt: 'auto',
+        }}
+      />
     </ThemeProvider>
   );
 }

@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { Container } from '@mui/system';
 import { Grid } from '@mui/material';
-
+import Link from '@mui/material/Link';
 
 export default function ToBeApprovedList({ destinationType }) {
     const [last_id, setLast_id] = React.useState(null);
@@ -105,9 +105,11 @@ export default function ToBeApprovedList({ destinationType }) {
                 </TableHead>
                 <TableBody>
                     {toBeApprovedList && toBeApprovedList.map((row) => (
-                        <TableRow key={row._id} onClick={() => { navigate("/toApprove/" + row._id + "?type=" + destinationType) }} style={{ cursor: "pointer" }}>
+                        <TableRow key={row._id}>
                             <TableCell align='left' component="th" scope="row">
-                                {row.hostID}
+                                <Link style={{ cursor: "pointer" }} onClick={() => { navigate("/toApprove/" + row._id + "?type=" + destinationType) }}>
+                                    {row.hostID}
+                                </Link>
                             </TableCell>
                             <TableCell align='center' component="th" scope="row">
                                 {row.name}
