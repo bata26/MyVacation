@@ -15,7 +15,7 @@ A registration form will allow new users to register within the application as R
 - Unregistered User can browse top 3 cities.
 - Unregistered User can browse top 3 accomodations.
 - Unregistered User can browse top 3 activities.
-- Uregistered User can view a review.
+- Uregistered User can view a review.</br>
 <b>Registered User:</b>
 - Registered User can log in to the platform.
 - Registered User can log out from the platform.
@@ -40,7 +40,7 @@ A registration form will allow new users to register within the application as R
 - Registered User can follow/unfollow an user.
 - Registered User can like/unlike an accomodation/activity.
 - Registered User can view the own user profile.
-- Registered User can update the own user profile.
+- Registered User can update the own user profile.</br>
 <b>Admin:</b>
 - Admin can log in to the platform.
 - Admin can log out from the platform.
@@ -57,7 +57,7 @@ A registration form will allow new users to register within the application as R
 - Admin can update an user profile.
 - Admin can delete an user.
 - Admin can approve/refuse an acccomodation/activity insertion.
-- Admin can view all the stats and analytics on the admin page.
+- Admin can view all the stats and analytics on the admin page. </br>
 
 ## Non functional requirements
 - The application needs to provide low latency, high availability and tolerance to
