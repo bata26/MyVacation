@@ -4,7 +4,7 @@
 The users of the application will be divided into three categories: Unregistered Users,
 Registered Users and Admin. 
 Registered Users are allowed to use the main functionalities of the application.
-A Registered User can be a customer or an host.
+A Registered User can be standard or a host.
 Access to the application is guaranteed to everyone. It's provided a login system using 
 username and password, through which the user will be correctly identified. 
 A registration form will allow new users to register within the application as Registered Users. </br>
@@ -76,11 +76,11 @@ Partition Protection (P)
 - Privacy: The application shall provide the security of users’ credentials.
 - Portability: The system shall be environment independent.
 - Maintainability: The code shall be readable and easy to maintain.
+- The client side and server side have to use HTTP protocol to communicate.
 
-## Attori
+## Actors
 
-The users of the application will be divided into three categories: Unregistered Users,
-Registered Users and Admin. 
+The users of the application will be divided into three categories: Unregistered Users, Registered Users and Admin. 
 
 ## CAP Theorem
 
@@ -92,7 +92,7 @@ Stessa gestione con le reviews.
 ## Use Cases
 [![My-Vacation-Use-Cases.png](https://i.postimg.cc/9FfsQPw9/My-Vacation-Use-Cases.png)](https://postimg.cc/qg91m3LB)
 ## UML
-[![uml.jpg](https://i.postimg.cc/L58mp3h5/uml.jpg)](https://postimg.cc/Fd8MbcyX)
+[![UML.png](https://i.postimg.cc/CKKyQc6x/UML.png)](https://postimg.cc/JsSdy5Lf)
 
 ## Dataset Source
 

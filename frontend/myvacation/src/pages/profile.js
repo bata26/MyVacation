@@ -48,18 +48,6 @@ const Profile = () => {
         alert("Ops, something went wrong :(" + "\n" + error);
       });
 
-    if (profileID == localStorage.getItem("userID")) {
-      //Richiesta per recuperare le prenotazioni
-      api.get("/reservations/" + profileID)
-        .then(function (response) {
-          setReservations(response.data);
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          alert("Ops, something went wrong :(" + "\n" + error);
-        });
-    }
-
     //Richiesta per recuperare le persone seguite dall'utente
     api.get("/users/following/" + profileID)
       .then(function (response) {
@@ -337,7 +325,7 @@ const Profile = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {reservations.map((item) => (
+                  {profile.reservations.map((item) => (
                     <TableRow key={item._id} style={{ cursor: "pointer" }}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       onClick={() => navigate("/" + item.destinationType + "/" + item.destinationID)}>

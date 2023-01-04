@@ -87,6 +87,7 @@ class Serializer:
                 "destinationID" : str(reservation['destinationID']),
                 "startDate" : reservation['startDate'],
                 "totalExpense" : reservation['totalExpense'],
+                "destinationType" : reservation['destinationType'],
                 "_id" : str(reservation['_id'])
             })
             if hasattr(reservation , "endDate"):
