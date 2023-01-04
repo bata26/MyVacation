@@ -131,10 +131,10 @@ users at any given point in time. It needs to continue to function regardless of
 network partitions. It may result in inconsistency at some points however, this is a small cost
 comparing to the benefit of availability in the case of this application
 
-We decided to prefer availability over consistency in a room/activity booking system to provide a better experience to the customers. 
-To gain more availability, we might allow both the nodes to keep accepting book/activity reservations even if the communication line breaks. 
-The worst possible outcome of this approach is that 2 customers will end up making the same room/activity reservation. However, such situations can be resolved using domain knowledge. 
-It’s a pretty common occurrence that the room/activity are overbooked and then the company address such cases by taking the appropriate measures (e.g., Refunds, moving to another room/activity, etc.).
+We decided to prefer availability over consistency in a accomodation/activity booking system to provide a better experience to the customers. 
+To gain more availability, we might allow both the nodes to keep accepting accomodation/activity reservations even if the communication line breaks. 
+The worst possible outcome of this approach is that 2 customers will end up making the same accomodation/activity reservation. However, such situations can be resolved using domain knowledge. 
+It’s a pretty common occurrence that the room/activity are overbooked and then the company address such cases by taking the appropriate measures (e.g., Refunds, moving to another accomodation/activity, etc.).
 This is directly linked to the adoption of the Eventual Consistency paradigm for our
 distributed system which is better detailed further.
 
@@ -165,12 +165,6 @@ recognise patterns in the community evolution. Not handling diagrams in our fron
 of this analytics in a table in the Statistics section of our website, showing for each day for which data are
 available the absolute and relative growth in that day.
 
-------
-Con Neo4j possiamo persistere:
-- advertisement preferiti;
-- Mostrare gli annunci più desiderati nella pagina dell'admin (i primi 5/10 annunci che sono stati maggiormente aggiunti alla wishlist dei vari utenti) 
-- Ads pubblicati da un utente;
-- Collegare una città alle attività/camere e poi mostrare alcune attività/camere relazionate alla città della camera/attività che abbiamo aggiunto alla wishlist o prenotato o cercato. Nodi: ads, città, utente.
 ----------------------------
 
 Neo4j [5] is a graph database management system, an extremely interesting technology that allows extremely
