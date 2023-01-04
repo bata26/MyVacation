@@ -14,10 +14,8 @@ import Paper from '@mui/material/Paper';
 import api from "../utility/api";
 import { useNavigate } from 'react-router-dom';
 import Config from '../utility/config';
-import { BarChart } from '../components/barChart';
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { Bar } from 'react-chartjs-2';
 
 const theme = createTheme();
 

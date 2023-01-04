@@ -118,9 +118,9 @@ class UserNodeManager:
         try:
             with client.session() as session:
                 if (destinationType == "accommodation"):
-                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Accommodation) WHERE NOT (u)-[:LIKE]->(a) return a" % userNode.userID
+                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Accommodation) WHERE NOT (u)-[:LIKE]->(a) LIMIT 3 return a" % userNode.userID
                 else:
-                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Activity) WHERE NOT (u)-[:LIKE]->(a) return a" % userNode.userID
+                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Activity) WHERE NOT (u)-[:LIKE]->(a) LIMIT 3 return a" % userNode.userID
                 queryResult = list(session.run(query))
                 result = []
 
