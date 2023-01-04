@@ -43,7 +43,7 @@ const ReviewForm = ({destinationID , destinationType}) => {
       }else{
         alert("Error: " +
             "you can review only a booked advertisement; " +
-            "you can review only one time");
+            "you can review only once");
       }
     })
     .catch(function(error){
@@ -78,7 +78,7 @@ const ReviewForm = ({destinationID , destinationType}) => {
 
   return (
     <div>
-      {localStorage.getItem("userID") != null ?
+      {localStorage.getItem("userID") != null && localStorage.getItem("role") != "admin" ?
           <Button
               variant="outlined"
               style={{width:100+'%'}}
@@ -103,7 +103,7 @@ const ReviewForm = ({destinationID , destinationType}) => {
                 margin="normal"
                 fullWidth
                 name="description"
-                label="descrizione"
+                label="Description"
                 type="description"
                 id="description"
                 autoFocus

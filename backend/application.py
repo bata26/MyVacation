@@ -37,9 +37,6 @@ import dateparser
 from datetime import datetime
 from utility.logger import Logger
 
-# user = {
-#   "_id": "637ce1a04ed62608566c5fa7"
-# }
 
 load_dotenv()
 application = Flask(__name__)
@@ -305,29 +302,32 @@ def getAccomodationById(accomodation_id):
 @application.route("/book/accomodation", methods=["POST"])
 @required_token
 def bookAccomodation(user={}):
-    requestBody = request.json
-    accomodation = requestBody["accomodation"]
-    startDatetime = dateparser.parse(requestBody["startDate"])
-    endDatetime = dateparser.parse(requestBody["endDate"])
-    nightNumber = (endDatetime - startDatetime).days
-    totalExpense = nightNumber * int(accomodation["price"])
-    city = accomodation["city"]
-    hostID = accomodation["hostID"]
-    reservation = Reservation(
-        user["_id"],
-        accomodation["_id"],
-        "accomodation",
-        startDatetime,
-        totalExpense,
-        city,
-        hostID,
-        endDate=endDatetime,
-    )
-    try:
-        reservationID = ReservationManager.book(reservation)
-        return "OK", 200
-    except Exception as e:
-        return str(e), 500
+    if user["role"] != "admin":
+        requestBody = request.json
+        accomodation = requestBody["accomodation"]
+        startDatetime = dateparser.parse(requestBody["startDate"])
+        endDatetime = dateparser.parse(requestBody["endDate"])
+        nightNumber = (endDatetime - startDatetime).days
+        totalExpense = nightNumber * int(accomodation["price"])
+        city = accomodation["city"]
+        hostID = accomodation["hostID"]
+        reservation = Reservation(
+            user["_id"],
+            accomodation["_id"],
+            "accomodation",
+            startDatetime,
+            totalExpense,
+            city,
+            hostID,
+            endDate=endDatetime,
+        )
+        try:
+            reservationID = ReservationManager.book(reservation)
+            return "OK", 200
+        except Exception as e:
+            return str(e), 500
+    else:
+        raise Exception("Admin non può prenotare")
 
 
 @application.route("/reservation", methods=["PATCH"])
@@ -383,15 +383,18 @@ def getFollowedUsersByUserID(user_id , user={}):
 @application.route("/users/follow", methods=["POST"])
 @required_token
 def followUser(user={}):
-    requestBody = dict(request.json)
-    try:
-        followerNode = UserNode(user["_id"], user["username"])
-        followedNode = UserNode(requestBody["userID"] , requestBody["username"])
-        followRelation = FollowRelation(followerNode , followedNode)
-        FollowRelationManager.addFollowRelation(followRelation)
-        return "OK", 200
-    except Exception as e:
-        return str(e), 500
+    if user["role"] != "admin":
+        requestBody = dict(request.json)
+        try:
+            followerNode = UserNode(user["_id"], user["username"])
+            followedNode = UserNode(requestBody["userID"] , requestBody["username"])
+            followRelation = FollowRelation(followerNode , followedNode)
+            FollowRelationManager.addFollowRelation(followRelation)
+            return "OK", 200
+        except Exception as e:
+            return str(e), 500
+    else:
+        raise Exception("Admin non può seguire")
 
 @application.route("/users/liking/<destination_type>/<destination_id>", methods=["GET"])
 @required_token
@@ -418,21 +421,23 @@ def getLikedAdvsByUserID(destination_type,user_id, user={}):
 @application.route("/users/liking", methods=["POST"])
 @required_token
 def likeAdv(user={}):
-    try:
-        requestBody = request.json
-        userNode = UserNode(user["_id"], user["username"])
-        if requestBody["destinationType"] == "accomodation":
-            accomodationNode = AccomodationNode(requestBody["likedAdvID"], requestBody["likedAdvName"])
-            likeRelation = LikeRelation(userNode, accomodationNode=accomodationNode)
-        elif requestBody["destinationType"] == "activity":
-            activityNode = ActivityNode(requestBody["likedAdvID"], requestBody["likedAdvName"])
-            likeRelation = LikeRelation(userNode, activityNode=activityNode)
+    if user["role"] != "admin":
+        try:
+            requestBody = request.json
+            userNode = UserNode(user["_id"], user["username"])
+            if requestBody["destinationType"] == "accomodation":
+                accomodationNode = AccomodationNode(requestBody["likedAdvID"], requestBody["likedAdvName"])
+                likeRelation = LikeRelation(userNode, accomodationNode=accomodationNode)
+            elif requestBody["destinationType"] == "activity":
+                activityNode = ActivityNode(requestBody["likedAdvID"], requestBody["likedAdvName"])
+                likeRelation = LikeRelation(userNode, activityNode=activityNode)
 
-        LikeRelationManager.addLikeRelation(likeRelation)
-        return "", 200
-    except Exception as e:
-        return str(e), 500
-
+            LikeRelationManager.addLikeRelation(likeRelation)
+            return "", 200
+        except Exception as e:
+            return str(e), 500
+    else:
+        raise Exception("Admin non può mettere like")
 
 @application.route("/commonadvs/<destination_type>/<user_id>", methods=["GET"])
 @required_token
@@ -480,35 +485,40 @@ def getRecommendedUsers(user={}):
 @application.route("/users/unfollow", methods=["POST"])
 @required_token
 def unfollowUser(user={}):
-    try:
-        requestBody = request.json
-        userNode = UserNode(user["_id"], user["username"])
-        unfollowedUserNode = UserNode(requestBody["userID"], requestBody["username"])
-        followRelation = FollowRelation(userNode,unfollowedUserNode)
-        FollowRelationManager.removeFollowRelation(followRelation)
-        return "", 200
-    except Exception as e:
-        return str(e), 500
-
+    if user["role"] != "admin":
+        try:
+            requestBody = request.json
+            userNode = UserNode(user["_id"], user["username"])
+            unfollowedUserNode = UserNode(requestBody["userID"], requestBody["username"])
+            followRelation = FollowRelation(userNode,unfollowedUserNode)
+            FollowRelationManager.removeFollowRelation(followRelation)
+            return "", 200
+        except Exception as e:
+            return str(e), 500
+    else:
+        raise Exception("Admin non può smettere di seguire")
 
 @application.route("/users/unliking", methods=["POST"])
 @required_token
 def unlikeAdv(user={}):
-    try:
-        requestBody = request.json
-        userNode = UserNode(user["_id"], user["username"])
-        if requestBody["destinationType"] == "accomodation":
-            accomodationNode = AccomodationNode(requestBody["unlikedAdvID"], requestBody["unlikedAdvName"])
-            likeRelation = LikeRelation(userNode, accomodationNode=accomodationNode )
-            LikeRelationManager.removeLikeRelation(likeRelation)
-        elif requestBody["destinationType"] == "activity":
-            activityNode = ActivityNode(requestBody["unlikedAdvID"], requestBody["unlikedAdvName"])
-            likeRelation = LikeRelation(userNode, activityNode=activityNode )
-            LikeRelationManager.removeLikeRelation(likeRelation)
+    if user["role"] != "admin":
+        try:
+            requestBody = request.json
+            userNode = UserNode(user["_id"], user["username"])
+            if requestBody["destinationType"] == "accomodation":
+                accomodationNode = AccomodationNode(requestBody["unlikedAdvID"], requestBody["unlikedAdvName"])
+                likeRelation = LikeRelation(userNode, accomodationNode=accomodationNode )
+                LikeRelationManager.removeLikeRelation(likeRelation)
+            elif requestBody["destinationType"] == "activity":
+                activityNode = ActivityNode(requestBody["unlikedAdvID"], requestBody["unlikedAdvName"])
+                likeRelation = LikeRelation(userNode, activityNode=activityNode )
+                LikeRelationManager.removeLikeRelation(likeRelation)
 
-        return "", 200
-    except Exception as e:
-        return str(e), 500
+            return "", 200
+        except Exception as e:
+            return str(e), 500
+    else:
+        raise Exception("Admin non può rimuovere il like")
 
 
 @application.route("/recommendations/<destination_type>", methods=["GET"])
@@ -525,26 +535,28 @@ def getRecommendedAdvs(destination_type, user={}):
 @application.route("/book/activity", methods=["POST"])
 @required_token
 def bookActivity(user={}):
-    requestBody = request.json
-    activity = requestBody["activity"]
-    startDate = dateparser.parse(requestBody["startDate"])
-    city = activity["city"]
-    hostID = activity["hostID"]
-    reservation = Reservation(
-        user["_id"],
-        activity["_id"],
-        "activity",
-        startDate,
-        activity["price"],
-        city,
-        hostID,
-    )
-    try:
-        reservationID = ReservationManager.book(reservation)
-        return reservationID, 200
-    except Exception as e:
-        return str(e), 500
-
+    if user["role"] != "admin":
+        requestBody = request.json
+        activity = requestBody["activity"]
+        startDate = dateparser.parse(requestBody["startDate"])
+        city = activity["city"]
+        hostID = activity["hostID"]
+        reservation = Reservation(
+            user["_id"],
+            activity["_id"],
+            "activity",
+            startDate,
+            activity["price"],
+            city,
+            hostID,
+        )
+        try:
+            reservationID = ReservationManager.book(reservation)
+            return reservationID, 200
+        except Exception as e:
+            return str(e), 500
+    else:
+        raise Exception("Admin non può prenotare")
 
 @application.route("/reservations/<user_id>", methods=["GET"])
 # @required_token
@@ -590,82 +602,86 @@ def getAccomodations():
 @application.route("/insert/accomodation", methods=["POST"])
 @required_token
 def insertAccomodations(user={}):
-    formData = dict(request.json)
-    try:
+    if user["role"] != "admin":
+        formData = dict(request.json)
+        try:
+            host = UserManager.getUserFromId(user["_id"])
+            pictures = []
+            imagesLength = formData["imagesLength"]
+            for i in range(1, int(imagesLength)):
+                pictures.append(formData["img"][i])
+
+            location = {
+                "address": formData["address"],
+                "city": formData["city"],
+                "country": formData["country"],
+            }
+
+            accomodation = Accomodation(
+                formData["name"],
+                formData["description"],
+                host["_id"],
+                host["name"],
+                formData["img"][0],
+                location,
+                formData["property_type"],
+                formData["accommodates"],
+                formData["bedrooms"],
+                formData["beds"],
+                formData["price"],
+                formData["minimum_nights"],
+                0,
+                0,
+                False,
+                pictures=pictures,
+            )
+            accomodationID = AccomodationsManager.insertNewAccomodation(accomodation)
+            if user["role"] != "host" and user["role"] != "admin":
+                updatedRole = {"type": "host"}
+                UserManager.updateUser(updatedRole, host["_id"])
+            return {"accomodationID": str(accomodationID)}, 200
+        except Exception as e:
+            return str(e), 500
+    else:
+        raise Exception("Admin non può inserire un alloggio")
+
+@application.route("/insert/activity", methods=["POST"])
+@required_token
+def insertActivity(user={}):
+    if user["role"] != "admin":
+        formData = dict(request.form)
         host = UserManager.getUserFromId(user["_id"])
         pictures = []
         imagesLength = formData["imagesLength"]
         for i in range(1, int(imagesLength)):
-            pictures.append(formData["img"][i])
-
+            pictures.append(formData[f"img-{i}"])
         location = {
             "address": formData["address"],
             "city": formData["city"],
             "country": formData["country"],
         }
 
-        accomodation = Accomodation(
-            formData["name"],
-            formData["description"],
+        activity = Activity(
             host["_id"],
             host["name"],
-            formData["img"][0],
             location,
-            formData["property_type"],
-            formData["accommodates"],
-            formData["bedrooms"],
-            formData["beds"],
+            formData["description"],
+            [],
+            formData["duration"],
             formData["price"],
-            formData["minimum_nights"],
             0,
             0,
+            formData["img-0"],
+            formData["category"],
             False,
-            pictures=pictures,
         )
-        accomodationID = AccomodationsManager.insertNewAccomodation(accomodation)
-        if user["role"] != "host" and user["role"] != "admin":
-            updatedRole = {"type": "host"}
-            UserManager.updateUser(updatedRole, host["_id"])
-        return {"accomodationID": str(accomodationID)}, 200
-    except Exception as e:
-        return str(e), 500
-
-
-@application.route("/insert/activity", methods=["POST"])
-@required_token
-def insertActivity(user={}):
-    formData = dict(request.form)
-    host = UserManager.getUserFromId(user["_id"])
-    pictures = []
-    imagesLength = formData["imagesLength"]
-    for i in range(1, int(imagesLength)):
-        pictures.append(formData[f"img-{i}"])
-    location = {
-        "address": formData["address"],
-        "city": formData["city"],
-        "country": formData["country"],
-    }
-
-    activity = Activity(
-        host["_id"],
-        host["name"],
-        location,
-        formData["description"],
-        [],
-        formData["duration"],
-        formData["price"],
-        0,
-        0,
-        formData["img-0"],
-        formData["category"],
-        False,
-    )
-    try:
-        activityID = ActivityManager.insertNewActivity(activity)
-        return {"activityID": str(activityID)}, 200
-    except Exception as e:
-        return str(e), 500
-
+        try:
+            activityID = ActivityManager.insertNewActivity(activity)
+            return {"activityID": str(activityID)}, 200
+        except Exception as e:
+            return str(e), 500
+    else:
+        raise Exception("Admin non può inserire un'attività")
 
 @application.route("/reviews/<review_id>", methods=["GET"])
 # @required_token
@@ -692,27 +708,29 @@ def getReviewByAd(destination_id):
 @application.route("/reviews", methods=["PUT"])
 @required_token
 def insertReview(user={}):
-    requestBody = request.json
-    destinationType = requestBody["destinationType"]
-    reviewer = requestBody["reviewer"]
-    review = Review(
-        user["_id"],
-        requestBody["destinationID"],
-        requestBody["score"],
-        requestBody["description"],
-        reviewer,
-    )
-    try:
-        insertedID = ReviewManager.insertNewReview(review)
-        review._id = insertedID
-        if destinationType == "accomodation":
-            AccomodationsManager.addReview(review)
-        elif destinationType == "activity":
-            ActivityManager.addReview(review)
-        return "", 200
-    except Exception as e:
-        return str(e), 200
-
+    if user["role"] != "admin":
+        requestBody = request.json
+        destinationType = requestBody["destinationType"]
+        reviewer = requestBody["reviewer"]
+        review = Review(
+            user["_id"],
+            requestBody["destinationID"],
+            requestBody["score"],
+            requestBody["description"],
+            reviewer,
+        )
+        try:
+            insertedID = ReviewManager.insertNewReview(review)
+            review._id = insertedID
+            if destinationType == "accomodation":
+                AccomodationsManager.addReview(review)
+            elif destinationType == "activity":
+                ActivityManager.addReview(review)
+            return "", 200
+        except Exception as e:
+            return str(e), 200
+    else:
+        raise Exception("Admin non può inserire recensione")
 
 @application.route(
     "/reviews/<destinationType>/<destinationID>/<reviewID>", methods=["DELETE"]

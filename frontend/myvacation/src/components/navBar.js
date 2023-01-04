@@ -19,8 +19,8 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 const pages = ["signIn", "signUp"];
 
 // Pagine a tendina logo utente
-const account = ['Profile', 'MyAdv', 'Logout'];
-const hostPages = ["accomodation", "activity"];
+const account = localStorage.getItem("role") === "admin" ? ['Admin', 'Logout'] : ['Profile', 'MyAdv', 'Logout'] ;
+const loggedPages = ["accomodation", "activity"];
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
@@ -49,14 +49,11 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = (selectedSetting) => {
 
     if (selectedSetting === 'Profile') {
-      if (localStorage.getItem("role") === "admin")
-        ChangePage('/admin')
-      else
         ChangePage('/profile/' + localStorage.getItem("userID"))
-    }
-    else if (selectedSetting === 'Logout') {
+    } else if (selectedSetting === 'Admin') {
+        ChangePage('/admin')
+    } else if (selectedSetting === 'Logout') {
       localStorage.clear();
-      //localStorage.setItem("role", null);
       ChangePage('/');
       window.location.reload(true)
     } else if (selectedSetting === 'MyAdv') {
@@ -172,7 +169,7 @@ function ResponsiveAppBar() {
             {
               (localStorage.getItem("userID")) ? 
               (
-                hostPages.map( page => (
+                loggedPages.map( page => (
                   <Button
                     key={page}
                     onClick={() => ChangePage("/insert/" + page)}

@@ -38,13 +38,13 @@ function App() {
             <Route path="/signin" element={localStorage.getItem("userID") == null ? <SignIn /> : <Profile/>} />
             <Route path="/signup" element={localStorage.getItem("userID") == null ? <SignUp /> : <Profile/>} />
             <Route path="/profile/:profileID" element={localStorage.getItem("userID") != null ? <Profile /> : <Unauthorized/>} />
-            <Route path="/myadv" element={localStorage.getItem("userID") != null ? <MyAdv /> : <Unauthorized/>} />
+            <Route path="/myadv" element={localStorage.getItem("userID") != null && localStorage.getItem("role") !== "admin" ? <MyAdv /> : <Unauthorized/>} />
             <Route path="/search" element={<Search />} />
-            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkout" element={localStorage.getItem("role") !== "admin" ? <Checkout /> : <Unauthorized/>} />
             <Route path="/accomodation/:accomodationID" element={<Accomodation />} />
             <Route path="/toApprove/:advertisementID" element={localStorage.getItem("role") === "admin" ? <ToApprove />: <Unauthorized/>} />
-            <Route path="/insert/accomodation" element={localStorage.getItem("userID") != null ? <InsertAccomodation /> : <Unauthorized/>} />
-            <Route path="/insert/activity" element={localStorage.getItem("userID") != null ? <InsertActivity /> : <Unauthorized/>} />
+            <Route path="/insert/accomodation" element={localStorage.getItem("userID") != null && localStorage.getItem("role") !== "admin" ? <InsertAccomodation /> : <Unauthorized/>} />
+            <Route path="/insert/activity" element={localStorage.getItem("userID") != null && localStorage.getItem("role") !== "admin" ? <InsertActivity /> : <Unauthorized/>} />
             <Route path="/edit/accomodation/:accomodationID" element={localStorage.getItem("userID") != null || localStorage.getItem("role") !== "admin" ? <EditAccomodation />: <Unauthorized/>} />
             <Route path="/edit/activity/:activityID" element={localStorage.getItem("userID") != null || localStorage.getItem("role") !== "admin" ? <EditActivity /> : <Unauthorized/>} />
             <Route path="/activity/:activityID" element={<Activity />} />

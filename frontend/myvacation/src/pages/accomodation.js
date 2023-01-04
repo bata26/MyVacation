@@ -191,7 +191,7 @@ const Accomodation = () => {
 				</Container>
 				<Container maxWidth='lg'>
 					<Grid alignItems={"left"}>
-						{localStorage.getItem("userID") != null && accomodation.approved ?
+						{localStorage.getItem("userID") != null && accomodation.approved && localStorage.getItem("role") !== "admin" ?
 							(!likedAdv ?
 								<Button onClick={() => { likeAdv(accomodation._id, accomodation.name) }}>
 									<ThumbUpOffAltIcon
@@ -297,7 +297,7 @@ const Accomodation = () => {
 									</> : <></>
 								}
 							</Typography>
-							{startDate != null && endDate != null && localStorage.getItem("userID") != null && accomodation.approved ?
+							{startDate != null && endDate != null && localStorage.getItem("userID") != null && accomodation.approved && localStorage.getItem("role") !== "admin" ?
 								<Button
 									fullWidth
 									variant="contained"

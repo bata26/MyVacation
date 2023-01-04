@@ -170,7 +170,7 @@ const Activity = () => {
         </Container>
         <Container maxWidth='lg'>
           <Grid alignItems={"left"}>
-            {localStorage.getItem("userID") != null && activity.approved ?
+            {localStorage.getItem("userID") != null && activity.approved && localStorage.getItem("role") !== "admin" ?
               (!likedAdv ?
                 <Button onClick={() => { likeAdv(activity._id, activity.name) }}>
                   <ThumbUpOffAltIcon
@@ -259,7 +259,7 @@ const Activity = () => {
               </> : <></>
             }
           </Typography>
-          {startDate != null && localStorage.getItem("userID") != null && guests != null && activity.approved ?
+          {startDate != null && localStorage.getItem("userID") != null && guests != null && activity.approved && localStorage.getItem("role") !== "admin" ?
             <Button
               fullWidth
               variant="contained"

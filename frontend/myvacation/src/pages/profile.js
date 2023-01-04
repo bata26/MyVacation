@@ -18,9 +18,8 @@ import Moment from 'moment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditReservationModal from "../components/editReservationModal";
 import EditProfileModal from "../components/editProfileModal";
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
-
 
 
 const theme = createTheme();
@@ -275,7 +274,7 @@ const Profile = () => {
             </Grid>
           </Box>
         </Box>
-        {localStorage.getItem("userID") !== profileID ?
+        {localStorage.getItem("userID") !== profileID && localStorage.getItem("role") !== "admin" ?
           (!isFollowing ?
             <Button
               fullWidth
