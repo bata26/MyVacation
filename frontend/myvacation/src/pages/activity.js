@@ -135,7 +135,7 @@ const Activity = () => {
   if (!activity) return null;
 
   return (
-    ((activity && activity.approved) || (activity && !activity.approved && localStorage.getItem("userID") === activity.host_id) || localStorage.getItem("role") === "admin") ?
+    ((activity && activity.approved) || (activity && !activity.approved && localStorage.getItem("userID") === activity.hostID) || localStorage.getItem("role") === "admin") ?
       (<ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xl">
           <CssBaseline />
@@ -243,7 +243,7 @@ const Activity = () => {
           </Typography>
 
           <Typography align='right' sx={{ mb: 2 }}>
-            <b>Host:</b> {activity.host_name}
+            <b>Host:</b> {activity.hostName}
             <br />
             <b>Duration:</b> {activity.duration}H
             <br />
@@ -268,7 +268,7 @@ const Activity = () => {
               onClick={() => goToCheckout()}>
               Book activity
             </Button> : <></>}
-          {(localStorage.getItem("userID") === activity.host_id || localStorage.getItem("role") === "admin") && activity.approved ?
+          {(localStorage.getItem("userID") === activity.hostID || localStorage.getItem("role") === "admin") && activity.approved ?
             (<>
               <Button
                 fullWidth

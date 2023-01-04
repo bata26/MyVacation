@@ -16,7 +16,7 @@ API_URL = f"api.positionstack.com"
 
 connection = None
 
-headerToSave = ['name' ,'description' ,'picture_url' ,'host_id' ,'host_url' ,'host_name' ,'host_since' ,'host_picture_url' ,'latitude' ,'longitude' ,'property_type' ,'accommodates' ,'bathrooms' ,'bedrooms' ,'beds' ,'price' ,'minimum_nights' ,'number_of_reviews' ,'review_scores_rating']
+headerToSave = ['name' ,'description' ,'picture_url' ,'hostID' ,'host_url' ,'hostName' ,'host_since' ,'host_picture_url' ,'latitude' ,'longitude' ,'propertyType' ,'accommodates' ,'bathrooms' ,'bedrooms' ,'beds' ,'price' ,'minimum_nights' ,'number_of_reviews' ,'review_scores_rating']
 cities = [
     "Roma",
 "Milano",
@@ -90,7 +90,7 @@ if __name__ == "__main__":
         indexToDelete = []
         client = MongoManager.getInstance()
         db = client["myvacation"]
-        collection = db["accomodations"]
+        collection = db["accommodations"]
         for index, row in listingDataFrame.iterrows():
             
             try:
@@ -115,12 +115,12 @@ if __name__ == "__main__":
                         "old_id" : row["id"],
                         'name': row['name'] ,
                         'description': row['description'] ,
-                        'host_id': row['host_id'] ,
+                        'hostID': row['hostID'] ,
                         'host_url': row['host_url'] ,
-                        'host_name': row['host_name'] ,
+                        'hostName': row['hostName'] ,
                         'host_picture': host_picture ,
                         "location" : location,
-                        'property_type': row['property_type'] ,
+                        'propertyType': row['propertyType'] ,
                         'accommodates': row['accommodates'] ,
                         'bedrooms': row['bedrooms'] ,
                         'beds': row['beds'] ,

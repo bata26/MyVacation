@@ -6,7 +6,7 @@ client = GraphManager.getInstance()
 print(client)
 
 with client.session() as session:
-    # get accomodation suggerite(HOME RECOMMENDATIONS)
+    # get accommodation suggerite(HOME RECOMMENDATIONS)
     # get activity suggerite(HOME RECOMMENDATIONS)
     # get profile suggeriti(HOME RECOMMENTATIONS)
 
@@ -17,10 +17,10 @@ with client.session() as session:
     print(res)
     print("========================")
 
-    # lista di tutte le accomodation che piacciono
+    # lista di tutte le accommodation che piacciono
     print("========================")
     res = list(session.run(
-        "MATCH(u:User {username: 'Luca' })-[:LIKE]->(a: Accomodation) return a"))
+        "MATCH(u:User {username: 'Luca' })-[:LIKE]->(a: Accommodation) return a"))
     print(res)
     print("========================")
 
@@ -31,10 +31,10 @@ with client.session() as session:
     print(res)
     print("========================")
 
-    # totale like ricevuti da un accomodation
+    # totale like ricevuti da un accommodation
     print("========================")
     res = list(session.run(
-        "MATCH(a: Accomodation)<-[r:LIKE]-(u: User) WHERE a.accomodationID = '637bb2e1945bed1e6646749f' return COUNT(r)"))
+        "MATCH(a: Accommodation)<-[r:LIKE]-(u: User) WHERE a.accommodationID = '637bb2e1945bed1e6646749f' return COUNT(r)"))
     print(res)
     print("========================")
 
@@ -48,7 +48,7 @@ with client.session() as session:
     # annunci in comune tra due utenti
     print("========================")
     res = list(session.run("MERGE(u1: User {userID: '637ce1a04ed62608566c5fa8' })-[:LIKE]->(a1: Activity)<-[:LIKE]-(u2: User {userID: '637ce1a04ed62608566c5fa9' })  " +
-                           "MERGE(u1)-[:LIKE]->(a2: Accomodation)<-[:LIKE]-(u2) " +
+                           "MERGE(u1)-[:LIKE]->(a2: Accommodation)<-[:LIKE]-(u2) " +
                            "return a1, a2"))
     print(res)
     print("========================")
@@ -63,7 +63,7 @@ with client.session() as session:
     # creazione arco like
     print("========================")
     res = session.run("MATCH (u:User {userID: '637ce1a04ed62608566c5faf'}) " +
-                        "MATCH (a: Accomodation{accomodationID : '637bb2e1945bed1e6646749f'}) "+
+                        "MATCH (a: Accommodation{accommodationID : '637bb2e1945bed1e6646749f'}) "+
                         "CREATE (u)-[:LIKE]->(a)")
     print(res)
     print("========================")
@@ -79,7 +79,7 @@ with client.session() as session:
     # creazione nodo accomodaiton
     print("========================")
     res = session.run(
-        "CREATE (a:Accomodation {accomodationID: '637ce1a04ed62608566c5faf', name: 'test Accomodation'})")
+        "CREATE (a:Accommodation {accommodationID: '637ce1a04ed62608566c5faf', name: 'test Accommodation'})")
     print(res)
     print("========================")
     
@@ -111,10 +111,10 @@ with client.session() as session:
     print(res)
     print("========================")
     
-    # rimozione nodo accomodation
+    # rimozione nodo accommodation
     print("========================")
     res = session.run(
-        "MATCH (a:Accomodation {accomodationID: '637ce1a04ed62608566c5faf'}) DETACH DELETE a")
+        "MATCH (a:Accommodation {accommodationID: '637ce1a04ed62608566c5faf'}) DETACH DELETE a")
     print(res)
     print("========================")
     
@@ -132,10 +132,10 @@ with client.session() as session:
     print(res)
     print("========================")
 
-    # aggiornamento nome accomodation
+    # aggiornamento nome accommodation
     print("========================")
     res = session.run(
-        "MATCH (a:Accomodation {accomodationID: ''}) SET a.name = '' ")
+        "MATCH (a:Accommodation {accommodationID: ''}) SET a.name = '' ")
     print(res)
     print("========================")
 
@@ -143,16 +143,16 @@ with client.session() as session:
 """
     ## test città
     city = "Milano"
-    host_id="637ce1a04ed62608566c5fa7"
+    hostID="637ce1a04ed62608566c5fa7"
     categoryName="kayak"
     propertyType="Entire villa"
     with client.session() as session:
-        #res = list(session.run("MATCH(u:User {username: 'Luca'})-[:OWN]->(a:Accomodation) "+
+        #res = list(session.run("MATCH(u:User {username: 'Luca'})-[:OWN]->(a:Accommodation) "+
         #                            "MATCH(u:User {username: 'Luca'})-[:OWN]->(ac:Activity) "+
         #                            "return u, a, ac"))
         #print(res)
 
-        ## TEST 1 -> utente seleziona un accomodation e mostriamo attività nella stessa città
+        ## TEST 1 -> utente seleziona un accommodation e mostriamo attività nella stessa città
         res = list(session.run("MATCH(a:Activity)-[:IS_IN]->(c:City{name: $city}) return a" , city=city))
         for item in res:
             for label in item.items():
@@ -160,16 +160,16 @@ with client.session() as session:
                 print(label[1]["_id"])
             print("---------------------")
         
-        ## TEST 2 -> utente seleziona un accomodation e mostriamo attività nella stessa città
-        res = list(session.run("MATCH(a:Accomodation)-[:IS_IN]->(c:City{name: $city}) return a" , city=city))
+        ## TEST 2 -> utente seleziona un accommodation e mostriamo attività nella stessa città
+        res = list(session.run("MATCH(a:Accommodation)-[:IS_IN]->(c:City{name: $city}) return a" , city=city))
         for item in res:
             for label in item.items():
                 print(label[1]["name"])
                 print(label[1]["_id"])
             print("---------------------")
         
-        ## TEST 3 -> utente seleziona un accomodation e mostriamo attività dello stesso host nella stessa città
-        res = list(session.run("MATCH(a:Activity)-[:IS_IN]->(c:City{name: $city}) MATCH(u:User{_id: $host_id})-[:OWN]->(a) return a" , city=city , host_id=host_id))
+        ## TEST 3 -> utente seleziona un accommodation e mostriamo attività dello stesso host nella stessa città
+        res = list(session.run("MATCH(a:Activity)-[:IS_IN]->(c:City{name: $city}) MATCH(u:User{_id: $hostID})-[:OWN]->(a) return a" , city=city , hostID=hostID))
         print("--------------------- TEST 3 ---------------------")
         for item in res:
             for label in item.items():
@@ -187,7 +187,7 @@ with client.session() as session:
             print("---------------------")
         
         ## TEST 5 -> utente aggiunge un attività nella wishlist e viene mostrata un'attività simile nella stessa città
-        res = list(session.run("MATCH(a:Accomodation)-[:IS_IN]->(c:City{name: $city}) MATCH(a)-[:BELONG]->(type:AccomodationType{type: $propertyType})  return a" , city=city , propertyType=propertyType))
+        res = list(session.run("MATCH(a:Accommodation)-[:IS_IN]->(c:City{name: $city}) MATCH(a)-[:BELONG]->(type:AccommodationType{type: $propertyType})  return a" , city=city , propertyType=propertyType))
         print("--------------------- TEST 5 ---------------------")
         for item in res:
             for label in item.items():

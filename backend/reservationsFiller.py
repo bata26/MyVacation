@@ -6,7 +6,7 @@ client = MongoManager.getInstance()
 db = client["myvacation"]
 reservationCollection = db["reservations"]
 userCollection = db["users"]
-accomodationCollection = db["accomodations"]
+accommodationCollection = db["accommodations"]
 activityCollection = db["activities"]
 
 START_TIMESTAMP = 1577869341
@@ -19,14 +19,14 @@ except Exception as e:
 
 
 try:
-    accomodationList = list(accomodationCollection.find({} , {"_id" : 1 , "price" : 1 , "city" : "$location.city" , "host_id" : 1}))
-    print("Fetch delle accomodations eseguito")    
+    accommodationList = list(accommodationCollection.find({} , {"_id" : 1 , "price" : 1 , "city" : "$location.city" , "hostID" : 1}))
+    print("Fetch delle accommodations eseguito")    
 except Exception as e:
     print("Impossibile ottenere utenti: " + str(e))
 
 try:
-    activityList = list(activityCollection.find({} , {"_id" : 1 , "price" : 1 , "city" : "$location.city" , "host_id" : 1}))
-    print("Fetch delle accomodations eseguito")    
+    activityList = list(activityCollection.find({} , {"_id" : 1 , "price" : 1 , "city" : "$location.city" , "hostID" : 1}))
+    print("Fetch delle accommodations eseguito")    
 except Exception as e:
     print("Impossibile ottenere utenti: " + str(e))
 
@@ -47,23 +47,23 @@ for i in range(0 , 1200):
         totalExpense = activity["price"]
         city = activity["city"]
         type = "activity"
-        host_id = activity["host_id"]
+        hostID = activity["hostID"]
     else:
         numberOfDays = randint(0 , 20)
         endDatetime = startDatetime + timedelta(days=numberOfDays)
-        accomodation = accomodationList[randint(0 , len(accomodationList) - 1)]
-        destinationID = accomodation["_id"]
-        totalExpense = accomodation["price"] * (numberOfDays - 1)
+        accommodation = accommodationList[randint(0 , len(accommodationList) - 1)]
+        destinationID = accommodation["_id"]
+        totalExpense = accommodation["price"] * (numberOfDays - 1)
         reservation["endDate"] = endDatetime
-        city = accomodation["city"]
-        type = "accomodation"
-        host_id = accomodation["host_id"]
+        city = accommodation["city"]
+        type = "accommodation"
+        hostID = accommodation["hostID"]
     
     reservation["totalExpense"] = totalExpense
     reservation["destinationID"] = destinationID
     reservation["city"] = city
     reservation["destinationType"] = type
-    reservation["host_id"] = host_id
+    reservation["hostID"] = hostID
 
     reservationList.append(reservation)
 

@@ -14,7 +14,7 @@ def deleteActivityByID(activity_id):
     user = {
         "type" : "admin"
     }
-    result = ActivityManager.deleteAccomodation(activityID , user)
+    result = ActivityManager.deleteAccommodation(activityID , user)
     return "" , 200
 
 @application.route('/activities/<activity_id>' , methods = ['GET'])

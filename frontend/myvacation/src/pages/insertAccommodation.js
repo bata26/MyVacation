@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import AccomodationForm from "../components/accomodationForm";
+import AccommodationForm from "../components/accommodationForm";
 import FormData from 'form-data';
 import api from '../utility/api';
 import { useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ async function convertFileToBase64(file) {
   });
 }
 
-const InsertAccomodation = () => {
+const InsertAccommodation = () => {
   let navigate = useNavigate();
   const dataURLtoFile = (dataurl, filename) => {
     const arr = dataurl.split(',')
@@ -49,9 +49,9 @@ const InsertAccomodation = () => {
     }
     data.append("imagesLength", images.length);
     const headers = { 'Content-type': 'multipart/form-data' };
-    const result = await api.post('/insert/accomodation', data)
+    const result = await api.post('/insert/accommodation', data)
       .then(function (response) {
-        navigate("/accomodation/" + response.data.accomodationID);
+        navigate("/accommodation/" + response.data.accommodationID);
       })
       .catch(function (error) {
         alert("Ops, something went wrong :(" + "\n" + error);
@@ -76,11 +76,11 @@ const InsertAccomodation = () => {
               color="text.primary"
               gutterBottom
             >
-              Insert accomodation
+              Insert accommodation
             </Typography>
           </Container>
         </Box>
-        <AccomodationForm />
+        <AccommodationForm />
         <Container maxWidth='md'>
           <Button
             type="submit"
@@ -104,4 +104,4 @@ const InsertAccomodation = () => {
   );
 };
 
-export default InsertAccomodation;
+export default InsertAccommodation;

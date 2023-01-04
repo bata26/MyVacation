@@ -9,16 +9,16 @@ for i in range(1 , 4):
 print(len(base64Imgs))
 client = MongoManager.getInstance()
 db = client["myvacation"]
-collection = db["accomodations"]
+collection = db["accommodationss"]
 
-accomodationsList = list(collection.find({}))
+accommodationssList = list(collection.find({}))
 counter = 0 
 
-for accomodation in accomodationsList:
+for accommodations in accommodationssList:
     actualImgs = base64Imgs
-    #actualImgs.append(accomodation["picture"])
+    #actualImgs.append(accommodations["picture"])
     for img in actualImgs:
-        collection.update_one({"_id" : accomodation["_id"]} ,{"$push" :{"pictures" : img}})
+        collection.update_one({"_id" : accommodations["_id"]} ,{"$push" :{"pictures" : img}})
     print(f"Effettuato aggiornamento {counter}")
     counter += 1
 collection.update_one({} ,{"$unset" :{"picture" : 1}})

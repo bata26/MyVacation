@@ -8,9 +8,9 @@
     "name"
     "description"
     "picture"
-    "host_id"
+    "hostID"
     "host_url"
-    "host_name"
+    "hostName"
     "host_since"
     "host_picture"
     "location" : {
@@ -18,7 +18,7 @@
      "city"
      "country"
     },
-    "property_type"
+    "propertyType"
     "accommodates"
     "bedrooms"
     "beds"
@@ -34,9 +34,9 @@
 ```JSON
 {
     "id"
-    "host_id"
+    "hostID"
     "host_url"
-    "host_name"
+    "hostName"
     "host_picture"
     "location" : {
      "address"
@@ -126,7 +126,7 @@ if start < END < end or start < START < end:
 ### QUERY PER OTTENERE LISTA DI ACCOMODATIONS OCCUPATE
 NB: Sostituire poi le ISODate con le date effettive che vengono dal frontend.
 ```mongodb
-db.accomodations.aggregate([
+db.accommodations.aggregate([
     {
         "$unwind" : {
             "path" : "$reservations",
@@ -154,10 +154,10 @@ db.accomodations.aggregate([
 ])
 ```
 
-Sia **occupied** una lista di id di accomodations occupate. A questo punto per ottenere tutte le accomodations libere:
+Sia **occupied** una lista di id di accommodations occupate. A questo punto per ottenere tutte le accommodations libere:
 
 ```mongodb
-db.accomodations.find(
+db.accommodations.find(
     {
         "_id" : {
             "$nin" : occupied

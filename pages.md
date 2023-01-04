@@ -18,10 +18,10 @@
  - "/profile" -> POST per modifiche al profilo
  - "/profile" -> DELETE per eliminare il profilo
 
- - "/accomodations" -> GET con filtri
- - "/accomodations" -> PUT con parametri
- - "/accomodations" -> POST per update
- - "/accomodations" -> DELETE per eliminare
+ - "/accommodations" -> GET con filtri
+ - "/accommodations" -> PUT con parametri
+ - "/accommodations" -> POST per update
+ - "/accommodations" -> DELETE per eliminare
 
  - "/activities" -> GET con filtri
  - "/activities" -> PUT con parametri
@@ -32,9 +32,9 @@
  - "/admin/activities" -> PUT activity approvata
  - "/admin/activities" -> DELETE activity da eliminare
 
- - "/admin/accomodations" -> GET accomodations da approvare
- - "/admin/accomodations" -> PUT accomodations approvata
- - "/admin/accomodations" -> DELETE accomodations da eliminare
+ - "/admin/accommodations" -> GET accommodations da approvare
+ - "/admin/accommodations" -> PUT accommodations approvata
+ - "/admin/accommodations" -> DELETE accommodations da eliminare
 
  - "/admin/search" -> GET per la ricerca di utenti
 
@@ -42,5 +42,5 @@
  - "/reservations" -> DELETE per eliminare una prenotazione
  - "/reservations" -> GET di tutte le prenotazioni
  - "/reservations/<reservation_id>" -> GET di una specifica prenotazione
- - "/reservations/<accomodation_id>" -> GET prenotazioni di una specifica accomodation
+ - "/reservations/<accommodation_id>" -> GET prenotazioni di una specifica accommodation
  - "/reservations/<activity_id>" -> GET prenotazioni di una specifica attività

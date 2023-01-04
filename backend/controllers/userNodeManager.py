@@ -1,7 +1,7 @@
 from .graphConnection import GraphManager
 from models.userNode import UserNode
 from models.activityNode import ActivityNode
-from models.accomodationNode import AccomodationNode
+from models.accommodationNode import AccommodationNode
 from utility.serializer import Serializer
 
 
@@ -70,8 +70,8 @@ class UserNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                if (destinationType == "accomodation"):
-                    query = "MATCH(u:User {userID: '%s' })-[r:LIKE]->(liked: Accomodation { accomodationID: '%s'}) return COUNT(r) as total" % (userNodeID , destinationID)
+                if (destinationType == "accommodation"):
+                    query = "MATCH(u:User {userID: '%s' })-[r:LIKE]->(liked: Accommodation { accommodationID: '%s'}) return COUNT(r) as total" % (userNodeID , destinationID)
                 else:
                     query = "MATCH(u:User {userID: '%s' })-[r:LIKE]->(liked: Activity { activityID: '%s'}) return COUNT(r) as total" % (userNodeID , destinationID)
                 print(query)
@@ -90,8 +90,8 @@ class UserNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                if (destinationType == "accomodation"):
-                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Accomodation) return liked" % userNodeID
+                if (destinationType == "accommodation"):
+                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Accommodation) return liked" % userNodeID
                 else:
                     query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Activity) return liked" % userNodeID
 
@@ -100,9 +100,9 @@ class UserNodeManager:
                 result = []
                 for item in queryResult:
                     node = item.get("liked")
-                    if (destinationType == "accomodation"):
-                        resultAccomodationNode = AccomodationNode(node["accomodationID"], node["name"])
-                        result.append(Serializer.serializeAccomodationNode(resultAccomodationNode))
+                    if (destinationType == "accommodation"):
+                        resultAccommodationNode = AccommodationNode(node["accommodationID"], node["name"])
+                        result.append(Serializer.serializeAccommodationNode(resultAccommodationNode))
                     else:
                         resultActivityNode = ActivityNode(node["activityID"], node["name"])
                         result.append(Serializer.serializeActivityNode(resultActivityNode))
@@ -117,8 +117,8 @@ class UserNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                if (destinationType == "accomodation"):
-                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Accomodation) WHERE NOT (u)-[:LIKE]->(a) return a" % userNode.userID
+                if (destinationType == "accommodation"):
+                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Accommodation) WHERE NOT (u)-[:LIKE]->(a) return a" % userNode.userID
                 else:
                     query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Activity) WHERE NOT (u)-[:LIKE]->(a) return a" % userNode.userID
                 queryResult = list(session.run(query))
@@ -126,11 +126,11 @@ class UserNodeManager:
 
                 for item in queryResult:
                     node = item.get("a")
-                    if (destinationType == "accomodation"):
-                        resultAccomodationNode = AccomodationNode(
-                            node["accomodationID"], node["name"])
-                        result.append(Serializer.serializeAccomodationNode(
-                            resultAccomodationNode))
+                    if (destinationType == "accommodation"):
+                        resultAccommodationNode = AccommodationNode(
+                            node["accommodationID"], node["name"])
+                        result.append(Serializer.serializeAccommodationNode(
+                            resultAccommodationNode))
                     else:
                         resultActivityNode = ActivityNode(
                             node["activityID"], node["name"])

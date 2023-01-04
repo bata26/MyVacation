@@ -21,21 +21,21 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 
 const theme = createTheme();
 
-const Accomodation = () => {
-	const [accomodation, setAccomodation] = React.useState(null);
+const Accommodation = () => {
+	const [accommodation, setAccommodation] = React.useState(null);
 	const [reviews, setReviews] = React.useState(null);
 	const [totLikes, setTotLikes] = React.useState(null);
 	const [enableButton, setEnableButton] = React.useState(null);
 	const [likedAdv, setLikedAdv] = React.useState(null);
 	const [searchParams] = useSearchParams();
-	const { accomodationID } = useParams();
+	const { accommodationID } = useParams();
 	const [startDate, setStartDate] = React.useState(searchParams.get("startDate") === "" ? null : searchParams.get("startDate"))
 	const [endDate, setEndDate] = React.useState(searchParams.get("endDate") === "" ? null : searchParams.get("endDate"))
 	const [guests, setGuests] = React.useState(searchParams.get("guests") === "" ? null : searchParams.get("guests"))
 	const navigate = useNavigate();
 
 	function getTotalLikes() {
-		api.get('/likenumber/accomodation/' + accomodationID)
+		api.get('/likenumber/accommodation/' + accommodationID)
 			.then(function (response) {
 				setTotLikes(response.data.likes)
 			})
@@ -45,9 +45,9 @@ const Accomodation = () => {
 	}
 
 	React.useEffect(() => {
-		api.get("/accomodations/" + accomodationID)
+		api.get("/accommodations/" + accommodationID)
 			.then(function (response) {
-				setAccomodation(response.data);
+				setAccommodation(response.data);
 				setReviews(response.data.reviews)
 				if (response.data.reviews.length >= parseInt(process.env.REACT_APP_REVIEWS_SIZE))
 					setEnableButton(true)
@@ -58,7 +58,7 @@ const Accomodation = () => {
 				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 
-		api.get('/users/liking/accomodation/' + accomodationID)
+		api.get('/users/liking/accommodation/' + accommodationID)
 			.then(function (response) {
 				setLikedAdv(response.data.liked)
 			})
@@ -70,9 +70,9 @@ const Accomodation = () => {
 	}, []);
 
 
-	//Metodo per eliminare accomodation
-	const deleteAccomodation = (accomodationID) => {
-		api.delete("/accomodations/" + accomodationID)
+	//Metodo per eliminare accommodation
+	const deleteAccommodation = (accommodationID) => {
+		api.delete("/accommodations/" + accommodationID)
 			.catch(function (error) {
 				alert("Ops, something went wrong :(" + "\n" + error);
 			});
@@ -81,7 +81,7 @@ const Accomodation = () => {
 
 	//Metodo per eliminare review
 	const deleteReview = async (reviewID) => {
-		await api.delete("/reviews/accomodation/" + accomodationID + "/" + reviewID)
+		await api.delete("/reviews/accommodation/" + accommodationID + "/" + reviewID)
 			.catch(function (error) {
 				alert("Ops, something went wrong :(" + "\n" + error);
 			});
@@ -89,14 +89,14 @@ const Accomodation = () => {
 	}
 
 
-	if (!accomodation) return null;
+	if (!accommodation) return null;
 
 	function goToCheckout() {
-		navigate("/checkout?startDate=" + startDate + "&endDate=" + endDate + "&type=accomodations" + "&id=" + accomodation._id + "&guests=" + guests)
+		navigate("/checkout?startDate=" + startDate + "&endDate=" + endDate + "&type=accommodations" + "&id=" + accommodation._id + "&guests=" + guests)
 	}
 
 	const getAllReviews = async () => {
-		await api.get("/reviewsByDestination/" + accomodationID)
+		await api.get("/reviewsByDestination/" + accommodationID)
 			.then(function (response) {
 				setReviews(response.data);
 				setEnableButton(false);
@@ -111,7 +111,7 @@ const Accomodation = () => {
 		await api.post("/users/liking", {
 			"likedAdvID": likedAdvID,
 			"likedAdvName": likedAdvName,
-			"destinationType": "accomodation"
+			"destinationType": "accommodation"
 		}).then(function (response) {
 			console.log(response.data);
 			setLikedAdv(true);
@@ -126,7 +126,7 @@ const Accomodation = () => {
 		await api.post("/users/unliking", {
 			"unlikedAdvID": unlikedAdvID,
 			"unlikedAdvName": unlikedAdvName,
-			"destinationType": "accomodation"
+			"destinationType": "accommodation"
 		}).then(function (response) {
 			console.log(response.data);
 			setLikedAdv(false);
@@ -138,7 +138,7 @@ const Accomodation = () => {
 	}
 
 	return (
-		((accomodation && accomodation.approved) || (accomodation && !accomodation.approved && localStorage.getItem("userID") === accomodation.host_id) || localStorage.getItem("role") === "admin") ?
+		((accommodation && accommodation.approved) || (accommodation && !accommodation.approved && localStorage.getItem("userID") === accommodation.hostID) || localStorage.getItem("role") === "admin") ?
 			(<ThemeProvider theme={theme}>
 				<Container component="main" maxWidth="xl">
 					<CssBaseline />
@@ -157,7 +157,7 @@ const Accomodation = () => {
 									color="text.primary"
 									gutterBottom
 								>
-									{accomodation.name}
+									{accommodation.name}
 								</Typography>
 							</Container>
 						</Box>
@@ -173,13 +173,13 @@ const Accomodation = () => {
 						cols={3}
 						rowHeight={200}
 					>
-						<ImageListItem key={accomodation.mainPicture} cols={2} rows={3}>
+						<ImageListItem key={accommodation.mainPicture} cols={2} rows={3}>
 							<img
-								src={`data:image/jpeg;base64,${accomodation.mainPicture}`}
+								src={`data:image/jpeg;base64,${accommodation.mainPicture}`}
 								style={{ borderRadius: 10 + 'px' }}
 							/>
 						</ImageListItem>
-						{accomodation.pictures.map((item) => (
+						{accommodation.pictures.map((item) => (
 							<ImageListItem key={item}>
 								<img
 									src={`data:image/jpeg;base64,${item}`}
@@ -191,16 +191,16 @@ const Accomodation = () => {
 				</Container>
 				<Container maxWidth='lg'>
 					<Grid alignItems={"left"}>
-						{localStorage.getItem("userID") != null && accomodation.approved && localStorage.getItem("role") !== "admin" ?
+						{localStorage.getItem("userID") != null && accommodation.approved && localStorage.getItem("role") !== "admin" ?
 							(!likedAdv ?
-								<Button onClick={() => { likeAdv(accomodation._id, accomodation.name) }}>
+								<Button onClick={() => { likeAdv(accommodation._id, accommodation.name) }}>
 									<ThumbUpOffAltIcon
 										variant="filled"
 										sx={{ fontSize: 40 }}
 									/>
 								</Button>
 								:
-								<Button onClick={() => { unlikeAdv(accomodation._id, accomodation.name) }}>
+								<Button onClick={() => { unlikeAdv(accommodation._id, accommodation.name) }}>
 									<ThumbUpAltIcon
 										variant="filled"
 										sx={{ fontSize: 40 }}
@@ -233,7 +233,7 @@ const Accomodation = () => {
 								align="left"
 								color="text.primary"
 							>
-								{ReactHtmlParser(accomodation.description)}
+								{ReactHtmlParser(accommodation.description)}
 							</Typography>
 						</Grid>
 
@@ -255,7 +255,7 @@ const Accomodation = () => {
 								color="text.primary"
 								sx={{ mb: 2 }}
 							>
-								{accomodation.price}€
+								{accommodation.price}€
 							</Typography>
 
 							<Typography
@@ -269,21 +269,19 @@ const Accomodation = () => {
 							</Typography>
 
 							<Typography align='right' sx={{ mb: 2 }}>
-								<b>Host:</b> {accomodation.host_name}
+								<b>Host:</b> {accommodation.hostName}
 								<br />
-								<b>Beds:</b> {accomodation.beds}
+								<b>Beds:</b> {accommodation.beds}
 								<br />
-								<b>Minimum nights:</b> {accomodation.minimum_nights}
+								<b>Guests:</b> {accommodation.guests}
 								<br />
-								<b>Guests:</b> {accomodation.accommodates}
+								<b>Bedrooms:</b> {accommodation.bedrooms}
 								<br />
-								<b>Bedrooms:</b> {accomodation.bedrooms}
+								<b>Address:</b> {accommodation.location.address}
 								<br />
-								<b>Address:</b> {accomodation.location.address}
+								<b>Country:</b> {accommodation.location.country}
 								<br />
-								<b>Country:</b> {accomodation.location.country}
-								<br />
-								<b>City:</b> {accomodation.location.city}
+								<b>City:</b> {accommodation.location.city}
 								<br />
 								{startDate ?
 									<>
@@ -297,18 +295,18 @@ const Accomodation = () => {
 									</> : <></>
 								}
 							</Typography>
-							{startDate != null && endDate != null && localStorage.getItem("userID") != null && accomodation.approved && localStorage.getItem("role") !== "admin" ?
+							{startDate != null && endDate != null && localStorage.getItem("userID") != null && accommodation.approved && localStorage.getItem("role") !== "admin" ?
 								<Button
 									fullWidth
 									variant="contained"
 									color="success"
 									sx={{ mb: 2 }}
 									onClick={() => goToCheckout()}>
-									Book Accomodation
+									Book Accommodation
 								</Button> : <></>}
-							{accomodation.approved ? <ReviewForm destinationID={accomodation._id} destinationType={"accomodation"} /> : <></>}
+							{accommodation.approved ? <ReviewForm destinationID={accommodation._id} destinationType={"accommodation"} /> : <></>}
 							{
-								accomodation.approved && (localStorage.getItem("userID") === accomodation.host_id || localStorage.getItem("role") === "admin") ?
+								accommodation.approved && (localStorage.getItem("userID") === accommodation.hostID || localStorage.getItem("role") === "admin") ?
 									(<>
 										<Button
 											fullWidth
@@ -316,10 +314,10 @@ const Accomodation = () => {
 											color='error'
 											sx={{ mt: 2 }}
 											onClick={() => {
-												deleteAccomodation(accomodation._id)
+												deleteAccommodation(accommodation._id)
 											}}
 										>
-											Delete Accomodation
+											Delete Accommodation
 										</Button>
 										<Button
 											fullWidth
@@ -327,10 +325,10 @@ const Accomodation = () => {
 											color='info'
 											sx={{ mt: 2 }}
 											onClick={() => {
-												navigate("/update/accomodation/" + accomodationID)
+												navigate("/update/accommodation/" + accommodationID)
 											}}
 										>
-											Update Accomodation
+											Update Accommodation
 										</Button>
 									</>
 									)
@@ -348,7 +346,7 @@ const Accomodation = () => {
 					}}
 				>
 				</Box>
-				{accomodation.approved ? (
+				{accommodation.approved ? (
 					<Container maxWidth='lg'>
 						<Typography
 							component="h2"
@@ -412,4 +410,4 @@ const Accomodation = () => {
 	);
 };
 
-export default Accomodation;
+export default Accommodation;

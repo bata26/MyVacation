@@ -58,7 +58,7 @@ class ReviewManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         reviewCollection = db[os.getenv("REVIEW_COLLECTION")]
-        destinationCollection = db[os.getenv("ACCOMODATIONS_COLLECTION")] if destinationType == "accomodation" else db[os.getenv("ACTIVITIES_COLLECTION")]
+        destinationCollection = db[os.getenv("ACCOMODATIONS_COLLECTION")] if destinationType == "accommodation" else db[os.getenv("ACTIVITIES_COLLECTION")]
 
         if (user["role"] != "admin"):
             review = dict(reviewCollection.find_one(

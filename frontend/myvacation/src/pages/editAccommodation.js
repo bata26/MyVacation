@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import AccomodationForm from "../components/accomodationForm";
+import AccommodationForm from "../components/accommodationForm";
 import FormData from 'form-data';
 import api from '../utility/api';
 import { useNavigate } from "react-router-dom";
@@ -20,15 +20,15 @@ async function convertFileToBase64(file) {
 	});
 }
 
-const EditAccomodation = () => {
+const EditAccommodation = () => {
 	let navigate = useNavigate();
-	const [accomodation, setAccomodation] = React.useState(null);
-	const { accomodationID } = useParams();
+	const [accommodation, setAccommodation] = React.useState(null);
+	const { accommodationID } = useParams();
 
 	React.useEffect(() => {
-		api.get('/accomodations/' + accomodationID)
+		api.get('/accommodations/' + accommodationID)
 			.then(function (response) {
-				setAccomodation(response.data);
+				setAccommodation(response.data);
 			})
 			.catch(function (error) {
 				alert("Ops, something went wrong :(" + "\n" + error);
@@ -38,11 +38,11 @@ const EditAccomodation = () => {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		const result = await api.post('/edit/accomodations/' + accomodationID,
+		const result = await api.post('/edit/accommodations/' + accommodationID,
 			data,
 		)
 			.then(function (response) {
-				navigate("/accomodation/" + accomodationID);
+				navigate("/accommodation/" + accommodationID);
 			})
 			.catch(function (error) {
 				alert("Ops, something went wrong :(" + "\n" + error);
@@ -67,11 +67,11 @@ const EditAccomodation = () => {
 							color="text.primary"
 							gutterBottom
 						>
-							Edit accomodation
+							Edit accommodation
 						</Typography>
 					</Container>
 				</Box>
-				<AccomodationForm accomodation={accomodation} />
+				<AccommodationForm accommodation={accommodation} />
 				<Container maxWidth='md'>
 					<Button
 						type="submit"
@@ -95,4 +95,4 @@ const EditAccomodation = () => {
 	);
 };
 
-export default EditAccomodation;
+export default EditAccommodation;

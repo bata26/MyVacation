@@ -101,7 +101,7 @@ const ToApprove = () => {
                         />
                     </ImageListItem>
                     {
-                        type === "accomodation" ?
+                        type === "accommodation" ?
                             (advertisement.pictures.map((item) => (
                                 <ImageListItem key={item}>
                                     <img
@@ -165,10 +165,10 @@ const ToApprove = () => {
                         </Typography>
 
                         <Typography align='right' sx={{ mb: 2 }}>
-                            <b>Host</b>: {advertisement.host_name}
+                            <b>Host</b>: {advertisement.hostName}
                             <br />
                         </Typography>
-                        {type === "accomodation" ?
+                        {type === "accommodation" ?
                             (<Typography align='right' sx={{ mb: 2 }}>
                                 <b>Beds</b>: {advertisement.beds}
                                 <br />

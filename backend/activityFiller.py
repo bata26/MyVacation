@@ -37,7 +37,7 @@ cityList = []
 def getHostList():
     client = MongoManager.getInstance()
     db = client["myvacation"]
-    collection = db["accomodations"]
+    collection = db["accommodations"]
 
     hostList = collection.distinct("_id" , {})
     return hostList
@@ -46,7 +46,7 @@ def getHostList():
 def getCitiesList():
     client = MongoManager.getInstance()
     db = client["myvacation"]
-    collection = db["accomodations"]
+    collection = db["accommodations"]
 
     hostList = collection.distinct("location.city" , {})
     return hostList
@@ -62,7 +62,7 @@ def generateRandomActivity():
 
     client = MongoManager.getInstance()
     db = client["myvacation"]
-    collection = db["accomodations"]
+    collection = db["accommodations"]
     hostID = hostList[random.randint(0 , len(hostList) - 1)]
     cursor = dict(collection.find_one({"_id" : hostID}))
     activity = categories[random.randint(0 , len(categories) - 1)]
@@ -72,8 +72,8 @@ def generateRandomActivity():
     base64Picture = encodeBase64Image(activity["img_path"])
 
     activity = {
-        "host_id" : hostID,
-        "host_name" : cursor["host_name"],
+        "hostID" : hostID,
+        "hostName" : cursor["hostName"],
         "location" : {
          "address" :cursor["location"]["address"],
          "city" : cursor["location"]["city"],

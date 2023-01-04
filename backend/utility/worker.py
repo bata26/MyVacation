@@ -3,7 +3,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import json
 import os
 from controllers.graphConnection import GraphManager
-from controllers.accomodationNodeManager import AccomodationNodeManager
+from controllers.accommodationNodeManager import AccommodationNodeManager
 from controllers.activityNodeManager import ActivityNodeManager
 from controllers.userNodeManager import UserNodeManager
 from models.userNode import UserNode
@@ -45,9 +45,9 @@ def main():
             if item["type"] == "activity":
                 id = item["_id"]
                 ActivityNodeManager.deleteActivityNode(id)
-            elif item["type"] == "accomodation":
+            elif item["type"] == "accommodation":
                 id = item["_id"]
-                AccomodationNodeManager.deleteAccomodationNode(id)
+                AccommodationNodeManager.deleteAccommodationNode(id)
             elif item["type"] == "user":
                 id = item["_id"]
                 if item["operation"] == "CREATE":

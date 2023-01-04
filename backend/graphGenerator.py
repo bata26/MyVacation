@@ -5,15 +5,15 @@ from random import randint
 client = MongoManager.getInstance()
 db = client["myvacation"]
 usersCollection = db["users"]
-accomodationsCollection = db["accomodations"]
+accommodationsCollection = db["accommodations"]
 activitiesCollection = db["activities"]
 
 usersList = list(usersCollection.find({} , {"_id" : 1 , "username" : 1}))
 print(usersList)
-accomodationsList = list(accomodationsCollection.find({} , {"_id" : 1 , "name" : 1 , "type" : "accomodation"}))
+accommodationsList = list(accommodationsCollection.find({} , {"_id" : 1 , "name" : 1 , "type" : "accommodation"}))
 activitiesList = list(activitiesCollection.find({} , {"_id" : 1 , "name" : 1 , "type" : "activity"}))
 
-suggestionAccomodationResult = []
+suggestionAccommodationResult = []
 suggestionActivityResult = []
 followResult = []
 
@@ -40,13 +40,13 @@ for user in usersList:
             "userID": str(user["_id"]),
             "username" : user["username"]
         }
-        # i < 7 accomodation
+        # i < 7 accommodation
         if i < 7:
-            print("accomodation")
-            accomodation = accomodationsList[randint(0 , len(accomodationsList) - 1)]
-            obj["accomodationID"] = str(accomodation["_id"])
-            obj["accomodationName"] = str(accomodation["name"])
-            suggestionAccomodationResult.append(obj)
+            print("accommodation")
+            accommodation = accommodationsList[randint(0 , len(accommodationsList) - 1)]
+            obj["accommodationID"] = str(accommodation["_id"])
+            obj["accommodationName"] = str(accommodation["name"])
+            suggestionAccommodationResult.append(obj)
         else:
             activity = activitiesList[randint(0 , len(activitiesList) - 1)]
             obj["activityID"] = str(activity["_id"])
@@ -54,11 +54,11 @@ for user in usersList:
             suggestionActivityResult.append(obj)
 
 
-accomodationDF = pd.DataFrame.from_dict(suggestionAccomodationResult)
+accommodationDF = pd.DataFrame.from_dict(suggestionAccommodationResult)
 activityDF = pd.DataFrame.from_dict(suggestionActivityResult)
 usersDF = pd.DataFrame.from_dict(followResult)
 usersDF.to_csv("users.csv")
-accomodationDF.to_csv("accomodation.csv")
+accommodationDF.to_csv("accommodation.csv")
 activityDF.to_csv("activity.csv")
 
 

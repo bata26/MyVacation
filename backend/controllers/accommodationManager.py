@@ -1,6 +1,6 @@
 from .connection import MongoManager
 import os
-from models.accomodation import Accomodation
+from models.accommodation import Accommodation
 from bson.objectid import ObjectId
 from utility.serializer import Serializer
 from datetime import datetime
@@ -8,105 +8,97 @@ import dateparser
 from models.review import Review
 
 
-class AccomodationsManager:
+class AccommodationManager:
     @staticmethod
-    def updateAccomodation(accomodationID, accomodation, user):
+    def updateAccommodation(accommodationID, accommodation, user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
 
         try:
             collection.update_one(
-                {"_id": ObjectId(accomodationID)}, {"$set": accomodation}
+                {"_id": ObjectId(accommodationID)}, {"$set": accommodation}
             )
         except Exception as e:
             raise Exception("Impossibile aggiornare: " + str(e))
 
     @staticmethod
-    def getAccomodationsFromIdList(accomodationsIdList):
+    def getAccommodationsFromIdList(accommodationsIdList):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
-        idList = [ObjectId(item) for item in accomodationsIdList]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
+        idList = [ObjectId(item) for item in accommodationsIdList]
         try:
-            serializedAccomodations = []
-            accomodationsList = list(
+            serializedAccommodations = []
+            accommodationsList = list(
                 collection.find({"_id": {"$in": idList}}, {"pictures": 0})
             )
 
-            for accomodation in accomodationsList:
-                accomodationObject = Accomodation(
-                    accomodation["name"],
-                    accomodation["description"],
-                    str(accomodation["host_id"]),
-                    accomodation["host_name"],
-                    accomodation["mainPicture"],
-                    accomodation["location"],
-                    accomodation["property_type"],
-                    accomodation["accommodates"],
-                    accomodation["bedrooms"],
-                    accomodation["beds"],
-                    accomodation["price"],
-                    accomodation["minimum_nights"],
-                    accomodation["number_of_reviews"],
-                    accomodation["review_scores_rating"],
-                    accomodation["approved"],
-                    accomodation["reservations"],
-                    accomodation["reviews"],
-                    str(accomodation["_id"]),
+            for accommodation in accommodationsList:
+                accommodationObject = Accommodation(
+                    accommodation["name"],
+                    accommodation["description"],
+                    str(accommodation["hostID"]),
+                    accommodation["hostName"],
+                    accommodation["mainPicture"],
+                    accommodation["location"],
+                    accommodation["propertyType"],
+                    accommodation["guests"],
+                    accommodation["bedrooms"],
+                    accommodation["beds"],
+                    accommodation["price"],
+                    accommodation["approved"],
+                    accommodation["reviews"],
+                    _id=str(accommodation["_id"]),
                 )
-                serializedAccomodations.append(
-                    Serializer.serializeAccomodation(accomodationObject)
+                serializedAccommodations.append(
+                    Serializer.serializeAccommodation(accommodationObject)
                 )
-            return serializedAccomodations
+            return serializedAccommodations
         except Exception as e:
             raise Exception("Impossibile aggiornare: " + str(e))
 
     @staticmethod
-    def getAccomodationFromId(accomodationID):
+    def getAccommodationFromId(accommodationID):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
-        cursor = dict(collection.find_one({"_id": ObjectId(accomodationID)}))
-        accomodation = Accomodation(
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
+        cursor = dict(collection.find_one({"_id": ObjectId(accommodationID)}))
+        accommodation = Accommodation(
             cursor["name"],
             cursor["description"],
-            str(cursor["host_id"]),
-            cursor["host_name"],
+            str(cursor["hostID"]),
+            cursor["hostName"],
             cursor["mainPicture"],
             cursor["location"],
-            cursor["property_type"],
-            cursor["accommodates"],
+            cursor["propertyType"],
+            cursor["guests"],
             cursor["bedrooms"],
             cursor["beds"],
             cursor["price"],
-            cursor["minimum_nights"],
-            cursor["number_of_reviews"],
-            cursor["review_scores_rating"],
             cursor["approved"],
-            cursor["reservations"],
             cursor["reviews"],
-            str(cursor["_id"]),
-            cursor["pictures"],
+            _id=str(cursor["_id"]),
+            pictures=cursor["pictures"],
         )
-        return Serializer.serializeAccomodation(accomodation)
+        return Serializer.serializeAccommodation(accommodation)
         # cursor["_id"] = str(cursor["_id"])
         # return cursor
 
     @staticmethod
-    def getOccupiedAccomodationIDs(start_date, end_date):
-        # ottengo una lista di id di accomodations non occupate
+    def getOccupiedAccommodationIDs(start_date, end_date):
+        # ottengo una lista di id di accommodations non occupate
         # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
-        if not(isinstance(start_date, str) and isinstance(end_date, str)):
+        if not (isinstance(start_date, str) and isinstance(end_date, str)):
             start_date = start_date.strftime("%Y-%m-%d")
             end_date = end_date.strftime("%Y-%m-%d")
-        occupiedAccomodationsID = collection.distinct(
+        occupiedAccommodationsID = collection.distinct(
             "destinationID",
-            {   
-                "destinationType" : "accomodation",
+            {
+                "destinationType": "accommodation",
                 "$or": [
                     {
                         "$or": [
@@ -134,10 +126,10 @@ class AccomodationsManager:
                             {"endDate": {"$gte": dateparser.parse(end_date)}},
                         ]
                     },
-                ]
+                ],
             },
         )
-        return occupiedAccomodationsID
+        return occupiedAccommodationsID
 
     # we can filter for:
     #   - start date
@@ -145,13 +137,13 @@ class AccomodationsManager:
     #   - city
     #   - number of guests
     @staticmethod
-    def getFilteredAccomodation(
+    def getFilteredAccommodation(
         start_date="", end_date="", city="", guestNumbers="", index="", direction=""
     ):
         query = {}
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        occupiedAccomodationsID = []
+        occupiedAccommodationsID = []
         result = []
 
         if city != "" and city != None:
@@ -160,20 +152,27 @@ class AccomodationsManager:
             query["accommodates"] = {}
             query["accommodates"]["$gte"] = int(guestNumbers)
 
-        if ( start_date != "" and end_date != "" and end_date != None and start_date != None):
-            # ottengo una lista di id di accomodations non occupate
+        if (
+            start_date != ""
+            and end_date != ""
+            and end_date != None
+            and start_date != None
+        ):
+            # ottengo una lista di id di accommodations non occupate
             # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
-            occupiedAccomodationsID = AccomodationsManager.getOccupiedAccomodationIDs(start_date , end_date)
-            
+            occupiedAccommodationsID = AccommodationManager.getOccupiedAccommodationIDs(
+                start_date, end_date
+            )
+
         query["_id"] = {}
-        query["_id"]["$nin"] = occupiedAccomodationsID
+        query["_id"]["$nin"] = occupiedAccommodationsID
         projection = {"pictures": 0, "reservations": 0, "reviews": 0}
         query["approved"] = True
-        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
 
         if index == "":
             # When it is first page
-            accomodations = list(
+            accommodations = list(
                 collection.find(query, projection)
                 .sort("_id", 1)
                 .limit(int(os.getenv("PAGE_SIZE")))
@@ -181,66 +180,67 @@ class AccomodationsManager:
         else:
             if direction == "next":
                 query["_id"]["$gt"] = ObjectId(index)
-                accomodations = list(
+                accommodations = list(
                     collection.find(query, projection)
                     .sort("_id", 1)
                     .limit(int(os.getenv("PAGE_SIZE")))
                 )
             elif direction == "previous":
                 query["_id"]["$lt"] = ObjectId(index)
-                accomodations = list(
+                accommodations = list(
                     collection.find(query, projection)
                     .sort("_id", -1)
                     .limit(int(os.getenv("PAGE_SIZE")))
                 )
-        for accomodation in accomodations:
-            accomodationResult = Accomodation(
-                accomodation["name"],
-                accomodation["description"],
-                str(accomodation["host_id"]),
-                accomodation["host_name"],
-                accomodation["mainPicture"],
-                accomodation["location"],
-                accomodation["property_type"],
-                accomodation["accommodates"],
-                accomodation["bedrooms"],
-                accomodation["beds"],
-                accomodation["price"],
-                accomodation["minimum_nights"],
-                accomodation["number_of_reviews"],
-                accomodation["review_scores_rating"],
-                accomodation["approved"],
-                _id=str(accomodation["_id"]),
+        for accommodation in accommodations:
+            accommodationResult = Accommodation(
+                accommodation["name"],
+                accommodation["description"],
+                str(accommodation["hostID"]),
+                accommodation["hostName"],
+                accommodation["mainPicture"],
+                accommodation["location"],
+                accommodation["propertyType"],
+                accommodation["guests"],
+                accommodation["bedrooms"],
+                accommodation["beds"],
+                accommodation["price"],
+                accommodation["approved"],
+                _id=str(accommodation["_id"]),
             )
-            result.append(Serializer.serializeAccomodation(accomodationResult))
+            result.append(Serializer.serializeAccommodation(accommodationResult))
         return result
 
     @staticmethod
-    def insertNewAccomodation(accomodation):
+    def insertNewAccommodation(accommodation):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         try:
-            result = collection.insert_one(accomodation.getDictToUpload())
+            result = collection.insert_one(accommodation.getDictToUpload())
             return result.inserted_id
         except Exception:
             raise Exception("Impossibile inserire")
 
     @staticmethod
-    def deleteAccomodation(accomodationID, user):
+    def deleteAccommodation(accommodationID, user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
 
         try:
-            cursor = dict(collection.find_one({"_id": ObjectId(accomodationID)}, {"_id": 1, "host_id": 1}))
+            cursor = dict(
+                collection.find_one(
+                    {"_id": ObjectId(accommodationID)}, {"_id": 1, "hostID": 1}
+                )
+            )
         except Exception as e:
-            raise(str(e))
-        if str(cursor["host_id"]) != user["_id"] and user["role"] != "admin":
-            raise Exception("L'utente non possiede l'accomodations")
+            raise (str(e))
+        if str(cursor["hostID"]) != user["_id"] and user["role"] != "admin":
+            raise Exception("L'utente non possiede l'accommodations")
         else:
             try:
-                collection.delete_one({"_id": ObjectId(accomodationID)})
+                collection.delete_one({"_id": ObjectId(accommodationID)})
                 return True
             except Exception:
                 raise Exception("Impossibile eliminare")
@@ -249,7 +249,7 @@ class AccomodationsManager:
     def addReview(review):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         try:
             collection.update_one(
                 {"_id": ObjectId(review.destinationID)},
@@ -257,12 +257,12 @@ class AccomodationsManager:
             )
         except Exception as e:
             raise Exception("Impossibile aggiungere la review: " + str(e))
-
+    """
     @staticmethod
     def addReservation(reservation):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         try:
             collection.update_one(
                 {"_id": ObjectId(reservation.destinationID)},
@@ -275,16 +275,22 @@ class AccomodationsManager:
     def updateReservation(reservation, newStartDate, newEndDate):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         prevStartDate = reservation["startDate"]
         prevEndDate = reservation["endDate"]
         prevTotalExpense = int(reservation["totalExpense"])
-        price = prevTotalExpense / ((dateparser.parse(prevEndDate) - dateparser.parse(prevStartDate)).days)
-        newNightNumber = (dateparser.parse(newEndDate) - dateparser.parse(newStartDate)).days
+        price = prevTotalExpense / (
+            (dateparser.parse(prevEndDate) - dateparser.parse(prevStartDate)).days
+        )
+        newNightNumber = (
+            dateparser.parse(newEndDate) - dateparser.parse(newStartDate)
+        ).days
         newTotalExpense = newNightNumber * price
 
-        if(str(reservation.destinationID) in AccomodationsManager.getOccupiedAccomodationIDs(newStartDate , newEndDate)):
-            raise Exception("Accomodation occupata")
+        if str(
+            reservation.destinationID
+        ) in AccommodationManager.getOccupiedAccommodationIDs(newStartDate, newEndDate):
+            raise Exception("Accommodation occupata")
 
         try:
             collection.update_one(
@@ -299,38 +305,34 @@ class AccomodationsManager:
             )
         except Exception as e:
             raise Exception("Impossibile aggiornare la reservation: " + str(e))
-
+    """
     @staticmethod
-    def getAccomodationsByUserID(userID):
+    def getAccommodationsByUserID(userID):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         try:
-            cursor = list(collection.find({"host_id": ObjectId(userID)}))
+            cursor = list(collection.find({"hostID": ObjectId(userID)}))
             result = []
-            for accomodation in cursor:
-                accomodationResult = Accomodation(
-                    accomodation["name"],
-                    accomodation["description"],
-                    str(accomodation["host_id"]),
-                    accomodation["host_name"],
-                    accomodation["mainPicture"],
-                    accomodation["location"],
-                    accomodation["property_type"],
-                    accomodation["accommodates"],
-                    accomodation["bedrooms"],
-                    accomodation["beds"],
-                    accomodation["price"],
-                    accomodation["minimum_nights"],
-                    accomodation["number_of_reviews"],
-                    accomodation["review_scores_rating"],
-                    accomodation["approved"],
-                    accomodation["reservations"],
-                    accomodation["reviews"],
-                    str(accomodation["_id"]),
-                    accomodation["pictures"],
+            for accommodation in cursor:
+                accommodationResult = Accommodation(
+                    accommodation["name"],
+                    accommodation["description"],
+                    str(accommodation["hostID"]),
+                    accommodation["hostName"],
+                    accommodation["mainPicture"],
+                    accommodation["location"],
+                    accommodation["propertyType"],
+                    accommodation["guests"],
+                    accommodation["bedrooms"],
+                    accommodation["beds"],
+                    accommodation["price"],
+                    accommodation["approved"],
+                    accommodation["reviews"],
+                    str(accommodation["_id"]),
+                    accommodation["pictures"],
                 )
-                result.append(Serializer.serializeAccomodation(accomodationResult))
+                result.append(Serializer.serializeAccommodation(accommodationResult))
             return result
         except Exception as e:
             raise Exception("Impossibile ottenere prenotazioni: " + str(e))

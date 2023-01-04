@@ -50,7 +50,7 @@ const EditReservationModal = ({reservation}) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         let updatedData;
-        if(reservation.destinationType === "accomodation") {
+        if(reservation.destinationType === "accommodation") {
             updatedData = {
                 "startDate": data.get("startDate"),
                 "endDate": data.get("endDate"),
@@ -102,7 +102,7 @@ const EditReservationModal = ({reservation}) => {
                             InputProps={{ inputProps: { min:`${date}`, max:""} }}
                             style={{width:100+'%', marginTop:10}}
                         />
-                    {reservation.destinationType === "accomodation" ?
+                    {reservation.destinationType === "accommodation" ?
                         (<TextField
                             fullWidth
                             id="endDate"

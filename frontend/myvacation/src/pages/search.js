@@ -30,7 +30,7 @@ const Search = () => {
   const [endDate, setEndDate] = React.useState(null);
   const [city, setCity] = React.useState(searchParams.get("city") ? searchParams.get("city") : null);
   const [guests, setGuests] = React.useState(null);
-  const [type, setType] = React.useState(searchParams.get("type") ? searchParams.get("type") : "accomodations");
+  const [type, setType] = React.useState(searchParams.get("type") ? searchParams.get("type") : "accommodations");
   const today = new Date();
   const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
   const navigate = useNavigate();
@@ -133,8 +133,8 @@ const Search = () => {
   let hideEndDate = true
   let hideStartDate = true
 
-  if (type === 'accomodations') {
-    setter = 'accomodation'
+  if (type === 'accommodations') {
+    setter = 'accommodation'
     hideNumberOfPerson = false
     hideEndDate = false
     hideStartDate = false
@@ -181,7 +181,7 @@ const Search = () => {
                   onChange={handleChange}
                 >
                   <MenuItem value={'activities'}>Activities</MenuItem>
-                  <MenuItem value={'accomodations'}>Accomodations</MenuItem>
+                  <MenuItem value={'accommodations'}>Accommodations</MenuItem>
                 </Select>
               </Grid>
               <Grid item xs={6} sm={4}>
@@ -205,7 +205,7 @@ const Search = () => {
                   InputProps={{ inputProps: { min:`${date}`, max:""} }}
                 />
               </Grid>
-              {type === "accomodations" ? (<Grid item xs={6} sm={2}>
+              {type === "accommodations" ? (<Grid item xs={6} sm={2}>
                 <TextField
                   fullWidth
                   id="endDate"

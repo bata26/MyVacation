@@ -9,8 +9,8 @@ class LikeRelationManager:
 
         try:
             query = "MATCH (u:User {userID: '%s'})-[r:LIKE]->" %likeRelation.user.userID
-            if(hasattr(likeRelation  , "accomodation")):
-                query = query + "(a: Accomodation{accomodationID : '%s'}) " %likeRelation.accomodation.accomodationID
+            if(hasattr(likeRelation  , "accommodation")):
+                query = query + "(a: Accommodation{accommodationID : '%s'}) " %likeRelation.accommodation.accommodationID
             elif(hasattr(likeRelation  , "activity")):
                 query = query + "(a: Activity{activityID : '%s'}) " %likeRelation.activity.activityID
             else:
@@ -35,8 +35,8 @@ class LikeRelationManager:
                 raise Exception("Già messo like")
 
             query = "MATCH (u:User {userID: '%s'}) " %likeRelation.user.userID
-            if(hasattr(likeRelation  , "accomodation")):
-                query = query + "MATCH (a: Accomodation{accomodationID : '%s'}) " %likeRelation.accomodation.accomodationID
+            if(hasattr(likeRelation  , "accommodation")):
+                query = query + "MATCH (a: Accommodation{accommodationID : '%s'}) " %likeRelation.accommodation.accommodationID
             elif(hasattr(likeRelation  , "activity")):
                 query = query + "MATCH (a: Activity{activityID : '%s'}) " %likeRelation.activity.activityID
             else:
@@ -56,8 +56,8 @@ class LikeRelationManager:
         try:
             
             query = "MATCH (u:User {userID: '%s'})-[r:LIKE]->" %likeRelation.user.userID
-            if(hasattr(likeRelation  , "accomodation")):
-                query = query + "(a: Accomodation{accomodationID : '%s'}) " %likeRelation.accomodation.accomodationID
+            if(hasattr(likeRelation  , "accommodation")):
+                query = query + "(a: Accommodation{accommodationID : '%s'}) " %likeRelation.accommodation.accommodationID
             elif(hasattr(likeRelation  , "activity")):
                 query = query + "(a: Activity{activityID : '%s'}) " %likeRelation.activity.activityID
             else:

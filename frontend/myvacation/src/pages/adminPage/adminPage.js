@@ -19,15 +19,13 @@ const theme = createTheme();
 const AdminPage = () => {
 
 	const [totalAdvertisement, setTotalAdvertisement] = React.useState([]);
-	const [bestHostAcc, setBestHostAcc] = React.useState([]);
-	const [bestHostAct, setBestHostAct] = React.useState([]);
-	const [accomodationAverage, setAccomodationAverage] = React.useState([]);
+	const [accommodationAverage, setAccommodationAverage] = React.useState([]);
 	const [activityAverage, setActivityAverage] = React.useState([]);
 	const [usersForMonth, setUsersForMonth] = React.useState([]);
 
 	React.useEffect(() => {
 
-		//Richiesta per avere il numero di annunci pubblicati (Accomodations/Activities)
+		//Richiesta per avere il numero di annunci pubblicati (Accommodations/Activities)
 		api.get("/analytics/totalAdvertisement")
 			.then(function (response) {
 				setTotalAdvertisement(response.data);
@@ -36,28 +34,10 @@ const AdminPage = () => {
 				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 
-		//Richiesta per avere i top 10 host nel settore accomodation
-		api.get("analytics/bestHost/accomodation")
+		//Richiesta per avere la media dei prezzi per città delle accommodations
+		api.get("/analytics/averageAccommodations")
 			.then(function (response) {
-				setBestHostAcc(response.data);
-			})
-			.catch(function (error) {
-				alert("Ops, something went wrong :(" + "\n" + error);
-			});
-
-		//Richiesta per avere i top 10 host nel settore activity
-		api.get("analytics/bestHost/activity")
-			.then(function (response) {
-				setBestHostAct(response.data);
-			})
-			.catch(function (error) {
-				alert("Ops, something went wrong :(" + "\n" + error);
-			});
-
-		//Richiesta per avere la media dei prezzi per città delle accomodations
-		api.get("/analytics/averageAccomodations")
-			.then(function (response) {
-				setAccomodationAverage(response.data);
+				setAccommodationAverage(response.data);
 			})
 			.catch(function (error) {
 				alert("Ops, something went wrong :(" + "\n" + error);
@@ -169,13 +149,13 @@ const AdminPage = () => {
 								<Table size="small">
 									<TableHead>
 										<TableRow>
-											<TableCell align="center" style={{ fontWeight: 'bold' }}>Accomodation</TableCell>
+											<TableCell align="center" style={{ fontWeight: 'bold' }}>Accommodation</TableCell>
 											<TableCell align="center" style={{ fontWeight: 'bold' }}>Activity</TableCell>
 										</TableRow>
 									</TableHead>
 									<tbody>
 										<TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-											<TableCell align="center">{totalAdvertisement.totalAccomodations}</TableCell>
+											<TableCell align="center">{totalAdvertisement.totalAccommodations}</TableCell>
 											<TableCell align="center">{totalAdvertisement.totalActivities}</TableCell>
 										</TableRow>
 									</tbody>
@@ -195,7 +175,7 @@ const AdminPage = () => {
 									color="text.primary"
 									gutterBottom
 								>
-									Average Accomodations prices
+									Average Accommodations prices
 								</Typography>
 							</Container>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >
@@ -207,7 +187,7 @@ const AdminPage = () => {
 										</TableRow>
 									</TableHead>
 									<tbody>
-										{accomodationAverage && accomodationAverage.map((accAv, index) => (
+										{accommodationAverage && accommodationAverage.map((accAv, index) => (
 											<TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 												<TableCell align="left">{accAv.city} </TableCell>
 												<TableCell align="right">{accAv.averageCost}</TableCell>
@@ -250,72 +230,6 @@ const AdminPage = () => {
 							</TableContainer>
 						</Grid>
 					</Grid>
-					<Grid container columnSpacing={2}>
-						{/* Tabella top 10 host accomodations */}
-						<Grid item xs={4} sm={6}>
-							<Container maxWidth="sm">
-								<Typography
-									component="h4"
-									variant="h5"
-									align="center"
-									color="text.primary"
-									gutterBottom
-								>
-									Top 10 Accomodation hosts
-								</Typography>
-							</Container>
-							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
-								<Table size="small">
-									<TableHead>
-										<TableRow>
-											<TableCell align="left" style={{ fontWeight: 'bold' }}>HostID</TableCell>
-											<TableCell align="right" style={{ fontWeight: 'bold' }}>Average Rating</TableCell>
-										</TableRow>
-									</TableHead>
-									<tbody>
-										{bestHostAcc && bestHostAcc.map((hostAcc, index) => (
-											<TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-												<TableCell align="left">{hostAcc.hostID} </TableCell>
-												<TableCell align="right">{hostAcc.averageRating}</TableCell>
-											</TableRow>
-										))}
-									</tbody>
-								</Table>
-							</TableContainer>
-						</Grid>
-						{/* Tabella top 10 host activities */}
-						<Grid item xs={4} sm={6}>
-							<Container maxWidth="sm">
-								<Typography
-									component="h4"
-									variant="h5"
-									align="center"
-									color="text.primary"
-									gutterBottom
-								>
-									Top 10 Activities hosts
-								</Typography>
-							</Container>
-							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }} >
-								<Table size="small">
-									<TableHead>
-										<TableRow>
-											<TableCell align="left" style={{ fontWeight: 'bold' }}>HostID</TableCell>
-											<TableCell align="right" style={{ fontWeight: 'bold' }}>Average Rating</TableCell>
-										</TableRow>
-									</TableHead>
-									<tbody>
-										{bestHostAct && bestHostAct.map((hostAct, index) => (
-											<TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-												<TableCell align="left">{hostAct.hostID} </TableCell>
-												<TableCell align="right">{hostAct.averageRating}</TableCell>
-											</TableRow>
-										))}
-									</tbody>
-								</Table>
-							</TableContainer>
-						</Grid>
-					</Grid>
 				</Container>
 				<Container maxWidth="md" sx={{ mt: 4 }}>
 					<Typography
@@ -325,10 +239,10 @@ const AdminPage = () => {
 						color="text.primary"
 						gutterBottom
 					>
-						Accomodations to be approved
+						Accommodations to be approved
 					</Typography>
 					{/* To be Approved List*/}
-					<ToBeApprovedList destinationType={"accomodation"} />
+					<ToBeApprovedList destinationType={"accommodation"} />
 					<Typography
 						component="h2"
 						variant="h4"

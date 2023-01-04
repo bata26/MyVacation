@@ -1,5 +1,5 @@
 from controllers.analyticsManager import AnalyticsManager
-from controllers.accomodationsManager import AccomodationsManager
+from controllers.accommodationManager import AccommodationManager
 from flask import Flask, abort, request, jsonify, Response
 from dotenv import load_dotenv
 from markupsafe import escape
@@ -7,18 +7,17 @@ from controllers.activityManager import ActivityManager
 from controllers.reviewManager import ReviewManager
 from controllers.userManager import UserManager
 from controllers.userNodeManager import UserNodeManager
-from models.accomodationNode import AccomodationNode
+from models.accommodationNode import AccommodationNode
 from models.activityNode import ActivityNode
 from controllers.followRelationManager import FollowRelationManager
 from controllers.likeRelationManager import LikeRelationManager
-from controllers.accomodationNodeManager import AccomodationNodeManager
+from controllers.accommodationNodeManager import AccommodationNodeManager
 from controllers.activityNodeManager import ActivityNodeManager
 from controllers.followRelationManager import FollowRelationManager
-from models.accomodationNode import AccomodationNode
 from models.activityNode import ActivityNode
 from controllers.adminManager import AdminManager
 from controllers.reservationManager import ReservationManager
-from models.accomodation import Accomodation
+from models.accommodation import Accommodation
 from models.reservation import Reservation
 from models.activity import Activity
 from models.user import User
@@ -103,11 +102,11 @@ def getBestAdv(user={}):
 def getBestAdvInfo(user={}):
     try:
         requestBody = request.json
-        accomodationsID = requestBody["accomodationsID"]
+        accommodationsID = requestBody["accommodationsID"]
         activitiesID = requestBody["activitiesID"]
         result = {}
-        result["accomodations"] = AccomodationsManager.getAccomodationsFromIdList(
-            accomodationsID
+        result["accommodations"] = AccommodationManager.getAccommodationsFromIdList(
+            accommodationsID
         )
         result["activities"] = ActivityManager.getActivitiesFromIdList(activitiesID)
         return result, 200
@@ -135,11 +134,11 @@ def getUsersForMonth(user={}):
         return str(e), 500
 
 
-@application.route("/analytics/averageAccomodations", methods=["GET"])
+@application.route("/analytics/averageAccommodations", methods=["GET"])
 @required_token
-def getAccomodationsAverageCost(user={}):
+def getAccommodationsAverageCost(user={}):
     try:
-        res = AnalyticsManager.getAccomodationAverageCost(user)
+        res = AnalyticsManager.getAccommodationAverageCost(user)
         return res
     except Exception as e:
         return str(e), 500
@@ -170,16 +169,6 @@ def getTotalReservations(user={}):
 def getTotalAdvs(user={}):
     try:
         res = AnalyticsManager.getTotAdvs(user)
-        return res
-    except Exception as e:
-        return str(e), 500
-
-
-@application.route("/analytics/bestHost/<destinationType>", methods=["GET"])
-@required_token
-def getBestHost(destinationType, user={}):
-    try:
-        res = AnalyticsManager.getBestAdvertisers(user, escape(destinationType))
         return res
     except Exception as e:
         return str(e), 500
@@ -231,40 +220,37 @@ def getActivities(user={}):
         return str(e), 500
 
 
-@application.route("/accomodations/<accomodation_id>", methods=["DELETE"])
+@application.route("/accommodations/<accommodation_id>", methods=["DELETE"])
 @required_token
-def deleteAccomodationById(accomodation_id, user={}):
-    accomodationID = escape(accomodation_id)
+def deleteaccommodationById(accommodation_id, user={}):
+    accommodationID = escape(accommodation_id)
     try:
-        deleteResult = AccomodationsManager.deleteAccomodation(accomodationID, user)
+        deleteResult = AccommodationManager.deleteAccommodation(accommodationID, user)
     except Exception as e:
         return str(e), 500
     # provo ad eliminare il nodo
     try:
         if deleteResult:
-            AccomodationNodeManager.deleteAccomodationNode(accomodationID)
+            AccommodationNodeManager.deleteAccommodationNode(accommodationID)
             return "OK", 200
     except Exception as e:
         # ho eliminato il documento ma non il nodo, aggiungo al logger
-        Logger.addNodeToFile("accomodation", accomodationID)
+        Logger.addNodeToFile("accommodation", accommodationID)
         return str(e), 500
 
 
-@application.route("/update/accomodation/<accomodationID>", methods=["POST"])
+@application.route("/update/accommodation/<accommodationID>", methods=["POST"])
 @required_token
-def updateAccomodationById(accomodationID, user={}):
+def updateAccommodationById(accommodationID, user={}):
     formData = dict(request.json)
     formData["location"] = {}
     formData["location"]["city"] = formData["city"]
     formData["location"]["address"] = formData["address"]
     formData["location"]["country"] = formData["country"]
-    formData.pop("city")
-    formData.pop("address")
-    formData.pop("country")
-    formData["accommodates"] = formData["accommodates"]
+    formData["guests"] = formData["guests"]
     formData["approved"] = False
     try:
-        AccomodationsManager.updateAccomodation(accomodationID, formData, user)
+        AccommodationManager.updateAccommodation(accommodationID, formData, user)
         return "", 200
     except Exception as e:
         return str(e), 500
@@ -289,32 +275,32 @@ def updateActivityById(activityID, user={}):
         return str(e), 500
 
 
-@application.route("/accomodations/<accomodation_id>", methods=["GET"])
-def getAccomodationById(accomodation_id):
-    accomodationID = escape(accomodation_id)
+@application.route("/accommodations/<accommodation_id>", methods=["GET"])
+def getAccommodationById(accommodation_id):
+    accommodationID = escape(accommodation_id)
     try:
-        result = AccomodationsManager.getAccomodationFromId(accomodationID)
+        result = AccommodationManager.getAccommodationFromId(accommodationID)
         return result, 200
     except Exception as e:
         return str(e), 500
 
 
-@application.route("/book/accomodation", methods=["POST"])
+@application.route("/book/accommodation", methods=["POST"])
 @required_token
-def bookAccomodation(user={}):
+def bookAccommodation(user={}):
     if user["role"] != "admin":
         requestBody = request.json
-        accomodation = requestBody["accomodation"]
+        accommodation = requestBody["accommodation"]
         startDatetime = dateparser.parse(requestBody["startDate"])
         endDatetime = dateparser.parse(requestBody["endDate"])
         nightNumber = (endDatetime - startDatetime).days
-        totalExpense = nightNumber * int(accomodation["price"])
-        city = accomodation["city"]
-        hostID = accomodation["hostID"]
+        totalExpense = nightNumber * int(accommodation["price"])
+        city = accommodation["city"]
+        hostID = accommodation["hostID"]
         reservation = Reservation(
             user["_id"],
-            accomodation["_id"],
-            "accomodation",
+            accommodation["_id"],
+            "accommodation",
             startDatetime,
             totalExpense,
             city,
@@ -337,7 +323,7 @@ def updateReservation(user={}):
     newStartDate = requestBody["startDate"]
     reservation = requestBody["reservation"]
     newEndDate = None
-    if reservation["destinationType"] == "accomodation":
+    if reservation["destinationType"] == "accommodation":
         newEndDate = requestBody["endDate"]
     try:
         ReservationManager.updateReservation(reservation, newStartDate, newEndDate)
@@ -425,9 +411,9 @@ def likeAdv(user={}):
         try:
             requestBody = request.json
             userNode = UserNode(user["_id"], user["username"])
-            if requestBody["destinationType"] == "accomodation":
-                accomodationNode = AccomodationNode(requestBody["likedAdvID"], requestBody["likedAdvName"])
-                likeRelation = LikeRelation(userNode, accomodationNode=accomodationNode)
+            if requestBody["destinationType"] == "accommodation":
+                accommodationNode = AccommodationNode(requestBody["likedAdvID"], requestBody["likedAdvName"])
+                likeRelation = LikeRelation(userNode, accommodationNode=accommodationNode)
             elif requestBody["destinationType"] == "activity":
                 activityNode = ActivityNode(requestBody["likedAdvID"], requestBody["likedAdvName"])
                 likeRelation = LikeRelation(userNode, activityNode=activityNode)
@@ -447,8 +433,8 @@ def getCommonAdv(destination_type, user_id, user={}):
 
     userNode = UserNode(user["_id"], user["username"])
     try:
-        if destinationType == "accomodation":
-            result = AccomodationNodeManager.getCommonLikedAccomodation(userNode, userID)
+        if destinationType == "accommodation":
+            result = AccommodationNodeManager.getCommonLikedAccommodation(userNode, userID)
         else:
             result = ActivityNodeManager.getCommonLikedActivity(userNode, userID)
         return result, 200
@@ -462,8 +448,8 @@ def getTotalLike(destination_type, destination_id, user={}):
     destinationType = escape(destination_type)
     destinationID = escape(destination_id)
     try:
-        if destinationType == "accomodation":
-            total = AccomodationNodeManager.getTotalLikes(destinationID)
+        if destinationType == "accommodation":
+            total = AccommodationNodeManager.getTotalLikes(destinationID)
         else:
             total = ActivityNodeManager.getTotalLikes(destinationID)
         return {"likes": total}, 200
@@ -505,9 +491,9 @@ def unlikeAdv(user={}):
         try:
             requestBody = request.json
             userNode = UserNode(user["_id"], user["username"])
-            if requestBody["destinationType"] == "accomodation":
-                accomodationNode = AccomodationNode(requestBody["unlikedAdvID"], requestBody["unlikedAdvName"])
-                likeRelation = LikeRelation(userNode, accomodationNode=accomodationNode )
+            if requestBody["destinationType"] == "accommodation":
+                accommodationNode = AccommodationNode(requestBody["unlikedAdvID"], requestBody["unlikedAdvName"])
+                likeRelation = LikeRelation(userNode, accommodationNode=accommodationNode )
                 LikeRelationManager.removeLikeRelation(likeRelation)
             elif requestBody["destinationType"] == "activity":
                 activityNode = ActivityNode(requestBody["unlikedAdvID"], requestBody["unlikedAdvName"])
@@ -580,9 +566,9 @@ def deleteReservation(reservation_id, user={}):
         return str(e), 500
 
 
-@application.route("/accomodations", methods=["GET"])
+@application.route("/accommodations", methods=["GET"])
 # @required_token
-def getAccomodations():
+def getAccommodations():
     args = request.args
     city = args.get("city")
     guests = args.get("guestsNumber")
@@ -591,7 +577,7 @@ def getAccomodations():
     index = args.get("index")
     direction = args.get("direction")
     try:
-        result = AccomodationsManager.getFilteredAccomodation(
+        result = AccommodationManager.getFilteredAccommodation(
             start_date, end_date, city, guests, index, direction
         )
         return result, 200
@@ -599,9 +585,9 @@ def getAccomodations():
         return str(e), 500
 
 
-@application.route("/insert/accomodation", methods=["POST"])
+@application.route("/insert/accommodation", methods=["POST"])
 @required_token
-def insertAccomodations(user={}):
+def insertAccommodations(user={}):
     if user["role"] != "admin":
         formData = dict(request.json)
         try:
@@ -617,29 +603,26 @@ def insertAccomodations(user={}):
                 "country": formData["country"],
             }
 
-            accomodation = Accomodation(
+            accommodation = Accommodation(
                 formData["name"],
                 formData["description"],
                 host["_id"],
                 host["name"],
                 formData["img"][0],
                 location,
-                formData["property_type"],
-                formData["accommodates"],
+                formData["propertyType"],
+                formData["guests"],
                 formData["bedrooms"],
                 formData["beds"],
                 formData["price"],
-                formData["minimum_nights"],
-                0,
-                0,
                 False,
                 pictures=pictures,
             )
-            accomodationID = AccomodationsManager.insertNewAccomodation(accomodation)
-            if user["role"] != "host" and user["role"] != "admin":
+            accommodationID = AccommodationManager.insertNewAccommodation(accommodation)
+            if user["role"] != "host":
                 updatedRole = {"type": "host"}
                 UserManager.updateUser(updatedRole, host["_id"])
-            return {"accomodationID": str(accomodationID)}, 200
+            return {"accommodationID": str(accommodationID)}, 200
         except Exception as e:
             return str(e), 500
     else:
@@ -666,12 +649,9 @@ def insertActivity(user={}):
             host["name"],
             location,
             formData["description"],
-            [],
             formData["duration"],
             formData["price"],
-            0,
-            0,
-            formData["img-0"],
+            formData["img"][0],
             formData["category"],
             False,
         )
@@ -722,8 +702,8 @@ def insertReview(user={}):
         try:
             insertedID = ReviewManager.insertNewReview(review)
             review._id = insertedID
-            if destinationType == "accomodation":
-                AccomodationsManager.addReview(review)
+            if destinationType == "accommodation":
+                AccommodationManager.addReview(review)
             elif destinationType == "activity":
                 ActivityManager.addReview(review)
             return "", 200
@@ -910,19 +890,17 @@ def approveAnnouncement(announcementID, user={}):
             AdminManager.approveAnnouncement(announcementID, user, destinationType)
         except Exception as e:
             raise Exception(str(e))
-        # se l'approvazione è andata bene provo a creare il nodo accomodation
+        # se l'approvazione è andata bene provo a creare il nodo accommodation
         try:
-            if destinationType == "accomodation":
-                accomodationNode = AccomodationNode(announcementID, destinationName)
-                AccomodationNodeManager.createAccomodationNode(accomodationNode)
+            if destinationType == "accommodation":
+                accommodationNode = AccommodationNode(announcementID, destinationName)
+                AccommodationNodeManager.createAccommodationNode(accommodationNode)
             else:
                 activityNode = ActivityNode(announcementID, destinationName)
                 ActivityNodeManager.createActivityNode(activityNode)
         except Exception as e:
             # eseguo il rollback se non riesco a creare il nodo
-            AdminManager.removeApprovalAnnouncement(
-                announcementID, user, destinationType
-            )
+            AdminManager.removeApprovalAnnouncement(announcementID, user, destinationType)
             raise Exception(str(e))
         return "", 200
     except Exception as e:
@@ -937,8 +915,8 @@ def refuseAnnouncement(destination_type, announcementID, user={}):
     if not (validateObjecID(announcementID)):
         return "Announcement non valido", 500
     try:
-        if destination_type == "accomodation":
-            AccomodationsManager.deleteAccomodation(announcementID, user)
+        if destination_type == "accommodation":
+            AccommodationManager.deleteAccommodation(announcementID, user)
         elif destination_type == "activity":
             ActivityManager.deleteActivity(announcementID, user)
         return "", 200
@@ -948,10 +926,10 @@ def refuseAnnouncement(destination_type, announcementID, user={}):
 
 @application.route("/myadvacc/<user_id>", methods=["GET"])
 # @required_token
-def getAccomodationsByUserID(user_id):
+def getAccommodationsByUserID(user_id):
     userID = escape(user_id)
     try:
-        result = AccomodationsManager.getAccomodationsByUserID(userID)
+        result = AccommodationManager.getAccommodationsByUserID(userID)
         return result, 200
     except Exception as e:
         return str(e), 500

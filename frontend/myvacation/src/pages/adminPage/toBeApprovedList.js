@@ -107,7 +107,7 @@ export default function ToBeApprovedList({ destinationType }) {
                     {toBeApprovedList && toBeApprovedList.map((row) => (
                         <TableRow key={row._id} onClick={() => { navigate("/toApprove/" + row._id + "?type=" + destinationType) }} style={{ cursor: "pointer" }}>
                             <TableCell align='left' component="th" scope="row">
-                                {row.host_id}
+                                {row.hostID}
                             </TableCell>
                             <TableCell align='center' component="th" scope="row">
                                 {row.name}

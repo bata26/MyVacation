@@ -10,26 +10,26 @@ username and password, through which the user will be correctly identified.
 A registration form will allow new users to register within the application as Registered Users. </br>
 <b>Unregistered User:</b>
 - Unregistered User can register to the platform.
-- Unregistered User can browse an accomodation/activity filtered by city, period and nr of guests.
-- Unregistered User can view an accomodation/activity.
+- Unregistered User can browse an accommodation/activity filtered by city, period and nr of guests.
+- Unregistered User can view an accommodation/activity.
 - Unregistered User can browse top 3 cities.
-- Unregistered User can browse top 3 accomodations.
+- Unregistered User can browse top 3 accommodations.
 - Unregistered User can browse top 3 activities.
 - Uregistered User can view a review.</br>
 <b>Registered User:</b>
 - Registered User can log in to the platform.
 - Registered User can log out from the platform.
-- Registered User can browse accomodation/activity filtered by city, period and nr of guests.
-- Registered User can insert an accomodation/activity.
-- Registered User can view an accomodation/activity.
-- Registered User can update an accomodation/activity.
-- Registered User can delete an accomodation/activity.
+- Registered User can browse accommodation/activity filtered by city, period and nr of guests.
+- Registered User can insert an accommodation/activity.
+- Registered User can view an accommodation/activity.
+- Registered User can update an accommodation/activity.
+- Registered User can delete an accommodation/activity.
 - Registered User can browse top 3 cities.
-- Registered User can browse top 3 accomodations.
+- Registered User can browse top 3 accommodations.
 - Registered User can browse top 3 activities.
-- Registered User can browse a recommended accomodation/activity.
+- Registered User can browse a recommended accommodation/activity.
 - Registered User can browse a recommended user.
-- Registered User can reserve an accomodation/actvity.
+- Registered User can reserve an accommodation/actvity.
 - Registered User can view own reservations.
 - Registered User can update a reservation.
 - Registered User can delete a reservation.
@@ -38,18 +38,18 @@ A registration form will allow new users to register within the application as R
 - Registered User can delete a review.
 - Registered User can view an user profile.
 - Registered User can follow/unfollow an user.
-- Registered User can like/unlike an accomodation/activity.
+- Registered User can like/unlike an accommodation/activity.
 - Registered User can view the own user profile.
 - Registered User can update the own user profile.</br>
 <b>Admin:</b>
 - Admin can log in to the platform.
 - Admin can log out from the platform.
-- Admin can browse an accomodation/activity filtered by city, period and nr of guests.
-- Admin can view an accomodation/activity.
-- Admin can update an accomodation/activity.
-- Admin can delete an accomodation/activity.
+- Admin can browse an accommodation/activity filtered by city, period and nr of guests.
+- Admin can view an accommodation/activity.
+- Admin can update an accommodation/activity.
+- Admin can delete an accommodation/activity.
 - Admin can browse top 3 cities.
-- Admin can browse top 3 accomodations.
+- Admin can browse top 3 accommodations.
 - Admin can browse top 3 activities.
 - Admin can view all reservations.
 - Admin can delete a reservation.
@@ -68,10 +68,10 @@ Partition Protection (P)
 - The application must be written in python.
 - Operations on the databases have to be atomic.
 - Registered Users are identified by their username.
-- Registered Users can leave only one review for a reserved accomodation/activity
-- An accomodation/activity has to be approved by the Admin
-- Every accomodation/activity must have at least one picture.
-- An accomodation/activity cannot have different reservations for the same period.
+- Registered Users can leave only one review for a reserved accommodation/activity
+- An accommodation/activity has to be approved by the Admin
+- Every accommodation/activity must have at least one picture.
+- An accommodation/activity cannot have different reservations for the same period.
 - Usability: The application needs to be user friendly, providing a GUI.
 - Privacy: The application shall provide the security of users’ credentials.
 - Portability: The system shall be environment independent.
@@ -104,7 +104,7 @@ Stessa gestione con le reviews.
 
 
 ## appunti claudio
-As presented, into the accomodations and activities collections we decided to embed the
+As presented, into the accommodations and activities collections we decided to embed the
 reviews. We have chosen to do this because we allow the user of the application to
 view each advertisement with its detailed specifications and the reviews written for it. 
 MongoDB keeps frequently accessed data in RAM.
@@ -131,10 +131,10 @@ users at any given point in time. It needs to continue to function regardless of
 network partitions. It may result in inconsistency at some points however, this is a small cost
 comparing to the benefit of availability in the case of this application
 
-We decided to prefer availability over consistency in a accomodation/activity booking system to provide a better experience to the customers. 
-To gain more availability, we might allow both the nodes to keep accepting accomodation/activity reservations even if the communication line breaks. 
-The worst possible outcome of this approach is that 2 customers will end up making the same accomodation/activity reservation. However, such situations can be resolved using domain knowledge. 
-It’s a pretty common occurrence that the room/activity are overbooked and then the company address such cases by taking the appropriate measures (e.g., Refunds, moving to another accomodation/activity, etc.).
+We decided to prefer availability over consistency in a accommodation/activity booking system to provide a better experience to the customers. 
+To gain more availability, we might allow both the nodes to keep accepting accommodation/activity reservations even if the communication line breaks. 
+The worst possible outcome of this approach is that 2 customers will end up making the same accommodation/activity reservation. However, such situations can be resolved using domain knowledge. 
+It’s a pretty common occurrence that the room/activity are overbooked and then the company address such cases by taking the appropriate measures (e.g., Refunds, moving to another accommodation/activity, etc.).
 This is directly linked to the adoption of the Eventual Consistency paradigm for our
 distributed system which is better detailed further.
 
@@ -181,12 +181,12 @@ to execute.
 All the entities hold always enough information to find the corresponding entity and the
 missing values in the other db.
 The complete list of entities we used with neo4j is the following:
-• Accomodation: {AccomodationID, name: String}
+• Accommodation: {AccommodationID, name: String}
 • Activity: {activityID: string, ecc, name: String}
 • User: {userID: string, username: string ecc}
 The relationships involved are:
 ● User - [:FOLLOW] -> User, which represents a user following another user
-● User - [:LIKE] -> Accomodation, which represents a user liking an accomodation
+● User - [:LIKE] -> Accommodation, which represents a user liking an accommodation
 ● User - [:LIKE] -> Activity which represents a user liking an activity
 
 It should be clear that they correspond almost to the same elements in the mongo database, but they keep only a

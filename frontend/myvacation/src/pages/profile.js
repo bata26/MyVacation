@@ -80,7 +80,7 @@ const Profile = () => {
       });
 
     //Richiesta per recuperare gli alloggi piaciuti all'utente
-    api.get("/users/liked/accomodation/"+profileID)
+    api.get("/users/liked/accommodation/"+profileID)
       .then(function (response) {
         setListLikedAcc(response.data)
       })
@@ -99,7 +99,7 @@ const Profile = () => {
 
     if (profileID !== localStorage.getItem("userID")) {
       //Richiesta per recuperare gli alloggi piaciuti all'utente in comune
-      api.get("/commonadvs/accomodation/" + profileID)
+      api.get("/commonadvs/accommodation/" + profileID)
         .then(function (response) {
           setListCommonLikedAcc(response.data)
         })
@@ -429,8 +429,8 @@ const Profile = () => {
               </TableHead>
               <tbody>
                 {listLikedAcc && listLikedAcc.map((item, index) => (
-                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/accomodation/" + item.accomodationID)}>
-                    <TableCell align="left">{item.accomodationID} </TableCell>
+                  <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/accommodation/" + item.accommodationID)}>
+                    <TableCell align="left">{item.accommodationID} </TableCell>
                     <TableCell align="right">{item.name}</TableCell>
                   </TableRow>
                 ))}
@@ -469,13 +469,13 @@ const Profile = () => {
                   </TableHead>
                   <tbody>
                     {listCommonLikedAcc && listCommonLikedAcc.map((item, index) => (
-                      <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/accomodation/" + item.accomodationID)}>
-                        <TableCell align="left">{item.accomodationID} </TableCell>
+                      <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/accommodation/" + item.accommodationID)}>
+                        <TableCell align="left">{item.accommodationID} </TableCell>
                         <TableCell align="right">{item.name}</TableCell>
                       </TableRow>
                     ))}
                     {listCommonLikedAct && listCommonLikedAct.map((item, index) => (
-                      <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/activity/" + item.accomodationID)}>
+                      <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} onClick={() => navigate("/activity/" + item.accommodationID)}>
                         <TableCell align="left">{item.activityID} </TableCell>
                         <TableCell align="right">{item.name}</TableCell>
                       </TableRow>

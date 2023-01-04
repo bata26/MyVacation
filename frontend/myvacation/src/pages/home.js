@@ -16,11 +16,11 @@ import { useNavigate } from 'react-router-dom';
 const theme = createTheme();
 
 const Home = () => {
-	const [accomodations, setAccomodations] = React.useState([]);
+	const [accommodations, setAccommodations] = React.useState([]);
 	const [activities, setActivities] = React.useState([]);
 	const [cities, setCities] = React.useState([]);
 	const [recommendedUsers, setRecommendedUsers] = React.useState([]);
-	const [recommendedAccomodations, setRecommendedAccomodations] = React.useState([]);
+	const [recommendedAccommodations, setRecommendedAccommodations] = React.useState([]);
 	const [recommendedActivities, setRecommendedActivities] = React.useState([]);
 	const navigate = useNavigate();
 
@@ -39,15 +39,15 @@ const Home = () => {
 				.then(async function (response) {
 					const requestBody = response.data;
 					request = {
-						"accomodationsID": [],
+						"accommodationsID": [],
 						"activitiesID": []
 					};
-					requestBody.accomodationsID.map(accomodationID => request.accomodationsID.push(accomodationID._id));
+					requestBody.accommodationsID.map(accommodationID => request.accommodationsID.push(accommodationID._id));
 					requestBody.activitiesID.map(activityID => request.activitiesID.push(activityID._id));
 
 					await api.post("/analytics/advinfo", JSON.stringify(request))
 						.then(function (response) {
-							setAccomodations(response.data["accomodations"]);
+							setAccommodations(response.data["accommodations"]);
 							setActivities(response.data["activities"]);
 						})
 						.catch(function (error) {
@@ -67,9 +67,9 @@ const Home = () => {
 						alert("Ops, something went wrong :(" + "\n" + error);
 					})
 
-				await api.get("/recommendations/accomodation")
+				await api.get("/recommendations/accommodation")
 					.then(function (response) {
-						setRecommendedAccomodations(response.data);
+						setRecommendedAccommodations(response.data);
 					})
 					.catch(function (error) {
 						alert("Ops, something went wrong :(" + "\n" + error);
@@ -124,8 +124,8 @@ const Home = () => {
 									</CardContent>
 									<CardActions>
 										<Button size="small" onClick={() => {
-											navigate("/search?city=" + item.city + "&type=accomodations")
-										}}>Accomodations</Button>
+											navigate("/search?city=" + item.city + "&type=accommodations")
+										}}>Accommodations</Button>
 										<Button size="small" onClick={() => {
 											navigate("/search?city=" + item.city + "&type=activities")
 										}}>Activities</Button>
@@ -150,14 +150,14 @@ const Home = () => {
 							color="text.primary"
 							gutterBottom
 						>
-							Top 3 Accomodations
+							Top 3 Accommodations
 						</Typography>
 					</Container>
 				</Box>
 
 				<Grid container spacing={4}>
 					{
-						accomodations.map((item, index) => (
+						accommodations.map((item, index) => (
 							<Grid item xs={12} sm={6} md={4} key={index}>
 								<Card
 									sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
@@ -180,7 +180,7 @@ const Home = () => {
 										</Typography>
 									</CardContent>
 									<CardActions>
-										<Button fullWidth onClick={() => navigate("/accomodation/" + item._id)}>View</Button>
+										<Button fullWidth onClick={() => navigate("/accommodation/" + item._id)}>View</Button>
 									</CardActions>
 								</Card>
 							</Grid>
@@ -298,13 +298,13 @@ const Home = () => {
 							color="text.primary"
 							gutterBottom
 						>
-							Recommended Accomodations
+							Recommended Accommodations
 						</Typography>
 					</Container>
 				</Box>
 
 				<Grid container spacing={4}>
-					{recommendedAccomodations && recommendedAccomodations.map((item, index) => (
+					{recommendedAccommodations && recommendedAccommodations.map((item, index) => (
 						<Grid item xs={12} sm={6} md={4} key={index}>
 							<Card
 								sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
@@ -317,7 +317,7 @@ const Home = () => {
 								<CardActions>
 									<Button
 										fullWidth
-										onClick={() => navigate("/accomodation/" + item.accomodationID)}
+										onClick={() => navigate("/accommodation/" + item.accommodationID)}
 									>
 										View
 									</Button>

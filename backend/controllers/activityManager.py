@@ -35,18 +35,15 @@ class ActivityManager:
             
             for activity in activitiesList:
                 activityObject = Activity(
-                    str(activity["host_id"]),
-                    activity["host_name"],
+                    str(activity["hostID"]),
+                    activity["hostName"],
                     activity["location"],
                     activity["description"],
                     activity["duration"],
                     activity["price"],
-                    activity["number_of_reviews"],
-                    activity["review_scores_rating"],
                     activity["mainPicture"],
                     activity["name"],
                     activity["approved"],
-                    activity["reservations"],
                     activity["reviews"],
                     str(activity["_id"]))
                 serializedActivities.append(Serializer.serializeActivity(activityObject))
@@ -61,8 +58,8 @@ class ActivityManager:
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         cursor = dict(collection.find_one({"_id": ObjectId(activityID)}))
         activity = Activity(
-            str(cursor["host_id"]),
-            cursor["host_name"],
+            str(cursor["hostID"]),
+            cursor["hostName"],
             cursor["location"],
             cursor["description"],
             cursor["duration"],
@@ -93,11 +90,11 @@ class ActivityManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         try:
-            activity = dict(collection.find_one({"_id": ObjectId(activityID)}, {"_id": 1, "host_id": 1}))
+            activity = dict(collection.find_one({"_id": ObjectId(activityID)}, {"_id": 1, "hostID": 1}))
         except Exception as e:
             raise Exception(str(e))
             
-        if (user['role'] != "admin" and str(activity["host_id"]) != user['_id']):
+        if (user['role'] != "admin" and str(activity["hostID"]) != user['_id']):
             raise Exception("L'utente non possiede l'activity")
         else:
             try:
@@ -157,8 +154,8 @@ class ActivityManager:
 
         for activity in activities:
             activityResult = Activity(
-                str(activity["host_id"]),
-                activity["host_name"],
+                str(activity["hostID"]),
+                activity["hostName"],
                 activity["location"],
                 activity["description"],
                 activity["duration"],
@@ -211,22 +208,19 @@ class ActivityManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         try:
-            cursor = list(collection.find({"host_id": ObjectId(userID)}))
+            cursor = list(collection.find({"hostID": ObjectId(userID)}))
             result = []
             for activity in cursor:
                 activity = Activity(
-                    str(activity["host_id"]),
-                    activity["host_name"],
+                    str(activity["hostID"]),
+                    activity["hostName"],
                     activity["location"],
                     activity["description"],
                     activity["duration"],
-                    activity["number_of_reviews"],
-                    activity["review_scores_rating"],
                     activity["price"],
                     activity["mainPicture"],
                     activity["name"],
                     activity["approved"],
-                    activity["reservations"],
                     activity["reviews"],
                     str(activity["_id"]))
                 result.append(Serializer.serializeActivity(activity))

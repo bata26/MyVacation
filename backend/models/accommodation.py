@@ -1,31 +1,26 @@
 import base64
 from bson.objectid import ObjectId
-class Accomodation:
+class Accommodation:
     def __init__(self, name, description,
-                 host_id, host_name, mainPicture,
-                 location, property_type, accommodates,
-                 bedrooms, beds, price, minimum_nights, number_of_reviews,
-                 review_scores_rating, approved, reservations = [], reviews = [], _id="" , pictures=[]):
+                 hostID, hostName, mainPicture,
+                 location, propertyType, guests,
+                 bedrooms, beds, price, approved, reviews = [], _id="" , pictures=[]):
         self.name = name
         self.description = description
         self.pictures = pictures
-        self.host_id = host_id
-        self.host_name = host_name
+        self.hostID = hostID
+        self.hostName = hostName
         self.mainPicture = mainPicture
         self.location = {}
         self.location["address"] = location["address"]
         self.location["city"] = location["city"]
         self.location["country"] = location["country"]
-        self.property_type = property_type
-        self.accommodates = accommodates
+        self.propertyType = propertyType
+        self.guests = guests
         self.bedrooms = bedrooms
         self.beds = beds
         self.price = price
-        self.minimum_nights = minimum_nights
-        self.number_of_reviews = number_of_reviews
-        self.review_scores_rating = review_scores_rating
         self.approved = approved
-        self.reservations = reservations
         self.reviews = reviews
         if (_id != ""):
             self._id = _id
@@ -40,17 +35,14 @@ class Accomodation:
             "name": self.name,
             "description": self.description,
             "mainPicture": binaryMainPicture,
-            "host_id": ObjectId(self.host_id),
-            "host_name": self.host_name,
+            "hostID": ObjectId(self.hostID),
+            "hostName": self.hostName,
             "location": self.location,
-            "property_type": self.property_type,
-            "accommodates": self.accommodates,
+            "propertyType": self.propertyType,
+            "guests": self.guests,
             "bedrooms": self.bedrooms,
             "beds": self.beds,
             "price": self.price,
-            "minimum_nights": self.minimum_nights,
-            "number_of_reviews": self.number_of_reviews,
-            "review_scores_rating": self.review_scores_rating,
             "approved": self.approved,
             "pictures": pictures,
             "reservations": self.reservations,

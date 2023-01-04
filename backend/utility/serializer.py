@@ -3,15 +3,6 @@ class Serializer:
 
     @staticmethod
     def serializeActivity(activity):
-        serializedReservations = []
-        for reservation in activity.reservations:
-            serializedReservations.append({
-                "userID" : str(reservation['userID']),
-                "startDate" : reservation['startDate'],
-                "totalExpense" : reservation['totalExpense'],
-                "_id" : str(reservation['_id'])
-            })
-
         serializedReviews = []
         for review in activity.reviews:
             serializedReviews.append({
@@ -27,15 +18,12 @@ class Serializer:
 
         return {
             "_id" : str(activity._id),
-            "host_id" : str(activity.host_id),
-            "host_name" : activity.host_name ,
+            "hostID" : str(activity.hostID),
+            "hostName" : activity.hostName ,
             "location" : activity.location ,
             "description" : activity.description ,
-            "reservations" : serializedReservations ,
             "duration" : activity.duration ,
             "price" : activity.price ,
-            "number_of_reviews" : activity.number_of_reviews ,
-            "review_scores_rating" : activity.review_scores_rating,
             "mainPicture" : decodedMainPic,
             "name" : activity.name,
             "approved" : activity.approved,
@@ -43,23 +31,13 @@ class Serializer:
         }
     
     @staticmethod
-    def serializeAccomodation(accomodation):
+    def serializeAccommodation(accommodation):
         pictures = []
-        for picture in accomodation.pictures:
+        for picture in accommodation.pictures:
             pictures.append(picture.decode('utf-8'))
 
-        serializedReservations = []
-        for reservation in accomodation.reservations:
-            serializedReservations.append({
-                "userID" : str(reservation['userID']),
-                "startDate" : reservation['startDate'],
-                "endDate" : reservation['endDate'],
-                "totalExpense" : reservation['totalExpense'],
-                "_id" : str(reservation['_id'])
-            })
-
         serializedReviews = []
-        for review in accomodation.reviews:
+        for review in accommodation.reviews:
             serializedReviews.append({
                 "userID" : str(review['userID']),
                 "score" : review['score'],
@@ -68,27 +46,23 @@ class Serializer:
                 "_id" : str(review['_id'])
             })
         decodedMainPic = None
-        if(accomodation.mainPicture != None):
-            decodedMainPic = accomodation.mainPicture.decode('utf-8')
+        if(accommodation.mainPicture != None):
+            decodedMainPic = accommodation.mainPicture.decode('utf-8')
         return {
-            "_id" : str(accomodation._id) ,
-            "name" : accomodation.name ,
-            "description" : accomodation.description ,
+            "_id" : str(accommodation._id) ,
+            "name" : accommodation.name ,
+            "description" : accommodation.description ,
             "pictures" : pictures,
-            "host_id" : str(accomodation.host_id) ,
-            "host_name" : accomodation.host_name ,
-            "location" : accomodation.location,
-            "property_type" : accomodation.property_type ,
-            "accommodates" : accomodation.accommodates ,
-            "bedrooms" : accomodation.bedrooms ,
-            "beds" : accomodation.beds ,
-            "price" : accomodation.price ,
-            "minimum_nights" : accomodation.minimum_nights ,
-            "number_of_reviews" : accomodation.number_of_reviews ,
-            "review_scores_rating" : accomodation.review_scores_rating ,
+            "hostID" : str(accommodation.hostID) ,
+            "hostName" : accommodation.hostName ,
+            "location" : accommodation.location,
+            "propertyType" : accommodation.propertyType ,
+            "guests" : accommodation.guests ,
+            "bedrooms" : accommodation.bedrooms ,
+            "beds" : accommodation.beds ,
+            "price" : accommodation.price ,
             "mainPicture" : decodedMainPic ,
-            "approved" : accomodation.approved,
-            "reservations" : serializedReservations ,
+            "approved" : accommodation.approved,
             "reviews" : serializedReviews ,
         }
 
@@ -143,15 +117,15 @@ class Serializer:
             "city" : reservation.city,
             "hostID" : str(reservation.hostID),
         }
-        if reservation.destinationType == "accomodation":
+        if reservation.destinationType == "accommodation":
             result["endDate"] = reservation.endDate 
         return result
     
     @staticmethod
-    def serializeAccomodationNode(accomodationNode):
+    def serializeAccommodationNode(accommodationNode):
         return {
-            "accomodationID" : accomodationNode.accomodationID,
-            "name" : accomodationNode.name,
+            "accommodationID" : accommodationNode.accommodationID,
+            "name" : accommodationNode.name,
         }
 
     @staticmethod

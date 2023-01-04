@@ -20,7 +20,7 @@ const pages = ["signIn", "signUp"];
 
 // Pagine a tendina logo utente
 const account = localStorage.getItem("role") === "admin" ? ['Admin', 'Logout'] : ['Profile', 'MyAdv', 'Logout'] ;
-const loggedPages = ["accomodation", "activity"];
+const loggedPages = ["accommodation", "activity"];
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();

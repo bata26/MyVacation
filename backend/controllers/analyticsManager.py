@@ -1,7 +1,7 @@
 from .connection import MongoManager
 import os
 import datetime
-from models.accomodation import Accomodation
+from models.accommodation import Accommodation
 from models.activity import Activity
 from bson.objectid import ObjectId
 from utility.serializer import Serializer
@@ -15,8 +15,7 @@ class AnalyticsManager:
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
         try:
             result = list(collection.aggregate(([
-                {"$match": {"hostID": ObjectId(
-                    user["_id"]), "destinationType": "accomodation"}},
+                {"$match": {"hostID": ObjectId(user["_id"]), "destinationType": "accommodation"}},
                 {"$group": {
                     "_id": {
                         "city": "$city",
@@ -98,10 +97,10 @@ class AnalyticsManager:
             print("impossibile ottenere: " + str(e))
 
     @staticmethod
-    def getAccomodationAverageCost(user):
+    def getAccommodationAverageCost(user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         try:
             result = list(collection.aggregate([
                 {"$group":
@@ -146,20 +145,20 @@ class AnalyticsManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
         try:
-            serializedAccomodations = []
+            serializedAccommodations = []
             serializedActivities = []
-            accomodationsResult = list(collection.aggregate([
-                {"$match": {"destinationType": "accomodation"}},
+            accommodationsResult = list(collection.aggregate([
+                {"$match": {"destinationType": "accommodation"}},
                 {"$group": {"_id": "$destinationID", "count": {"$sum": 1}}},
                 {"$sort": {"count": -1, "_id": 1}},
                 {"$limit": 3},
                 {"$project": {"count": 0}}
             ]))
 
-            for accomodation in accomodationsResult:
-                stringId = str(accomodation["_id"])
-                accomodation["_id"] = stringId
-                serializedAccomodations.append(accomodation)
+            for accommodation in accommodationsResult:
+                stringId = str(accommodation["_id"])
+                accommodation["_id"] = stringId
+                serializedAccommodations.append(accommodation)
 
             activitiesResult = list(collection.aggregate([
                 {"$match": {"destinationType": "activity"}},
@@ -174,7 +173,7 @@ class AnalyticsManager:
                 activity["_id"] = stringId
                 serializedActivities.append(activity)
 
-            return {"accomodationsID": serializedAccomodations,
+            return {"accommodationsID": serializedAccommodations,
                     "activitiesID": serializedActivities}
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
@@ -211,14 +210,14 @@ class AnalyticsManager:
     def getTotAdvs(user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        accomodationCollection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+        accommodationCollection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         activityCollection = db[os.getenv("ACTIVITIES_COLLECTION")]
         result = 0
         try:
             if (user["role"] == "admin"):
-                resultAcc = list(accomodationCollection.aggregate([
+                resultAcc = list(accommodationCollection.aggregate([
                     {
-                        '$count': 'totalAccomodations'
+                        '$count': 'totalAccommodations'
                     }
                 ]))
                 resultAct = list(activityCollection.aggregate([
@@ -227,56 +226,28 @@ class AnalyticsManager:
                     }
                 ]))
             else:
-                resultAcc = list(accomodationCollection.aggregate([
+                resultAcc = list(accommodationCollection.aggregate([
                     {
                         '$match': {
-                            'host_id': ObjectId(user["_id"])
+                            'hostID': ObjectId(user["_id"])
                         }
                     }, {
-                        '$count': 'totalAccomodations'
+                        '$count': 'totalAccommodations'
                     }
                 ]))
                 resultAct = list(activityCollection.aggregate([
                     {
                         '$match': {
-                            'host_id': ObjectId(user["_id"])
+                            'hostID': ObjectId(user["_id"])
                         }
                     }, {
                         '$count': 'totalActivities'
                     }
                 ]))
             result = {
-                "totalAccomodations": resultAcc[0]["totalAccomodations"] , 
+                "totalAccommodations": resultAcc[0]["totalAccommodations"] , 
                 "totalActivities": resultAct[0]["totalActivities"] 
             }
-            return result
-        except Exception as e:
-            print("Impossibile eseguire la query: " + str(e))
-
-    @staticmethod
-    def getBestAdvertisers(user , destinationType):
-        client = MongoManager.getInstance()
-        db = client[os.getenv("DB_NAME")]
-        if (destinationType == "accomodation"):
-            collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
-        else:
-            collection = db[os.getenv("ACTIVITIES_COLLECTION")]
-        try:
-            result = []
-            hostList = list(collection.aggregate([
-                {'$group': {'_id': '$host_id', 'avg': {
-                    '$avg': '$review_scores_rating'}}},
-                {'$sort': {'avg': -1}},
-                {'$limit': 10},
-                {"$project" : {"_id" : 0 , "hostID" : "$_id" , "averageRating" : {"$round": ["$avg", 2]}}}
-            ]))
-
-            for host in hostList:
-                tmpHost = {}
-                tmpHost["hostID"] = str(host["hostID"])
-                tmpHost["averageRating"] = host["averageRating"]
-                result.append(tmpHost)
-
             return result
         except Exception as e:
             print("Impossibile eseguire la query: " + str(e))

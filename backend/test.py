@@ -47,14 +47,14 @@ users = [
 
 client = MongoManager.getInstance()
 db = client["myvacation"]
-accomodationCollection = db["activities"]
-cursor = list(accomodationCollection.find())
+accommodationCollection = db["activities"]
+cursor = list(accommodationCollection.find())
 
 counter = 0
-for accomodation in cursor:
+for accommodation in cursor:
     user = users[randint(0 , len(users)- 1)]
     try:
-        accomodationCollection.update_one({"_id" : accomodation["_id"]} , {"$set" : {"host_id" : ObjectId(user["_id"]) , "host_name" : user["name"]}})
+        accommodationCollection.update_one({"_id" : accommodation["_id"]} , {"$set" : {"hostID" : ObjectId(user["_id"]) , "hostName" : user["name"]}})
         print(f"Inserito correttamente: {counter}")
     except Exception as e:
         print(f"Impossibile aggiornare : {e}" )

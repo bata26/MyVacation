@@ -34,7 +34,7 @@ export default function Checkout() {
         api.get("/" + type + "/" + reservedId)
             .then(function (response) {
                 setReserved(response.data);
-                if (type === "accomodations") {
+                if (type === "accommodations") {
                     const timeStart = moment(startDate);
                     const timeEnd = moment(endDate);
                     const diff = timeEnd.diff(timeStart);
@@ -52,26 +52,26 @@ export default function Checkout() {
     //Setter per la url di visualizzazione oggetto
     let setter = "";
 
-    if (type === "accomodations") {
-        setter = "accomodation"
+    if (type === "accommodations") {
+        setter = "accommodation"
     } else {
         setter = "activity"
     }
 
     async function reserve(reservation) {
-        const accomodation = {
+        const accommodation = {
             "_id" : reservation._id,
             "city" : reservation.location.city,
             "price" : reservation.price,
-            "hostID" : reservation.host_id
+            "hostID" : reservation.hostID
         };
-        if (type === "accomodations") {
+        if (type === "accommodations") {
             const bodyRequest = {
-                "accomodation": accomodation,
+                "accommodation": accommodation,
                 "startDate": startDate,
                 "endDate": endDate,
             };
-            await api.post("/book/accomodation", bodyRequest)
+            await api.post("/book/accommodation", bodyRequest)
                 .then(function (response) {
                     alert("Booked!");
                     navigate("/", { replace: true });
@@ -85,7 +85,7 @@ export default function Checkout() {
                 "_id" : reservation._id,
                 "city" : reservation.location.city,
                 "price" : reservation.price,
-                "hostID" : reservation.host_id
+                "hostID" : reservation.hostID
             };
             const bodyRequest = {
                 "activity": activity,
@@ -141,7 +141,7 @@ export default function Checkout() {
                         />
                         <CardContent>
                             <Typography gutterBottom variant="h5" component="div">
-                                {reserved.name} - {reserved.host_name}
+                                {reserved.name} - {reserved.hostName}
                             </Typography>
                                 <Typography variant="body2" color="text.secondary">
                                     <b>{startDate} - {endDate}</b>
