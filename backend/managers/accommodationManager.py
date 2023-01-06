@@ -1,4 +1,4 @@
-from .connection import MongoManager
+from utility.connection import MongoManager
 import os
 from models.accommodation import Accommodation
 from bson.objectid import ObjectId
@@ -86,7 +86,7 @@ class AccommodationManager:
         # return cursor
 
     @staticmethod
-    def getOccupiedAccommodationIDs(start_date, end_date):
+    def getOccupiedAccommodationIDs(start_date, end_date , reservationID = ""):
         # ottengo una lista di id di accommodations non occupate
         # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
         client = MongoManager.getInstance()
@@ -95,9 +95,7 @@ class AccommodationManager:
         if not (isinstance(start_date, str) and isinstance(end_date, str)):
             start_date = start_date.strftime("%Y-%m-%d")
             end_date = end_date.strftime("%Y-%m-%d")
-        occupiedAccommodationsID = collection.distinct(
-            "destinationID",
-            {
+        query = {
                 "destinationType": "accommodation",
                 "$or": [
                     {
@@ -127,7 +125,14 @@ class AccommodationManager:
                         ]
                     },
                 ],
-            },
+            }
+        if(reservationID != ""):
+            query["_id"] = {}
+            query["_id"] = {"$ne" : ObjectId(reservationID)}
+
+        occupiedAccommodationsID = collection.distinct(
+            "destinationID",
+            query,
         )
         return occupiedAccommodationsID
 
@@ -137,9 +142,7 @@ class AccommodationManager:
     #   - city
     #   - number of guests
     @staticmethod
-    def getFilteredAccommodation(
-        start_date="", end_date="", city="", guestNumbers="", index="", direction=""
-    ):
+    def getFilteredAccommodation(start_date="", end_date="", city="", guestNumbers="", index="", direction=""):
         query = {}
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
@@ -149,26 +152,20 @@ class AccommodationManager:
         if city != "" and city != None:
             query["location.city"] = city
         if guestNumbers != "" and guestNumbers != None:
-            query["accommodates"] = {}
-            query["accommodates"]["$gte"] = int(guestNumbers)
+            query["guests"] = {}
+            query["guests"]["$gte"] = int(guestNumbers)
 
-        if (
-            start_date != ""
-            and end_date != ""
-            and end_date != None
-            and start_date != None
-        ):
+        if ( start_date != "" and end_date != "" and end_date != None and start_date != None):
             # ottengo una lista di id di accommodations non occupate
             # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
-            occupiedAccommodationsID = AccommodationManager.getOccupiedAccommodationIDs(
-                start_date, end_date
-            )
-
-        query["_id"] = {}
-        query["_id"]["$nin"] = occupiedAccommodationsID
+            occupiedAccommodationsID = AccommodationManager.getOccupiedAccommodationIDs(start_date, end_date)
+            query["_id"] = {}
+            query["_id"]["$nin"] = occupiedAccommodationsID
+        
         projection = {"pictures": 0, "reservations": 0, "reviews": 0}
         query["approved"] = True
         collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
+        accommodations = []
 
         if index == "":
             # When it is first page
@@ -212,7 +209,7 @@ class AccommodationManager:
         return result
 
     @staticmethod
-    def insertNewAccommodation(accommodation):
+    def insertNewAccommodation(accommodation: Accommodation):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]

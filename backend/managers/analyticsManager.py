@@ -1,4 +1,4 @@
-from .connection import MongoManager
+from utility.connection import MongoManager
 import os
 import datetime
 from models.accommodation import Accommodation

@@ -1,4 +1,4 @@
-from .graphConnection import GraphManager
+from utility.graphConnection import GraphManager
 from models.followRelation import FollowRelation
 
 class FollowRelationManager:

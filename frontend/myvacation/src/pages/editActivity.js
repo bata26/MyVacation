@@ -38,7 +38,7 @@ const EditActivity = () => {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		const result = await api.post('/edit/activities/' + activityID,
+		const result = await api.post('/edit/activity/' + activityID,
 			data,
 		)
 			.then(function (response) {

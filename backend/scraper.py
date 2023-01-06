@@ -16,7 +16,7 @@ API_URL = f"api.positionstack.com"
 
 connection = None
 
-headerToSave = ['name' ,'description' ,'picture_url' ,'hostID' ,'host_url' ,'hostName' ,'host_since' ,'host_picture_url' ,'latitude' ,'longitude' ,'propertyType' ,'accommodates' ,'bathrooms' ,'bedrooms' ,'beds' ,'price' ,'minimum_nights' ,'number_of_reviews' ,'review_scores_rating']
+headerToSave = ['name' ,'description' ,'picture_url' ,'hostID' ,'host_url' ,'hostName' ,'host_since' ,'host_picture_url' ,'latitude' ,'longitude' ,'propertyType' ,'guests' ,'bathrooms' ,'bedrooms' ,'beds' ,'price' ,'minimum_nights' ,'number_of_reviews' ,'review_scores_rating']
 cities = [
     "Roma",
 "Milano",
@@ -121,7 +121,7 @@ if __name__ == "__main__":
                         'host_picture': host_picture ,
                         "location" : location,
                         'propertyType': row['propertyType'] ,
-                        'accommodates': row['accommodates'] ,
+                        'guests': row['guests'] ,
                         'bedrooms': row['bedrooms'] ,
                         'beds': row['beds'] ,
                         'price': float(row['price'].split("$")[1]) ,

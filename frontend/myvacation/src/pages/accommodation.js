@@ -325,7 +325,7 @@ const Accommodation = () => {
 											color='info'
 											sx={{ mt: 2 }}
 											onClick={() => {
-												navigate("/update/accommodation/" + accommodationID)
+												navigate("/edit/accommodation/" + accommodationID)
 											}}
 										>
 											Update Accommodation

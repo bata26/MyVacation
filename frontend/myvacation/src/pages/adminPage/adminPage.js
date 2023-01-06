@@ -165,7 +165,7 @@ const AdminPage = () => {
 						</Grid>
 					</Grid>
 					<Grid container columnSpacing={2}>
-						{/* Tabella città - media prezzi ACCOMODATIONS */}
+						{/* Tabella città - media prezzi ACCOMMODATIONS */}
 						<Grid item xs={4} sm={6}>
 							<Container maxWidth="sm">
 								<Typography

@@ -1,4 +1,4 @@
-from .connection import MongoManager
+from utility.connection import MongoManager
 from models.accommodation import Accommodation
 from models.user import User
 from models.activity import Activity
@@ -155,8 +155,9 @@ class AdminManager:
     def getAnnouncementToApproveByID(announcementID, destinationType):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
+
         if destinationType == "accommodation":
-            collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+            collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         else:
             collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         announcement = collection.find_one({"_id": ObjectId(announcementID)})
@@ -170,18 +171,13 @@ class AdminManager:
                 announcement["mainPicture"],
                 announcement["location"],
                 announcement["propertyType"],
-                announcement["accommodates"],
+                announcement["guests"],
                 announcement["bedrooms"],
                 announcement["beds"],
                 announcement["price"],
-                announcement["minimum_nights"],
-                "0",
-                "0",
                 announcement["approved"],
-                [],
-                [],
-                str(announcement["_id"]),
-                announcement["pictures"],
+                _id = str(announcement["_id"]),
+                pictures = announcement["pictures"],
             )
             result = Serializer.serializeAccommodation(accommodationToBeApproved)
 
@@ -193,14 +189,10 @@ class AdminManager:
                 announcement["description"],
                 announcement["duration"],
                 announcement["price"],
-                0,
-                0,
                 announcement["mainPicture"],
                 announcement["name"],
                 announcement["approved"],
-                [],
-                [],
-                str(announcement["_id"]),
+                _id = str(announcement["_id"]),
             )
             result = Serializer.serializeActivity(activityToBeApproved)
         return result
@@ -211,7 +203,7 @@ class AdminManager:
         db = client[os.getenv("DB_NAME")]
 
         if destinationType == "accommodation":
-            collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+            collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         else:
             collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         try:
@@ -230,7 +222,7 @@ class AdminManager:
         db = client[os.getenv("DB_NAME")]
 
         if destinationType == "accommodation":
-            collection = db[os.getenv("ACCOMODATIONS_COLLECTION")]
+            collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         else:
             collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         try:

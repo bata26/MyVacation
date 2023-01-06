@@ -1,6 +1,6 @@
 from utility.serializer import Serializer
 from models.accommodationNode import AccommodationNode
-from .graphConnection import GraphManager
+from utility.graphConnection import GraphManager
 
 
 class AccommodationNodeManager:
@@ -14,7 +14,7 @@ class AccommodationNodeManager:
 
                 if checkResult.value("total") == 0:
                     query = "CREATE (a:Accommodation {accommodationID: '%s', name: '%s'})" % (
-                        accommodationNode.userID, accommodationNode.name)
+                        accommodationNode.accommodationID, accommodationNode.name)
                     session.run(query)
                 
                 else:

@@ -38,7 +38,7 @@ const EditAccommodation = () => {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		const result = await api.post('/edit/accommodations/' + accommodationID,
+		const result = await api.post('/edit/accommodation/' + accommodationID,
 			data,
 		)
 			.then(function (response) {

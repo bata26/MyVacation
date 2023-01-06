@@ -1,25 +1,34 @@
-from controllers.reviewManager import ReviewManager
-#from flask import Flask, abort, request, jsonify, Response
-#from flask_cors import CORS, cross_origin
-#from dotenv import load_dotenv
-#import os
-#import datetime
-#from datetime import timedelta , datetime
-#import logging
-#from markupsafe import escape
+from managers.reviewManager import ReviewManager
 
-@application.route('/reviews/<review_id>' , methods = ['GET'])
-def getReviewByID(review_id):
-    reviewID = escape(review_id)
-    result = ReviewManager.getReviewFromID(reviewID)
-    return result , 200
+class ReviewController:
+
+    @staticmethod
+    def getReviewByID(reviewID):
+        try:
+            result = ReviewManager.getReviewFromID(reviewID)
+            return result
+        except Exception as e:
+            raise Exception(str(e))
     
-
-@application.route('/reviews/<review_id>' , methods = ['DELETE'])
-def deleteReviewByID(reviewID):
-    reviewID = escape(reviewID)
-    user = {
-        "type" : "admin"
-    }
-    result = ReviewManager.deleteReview(reviewID , user)
-    return "" , 200
+    @staticmethod
+    def getReviewByDestinationID(destinationID):
+        try:
+            result = ReviewManager.getReviewFromDestinationID(destinationID)
+            return result
+        except Exception as e:
+            raise Exception(str(e))
+    
+    @staticmethod
+    def deleteReview(reviewID, destinationID, destinationType, user):
+        try:
+            result = ReviewManager.deleteReview(reviewID, destinationID, destinationType, user)
+            return result
+        except Exception as e:
+            raise Exception(str(e))
+    
+    @staticmethod
+    def checkIfCanReview(destinationID, destinationType, user):
+        try:
+            return ReviewManager.checkIfCanReview(str(destinationID), destinationType, user)
+        except Exception as e:
+            raise Exception(str(e))

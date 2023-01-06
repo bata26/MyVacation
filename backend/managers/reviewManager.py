@@ -1,4 +1,4 @@
-from .connection import MongoManager
+from utility.connection import MongoManager
 import os
 from models.review import Review
 from bson.objectid import ObjectId
@@ -43,13 +43,18 @@ class ReviewManager:
         return result
 
     @staticmethod
-    def insertNewReview(review):
+    def insertNewReview(review , destinationID , destinationType):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("REVIEW_COLLECTION")]
+        reviewCollection = db[os.getenv("REVIEW_COLLECTION")]
+        destinationCollection = db[os.getenv("ACCOMMODATIONS_COLLECTION")] if destinationType == "accommodation" else db[os.getenv("ACTIVITIES_COLLECTION")]
+
         try:
-            result = collection.insert_one(review.getDictToUpload())
-            return result.inserted_id
+            with client.start_session() as session:
+                with session.start_transaction():
+                    result = reviewCollection.insert_one(review.getDictToUpload() , session=session)
+                    review._id = result.inserted_id
+                    destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$push" : {"reviews": review.getDictToUpload()}}, session=session)
         except Exception:
             raise Exception("Impossibile inserire")
 
@@ -58,7 +63,7 @@ class ReviewManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         reviewCollection = db[os.getenv("REVIEW_COLLECTION")]
-        destinationCollection = db[os.getenv("ACCOMODATIONS_COLLECTION")] if destinationType == "accommodation" else db[os.getenv("ACTIVITIES_COLLECTION")]
+        destinationCollection = db[os.getenv("ACCOMMODATIONS_COLLECTION")] if destinationType == "accommodation" else db[os.getenv("ACTIVITIES_COLLECTION")]
 
         if (user["role"] != "admin"):
             review = dict(reviewCollection.find_one(
@@ -70,20 +75,17 @@ class ReviewManager:
                 with session.start_transaction():
                     reviewCollection.delete_one({"_id" : ObjectId(reviewID)}, session=session)
                     destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$pull" : {"reviews": {"_id" : ObjectId(reviewID)}}}, session=session)
-            #reviewCollection.delete_one({"_id" : ObjectId(reviewID)})
-            #destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$pull" : {"reviews": {"_id" : ObjectId(reviewID)}}})
 
         except Exception as e:
             raise Exception("Impossibile eliminare : " + str(e))
 
     @staticmethod
-    def checkIfCanReview(destinationID, destinationType, user):
+    def checkIfCanReview(destinationID, user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         reservationCollection = db[os.getenv("RESERVATIONS_COLLECTION")]
         reviewCollection = db[os.getenv("REVIEW_COLLECTION")]
-        query = {"destinationID": ObjectId(
-            destinationID), "userID": ObjectId(user["_id"])}
+        query = {"destinationID": ObjectId(destinationID), "userID": ObjectId(user["_id"])}
 
         try:
             totalReservations = reservationCollection.count_documents(query)

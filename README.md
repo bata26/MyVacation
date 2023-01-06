@@ -90,7 +90,7 @@ AP + eventual consistency
 Nella collection User mantenere l'array reservations solo per le prenotazioni future. Con ridondanza con la collection reservations.
 Stessa gestione con le reviews.
 ## Use Cases
-[![Use-Cases-Finale.png](https://i.postimg.cc/7hBnyJ70/Use-Cases-Finale.png)](https://postimg.cc/YLWW69dC)
+[![Use-Cases-Finale.png](https://i.postimg.cc/7hkYfzBv/Use-Cases-Finale.png)](https://postimg.cc/47WT0Ykw)
 ## UML
 [![UMLFinale.png](https://i.postimg.cc/jq8H2NwJ/UMLFinale.png)](https://postimg.cc/xqzJFXP0)
 

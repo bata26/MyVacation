@@ -47,30 +47,27 @@ const SignUp = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    try {
-      const response = await api.post(REGISTER_URL, JSON.stringify({
-        name: data.get('name'),
-        surname: data.get('surname'),
-        gender: data.get('gender'),
-        dateOfBirth: new Date(data.get('dateOfBirth')),
-        username: data.get('username'),
-        password: data.get('password'),
-        knownLanguages: languages,
-        nationality: data.get('nationality')
-      }),
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
-        }
-      );
-      navigate("/signin", { replace: true });
-    } catch (err) {
-      if (!err?.response) {
-        setErrMsg('No Server Response');
-      } else {
-        setErrMsg('Registration Failed')
+    const response = await api.post(REGISTER_URL, JSON.stringify({
+      name: data.get('name'),
+      surname: data.get('surname'),
+      gender: data.get('gender'),
+      dateOfBirth: new Date(data.get('dateOfBirth')),
+      username: data.get('username'),
+      password: data.get('password'),
+      knownLanguages: languages,
+      nationality: data.get('nationality')
+    }),
+      {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true
       }
-    }
+    ).then(function (response) {
+      navigate("/signin", { replace: true });
+    }).catch(function (error) {
+      alert("Username already picked");
+    });
+
+
   };
 
   return (

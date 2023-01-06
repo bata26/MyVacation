@@ -64,7 +64,7 @@ const EditReservationModal = ({reservation}) => {
             }
         }
 
-        api.patch("/reservation/" + reservation._id , updatedData)
+        api.patch("/reservation" , updatedData)
             .then(function(response){
                 alert("Reservation updated correctly");
                 setOpen(false);

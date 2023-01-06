@@ -284,7 +284,7 @@ const Activity = () => {
                 variant="contained"
                 color='info'
                 sx={{ mt: 2 }}
-                onClick={() => { navigate("/update/activity/" + activityID) }}
+                onClick={() => { navigate("/edit/activity/" + activityID) }}
               >
                 Update Activity
               </Button>

@@ -1,4 +1,4 @@
-from .graphConnection import GraphManager
+from utility.graphConnection import GraphManager
 from models.userNode import UserNode
 from models.activityNode import ActivityNode
 from models.accommodationNode import AccommodationNode
@@ -36,11 +36,11 @@ class UserNodeManager:
             raise Exception("Impossibile inserire il nodo utente: " + str(e))
 
     @staticmethod
-    def deleteUserNode(userNode):
+    def deleteUserNode(userNodeID):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH (u:User {userID: '%s'}) DETACH DELETE u" % userNode.userID
+                query = "MATCH (u:User {userID: '%s'}) DETACH DELETE u" % userNodeID
                 session.run(query)
 
         except Exception as e:

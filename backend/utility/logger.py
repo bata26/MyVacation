@@ -37,9 +37,9 @@ class Logger:
         logger.info(msg + ",")
 
     @staticmethod
-    def addNodeToFile(destinationType , destinationID , operation="" , username = ""):
+    def addNodeToFile(type , id , operation="" , username = ""):
         logger = Logger.getInstance()
-        messageDict = {"type" : destinationType ,"_id" : destinationID , "operation" : operation , "username" : username}
+        messageDict = {"type" : type ,"_id" : id , "operation" : operation , "username" : username}
         msg = json.dumps(messageDict)
         logger.info(msg + ",")
     

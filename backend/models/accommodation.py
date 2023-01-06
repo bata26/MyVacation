@@ -45,6 +45,5 @@ class Accommodation:
             "price": self.price,
             "approved": self.approved,
             "pictures": pictures,
-            "reservations": self.reservations,
             "reviews": self.reviews
         }

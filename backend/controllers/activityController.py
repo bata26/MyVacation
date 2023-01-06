@@ -1,35 +1,154 @@
-from controllers.activityManager import ActivityManager
-#from flask import Flask, abort, request, jsonify, Response
-#from flask_cors import CORS, cross_origin
-#from dotenv import load_dotenv
-#import os
-#import datetime
-#from datetime import timedelta , datetime
-#import logging
-#from markupsafe import escape
+from managers.activityManager import ActivityManager
+from managers.activityNodeManager import ActivityNodeManager
+from managers.userManager import UserManager
+from managers.reviewManager import ReviewManager
+from managers.likeRelationManager import LikeRelationManager
+from models.review import Review
+from models.activity import Activity
+from models.userNode import UserNode
+from models.activityNode import ActivityNode
+from models.likeRelation import LikeRelation
 
-@application.route('/activities/<activity_id>' , methods = ['DELETE'])
-def deleteActivityByID(activity_id):
-    activityID = escape(activity_id)
-    user = {
-        "type" : "admin"
-    }
-    result = ActivityManager.deleteAccommodation(activityID , user)
-    return "" , 200
+class ActivityController:
 
-@application.route('/activities/<activity_id>' , methods = ['GET'])
-def getActivityByID(activity_id):
-    activityID = escape(activity_id)
-    result = ActivityManager.getActivityFromID(activityID)
-    return result , 200
+    @staticmethod
+    def getTopAdvInfo(activitiesID):
+        try:
+            result = ActivityManager.getActivitiesFromIdList(activitiesID)
+            return result
+        except Exception as e:
+            raise Exception(str(e))
+    
+    @staticmethod
+    def deleteActivityById(activityID , user):
+        try:
+            deleteResult = ActivityManager.ActivityManager.deleteActivity(activityID, user)
+        except Exception as e:
+            raise Exception(str(e))
+        # provo ad eliminare il nodo
+        try:
+            if deleteResult:
+                ActivityNodeManager.deleteActivityNode(activityID)
+                return True
+        except Exception as e:
+            return False
+    
+    @staticmethod
+    def updateActivity(activityID, formData, user):
+        try:
+            ActivityManager.updateActivity(activityID, formData, user)
+        except Exception as e:
+            raise Exception(str(e))
+    
+    @staticmethod
+    def getActivityByID(activityID):
+        try:
+            res = ActivityManager.getActivityFromID(activityID)
+            return res
+        except Exception as e:
+            raise Exception(str(e))
+    
+    @staticmethod
+    def getActivities(start_date, city, guests, index, direction):
+        try:
+            res = ActivityManager.getFilteredActivity(start_date, city, guests, index, direction)
+            return res
+        except Exception as e:
+            raise Exception(str(e))
+    
+    @staticmethod
+    def insertActivity(formData , user):
+        try:
+            host = UserManager.getUserFromID(user["_id"])
+            location = {
+                "address": formData["address"],
+                "city": formData["city"],
+                "country": formData["country"],
+            }
+            activity = Activity(
+                host["_id"],
+                host["name"],
+                location,
+                formData["description"],
+                formData["duration"],
+                formData["price"],
+                formData["img"][0],
+                formData["name"],
+                False
+            )
+            activityID = ActivityManager.insertNewActivity(activity)
+            if user["role"] != "host":
+                updatedRole = {"type": "host"}
+                UserManager.updateUser(updatedRole, host["_id"])
+            return {"activityID": str(activityID)}
+        except Exception as e:
+            return str(e), 500
+    
+    @staticmethod
+    def insertReview(requestBody , user):
+        try:
+            destinationID =  requestBody["destinationID"]
+            review = Review(
+                user["_id"],
+                destinationID,
+                requestBody["score"],
+                requestBody["description"],
+                requestBody["reviewer"],
+            )
+            ReviewManager.insertNewReview(review , destinationID , "activity")
+        except Exception as e:
+            return str(e), 200
+    
+    @staticmethod
+    def refuseActivity(activityID , user):
+        try:
+            ActivityManager.deleteActivity(activityID, user)
+        except Exception as e:
+            return str(e), 200
+    
 
-@application.route('/activities' , methods = ['GET'])
-def getActivities():
-    args = request.args
-    city = args.get("city")
-    guests = args.get("guests")
-    start_date = args.get("start_date")
-    end_date = args.get("end_date")
-    result = ActivityManager.getFilteredActivity(start_date  , end_date  , city , guests)
-    result["_id"] = str(result["_id"])
-    return result , 200
+    @staticmethod
+    def getActivityByUserID(userID):
+        try:
+            res = ActivityManager.getActivityByUserID(userID)
+            return res
+        except Exception as e:
+            return str(e), 200
+
+    @staticmethod
+    def likeActivity(requestBody , user):
+        try:
+            activityNode = ActivityNode(requestBody["likedAdvID"], requestBody["likedAdvName"])
+            userNode = UserNode(user["_id"], user["username"])
+            likeRelation = LikeRelation(userNode, activityNode=activityNode)
+            LikeRelationManager.addLikeRelation(likeRelation)
+        except Exception as e:
+            return str(e), 200
+    
+
+    @staticmethod
+    def dislikeActivity(requestBody , user):
+        try:
+            userNode = UserNode(user["_id"], user["username"])
+            activityNode = ActivityNode(requestBody["unlikedAdvID"], requestBody["unlikedAdvName"])
+            likeRelation = LikeRelation(userNode, activityNode=activityNode )
+            LikeRelationManager.removeLikeRelation(likeRelation)
+        except Exception as e:
+            return str(e), 200
+
+    @staticmethod
+    def getCommonActivity(user , userID):
+        try:
+            userNode = UserNode(user["_id"], user["username"])
+            res = ActivityNodeManager.getCommonLikedActivity(userNode, userID)
+            return res
+        except Exception as e:
+            return str(e), 200
+    
+    @staticmethod
+    def getTotalLikes(destinationID):
+        try:
+            res =  ActivityNodeManager.getTotalLikes(destinationID)
+            return {"likes" : res}
+        except Exception as e:
+            return str(e), 200

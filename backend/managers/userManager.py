@@ -1,4 +1,4 @@
-from .connection import MongoManager
+from utility.connection import MongoManager
 import os
 from models.user import User
 from bson.objectid import ObjectId
@@ -10,7 +10,17 @@ from flask import jsonify
 class UserManager:
 
     @staticmethod
-    def getUserFromId(userID):
+    def checkIfUserExists(username):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("USERS_COLLECTION")]
+        try:
+            result = collection.count_documents({"username" : username})
+            return result
+        except Exception:
+            raise Exception("Impossibile inserire")
+    @staticmethod
+    def getUserFromID(userID):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("USERS_COLLECTION")]
@@ -42,7 +52,7 @@ class UserManager:
             raise Exception("Impossibile inserire")
 
     @staticmethod
-    def authenicateUser(username , password):
+    def authenticateUser(username , password):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("USERS_COLLECTION")]

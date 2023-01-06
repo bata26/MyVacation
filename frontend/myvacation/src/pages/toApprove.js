@@ -26,7 +26,6 @@ const ToApprove = () => {
 
     React.useEffect(() => {
         api.get("/admin/announcement/" + type + "/" + advertisementID)
-        api.get("/admin/announcement/" + type + "/" + advertisementID)
             .then(function (response) {
                 setAdvertisement(response.data);
             })
@@ -49,7 +48,7 @@ const ToApprove = () => {
     }
 
     const approveAdvertisement = (advertisementID) => {
-        api.post("/admin/announcement/" + advertisementID, {"destinationType" : type})
+        api.post("/admin/announcement/" + advertisementID, {"destinationType" : type , "destinationName" : advertisement.name})
             .then(function (response) {
                 alert("The advertisement has been approved");
                 navigate('/admin')
@@ -174,7 +173,7 @@ const ToApprove = () => {
                                 <br />
                                 <b>Minimum nights</b>: {advertisement.minimum_nights}
                                 <br />
-                                <b>Guests</b>: {advertisement.accommodates}
+                                <b>Guests</b>: {advertisement.guests}
                                 <br />
                                 <b>Bedrooms</b>: {advertisement.bedrooms}
                             </Typography>) :

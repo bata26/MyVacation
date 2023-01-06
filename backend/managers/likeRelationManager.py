@@ -1,4 +1,4 @@
-from .graphConnection import GraphManager
+from utility.graphConnection import GraphManager
 
 
 class LikeRelationManager:
@@ -29,7 +29,6 @@ class LikeRelationManager:
     @staticmethod
     def addLikeRelation(likeRelation):
         client = GraphManager.getInstance()
-        #print("sono dentro")
         try:
             if(not(LikeRelationManager.checkIfExists(likeRelation))):
                 raise Exception("Già messo like")
@@ -42,7 +41,7 @@ class LikeRelationManager:
             else:
                 raise Exception("invalid likeRelation")
             query = query + "CREATE (u)-[:LIKE]->(a)"
-            #print(query)
+
             with client.session() as session:
                 session.run(query)
 

@@ -1,4 +1,4 @@
-from .connection import MongoManager
+from utility.connection import MongoManager
 import os
 from models.accommodation import Accommodation
 from bson.objectid import ObjectId
@@ -8,8 +8,8 @@ from datetime import datetime
 import dateparser
 from bson.objectid import ObjectId
 from utility.serializer import Serializer
-from controllers.accommodationManager import AccommodationManager
-from controllers.activityManager import ActivityManager
+from managers.accommodationManager import AccommodationManager
+from managers.activityManager import ActivityManager
 
 class ReservationManager:
 
@@ -30,7 +30,6 @@ class ReservationManager:
                     insertedReservation = reservationCollection.insert_one(reservation.getDictToUpload(), session=session)
                     reservation._id = insertedReservation.inserted_id
                     usersCollection.update_one({"_id" : ObjectId(reservation.userID)} , {"$push" : {"reservations" : reservation.getDictForUser()}}, session=session)
-                    return insertedReservation.inserted_id
         except Exception as e:
             raise Exception("Impossibile prenotare: " + str(e) )
 
@@ -71,7 +70,7 @@ class ReservationManager:
             raise Exception("Impossibile ottenere prenotazioni: " + str(e))
 
     @staticmethod
-    def updateReservation(reservation, newStartDate, newEndDate):
+    def updateReservation(reservation, newStartDate, newEndDate , user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
@@ -80,8 +79,13 @@ class ReservationManager:
         reservationID = reservation["_id"]
         prevTotalExpense = int(reservation["totalExpense"])
         destinationType = reservation["destinationType"]
+        print(reservation)
         usersCollection = db[os.getenv("USERS_COLLECTION")]
         try:
+            oldReservation = collection.find_one({"_id" : ObjectId(reservationID)})
+            if(user["_id"] != str(oldReservation["userID"])):
+                raise Exception("L'utente non possiede la reservation")
+
             query = {}
             if( destinationType == "accommodation"):
                 if (newStartDate != "" and newEndDate != "" and newEndDate != None and newStartDate != None):
@@ -90,31 +94,33 @@ class ReservationManager:
 
                     # ottengo una lista di id di accommodations non occupate
                     # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
-                    occupiedAccommodationsID = AccommodationManager.getOccupiedAccommodationIDs(newStartDate , newEndDate)
-
+                    occupiedAccommodationsID = AccommodationManager.getOccupiedAccommodationIDs(newStartDate , newEndDate , reservation["_id"])
                     if ObjectId(destinationID) in occupiedAccommodationsID:
                         raise Exception("Accommodation Occupata, impossibile aggiornare")
+
+                    print("pre")
                     newNightNumber = (((dateparser.parse(newEndDate) - dateparser.parse(newStartDate)).days))
                     newTotalExpense = newNightNumber*price
                     query = { '_id': ObjectId(reservationID) }
-                   
+                    print("post")
                     with client.start_session() as session:
                         with session.start_transaction():
                             collection.update_one(query, {"$set": {'startDate': dateparser.parse(newStartDate), 'endDate': dateparser.parse(newEndDate), "totalExpense" : newTotalExpense}} , session=session)
-                            usersCollection.update_one({"_id" : ObjectId(reservation.userID) , "reservations._id" : ObjectId(reservation._id)} , {"$set" : {"reservations.$.startDate" : newStartDate , "reservations.$.endDate" : newEndDate}} , session=session)
+                            usersCollection.update_one({"_id" : ObjectId(user["_id"]) , "reservations._id" : ObjectId(reservation["_id"])} , {"$set" : {"reservations.$.startDate" : dateparser.parse(newStartDate) , "reservations.$.endDate" : dateparser.parse(newEndDate)}} , session=session)
+
+                    
             elif(destinationType == "activity"):
                 if (newStartDate != "" and newStartDate != None):
-                    occupiedActivitiesID = collection.distinct("_id" , {"destinationID" : ObjectId(destinationID) , "startDate": dateparser.parse(newStartDate)})
+                    occupiedActivitiesID = ActivityManager.getOccupiedActivities(newStartDate , reservation["_id"] )
                     
                     if len(occupiedActivitiesID) != 0:
-                        #print("Activity Occupata!")
                         raise Exception("Accommodation Occupata, impossibile aggiornare")
 
                     query = { '_id': ObjectId(reservationID) }
                     with client.start_session() as session:
                         with session.start_transaction():
                             collection.update_one(query, {"$set": {'startDate': dateparser.parse(newStartDate),  "totalExpense" : reservation.price }} , session=session)
-                            usersCollection.update_one({"_id" : ObjectId(reservation.userID) , "reservations._id" : ObjectId(reservation._id)} , {"$set" : {"reservations.$.startDate" : newStartDate }} , session=session)
+                            usersCollection.update_one({"_id" : ObjectId(user["_id"]) , "reservations._id" : ObjectId(reservation["_id"])} , {"$set" : {"reservations.$.startDate" : newStartDate }} , session=session)
             
         except Exception as e:
             raise Exception("Impossibile aggiornare prenotazione "+reservationID+": " + str(e))

@@ -1,4 +1,4 @@
-from .connection import MongoManager
+from utility.connection import MongoManager
 import os
 from models.activity import Activity
 from bson.objectid import ObjectId
@@ -64,23 +64,21 @@ class ActivityManager:
             cursor["description"],
             cursor["duration"],
             cursor["price"],
-            cursor["number_of_reviews"],
-            cursor["review_scores_rating"],
             cursor["mainPicture"],
             cursor["name"],
             cursor["approved"],
-            cursor["reservations"],
             cursor["reviews"],
             str(cursor["_id"]))
         return Serializer.serializeActivity(activity)
 
     @staticmethod
-    def insertNewActivity(activity):
+    def insertNewActivity(activity: Activity):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         try:
-            collection.insert_one(activity.getDictToUpload())
+            result = collection.insert_one(activity.getDictToUpload())
+            return result.inserted_id
         except Exception:
             raise Exception("Impossibile inserire")
 
@@ -104,14 +102,19 @@ class ActivityManager:
                 raise Exception("Impossibile eliminare")
 
     @staticmethod
-    def getOccupiedActivities(start_date):
+    def getOccupiedActivities(start_date , reservation = ""):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
 
         if not(isinstance(start_date, str) ):
             start_date = start_date.strftime("%Y-%m-%d")
-        occupiedActivitiesID = collection.distinct("destinationId",{"destinationType" : "activity" , "startDate": dateparser.parse(start_date)})
+        
+        query = {"destinationType" : "activity" , "startDate": dateparser.parse(start_date)}
+        if reservation != "":
+            query["_id"] = {}
+            query["_id"] = {"$ne" : ObjectId(reservation)}
+        occupiedActivitiesID = collection.distinct("destinationId", query)
         return occupiedActivitiesID
 
     @staticmethod
@@ -160,8 +163,6 @@ class ActivityManager:
                 activity["description"],
                 activity["duration"],
                 activity["price"],
-                activity["number_of_reviews"],
-                activity["review_scores_rating"],
                 activity["mainPicture"],
                 activity["name"],
                 activity["approved"],

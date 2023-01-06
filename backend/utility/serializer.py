@@ -83,15 +83,16 @@ class Serializer:
     def serializeUser(user):
         serializedReservations = []
         for reservation in user.reservations:
-            serializedReservations.append({
+            tmpReservation = {
                 "destinationID" : str(reservation['destinationID']),
                 "startDate" : reservation['startDate'],
                 "totalExpense" : reservation['totalExpense'],
                 "destinationType" : reservation['destinationType'],
                 "_id" : str(reservation['_id'])
-            })
-            if hasattr(reservation , "endDate"):
-                serializedReservations['endDate'] = reservation['endDate']
+            }
+            if reservation["endDate"]:
+                tmpReservation['endDate'] = reservation['endDate']
+            serializedReservations.append(tmpReservation)
         return {
             "_id" : str(user._id),
             "username" : user.username ,

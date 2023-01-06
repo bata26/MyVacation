@@ -1,7 +1,9 @@
-from controllers.connection import MongoManager
+from utility.connection import MongoManager
 import random
 from bson.objectid import ObjectId
 import base64
+import pandas as pd
+import dateparser
 categories = [
     {
         "type" : "kayak",
@@ -33,13 +35,14 @@ prices = [10 , 15 , 25 , 32 , 50 , 80 , 100]
 durations = [1 , 2 , 4 , 3.5 , 6]
 hostList = []
 cityList = []
+imgPath = "utility/testImg/art.jpg"
 
 def getHostList():
     client = MongoManager.getInstance()
     db = client["myvacation"]
-    collection = db["accommodations"]
+    collection = db["users"]
 
-    hostList = collection.distinct("_id" , {})
+    hostList = list(collection.find({"type" : "host"} , {"_id" : 1 , "name" : 1}))
     return hostList
 
 
@@ -93,18 +96,60 @@ def generateRandomActivity():
 
 
 hostList = getHostList()
-#print(f"hostList ottenuta")
+print(f"hostList ottenuta : {hostList}")
 cityList = getCitiesList()
-#print("cityList ottenuta")
+print("cityList ottenuta")
 client = MongoManager.getInstance()
 db = client["myvacation"]
 collection = db["activities"]
 activities = []
-for i in range(0 , 150):
-    activity = generateRandomActivity()
+
+photos = []
+
+filePath = "/Users/lorenzobataloni/Downloads/activities.csv"
+dataframe = pd.read_csv(filePath ,  on_bad_lines='skip' , sep=";")
+print(dataframe)
+
+
+EVENT = 1
+START_DATE = 2
+END_DATE = 3
+DESC = 4
+ADDRESS = 5
+counter = 0
+
+activities = []
+for row in dataframe.iterrows():
+    if counter == 1200:
+        break
+    counter += 1
+    
+    row = row[EVENT].to_dict()
+    print(row)
+    host = hostList[random.randint(0  ,len(hostList) - 1)]
+    duration = dateparser.parse(row["END_DATE_T"]) - dateparser.parse(row["START_DATE"])
+    activity = {
+        "name" : row["EVENT"],
+        "description" : row["EVENT_DESC"],
+        "location" : {
+            "address" : row["FULLADDRES"],
+            "city" : cityList[random.randint(0  ,len(cityList) - 1)],
+            "country" : "Italy",
+        },
+        "price" : prices[random.randint(0 , len(prices) - 1)],
+        "duration" : durations[random.randint(0 , len(durations) - 1)],
+        "hostID"  :str(host["_id"]),
+        "hostName" : host["name"],
+        "reviews" : [],
+        "approved"  :True,
+        "mainPicture":encodeBase64Image(imgPath)
+    }
     activities.append(activity)
 
-res = collection.insert_many(activities)
+collection.insert_many(activities)
+
+
+
 #print(f"post inserimento : {res}")
 
     

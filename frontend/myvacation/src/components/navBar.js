@@ -19,7 +19,7 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 const pages = ["signIn", "signUp"];
 
 // Pagine a tendina logo utente
-const account = localStorage.getItem("role") === "admin" ? ['Admin', 'Logout'] : ['Profile', 'MyAdv', 'Logout'] ;
+const account = localStorage.getItem("role") === "admin" ? ['Admin', 'Logout'] : ['Profile', 'MyAdv', 'Logout'];
 const loggedPages = ["accommodation", "activity"];
 
 function ResponsiveAppBar() {
@@ -49,9 +49,10 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = (selectedSetting) => {
 
     if (selectedSetting === 'Profile') {
-        ChangePage('/profile/' + localStorage.getItem("userID"))
+      ChangePage('/profile/' + localStorage.getItem("userID"))
+      window.location.reload(false)
     } else if (selectedSetting === 'Admin') {
-        ChangePage('/admin')
+      ChangePage('/admin')
     } else if (selectedSetting === 'Logout') {
       localStorage.clear();
       ChangePage('/');
@@ -168,19 +169,19 @@ function ResponsiveAppBar() {
             </Button>
             {
               localStorage.getItem("userID") && localStorage.getItem("role") !== "admin" ?
-              (
-                loggedPages.map( page => (
-                  <Button
-                    key={page}
-                    onClick={() => ChangePage("/insert/" + page)}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                  >
-                    {page}
-                  </Button>
-                ))
-              ) :<></>
+                (
+                  loggedPages.map(page => (
+                    <Button
+                      key={page}
+                      onClick={() => ChangePage("/insert/" + page)}
+                      sx={{ my: 2, color: 'white', display: 'block' }}
+                    >
+                      {page}
+                    </Button>
+                  ))
+                ) : <></>
             }
-            
+
           </Box>
           {localStorage.getItem("userID") != null && localStorage.getItem("userID") ?
             (<Box sx={{ flexGrow: 0 }}>

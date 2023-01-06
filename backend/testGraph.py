@@ -1,4 +1,4 @@
-from controllers.graphConnection import GraphManager
+from utility.graphConnection import GraphManager
 
 
 client = GraphManager.getInstance()

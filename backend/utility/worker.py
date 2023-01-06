@@ -2,12 +2,12 @@ from datetime import datetime , timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 import json
 import os
-from controllers.graphConnection import GraphManager
-from controllers.accommodationNodeManager import AccommodationNodeManager
-from controllers.activityNodeManager import ActivityNodeManager
-from controllers.userNodeManager import UserNodeManager
+from utility.graphConnection import GraphManager
+from managers.accommodationNodeManager import AccommodationNodeManager
+from managers.activityNodeManager import ActivityNodeManager
+from managers.userNodeManager import UserNodeManager
 from models.userNode import UserNode
-from logger import Logger
+from .logger import Logger
 
 def worker():
     sched = BackgroundScheduler(job_defaults={'misfire_grace_time': 5})
@@ -53,6 +53,8 @@ def main():
                 if item["operation"] == "CREATE":
                     userNode = UserNode(id , item["username"])
                     UserNodeManager.createUserNode(userNode)
+                if item["operation"] == "DELETE":
+                    UserNodeManager.deleteUserNode(id)
         except Exception as e:
             Logger.logWorkerError(f"Impossibile eseguire operazione su {item['_id']}")
             #print(str(e))    

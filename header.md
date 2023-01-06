@@ -1,6 +1,6 @@
 # COLLECTIONS
 
-## ACCOMODATIONS
+## ACCOMMODATIONS
 
 ```JSON
 {
@@ -19,7 +19,7 @@
      "country"
     },
     "propertyType"
-    "accommodates"
+    "guests"
     "bedrooms"
     "beds"
     "price"
@@ -123,7 +123,7 @@ if start < END < end or start < START < end:
  - Query per lista delle prenotazioni relative ad un annuncio
  - Query per lista di utenti
 
-### QUERY PER OTTENERE LISTA DI ACCOMODATIONS OCCUPATE
+### QUERY PER OTTENERE LISTA DI ACCOMMODATIONS OCCUPATE
 NB: Sostituire poi le ISODate con le date effettive che vengono dal frontend.
 ```mongodb
 db.accommodations.aggregate([
