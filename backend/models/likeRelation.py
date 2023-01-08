@@ -3,9 +3,9 @@ class LikeRelation:
     def __init__(self , userNode , accommodationNode=None , activityNode=None):
         self.user = userNode
 
-        if(accommodationNode != None):
+        if(accommodationNode is not None):
             self.accommodation = accommodationNode
-        elif(activityNode != None):
+        elif(activityNode is not None):
             self.activity = activityNode
 
             

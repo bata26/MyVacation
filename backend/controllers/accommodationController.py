@@ -40,6 +40,15 @@ class AccommodationController:
             AccommodationManager.updateAccommodation(accommodationID, formData, user)
         except Exception as e:
             raise Exception(str(e))
+        try:
+            accomodationNode = AccommodationNode(
+                accommodationID,
+                formData["name"]
+            )
+            AccommodationNodeManager.updateAccommodationNode(accomodationNode)
+            return True
+        except Exception as e:
+            return False
     
     @staticmethod
     def getAccommodationById(accommodationID):
@@ -52,7 +61,7 @@ class AccommodationController:
     @staticmethod
     def getFilteredAccommodations(start_date, end_date, city, guests, index, direction):
         try:
-            res = AccommodationManager.getFilteredAccommodation(start_date, end_date, city, guests, index, direction)
+            res = AccommodationManager.getFilteredAccommodations(start_date, end_date, city, guests, index, direction)
             return res
         except Exception as e:
             raise Exception(str(e))

@@ -18,6 +18,7 @@ import dateparser
 from utility.worker import startup
 from utility.logger import Logger
 from datetime import datetime
+from datetime import date
 
 load_dotenv()
 application = Flask(__name__)
@@ -167,17 +168,17 @@ def getActivityByID(activity_id):
 def getActivities(user={}):
     args = request.args
     city = args.get("city")
-    guests = args.get("guests")
     start_date = args.get("startDate")
     index = args.get("index")
     direction = args.get("direction")
     try:
-        if(start_date != "" and dateparser.parse(start_date) < datetime.now()):
-            raise Exception("Impossibile ricercare")
+        if start_date != "" and start_date is not None:
+            if dateparser.parse(start_date).date() < date.today():
+                raise Exception("Impossibile ricercare")
 
         return ActivityController.getActivities(
-            start_date, city, guests, index, direction
-        ) , 200
+            start_date, city, index, direction
+        ), 200
     except Exception as e:
         return str(e), 500
 
@@ -464,16 +465,15 @@ def getAccommodations():
     direction = args.get("direction")
     
     try:
-        if(start_date != "" and end_date != ""):
-            if(dateparser.parse(start_date) < datetime.now()):
+        if start_date != "" and start_date is not None :
+            if dateparser.parse(start_date).date() < date.today():
                 raise Exception("Impossibile ricercare")
-
-            if(dateparser.parse(end_date) < dateparser.parse(start_date)):
-                raise Exception("Impossibile ricercare")
-
+            if end_date != "" and end_date is not None:
+                if dateparser.parse(end_date) < dateparser.parse(start_date):
+                    raise Exception("Impossibile ricercare")
         return AccommodationController.getFilteredAccommodations(
             start_date, end_date, city, guests, index, direction
-        ) , 200
+        ), 200
     except Exception as e:
         return str(e), 500
 

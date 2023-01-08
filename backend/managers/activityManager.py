@@ -118,21 +118,18 @@ class ActivityManager:
         return occupiedActivitiesID
 
     @staticmethod
-    def getFilteredActivity(start_date="", city="", guestNumbers="", index="", direction=""):
-        query = {}
+    def getFilteredActivities(start_date="", city="", index="", direction=""):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         occupiedActivitiesID = []
         result = []
+        query = {}
 
-        if (city != ""):
+        if (city != "" and city is not None):
             query["location.city"] = city
-        if (guestNumbers != ""):
-            query["accomodates"] = {}
-            query["accomodates"]["$gte"] = guestNumbers
 
         # Deve essere stato inserito il periodo di svolgimento
-        if (start_date != "" and start_date != None):
+        if (start_date != "" and start_date is not None):
             collection = db[os.getenv("RESERVATIONS_COLLECTION")]
             occupiedActivitiesID = ActivityManager.getOccupiedActivities(start_date)
         query["_id"] = {}
@@ -181,27 +178,6 @@ class ActivityManager:
                                   "$push": {"reviews": review.getDictForAdvertisement()}})
         except Exception as e:
             raise Exception("Impossibile aggiungere la review: " + str(e))
-
-    @staticmethod
-    def addReservation(reservation):
-        client = MongoManager.getInstance()
-        db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
-        try:
-            collection.update_one({"_id": ObjectId(reservation.destinationID)}, {
-                                  "$push": {"reservations": reservation.getDictForAdvertisement()}})
-        except Exception as e:
-            raise Exception("Impossibile aggiungere la reservation: " + str(e))
-
-    @staticmethod
-    def updateReservation(reservation, newStartDate):
-        client = MongoManager.getInstance()
-        db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
-        try:
-            collection.update_one({"reservations._id": ObjectId(reservation['_id'])}, {"$set": {"reservations.$.startDate": dateparser.parse(newStartDate)}})
-        except Exception as e:
-            raise Exception("Impossibile aggiornare la reservation: " + str(e))
 
     @staticmethod
     def getActivityByUserID(userID):

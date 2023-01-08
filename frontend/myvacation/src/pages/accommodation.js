@@ -267,7 +267,6 @@ const Accommodation = () => {
 							>
 								Other information
 							</Typography>
-
 							<Typography align='right' sx={{ mb: 2 }}>
 								<b>Host:</b> {accommodation.hostName}
 								<br />

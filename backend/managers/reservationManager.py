@@ -88,7 +88,7 @@ class ReservationManager:
 
             query = {}
             if( destinationType == "accommodation"):
-                if (newStartDate != "" and newEndDate != "" and newEndDate != None and newStartDate != None):
+                if (newStartDate != "" and newEndDate != "" and newEndDate is not None and newStartDate is not None):
                     prevEndDate = reservation["endDate"]
                     price = prevTotalExpense/((dateparser.parse(prevEndDate) - dateparser.parse(prevStartDate)).days)
 
@@ -101,7 +101,7 @@ class ReservationManager:
                     print("pre")
                     newNightNumber = (((dateparser.parse(newEndDate) - dateparser.parse(newStartDate)).days))
                     newTotalExpense = newNightNumber*price
-                    query = { '_id': ObjectId(reservationID) }
+                    query = {'_id': ObjectId(reservationID)}
                     print("post")
                     with client.start_session() as session:
                         with session.start_transaction():
@@ -110,11 +110,11 @@ class ReservationManager:
 
                     
             elif(destinationType == "activity"):
-                if (newStartDate != "" and newStartDate != None):
+                if (newStartDate != "" and newStartDate is not None):
                     occupiedActivitiesID = ActivityManager.getOccupiedActivities(newStartDate , reservation["_id"] )
                     
                     if len(occupiedActivitiesID) != 0:
-                        raise Exception("Accommodation Occupata, impossibile aggiornare")
+                        raise Exception("Activity Occupata, impossibile aggiornare")
 
                     query = { '_id': ObjectId(reservationID) }
                     with client.start_session() as session:
@@ -127,7 +127,7 @@ class ReservationManager:
 
 
     @staticmethod
-    def deleteReservationByID(reservationID , user):
+    def deleteReservation(reservationID , user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         reservationCollection = db[os.getenv("RESERVATIONS_COLLECTION")]

@@ -103,11 +103,7 @@ class AccommodationManager:
                             {
                                 "$and": [
                                     {"startDate": {"$lte": dateparser.parse(end_date)}},
-                                    {
-                                        "startDate": {
-                                            "$gte": dateparser.parse(start_date)
-                                        }
-                                    },
+                                    {"startDate": {"$gte": dateparser.parse(start_date)}},
                                 ]
                             },
                             {
@@ -128,8 +124,7 @@ class AccommodationManager:
             }
         if(reservationID != ""):
             query["_id"] = {}
-            query["_id"] = {"$ne" : ObjectId(reservationID)}
-
+            query["_id"] = {"$ne": ObjectId(reservationID)}
         occupiedAccommodationsID = collection.distinct(
             "destinationID",
             query,
@@ -142,20 +137,20 @@ class AccommodationManager:
     #   - city
     #   - number of guests
     @staticmethod
-    def getFilteredAccommodation(start_date="", end_date="", city="", guestNumbers="", index="", direction=""):
+    def getFilteredAccommodations(start_date="", end_date="", city="", guestNumbers="", index="", direction=""):
         query = {}
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         occupiedAccommodationsID = []
         result = []
 
-        if city != "" and city != None:
+        if city != "" and city is not None:
             query["location.city"] = city
-        if guestNumbers != "" and guestNumbers != None:
+        if guestNumbers != "" and guestNumbers is not None:
             query["guests"] = {}
             query["guests"]["$gte"] = int(guestNumbers)
 
-        if ( start_date != "" and end_date != "" and end_date != None and start_date != None):
+        if ( start_date != "" and end_date != "" and end_date is not None and start_date is not None):
             # ottengo una lista di id di accommodations non occupate
             # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
             occupiedAccommodationsID = AccommodationManager.getOccupiedAccommodationIDs(start_date, end_date)
@@ -250,59 +245,11 @@ class AccommodationManager:
         try:
             collection.update_one(
                 {"_id": ObjectId(review.destinationID)},
-                {"$push": {"reviews": review.getDictForAdvertisement()}},
+                {"$push": {"reviews": review.getDictForAdvertisement()}}
             )
         except Exception as e:
             raise Exception("Impossibile aggiungere la review: " + str(e))
-    """
-    @staticmethod
-    def addReservation(reservation):
-        client = MongoManager.getInstance()
-        db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
-        try:
-            collection.update_one(
-                {"_id": ObjectId(reservation.destinationID)},
-                {"$push": {"reservations": reservation.getDictForAdvertisement()}},
-            )
-        except Exception as e:
-            raise Exception("Impossibile aggiungere la reservation: " + str(e))
 
-    @staticmethod
-    def updateReservation(reservation, newStartDate, newEndDate):
-        client = MongoManager.getInstance()
-        db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
-        prevStartDate = reservation["startDate"]
-        prevEndDate = reservation["endDate"]
-        prevTotalExpense = int(reservation["totalExpense"])
-        price = prevTotalExpense / (
-            (dateparser.parse(prevEndDate) - dateparser.parse(prevStartDate)).days
-        )
-        newNightNumber = (
-            dateparser.parse(newEndDate) - dateparser.parse(newStartDate)
-        ).days
-        newTotalExpense = newNightNumber * price
-
-        if str(
-            reservation.destinationID
-        ) in AccommodationManager.getOccupiedAccommodationIDs(newStartDate, newEndDate):
-            raise Exception("Accommodation occupata")
-
-        try:
-            collection.update_one(
-                {"reservations._id": ObjectId(reservation["_id"])},
-                {
-                    "$set": {
-                        "reservations.$.startDate": dateparser.parse(newStartDate),
-                        "reservations.$.endDate": dateparser.parse(newEndDate),
-                        "reservations.$.totalExpense": newTotalExpense,
-                    }
-                },
-            )
-        except Exception as e:
-            raise Exception("Impossibile aggiornare la reservation: " + str(e))
-    """
     @staticmethod
     def getAccommodationsByUserID(userID):
         client = MongoManager.getInstance()

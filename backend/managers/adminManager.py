@@ -26,11 +26,11 @@ class AdminManager:
         db = client[os.getenv("DB_NAME")]
         result = []
 
-        if username != "" and username != None:
+        if username != "" and username is not None:
             query["username"] = username
-        if name != "" and name != None:
+        if name != "" and name is not None:
             query["name"] = name
-        if surname != "" and surname != None:
+        if surname != "" and surname is not None:
             query["surname"] = surname
 
         collection = db[os.getenv("USERS_COLLECTION")]

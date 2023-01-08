@@ -13,7 +13,7 @@ class Serializer:
                 "_id" : str(review['_id'])
             })
         decodedMainPic = None
-        if(activity.mainPicture != None):
+        if(activity.mainPicture is not None):
             decodedMainPic = activity.mainPicture.decode('utf-8')
 
         return {
@@ -46,7 +46,7 @@ class Serializer:
                 "_id" : str(review['_id'])
             })
         decodedMainPic = None
-        if(accommodation.mainPicture != None):
+        if(accommodation.mainPicture is not None):
             decodedMainPic = accommodation.mainPicture.decode('utf-8')
         return {
             "_id" : str(accommodation._id) ,

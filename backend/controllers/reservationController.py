@@ -73,6 +73,6 @@ class ReservationController:
     @staticmethod
     def deleteReservation(reservationID , user):
         try:
-            ReservationManager.deleteReservationByID(reservationID , user)
+            ReservationManager.deleteReservation(reservationID , user)
         except Exception as e:
             return str(e), 500

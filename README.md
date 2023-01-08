@@ -15,7 +15,7 @@ A registration form will allow new users to register within the application as R
 - Unregistered User can browse top 3 cities.
 - Unregistered User can browse top 3 accommodations.
 - Unregistered User can browse top 3 activities.
-- Uregistered User can view a review.</br>
+- Unregistered User can view a review.</br>
 <b>Registered User:</b>
 - Registered User can log in to the platform.
 - Registered User can log out from the platform.
@@ -29,18 +29,19 @@ A registration form will allow new users to register within the application as R
 - Registered User can browse top 3 activities.
 - Registered User can browse a recommended accommodation/activity.
 - Registered User can browse a recommended user.
-- Registered User can reserve an accommodation/actvity.
+- Registered User can reserve an accommodation/activity.
 - Registered User can view own reservations.
 - Registered User can update a reservation.
 - Registered User can delete a reservation.
 - Registered User can insert a review.
 - Registered User can view a review.
 - Registered User can delete a review.
-- Registered User can view an user profile.
-- Registered User can follow/unfollow an user.
+- Registered User can view a user profile.
+- Registered User can follow/unfollow a user.
 - Registered User can like/unlike an accommodation/activity.
 - Registered User can view the own user profile.
-- Registered User can update the own user profile.</br>
+- Registered User can update the own user profile.
+- Registered User can view reservations per city per month.</br>
 <b>Admin:</b>
 - Admin can log in to the platform.
 - Admin can log out from the platform.
@@ -53,10 +54,10 @@ A registration form will allow new users to register within the application as R
 - Admin can browse top 3 activities.
 - Admin can view all reservations.
 - Admin can delete a reservation.
-- Admin can view an user profile.
+- Admin can view a user profile.
 - Admin can update an user profile.
 - Admin can delete an user.
-- Admin can approve/refuse an acccomodation/activity insertion.
+- Admin can approve/refuse an accommodation/activity insertion.
 - Admin can view all the stats and analytics on the admin page. </br>
 
 ## Non functional requirements

@@ -11,7 +11,8 @@ class UserNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH (u:User {userID : '%s'})-[r:FOLLOW]->(u2:User {userID : '%s'}) return COUNT(r) as total" %(userID , followedID)
+                query = "MATCH (u:User {userID : '%s'})-[r:FOLLOW]->(u2:User {userID : '%s'}) " \
+                        "return COUNT(r) as total" % (userID , followedID)
                 result = list(session.run(query))[0].value("total")
 
                 if(result == 0):
@@ -51,7 +52,8 @@ class UserNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH(u:User {userID: '%s' })-[:FOLLOW]->(followed: User) return followed" % userNodeID
+                query = "MATCH(u:User {userID: '%s' })-[:FOLLOW]->(followed: User) " \
+                        "return followed" % userNodeID
                 queryResult = list(session.run(query))
 
                 result = []
@@ -71,9 +73,11 @@ class UserNodeManager:
         try:
             with client.session() as session:
                 if (destinationType == "accommodation"):
-                    query = "MATCH(u:User {userID: '%s' })-[r:LIKE]->(liked: Accommodation { accommodationID: '%s'}) return COUNT(r) as total" % (userNodeID , destinationID)
+                    query = "MATCH(u:User {userID: '%s' })-[r:LIKE]->(liked: Accommodation { accommodationID: '%s'}) " \
+                            "return COUNT(r) as total" % (userNodeID, destinationID)
                 else:
-                    query = "MATCH(u:User {userID: '%s' })-[r:LIKE]->(liked: Activity { activityID: '%s'}) return COUNT(r) as total" % (userNodeID , destinationID)
+                    query = "MATCH(u:User {userID: '%s' })-[r:LIKE]->(liked: Activity { activityID: '%s'}) " \
+                            "return COUNT(r) as total" % (userNodeID, destinationID)
                 #print(query)
                 queryResult = list(session.run(query))[0].value("total")
                 #print(queryResult)
@@ -91,9 +95,11 @@ class UserNodeManager:
         try:
             with client.session() as session:
                 if (destinationType == "accommodation"):
-                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Accommodation) return liked" % userNodeID
+                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Accommodation) " \
+                            "return liked" % userNodeID
                 else:
-                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Activity) return liked" % userNodeID
+                    query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Activity) " \
+                            "return liked" % userNodeID
 
                 queryResult = list(session.run(query))
                 
@@ -117,16 +123,51 @@ class UserNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                if (destinationType == "accommodation"):
-                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Accommodation) MATCH (u3:User)-[r:LIKE]->(a)  WHERE NOT (u)-[:LIKE]->(a)  return a , COUNT(r) as liked ORDER BY liked DESC LIMIT 3" % userNode.userID
+                queryTotalFollowed = "MATCH (u:User {userID: '%s'})-[r:FOLLOW]->(:User) " \
+                                     "return COUNT(r) as total" % userNode.userID
+                totalFollowed = list(session.run(queryTotalFollowed))[0].value("total")
+                if destinationType == "accommodation":
+                    if totalFollowed == 0:
+                        query = "MATCH (u:User)-[r:LIKE]->(a:Accommodation) " \
+                                "MATCH (u2:User {userID: '%s'})  " \
+                                "WHERE NOT (u2)-[:LIKE]->(a)  " \
+                                "return a , " \
+                                "COUNT(r) as liked " \
+                                "ORDER BY liked DESC " \
+                                "LIMIT 3" % userNode.userID
+                    else:
+                        query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) " \
+                                "MATCH (u2)-[:LIKE]->(a:Accommodation) " \
+                                "MATCH (u3:User)-[r:LIKE]->(a)  " \
+                                "WHERE NOT (u)-[:LIKE]->(a)  " \
+                                "return a , " \
+                                "COUNT(r) as liked " \
+                                "ORDER BY liked DESC " \
+                                "LIMIT 3" % userNode.userID
                 else:
-                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:LIKE]->(a:Activity) MATCH (u3:User)-[r:LIKE]->(a)  WHERE NOT (u)-[:LIKE]->(a)  return a , COUNT(r) as liked ORDER BY liked DESC LIMIT 3" % userNode.userID
+                    if totalFollowed == 0:
+                        query = "MATCH (u:User)-[r:LIKE]->(a:Activity) " \
+                                "MATCH (u2:User {userID: '%s'})  " \
+                                "WHERE NOT (u2)-[:LIKE]->(a)  return a , " \
+                                "COUNT(r) as liked " \
+                                "ORDER BY liked DESC " \
+                                "LIMIT 3" % userNode.userID
+                    else:
+                        query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) " \
+                                "MATCH (u2)-[:LIKE]->(a:Activity) " \
+                                "MATCH (u3:User)-[r:LIKE]->(a)  " \
+                                "WHERE NOT (u)-[:LIKE]->(a)  " \
+                                "return a , " \
+                                "COUNT(r) as liked " \
+                                "ORDER BY liked DESC " \
+                                "LIMIT 3" % userNode.userID
+
                 queryResult = list(session.run(query))
                 result = []
 
                 for item in queryResult:
                     node = item.get("a")
-                    if (destinationType == "accommodation"):
+                    if destinationType == "accommodation":
                         resultAccommodationNode = AccommodationNode(
                             node["accommodationID"], node["name"])
                         result.append(Serializer.serializeAccommodationNode(
@@ -149,13 +190,27 @@ class UserNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                queryTotalFollowed = "MATCH (u:User {userID: '%s'})-[r:FOLLOW]->(:User) return COUNT(r) as total" % userNode.userID
+                queryTotalFollowed = "MATCH (u:User {userID: '%s'})-[r:FOLLOW]->(:User) " \
+                                     "return COUNT(r) as total" % userNode.userID
                 totalFollowed = list(session.run(queryTotalFollowed))[0].value("total")
                 
-                if(totalFollowed == 0):
-                    query = "MATCH (u3 : User) WHERE NOT u3.userID = '%s' return u3 LIMIT 3"  % userNode.userID
+                if totalFollowed == 0:
+                    query = "MATCH (u : User) " \
+                            "MATCH (u2)-[r:FOLLOW]->(u)  " \
+                            "WHERE NOT u.userID = '%s' " \
+                            "return u ," \
+                            "COUNT(r) as followed " \
+                            "ORDER BY followed DESC " \
+                            "LIMIT 3" % userNode.userID
                 else:
-                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) MATCH (u2)-[:FOLLOW]->(u3:User) MATCH (u2)-[:FOLLOW]->(u3:User) MATCH (u4)-[r:FOLLOW]->(u3)  WHERE NOT (u)-[:FOLLOW]->(u3)return u3 , COUNT(r) as followed ORDER BY followed DESC LIMIT 3" % userNode.userID
+                    query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) " \
+                            "MATCH (u2)-[:FOLLOW]->(u3:User) " \
+                            "MATCH (u4)-[r:FOLLOW]->(u3)  " \
+                            "WHERE NOT (u)-[:FOLLOW]->(u3) " \
+                            "return u3 , " \
+                            "COUNT(r) as followed " \
+                            "ORDER BY followed DESC " \
+                            "LIMIT 3" % userNode.userID
                 
                 queryResult = list(session.run(query))
                 result = []

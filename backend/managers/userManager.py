@@ -78,11 +78,11 @@ class UserManager:
             raise Exception("Impossibile aggiungere la reservation: " + str(e))
 
     @staticmethod
-    def updateUser(requestBody, userID):
+    def updateUser(user, userID):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("USERS_COLLECTION")]
         try:
-            collection.update_one({"_id" : ObjectId(userID)} , {"$set" : requestBody})
+            collection.update_one({"_id" : ObjectId(userID)} , {"$set" : user})
         except Exception as e:
             raise Exception("Impossibile aggiornare l'utente: " + str(e))

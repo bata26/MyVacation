@@ -39,6 +39,15 @@ class ActivityController:
             ActivityManager.updateActivity(activityID, formData, user)
         except Exception as e:
             raise Exception(str(e))
+        try:
+            activtyNode = ActivityNode(
+                activityID,
+                formData["name"]
+            )
+            ActivityNodeManager.updateAccommodationNode(activtyNode)
+            return True
+        except Exception as e:
+            return False
     
     @staticmethod
     def getActivityByID(activityID):
@@ -49,9 +58,9 @@ class ActivityController:
             raise Exception(str(e))
     
     @staticmethod
-    def getActivities(start_date, city, guests, index, direction):
+    def getActivities(start_date, city, index, direction):
         try:
-            res = ActivityManager.getFilteredActivity(start_date, city, guests, index, direction)
+            res = ActivityManager.getFilteredActivities(start_date, city, index, direction)
             return res
         except Exception as e:
             raise Exception(str(e))

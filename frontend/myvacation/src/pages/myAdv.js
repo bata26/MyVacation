@@ -62,8 +62,6 @@ const MyAdv = () => {
             }
             );
 
-
-        //Richiesta per recuperare le activities dell'utente
         api.get("/analytics/monthReservations")
             .then(function (response) {
                 setMonthReservation(response.data);

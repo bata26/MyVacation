@@ -31,16 +31,28 @@ const Search = () => {
   const [city, setCity] = React.useState(searchParams.get("city") ? searchParams.get("city") : null);
   const [guests, setGuests] = React.useState(null);
   const [type, setType] = React.useState(searchParams.get("type") ? searchParams.get("type") : "accommodations");
+  const [setter, setSetter] = React.useState("accommodation");
   const today = new Date();
-  const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  const date = today.getFullYear() + '-' + ((today.getMonth() + 1) > 10 ? (today.getMonth() + 1) : ('0' + (today.getMonth() + 1))) + (today.getDate() > 10 ? today.getDate() > 10 : ('-0' + today.getDate()));
   const navigate = useNavigate();
+
 
   const handleChange = (event) => {
     setType(event.target.value);
+    if(event.target.value === "accommodations")
+      setSetter("accommodation")
+    else
+      setSetter("activity")
   };
 
   const onChangeStartDate = (event) => {
     setStartDate(event.target.value);
+    console.log(event.target.value)
+  }
+
+  const onChangeEndDate = (event) => {
+    setEndDate(event.target.value);
+    console.log(event.target.value)
   }
 
   const handleSearch = (event) => {
@@ -127,23 +139,7 @@ const Search = () => {
       });
 
   };
-  //Vari setter per gestione di form e url
-  let setter = '';
-  let hideNumberOfPerson = false
-  let hideEndDate = true
-  let hideStartDate = true
 
-  if (type === 'accommodations') {
-    setter = 'accommodation'
-    hideNumberOfPerson = false
-    hideEndDate = false
-    hideStartDate = false
-  } else {
-    setter = 'activity'
-    hideNumberOfPerson = false
-    hideEndDate = true
-    hideStartDate = false
-  }
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -200,9 +196,8 @@ const Search = () => {
                   id="startDate"
                   name="startDate"
                   type="date"
-                  disabled={hideStartDate}
                   onChange={onChangeStartDate}
-                  InputProps={{ inputProps: { min:`${date}`, max:""} }}
+                  InputProps={{ inputProps: { min:`${date}`, max: endDate ? `${endDate}` : ""}}}
                 />
               </Grid>
               {type === "accommodations" ? (<Grid item xs={6} sm={2}>
@@ -211,10 +206,11 @@ const Search = () => {
                   id="endDate"
                   name="endDate"
                   type="date"
-                  disabled={hideEndDate}
+                  onChange={onChangeEndDate}
                   InputProps={{ inputProps: { min:`${startDate}`, max:""}, }}
                 />
               </Grid>) : <></>}
+              {type === "accommodations" ?
               <Grid item xs={4} sm={2}>
                 <TextField
                   fullWidth
@@ -222,9 +218,8 @@ const Search = () => {
                   label="Number of people"
                   name="numberOfPeople"
                   type="number"
-                  disabled={hideNumberOfPerson}
                 />
-              </Grid>
+              </Grid> : <></>}
             </Grid>
             <Button
               type="submit"
