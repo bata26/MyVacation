@@ -269,7 +269,14 @@ const Search = () => {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button fullWidth onClick={() => { navigate("/" + setter + "/" + item._id + "?startDate=" + startDate + "&endDate=" + endDate + "&guests=" + guests) }}>View</Button>
+                    <Button
+                        fullWidth
+                        onClick={() => { navigate("/" + setter + "/" + item._id + "?startDate=" + startDate + "&endDate=" + endDate + "&guests=" + guests) }}
+                        variant="contained"
+                        color='info'
+                    >
+                      View
+                    </Button>
                   </CardActions>
                 </Card>
               </Grid>

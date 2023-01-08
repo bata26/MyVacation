@@ -15,7 +15,7 @@ class AnalyticsManager:
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
         try:
             result = list(collection.aggregate(([
-                {"$match": {"hostID": ObjectId(user["_id"]), "destinationType": "accommodation"}},
+                {"$match": {"hostID": ObjectId(user["_id"])}},
                 {"$group": {
                     "_id": {
                         "city": "$city",

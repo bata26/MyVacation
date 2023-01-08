@@ -78,7 +78,7 @@ const MyAdv = () => {
         setCity(event.target.value);
         selectedCity = monthReservation.find( item => item.city === event.target.value);
         let baseList = [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ];
-        selectedCity.stats.map( (item , index) => (
+        selectedCity.stats?.map( (item , index) => (
             baseList[item.month - 1] = item.total
         ))
         setListToPlot(baseList);
@@ -88,7 +88,6 @@ const MyAdv = () => {
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="md">
                 <CssBaseline />
-
                 <Box sx={{ pt: 8, pb: 6 }}>
                     <Container maxWidth="sm">
                         <Typography
@@ -110,7 +109,7 @@ const MyAdv = () => {
                             color="text.primary"
                             gutterBottom
                         >
-                            Reservations per city
+                            Reservations per City
                         </Typography>
                     </Container>
                 <Container maxWidth="md">
@@ -122,7 +121,6 @@ const MyAdv = () => {
                         onChange={handleChange}
                         style={{ marginBottom: 20 + 'px' }}
                         >
-
                         {stateCities &&
                             stateCities.map((city, index) => {
                                 return <MenuItem value={city} key={index}>{city}</MenuItem>

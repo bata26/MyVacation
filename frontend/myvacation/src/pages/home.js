@@ -123,12 +123,21 @@ const Home = () => {
 										</Typography>
 									</CardContent>
 									<CardActions>
-										<Button size="small" onClick={() => {
-											navigate("/search?city=" + item.city + "&type=accommodations")
-										}}>Accommodations</Button>
-										<Button size="small" onClick={() => {
-											navigate("/search?city=" + item.city + "&type=activities")
-										}}>Activities</Button>
+										<Button size="small"
+												onClick={() => {navigate("/search?city=" + item.city + "&type=accommodations")}}
+												variant="contained"
+												color='info'
+										>
+											Accommodations
+										</Button>
+										<Button
+											size="small"
+											onClick={() => {navigate("/search?city=" + item.city + "&type=activities")}}
+											variant="contained"
+											color='info'
+										>
+											Activities
+										</Button>
 									</CardActions>
 								</Card>
 							</Grid>
@@ -180,7 +189,13 @@ const Home = () => {
 										</Typography>
 									</CardContent>
 									<CardActions>
-										<Button fullWidth onClick={() => navigate("/accommodation/" + item._id)}>View</Button>
+										<Button fullWidth
+												onClick={() => navigate("/accommodation/" + item._id)}
+												variant="contained"
+												color='info'
+										>
+											View
+										</Button>
 									</CardActions>
 								</Card>
 							</Grid>
@@ -230,7 +245,14 @@ const Home = () => {
 										</Typography>
 									</CardContent>
 									<CardActions>
-										<Button fullWidth onClick={() => navigate("/activity/" + item._id)}>View</Button>
+										<Button
+											fullWidth
+											onClick={() => navigate("/activity/" + item._id)}
+											variant="contained"
+											color='info'
+										>
+											View
+										</Button>
 									</CardActions>
 								</Card>
 							</Grid>
@@ -274,6 +296,8 @@ const Home = () => {
 									<Button
 										fullWidth
 										onClick={() => navigate("/profile/" + item.userID)}
+										variant="contained"
+										color='info'
 									>
 										View
 									</Button>
@@ -318,6 +342,8 @@ const Home = () => {
 									<Button
 										fullWidth
 										onClick={() => navigate("/accommodation/" + item.accommodationID)}
+										variant="contained"
+										color='info'
 									>
 										View
 									</Button>
@@ -361,6 +387,8 @@ const Home = () => {
 									<Button
 										fullWidth
 										onClick={() => navigate("/activity/" + item.activityID)}
+										variant="contained"
+										color='info'
 									>
 										View
 									</Button>
