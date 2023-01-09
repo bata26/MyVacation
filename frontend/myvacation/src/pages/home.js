@@ -290,8 +290,8 @@ const Home = () => {
 									<Typography gutterBottom variant="h5" component="h2">
 										{item.username}
 									</Typography>
+									<PersonIcon />
 								</CardContent>
-								<PersonIcon />
 								<CardActions>
 									<Button
 										fullWidth
