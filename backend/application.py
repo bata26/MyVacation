@@ -584,9 +584,8 @@ def getUserByID(user_id, user={}):
 def getIfCanReview(destination_id, user={}):
     destinationID = escape(destination_id)
     args = request.args
-    destinationType = args["destinationType"]
     try:
-        result = ReviewController.checkIfCanReview(str(destinationID), destinationType, user)
+        result = ReviewController.checkIfCanReview(str(destinationID), user)
         return {"result" : result} , 200
     except Exception as e:
         return str(e), 500

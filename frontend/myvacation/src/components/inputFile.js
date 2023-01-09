@@ -45,6 +45,7 @@ const FileInput = ({ label, onChange }) => {
           type="file"
           accept="image/*"
           multiple
+          required
           hidden
           id="images"
           onChange={handleChange}

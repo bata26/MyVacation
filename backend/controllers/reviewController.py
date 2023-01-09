@@ -27,8 +27,8 @@ class ReviewController:
             raise Exception(str(e))
     
     @staticmethod
-    def checkIfCanReview(destinationID, destinationType, user):
+    def checkIfCanReview(destinationID, user):
         try:
-            return ReviewManager.checkIfCanReview(str(destinationID), destinationType, user)
+            return ReviewManager.checkIfCanReview(str(destinationID), user)
         except Exception as e:
             raise Exception(str(e))

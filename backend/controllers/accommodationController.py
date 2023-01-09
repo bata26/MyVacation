@@ -82,6 +82,8 @@ class AccommodationController:
                 "city": formData["city"],
                 "country": formData["country"],
             }
+            print("Here0")
+            print(formData)
             accommodation = Accommodation(
                 formData["name"],
                 formData["description"],
@@ -97,6 +99,8 @@ class AccommodationController:
                 False,
                 pictures=pictures,
             )
+            print("H")
+    
             accommodationID = AccommodationManager.insertNewAccommodation(accommodation)
             if user["role"] != "host":
                 updatedRole = {"type": "host"}

@@ -268,21 +268,22 @@ const Profile = () => {
               fullWidth
               variant="contained"
               color='success'
-              onClick={() => { followProfile(profile._id, profile.username) }}>Follow +
+              sx={{marginBottom: 5}}
+              onClick={() => { followProfile(profile._id, profile.username) }}>Follow
             </Button>
             :
             <Button
               fullWidth
               variant="contained"
               color='error'
-              onClick={() => { unfollowProfile(profile._id, profile.username) }}>Unfollow -
+              sx={{marginBottom: 5}}
+              onClick={() => { unfollowProfile(profile._id, profile.username) }}>Unfollow
             </Button>) : <></>
         }
         {localStorage.getItem("role") === "admin" ? (
           <Button fullWidth
             variant="contained"
             color='error'
-            sx={{ mt: 2 }}
             onClick={() => { deleteProfile(profile._id) }}>Delete Profile</Button>
         ) : <></>
         }
@@ -312,7 +313,7 @@ const Profile = () => {
             </Container>
           </Box>
           <Container maxWidth="md">
-            <TableContainer component={Paper} style={{ marginBottom: 50 + 'px' }}>
+            <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }}>
               <Table sx={{ minWidth: 650 }} size="small">
                 <TableHead>
                   <TableRow>
@@ -450,7 +451,7 @@ const Profile = () => {
           {/* Tabella annunci piaciuti in comune */}
           {localStorage.getItem("userID") !== profileID ?
             <>
-              <Grid item xs={4} sm={6} alignContent={"center"}>
+              <Container maxWidth='lg'>
                 <Container maxWidth="sm">
                   <Typography
                     component="h3"
@@ -494,7 +495,7 @@ const Profile = () => {
                     </tbody>
                   </Table>
                 </TableContainer>
-              </Grid>
+              </Container>
             </> : <></>
           }
         </Grid>

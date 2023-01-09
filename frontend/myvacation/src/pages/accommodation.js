@@ -33,15 +33,18 @@ const Accommodation = () => {
 	const [endDate, setEndDate] = React.useState(searchParams.get("endDate") === "" ? null : searchParams.get("endDate"))
 	const [guests, setGuests] = React.useState(searchParams.get("guests") === "" ? null : searchParams.get("guests"))
 	const navigate = useNavigate();
+	
 
 	function getTotalLikes() {
-		api.get('/likenumber/accommodation/' + accommodationID)
-			.then(function (response) {
-				setTotLikes(response.data.likes)
-			})
-			.catch(function (error) {
-				alert("Ops, something went wrong :(" + "\n" + error);
-			});
+		if (localStorage.getItem("userID") != null) {
+			api.get('/likenumber/accommodation/' + accommodationID)
+				.then(function (response) {
+					setTotLikes(response.data.likes)
+				})
+				.catch(function (error) {
+					alert("Ops, something went wrong :(" + "\n" + error);
+				});
+		}
 	}
 
 	React.useEffect(() => {
@@ -58,14 +61,16 @@ const Accommodation = () => {
 				alert("Ops, something went wrong :(" + "\n" + error);
 			});
 
-		api.get('/users/liking/accommodation/' + accommodationID)
-			.then(function (response) {
-				setLikedAdv(response.data.liked)
-			})
-			.catch(function (error) {
-				alert("Ops, something went wrong :(" + "\n" + error);
-			});
-		getTotalLikes();
+		if (localStorage.getItem("userID") != null) {
+			api.get('/users/liking/accommodation/' + accommodationID)
+				.then(function (response) {
+					setLikedAdv(response.data.liked)
+				})
+				.catch(function (error) {
+					alert("Ops, something went wrong :(" + "\n" + error);
+				});
+			getTotalLikes();
+		}
 
 	}, []);
 
@@ -336,15 +341,6 @@ const Accommodation = () => {
 						</Grid>
 					</Grid>
 				</Container>
-
-				<Box
-					sx={{
-						py: 3,
-						px: 2,
-						mt: 'auto',
-					}}
-				>
-				</Box>
 				{accommodation.approved ? (
 					<Container maxWidth='lg'>
 						<Typography

@@ -34,13 +34,15 @@ const Activity = () => {
   const navigate = useNavigate();
 
   function getTotalLikes() {
-    api.get('/likenumber/activity/' + activityID)
-      .then(function (response) {
-        setTotLikes(response.data.likes)
-      })
-      .catch(function (error) {
-        alert("Ops, something went wrong :(" + "\n" + error);
-      });
+    if (localStorage.getItem("userID") != null) {
+      api.get('/likenumber/activity/' + activityID)
+        .then(function (response) {
+          setTotLikes(response.data.likes)
+        })
+        .catch(function (error) {
+          alert("Ops, something went wrong :(" + "\n" + error);
+        });
+    }
   }
   React.useEffect(() => {
     api.get("/activities/" + activityID)
@@ -56,16 +58,18 @@ const Activity = () => {
         alert("Ops, something went wrong :(" + "\n" + error);
       })
 
-    api.get("/users/liking/activity/" + activityID)
-      .then(function (response) {
+    if (localStorage.getItem("userID") != null) {
+      api.get("/users/liking/activity/" + activityID)
+        .then(function (response) {
 
-        setLikedAdv(response.data.liked)
+          setLikedAdv(response.data.liked)
 
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    getTotalLikes();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      getTotalLikes();
+    }
 
 
   }, []);
@@ -291,69 +295,63 @@ const Activity = () => {
             </>) : <></>
           }
         </Container>
-        <Box
-          sx={{
-            py: 3,
-            px: 2,
-            mt: 'auto',
-          }}
-        >
-        </Box>
-        {activity.approved ?
-          (<>
-            <ReviewForm destinationID={activity._id} destinationType={"activity"} />
-            <Container maxWidth='lg'>
-              <Typography
-                component="h2"
-                variant="h4"
-                align="center"
-                color="text.primary"
-                gutterBottom
-                sx={{ mt: 2 }}
-              >
-                Reviews
-              </Typography>
-              <Grid
-                sx={{ overflowY: "scroll", maxHeight: "1460px" }}
-              >
-                {reviews && reviews.map((item) => (
-                  <Card key={item._id} sx={{ maxHeight: 180, marginTop: 2 }}>
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {item.reviewer} - {item.score}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {item.description}
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      {localStorage.getItem("userID") && (localStorage.getItem("userID") === item.userID || localStorage.getItem("role") === "admin") ?
-                        <Button color='error' onClick={() => { deleteReview(item._id) }}>
-                          Delete
-                        </Button> : <></>
-                      }
-                      {localStorage.getItem("userID") ?
-                        <Button color='info' onClick={() => navigate("/profile/" + item.userID)}>
-                          View Profile
-                        </Button> : <></>
-                      }
-                    </CardActions>
-                  </Card>
-                ))}
-              </Grid>
-              {enableButton ?
-                <Container maxWidth='sm'>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 2 }}
-                    onClick={() => { getAllReviews() }}
-                  >
-                    More reviews
-                  </Button>
-                </Container> : <></>}
-            </Container>
-          </>) : <></>}
+        <Container maxWidth='lg'>
+          {activity.approved ?
+            (<>
+              <ReviewForm destinationID={activity._id} destinationType={"activity"} />
+              <Container maxWidth='lg'>
+                <Typography
+                  component="h2"
+                  variant="h4"
+                  align="center"
+                  color="text.primary"
+                  gutterBottom
+                  sx={{ mt: 2 }}
+                >
+                  Reviews
+                </Typography>
+                <Grid
+                  sx={{ overflowY: "scroll", maxHeight: "1460px" }}
+                >
+                  {reviews && reviews.map((item) => (
+                    <Card key={item._id} sx={{ maxHeight: 180, marginTop: 2 }}>
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {item.reviewer} - {item.score}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {item.description}
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        {localStorage.getItem("userID") && (localStorage.getItem("userID") === item.userID || localStorage.getItem("role") === "admin") ?
+                          <Button color='error' onClick={() => { deleteReview(item._id) }}>
+                            Delete
+                          </Button> : <></>
+                        }
+                        {localStorage.getItem("userID") ?
+                          <Button color='info' onClick={() => navigate("/profile/" + item.userID)}>
+                            View Profile
+                          </Button> : <></>
+                        }
+                      </CardActions>
+                    </Card>
+                  ))}
+                </Grid>
+                {enableButton ?
+                  <Container maxWidth='sm'>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      sx={{ mt: 2 }}
+                      onClick={() => { getAllReviews() }}
+                    >
+                      More reviews
+                    </Button>
+                  </Container> : <></>}
+              </Container>
+            </>) : <></>}
+        </Container>
         <Box
           sx={{
             py: 3,

@@ -7,18 +7,6 @@ import Rating from '@mui/material/Rating';
 import TextField from '@mui/material/TextField';
 import api from "../utility/api";
 
-
-//export default function HalfRating() {
-//  return (
-//    <Stack spacing={1}>
-//      <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
-//      <Rating name="half-rating-read" defaultValue={2.5} precision={0.5} readOnly />
-//    </Stack>
-//  );
-//}
-
-
-
 const style = {
   position: 'absolute',
   top: '50%',
@@ -32,15 +20,15 @@ const style = {
 };
 
 
-const ReviewForm = ({destinationID , destinationType}) => {
+const ReviewForm = ({destinationID}) => {
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = async () => {
 
-    await api.get("/review/check/"+destinationID+"?destinationType="+destinationType).then(function(response){
+    await api.get("/review/check/"+destinationID).then(function(response){
       if(response.data.result === true){
         setOpen(true);
-      }else{
+      } else{
         alert("Error: " +
             "you can review only a booked advertisement; " +
             "you can review only once");
@@ -58,7 +46,7 @@ const ReviewForm = ({destinationID , destinationType}) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const review = {
-      "destinationType" : destinationType,
+      //"destinationType" : destinationType,
       "destinationID" : destinationID,
       "score" : data.get("rating"),
       "description" : data.get("description"),
