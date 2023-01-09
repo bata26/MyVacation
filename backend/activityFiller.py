@@ -35,7 +35,7 @@ prices = [10 , 15 , 25 , 32 , 50 , 80 , 100]
 durations = [1 , 2 , 4 , 3.5 , 6]
 hostList = []
 cityList = []
-imgPath = "utility/testImg/art.jpg"
+imgPath = "utility/testImg/museum.jpg"
 
 def getHostList():
     client = MongoManager.getInstance()
@@ -84,8 +84,7 @@ def generateRandomActivity():
         },
         "description" : activity["description"],
         "picture" : base64Picture,
-        "category" : activity["type"],
-        "reservations" : [],
+        "name" : activity["type"],
         "duration" : duration , 
         "price" : price,
         "number_of_reviews" : random.randint(0 , 20),
@@ -118,7 +117,14 @@ DESC = 4
 ADDRESS = 5
 counter = 0
 
-activities = []
+client = MongoManager.getInstance()
+db = client["myvacation"]
+collection = db["activities"]
+
+img = encodeBase64Image(imgPath)
+collection.update_many({} , {"$set" : {"mainPicture" : img}})
+
+"""
 for row in dataframe.iterrows():
     if counter == 1200:
         break
@@ -151,5 +157,5 @@ collection.insert_many(activities)
 
 
 #print(f"post inserimento : {res}")
-
+"""
     

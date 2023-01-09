@@ -90,8 +90,8 @@ class Serializer:
                 "destinationType" : reservation['destinationType'],
                 "_id" : str(reservation['_id'])
             }
-            if reservation["endDate"]:
-                tmpReservation['endDate'] = reservation['endDate']
+            if reservation["destinationType"] == "accommodation":
+                tmpReservation["endDate"] = reservation["endDate"]
             serializedReservations.append(tmpReservation)
         return {
             "_id" : str(user._id),

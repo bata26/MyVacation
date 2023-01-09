@@ -1,4 +1,4 @@
-from controllers.connection import MongoManager
+from utility.connection import MongoManager
 import pandas as pd
 from random import randint
 
@@ -23,7 +23,7 @@ for user in usersList:
     # follower setup
     for i in range(3):
         randomUser = usersList[randint(0 , len(usersList) - 1)]
-        if str(randomUser["_id"]) == str(user["_id"]):
+        if str(randomUser["_id"]) == str(user["_id"] or randomUser["username"] == "unregistered" or randomUser["username"] == "admin"):
             i = i-1
         else:
             obj = {

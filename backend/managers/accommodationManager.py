@@ -16,9 +16,7 @@ class AccommodationManager:
         collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
 
         try:
-            collection.update_one(
-                {"_id": ObjectId(accommodationID)}, {"$set": accommodation}
-            )
+            collection.update_one({"_id": ObjectId(accommodationID)}, {"$set": accommodation})
         except Exception as e:
             raise Exception("Impossibile aggiornare: " + str(e))
 
