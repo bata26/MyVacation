@@ -207,7 +207,7 @@ const AdminPage = () => {
 									color="text.primary"
 									gutterBottom
 								>
-									Average Activities prices
+									Average Activities <br></br> prices
 								</Typography>
 							</Container>
 							<TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }} >

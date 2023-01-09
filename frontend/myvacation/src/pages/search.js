@@ -28,8 +28,8 @@ const Search = () => {
   const [search, setSearch] = React.useState(null);
   const [startDate, setStartDate] = React.useState(null);
   const [endDate, setEndDate] = React.useState(null);
-  const [city, setCity] = React.useState(searchParams.get("city") ? searchParams.get("city") : null);
-  const [guests, setGuests] = React.useState(null);
+  const [city, setCity] = React.useState(searchParams.get("city") ? searchParams.get("city") : "");
+  const [guests, setGuests] = React.useState("");
   const [type, setType] = React.useState(searchParams.get("type") ? searchParams.get("type") : "accommodations");
   const [setter, setSetter] = React.useState("accommodation");
   const today = new Date();
@@ -71,8 +71,8 @@ const Search = () => {
 
     api.get("/" + type + url)
       .then(function (response) {
+        setSearch(response.data);
         if (response && response.data.length > 0) {
-          setSearch(response.data);
           setFirst_id(response.data[0]._id);
           setLast_id(response.data[response.data.length - 1]._id);
           setLastPage(false)

@@ -23,18 +23,20 @@ export default function UsersList() {
     const [page, setPage] = React.useState(1);
     const navigate = useNavigate();
     const [userList, setUserList] = React.useState(null);
-    const [name, setName] = React.useState(null);
-    const [surname, setSurname] = React.useState(null);
-    const [username, setUsername] = React.useState(null);
+    const [name, setName] = React.useState("");
+    const [surname, setSurname] = React.useState("");
+    const [username, setUsername] = React.useState("");
     const [lastPage, setLastPage] = React.useState(null);
 
 
     React.useEffect(() => {
         api.get("/users?index=")
             .then(function (response) {
-                setUserList(response.data);
-                setLast_id(response.data[response.data.length - 1]._id);
-                setFirst_id(response.data[0]._id);
+                if (response && response.data.length > 0) {
+                    setUserList(response.data);
+                    setLast_id(response.data[response.data.length - 1]._id);
+                    setFirst_id(response.data[0]._id);
+                }
                 if (response.data.length === parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE))
                     setLastPage(false)
             })
@@ -58,8 +60,8 @@ export default function UsersList() {
 
         api.get("/users" + url)
             .then(function (response) {
+                setUserList(response.data);
                 if (response && response.data.length > 0) {
-                    setUserList(response.data);
                     setLast_id(response.data[response.data.length - 1]._id);
                     setFirst_id(response.data[0]._id);
                     setLastPage(false)

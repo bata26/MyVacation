@@ -25,12 +25,13 @@ export default function ToBeApprovedList({ destinationType }) {
     React.useEffect(() => {
         api.get("/admin/announcements/" + destinationType + "?index=&direction=")
             .then(function (response) {
-                setToBeApprovedList(response.data);
-                setLast_id(response.data[response.data.length - 1]._id);
-                setFirst_id(response.data[0]._id);
+                if(response && response.data.length > 0) {
+                    setToBeApprovedList(response.data);
+                    setLast_id(response.data[response.data.length - 1]._id);
+                    setFirst_id(response.data[0]._id);
+                }
                 if (response.data.length === parseInt(process.env.REACT_APP_ADMIN_PAGE_SIZE))
                     setLastPage(false)
-
             })
             .catch(function (error) {
                 alert("Ops, something went wrong :(" + "\n" + error);
@@ -104,7 +105,7 @@ export default function ToBeApprovedList({ destinationType }) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {toBeApprovedList && toBeApprovedList.map((row) => (
+                    {toBeApprovedList && true && toBeApprovedList.map((row) => (
                         <TableRow key={row._id}>
                             <TableCell align='left' component="th" scope="row">
                                 <Link style={{ cursor: "pointer" }} onClick={() => { navigate("/toApprove/" + row._id + "?type=" + destinationType) }}>

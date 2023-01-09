@@ -21,7 +21,7 @@ class AccommodationController:
             raise Exception(str(e))
     
     @staticmethod
-    def deleteAccommodationById(accommodationID , user):
+    def deleteAccommodationById(accommodationID, user):
         try:
             deleteResult = AccommodationManager.deleteAccommodation(accommodationID, user)
         except Exception as e:
@@ -32,6 +32,7 @@ class AccommodationController:
                 AccommodationNodeManager.deleteAccommodationNode(accommodationID)
                 return True
         except Exception as e:
+            print(str(e))
             return False
     
     @staticmethod
