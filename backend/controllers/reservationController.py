@@ -1,6 +1,7 @@
 from managers.reservationManager import ReservationManager
 import dateparser
 from models.reservation import Reservation
+from datetime import date
 
 class ReservationController:
 
@@ -13,6 +14,12 @@ class ReservationController:
         totalExpense = nightNumber * int(accommodation["price"])
         city = accommodation["city"]
         hostID = accommodation["hostID"]
+
+        if startDatetime.date() < date.today():
+            raise Exception("Impossibile prenotare")
+        if endDatetime < startDatetime:
+            raise Exception("Impossibile prenotare")
+
         reservation = Reservation(
             user["_id"],
             accommodation["_id"],
@@ -35,6 +42,10 @@ class ReservationController:
         startDate = dateparser.parse(requestBody["startDate"])
         city = activity["city"]
         hostID = activity["hostID"]
+
+        if startDate.date() < date.today():
+            raise Exception("Impossibile prenotare")
+
         reservation = Reservation(
             user["_id"],
             activity["_id"],
@@ -44,6 +55,7 @@ class ReservationController:
             city,
             hostID,
         )
+        
         try:
             ReservationManager.book(reservation)
         except Exception as e:

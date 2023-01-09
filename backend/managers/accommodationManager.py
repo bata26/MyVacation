@@ -141,6 +141,7 @@ class AccommodationManager:
         db = client[os.getenv("DB_NAME")]
         occupiedAccommodationsID = []
         result = []
+        dateSetted = False
 
         if city != "" and city is not None:
             query["location.city"] = city
@@ -149,12 +150,20 @@ class AccommodationManager:
             query["guests"]["$gte"] = int(guestNumbers)
 
         if ( start_date != "" and end_date != "" and end_date is not None and start_date is not None):
+            dateSetted = True
             # ottengo una lista di id di accommodations non occupate
             # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
             occupiedAccommodationsID = AccommodationManager.getOccupiedAccommodationIDs(start_date, end_date)
-            query["_id"] = {}
-            query["_id"]["$nin"] = occupiedAccommodationsID
-        
+            
+
+            # nella paginazione dobbiamo implementare un and
+            if(index != ""):
+                query["$and"] = [{} , {}]
+                query["$and"][0] = {"_id" : {"$nin" : occupiedAccommodationsID}}
+            else:
+                query["_id"] = {}
+                query["_id"]["$nin"] = occupiedAccommodationsID
+
         projection = {"pictures": 0, "reservations": 0, "reviews": 0}
         query["approved"] = True
         collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
@@ -169,19 +178,30 @@ class AccommodationManager:
             )
         else:
             if direction == "next":
-                query["_id"]["$gt"] = ObjectId(index)
+                if not(dateSetted):
+                    query["_id"] = {}
+                    query["_id"]["$gt"] = ObjectId(index)
+                else:
+                    query["$and"][1] = {"_id" : {"$gt" : ObjectId(index)}}
+
                 accommodations = list(
                     collection.find(query, projection)
                     .sort("_id", 1)
                     .limit(int(os.getenv("PAGE_SIZE")))
                 )
             elif direction == "previous":
-                query["_id"]["$lt"] = ObjectId(index)
+                if not(dateSetted):
+                    query["_id"] = {}
+                    query["_id"]["$lt"] = ObjectId(index)
+                else:
+                    query["$and"][1] = {"_id" : {"$lt" : ObjectId(index)}}
+
                 accommodations = list(
                     collection.find(query, projection)
                     .sort("_id", -1)
                     .limit(int(os.getenv("PAGE_SIZE")))
                 )
+        print(query)
         for accommodation in accommodations:
             accommodationResult = Accommodation(
                 accommodation["name"],
