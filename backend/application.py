@@ -568,7 +568,6 @@ def deleteUserById(user_id, user={}):
 def getUserByID(user_id, user={}):
     userID = escape(user_id)
     try:
-        print(UserController.getUserByID(userID))
         return UserController.getUserByID(userID) , 200
     except Exception as e:
         return str(e), 500
