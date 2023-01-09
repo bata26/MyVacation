@@ -25,16 +25,15 @@ class AccommodationNodeManager:
                 "Impossibile inserire il nodo accommodation: " + str(e))
 
     @staticmethod
-    def deleteAccommodationNode(accommodationNode):
+    def deleteAccommodationNode(accommodationNodeID):
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH (a:Accommodation {accommodationID: '%s'}) DELETE a" % accommodationNode.accommodationID
+                query = "MATCH (a:Accommodation {accommodationID: '%s'}) DELETE a" %accommodationNodeID
                 session.run(query)
 
         except Exception as e:
-            raise Exception(
-                "Impossibile eliminare il nodo accommodation: " + str(e))
+            raise Exception("Impossibile eliminare il nodo accommodation: " + str(e))
 
     @staticmethod
     def updateAccommodationNode(accommodationNode):

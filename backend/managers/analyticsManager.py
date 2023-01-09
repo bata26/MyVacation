@@ -5,6 +5,8 @@ from models.accommodation import Accommodation
 from models.activity import Activity
 from bson.objectid import ObjectId
 from utility.serializer import Serializer
+from managers.accommodationManager import AccommodationManager
+from managers.activityManager import ActivityManager
 
 
 class AnalyticsManager:
@@ -150,8 +152,9 @@ class AnalyticsManager:
         try:
             serializedAccommodations = []
             serializedActivities = []
+            approvedAccommodations = AccommodationManager.getApprovedAccommodationsID()
             accommodationsResult = list(collection.aggregate([
-                {"$match": {"destinationType": "accommodation"}},
+                {"$match": {"destinationType": "accommodation" , "destinationID" : {"$in" : approvedAccommodations}}},
                 {"$group": {"_id": "$destinationID", "count": {"$sum": 1}}},
                 {"$sort": {"count": -1, "_id": 1}},
                 {"$limit": 3},
@@ -163,8 +166,9 @@ class AnalyticsManager:
                 accommodation["_id"] = stringId
                 serializedAccommodations.append(accommodation)
 
+            aprovedActivities = ActivityManager.getApprovedActivitiesID()
             activitiesResult = list(collection.aggregate([
-                {"$match": {"destinationType": "activity"}},
+                {"$match": {"destinationType": "activity" , "destinationID" : {"$in" : aprovedActivities}}},
                 {"$group": {"_id": "$destinationID", "count": {"$sum": 1}}},
                 {"$sort": {"count": -1, "_id": 1}},
                 {"$limit": 3},

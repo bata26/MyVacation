@@ -10,6 +10,17 @@ from models.review import Review
 
 class AccommodationManager:
     @staticmethod
+    def getApprovedAccommodationsID():
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
+
+        try:
+            return collection.distinct("_id" , {"approved" : True})
+        except Exception as e:
+            raise Exception("Impossibile aggiornare: " + str(e))
+
+    @staticmethod
     def updateAccommodation(accommodationID, accommodation, user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]

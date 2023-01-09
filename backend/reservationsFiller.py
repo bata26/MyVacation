@@ -77,13 +77,12 @@ for i in range(0 , 1200):
     print(reservation)
     reservationList.append(reservation)
 
-#print("Inserisco nel db")
+
 try:
     with client.start_session() as session:
         with session.start_transaction():
             reservationCollection.insert_many(reservationList , session=session)
-            print("inserite tutte")
-            #insertedReservations = list(reservationCollection.find(session=session))
+            
             
             for reservation in reservationList:
                 userID = str(reservation["userID"])

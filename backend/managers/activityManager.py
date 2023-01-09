@@ -8,6 +8,17 @@ import dateparser
 class ActivityManager:
 
     @staticmethod
+    def getApprovedActivitiesID():
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+
+        try:
+            return collection.distinct("_id" , {"approved" : True})
+        except Exception as e:
+            raise Exception("Impossibile aggiornare: " + str(e))
+
+    @staticmethod
     def updateActivity(activityID, activity,  user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
