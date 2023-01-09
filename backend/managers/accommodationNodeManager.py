@@ -66,7 +66,7 @@ class AccommodationNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH(u1: User {userID: '%s' })-[:LIKE]->(a: Accommodation)<-[:LIKE]-(u2: User {userID: '%s' }) return a" % (
+                query = "MATCH(u1: User {userID: '%s' })-[:LIKE]->(a: Accommodation)<-[:LIKE]-(u2: User {userID: '%s' }) WHERE a.approved=True return a" % (
                     firstUserNode.userID, secondUserID)
                 queryResult = list(session.run(query))
                 result = []

@@ -96,9 +96,11 @@ class UserNodeManager:
             with client.session() as session:
                 if (destinationType == "accommodation"):
                     query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Accommodation) " \
+                            "WHERE liked.approved = True" \
                             "return liked" % userNodeID
                 else:
                     query = "MATCH(u:User {userID: '%s' })-[:LIKE]->(liked: Activity) " \
+                            "WHERE liked.approved = True" \
                             "return liked" % userNodeID
 
                 queryResult = list(session.run(query))
@@ -141,6 +143,7 @@ class UserNodeManager:
                                 "MATCH (u2)-[:LIKE]->(a:Accommodation) " \
                                 "MATCH (u3:User)-[r:LIKE]->(a)  " \
                                 "WHERE NOT (u)-[:LIKE]->(a)  " \
+                                "AND a.approved=True "\
                                 "return a , " \
                                 "COUNT(r) as liked " \
                                 "ORDER BY liked DESC " \
@@ -160,6 +163,7 @@ class UserNodeManager:
                                 "MATCH (u2)-[:LIKE]->(a:Activity) " \
                                 "MATCH (u3:User)-[r:LIKE]->(a)  " \
                                 "WHERE NOT (u)-[:LIKE]->(a)  " \
+                                "AND a.approved=True "\
                                 "return a , " \
                                 "COUNT(r) as liked " \
                                 "ORDER BY liked DESC " \
