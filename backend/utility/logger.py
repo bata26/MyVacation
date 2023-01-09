@@ -28,7 +28,6 @@ class Logger:
         logging.getLogger('werkzeug').propagate = False
         logging.getLogger('root').propagate = False
         Logger.__instance = logging.getLogger(name)
-        Logger.__instance.info("[")
         
 
     @staticmethod
@@ -37,11 +36,11 @@ class Logger:
         logger.info(msg + ",")
 
     @staticmethod
-    def addNodeToFile(type , id , operation="" , username = ""):
+    def addNodeToFile(type , id , operation="" , name = ""):
         logger = Logger.getInstance()
-        messageDict = {"type" : type ,"_id" : id , "operation" : operation , "username" : username}
+        messageDict = {"type" : type ,"_id" : id , "operation" : operation , "name" : name}
         msg = json.dumps(messageDict)
-        logger.info(msg + ",")
+        logger.info(msg)
     
     @staticmethod
     def logWorkerError(msg):

@@ -130,7 +130,8 @@ class UserNodeManager:
                     if totalFollowed == 0:
                         query = "MATCH (u:User)-[r:LIKE]->(a:Accommodation) " \
                                 "MATCH (u2:User {userID: '%s'})  " \
-                                "WHERE NOT (u2)-[:LIKE]->(a)  " \
+                                "WHERE NOT (u2)-[:LIKE]->(a)  "\
+                                "AND a.approved=True" \
                                 "return a , " \
                                 "COUNT(r) as liked " \
                                 "ORDER BY liked DESC " \
@@ -148,7 +149,9 @@ class UserNodeManager:
                     if totalFollowed == 0:
                         query = "MATCH (u:User)-[r:LIKE]->(a:Activity) " \
                                 "MATCH (u2:User {userID: '%s'})  " \
-                                "WHERE NOT (u2)-[:LIKE]->(a)  return a , " \
+                                "WHERE NOT (u2)-[:LIKE]->(a) " \
+                                "AND a.approved=True "\
+                                "return a , " \
                                 "COUNT(r) as liked " \
                                 "ORDER BY liked DESC " \
                                 "LIMIT 3" % userNode.userID

@@ -248,20 +248,24 @@ class AccommodationManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
+        reservationCollection = db[os.getenv("RESERVATIONS_COLLECTION")]
+        userCollection = db[os.getenv("USERS_COLLECTION")]
+        reviewCollection = db[os.getenv("REVIEW_COLLECTION")]
 
         try:
-            cursor = dict(
-                collection.find_one(
-                    {"_id": ObjectId(accommodationID)}, {"_id": 1, "hostID": 1}
-                )
-            )
+            cursor = dict(collection.find_one({"_id": ObjectId(accommodationID)}, {"_id": 1, "hostID": 1}))
         except Exception as e:
             raise (str(e))
         if str(cursor["hostID"]) != user["_id"] and user["role"] != "admin":
             raise Exception("L'utente non possiede l'accommodations")
         else:
             try:
-                collection.delete_one({"_id": ObjectId(accommodationID)})
+                with client.start_session() as session:
+                    with session.start_transaction():
+                        collection.delete_one({"_id": ObjectId(accommodationID)}, session=session)
+                        reservationCollection.delete_many({"destinationID" : ObjectId(accommodationID)}, session=session)
+                        userCollection.update_many({"_id" : ObjectId(user["_id"])} , {"$pull" : {"reservations.destinationID" : ObjectId(accommodationID)}}, session=session)
+                        reviewCollection.delete_many({"destinationID" : ObjectId(accommodationID)}, session=session)
                 return True
             except Exception:
                 raise Exception("Impossibile eliminare")

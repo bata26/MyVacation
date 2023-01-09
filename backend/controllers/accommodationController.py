@@ -43,7 +43,8 @@ class AccommodationController:
         try:
             accomodationNode = AccommodationNode(
                 accommodationID,
-                formData["name"]
+                formData["name"],
+                formData["approve"]
             )
             AccommodationNodeManager.updateAccommodationNode(accomodationNode)
             return True
@@ -96,7 +97,6 @@ class AccommodationController:
                 pictures=pictures,
             )
             accommodationID = AccommodationManager.insertNewAccommodation(accommodation)
-            print(accommodationID)
             if user["role"] != "host":
                 updatedRole = {"type": "host"}
                 UserManager.updateUser(updatedRole, host["_id"])
@@ -125,6 +125,11 @@ class AccommodationController:
             AccommodationManager.deleteAccommodation(accommodationID, user)
         except Exception as e:
             return str(e), 200
+        try:
+            AccommodationNodeManager.deleteAccommodationNode(accommodationID)
+            return True
+        except Exception as e:
+            return False
     
     @staticmethod
     def getAccommodationsByUserID(userID):

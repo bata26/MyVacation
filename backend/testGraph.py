@@ -4,7 +4,13 @@ from utility.graphConnection import GraphManager
 client = GraphManager.getInstance()
 
 #print(client)
+condition = True
+id = "ciao"
+with client.session() as session:
 
+    query = "MATCH (a:Accommodation {accommodationID : '%s'}) SET a.approved = %s " %(id , condition)
+    session.run(query)
+"""
 with client.session() as session:
     # get accommodation suggerite(HOME RECOMMENDATIONS)
     # get activity suggerite(HOME RECOMMENDATIONS)
@@ -140,7 +146,7 @@ with client.session() as session:
     #print("========================")
 
 
-"""
+
     ## test città
     city = "Milano"
     hostID="637ce1a04ed62608566c5fa7"

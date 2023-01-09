@@ -40,8 +40,8 @@ class ActivityNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH (a:Activity {activityID: '%s'}) SET a.name='%s'" % (
-                    activityNode.activityID, activityNode.name)
+                query = "MATCH (a:Activity {activityID: '%s'}) SET a.name='%s' , a.approved = %s" % (
+                    activityNode.activityID, activityNode.name , activityNode.approved)
                 session.run(query)
 
         except Exception as e:

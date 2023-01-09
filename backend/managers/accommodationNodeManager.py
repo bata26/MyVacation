@@ -16,7 +16,7 @@ class AccommodationNodeManager:
                     query = "CREATE (a:Accommodation {accommodationID: '%s', name: '%s'})" % (
                         accommodationNode.accommodationID, accommodationNode.name)
                     session.run(query)
-                
+                # il nodo esiste, poteri doverlo modificarlo                
                 else:
                     AccommodationNodeManager.updateAccommodationNode(accommodationNode)
 
@@ -40,8 +40,8 @@ class AccommodationNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                query = "MATCH (a:Accommodation {accommodationID: '%s'}) SET a.name='%s'" % (
-                    accommodationNode.accommodationID, accommodationNode.name)
+                query = "MATCH (a:Accommodation {accommodationID: '%s'}) SET a.name='%s' , a.approved = %s" % (
+                    accommodationNode.accommodationID, accommodationNode.name , accommodationNode.approved)
                 session.run(query)
 
         except Exception as e:

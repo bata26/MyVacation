@@ -1,7 +1,6 @@
 import pymongo
 import os
 from dotenv import load_dotenv
-from socket import socket
 
 
 load_dotenv()

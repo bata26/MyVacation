@@ -17,10 +17,10 @@ class AdminController:
             # se l'approvazione è andata bene provo a creare il nodo accommodation
             try:
                 if destinationType == "accommodation":
-                    accommodationNode = AccommodationNode(announcementID, destinationName)
+                    accommodationNode = AccommodationNode(announcementID, destinationName , approved=True)
                     AccommodationNodeManager.createAccommodationNode(accommodationNode)
                 else:
-                    activityNode = ActivityNode(announcementID, destinationName)
+                    activityNode = ActivityNode(announcementID, destinationName , approved=True)
                     ActivityNodeManager.createActivityNode(activityNode)
             except Exception as e:
                 # eseguo il rollback se non riesco a creare il nodo

@@ -15,7 +15,7 @@ from functools import wraps
 import re
 import json
 import dateparser
-from utility.worker import startup
+from worker import startup
 from utility.logger import Logger
 from datetime import datetime
 from datetime import date
@@ -52,7 +52,6 @@ def required_token(f):
 def testValidation(user={}):
     activityID = "325342tfwregregf"
     nodeToDelete = {"type": "activity", "_id": activityID}
-    Logger.writeOnFile(json.dumps(nodeToDelete))
     return "", 200
 
 
@@ -149,7 +148,7 @@ def deleteActivityByID(activity_id, user={}):
     try:
         deleteResult = ActivityController.deleteActivityById(activityID, user)
         if(not(deleteResult)):
-            Logger.addNodeToFile("activity", activityID)
+            Logger.addNodeToFile("activity", activityID , "DELETE")
             return str(e), 500
     except Exception as e:
         return str(e), 500
@@ -190,8 +189,9 @@ def deleteAccommodationById(accommodation_id, user={}):
     try:
         deleteResult = AccommodationController.deleteAccommodationById(accommodationID, user)
         if(not(deleteResult)):
-            Logger.addNodeToFile("accommodation", accommodationID)
-            return str(e), 500
+            Logger.addNodeToFile("accommodation", accommodationID , "DELETE")
+            return "Da aggiornare il nodo" , 500    
+        return "OK" , 200
     except Exception as e:
         return str(e), 500
 
@@ -207,7 +207,10 @@ def editAccommodationById(accommodationID, user={}):
     formData["guests"] = formData["guests"]
     formData["approved"] = False
     try:
-        AccommodationController.updateAccommodation(accommodationID, formData, user)
+        updateResult = AccommodationController.updateAccommodation(accommodationID, formData, user)
+        if(not(updateResult)):
+            Logger.addNodeToFile("accommodation" , accommodationID , "UPDATE" , formData["name"])
+            return "Da aggiornare il nodo" , 500
         return "", 200
     except Exception as e:
         return str(e), 500
@@ -226,7 +229,10 @@ def editActivityById(activityID, user={}):
     formData.pop("country")
     formData["approved"] = False
     try:
-        ActivityController.updateActivity(activityID, formData, user)
+        updateResult = ActivityController.updateActivity(activityID, formData, user)
+        if(not(updateResult)):
+            Logger.addNodeToFile("activity" , activityID , "UPDATE" , formData["name"])
+            return "Da aggiornare il nodo" , 500
         return "", 200
     except Exception as e:
         return str(e), 500
@@ -676,10 +682,13 @@ def refuseAnnouncement(destination_type, announcementID, user={}):
     if not (validateObjecID(announcementID)):
         return "Announcement non valido", 500
     try:
+
         if escape(destination_type) == "accommodation":
-            AccommodationController.refuseAccommodation(announcementID, user)
+            result = AccommodationController.refuseAccommodation(announcementID, user)
         elif escape(destination_type) == "activity":
-            ActivityController.refuseActivity(announcementID, user)
+            result = ActivityController.refuseActivity(announcementID, user)
+        if not(result):
+            Logger.addNodeToFile(escape(destination_type) , announcementID , "DELETE")
         return "OK", 200
     except Exception as e:
         return str(e), 500

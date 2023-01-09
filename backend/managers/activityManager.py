@@ -98,6 +98,10 @@ class ActivityManager:
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        reservationCollection = db[os.getenv("RESERVATIONS_COLLECTION")]
+        userCollection = db[os.getenv("USERS_COLLECTION")]
+        reviewCollection = db[os.getenv("REVIEW_COLLECTION")]
+
         try:
             activity = dict(collection.find_one({"_id": ObjectId(activityID)}, {"_id": 1, "hostID": 1}))
         except Exception as e:
@@ -107,7 +111,12 @@ class ActivityManager:
             raise Exception("L'utente non possiede l'activity")
         else:
             try:
-                collection.delete_one({"_id": ObjectId(activityID)})
+                with client.start_session() as session:
+                    with session.start_transaction():
+                        collection.delete_one({"_id": ObjectId(activityID)} , session=session)
+                        reservationCollection.delete_many({"destinationID" : ObjectId(activityID)} , session=session)
+                        userCollection.update_many({"_id" : ObjectId(user["_id"])} , {"$pull" : {"reservations.destinationID" : ObjectId(activityID)}} , session=session)
+                        reviewCollection.delete_many({"destinationID" : ObjectId(activityID)}, session=session)
                 return True
             except Exception:
                 raise Exception("Impossibile eliminare")

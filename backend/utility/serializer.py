@@ -1,4 +1,4 @@
-from bson.objectid import ObjectId
+
 class Serializer:
 
     @staticmethod
@@ -127,14 +127,16 @@ class Serializer:
     def serializeAccommodationNode(accommodationNode):
         return {
             "accommodationID" : accommodationNode.accommodationID,
-            "name" : accommodationNode.name,
+            "name" : accommodationNode.name,            
+            "approved" : accommodationNode.approved,
         }
 
     @staticmethod
     def serializeActivityNode(activityNode):
         return {
             "activityID" : activityNode.activityID,
-            "name" : activityNode.name,
+            "name" : activityNode.name,            
+            "approved" : activityNode.approved,
         }
     
     @staticmethod

@@ -22,14 +22,13 @@ class ActivityController:
     @staticmethod
     def deleteActivityById(activityID , user):
         try:
-            deleteResult = ActivityManager.ActivityManager.deleteActivity(activityID, user)
+            ActivityManager.deleteActivity(activityID, user)
         except Exception as e:
             raise Exception(str(e))
         # provo ad eliminare il nodo
         try:
-            if deleteResult:
-                ActivityNodeManager.deleteActivityNode(activityID)
-                return True
+            ActivityNodeManager.deleteActivityNode(activityID)
+            return True
         except Exception as e:
             return False
     
@@ -40,11 +39,12 @@ class ActivityController:
         except Exception as e:
             raise Exception(str(e))
         try:
-            activtyNode = ActivityNode(
+            activityNode = ActivityNode(
                 activityID,
-                formData["name"]
+                formData["name"],
+                formData["approved"]
             )
-            ActivityNodeManager.updateAccommodationNode(activtyNode)
+            ActivityNodeManager.updateActivityNode(activityNode)
             return True
         except Exception as e:
             return False
@@ -114,6 +114,12 @@ class ActivityController:
             ActivityManager.deleteActivity(activityID, user)
         except Exception as e:
             return str(e), 200
+         # provo ad eliminare il nodo
+        try:
+            ActivityNodeManager.deleteActivityNode(activityID)
+            return True
+        except Exception as e:
+            return False
     
 
     @staticmethod
