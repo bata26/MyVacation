@@ -19,7 +19,7 @@ from worker import startup
 from utility.logger import Logger
 from datetime import datetime
 from datetime import date
-
+from flask import jsonify
 load_dotenv()
 application = Flask(__name__)
 cors = CORS(application, supports_credentials=True, origins=["*", "http://127.0.0.1:3000"])
@@ -58,7 +58,7 @@ def testValidation(user={}):
 @application.route("/analytics/topcities", methods=["GET"])
 def getBestCities():
     try:
-        return AnalyticsController.getBestCities() , 200
+        return jsonify(AnalyticsController.getBestCities()) , 200
     except Exception as e:
         return str(e), 500
 
@@ -67,7 +67,7 @@ def getBestCities():
 # @required_token
 def getBestAdv():
     try:
-        return AnalyticsController.getTopAdv()
+        return jsonify(AnalyticsController.getTopAdv()) , 200
     except Exception as e:
         return str(e), 500
 
@@ -382,7 +382,7 @@ def getTotalLikes(destination_type, destination_id, user={}):
 @required_token
 def getRecommendedUsers(user={}):
     try:
-        return UserController.getRecommendedUsers(user) , 200
+        return jsonify(UserController.getRecommendedUsers(user)) , 200
     except Exception as e:
         return str(e), 500
 
