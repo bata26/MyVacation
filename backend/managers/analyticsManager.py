@@ -105,7 +105,9 @@ class AnalyticsManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         try:
+            approvedAccommodations = AccommodationManager.getApprovedAccommodationsID()
             result = list(collection.aggregate([
+                {"$match" :  {"destinationID" : {"$in" : approvedAccommodations}}},
                 {"$group":
                  {
                      "_id": "$location.city",
@@ -127,7 +129,9 @@ class AnalyticsManager:
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
         try:
+            aprovedActivities = ActivityManager.getApprovedActivitiesID()
             result = list(collection.aggregate([
+                {"$match" :  {"destinationID" : {"$in" : aprovedActivities}}},
                 {"$group":
                  {
                      "_id": "$location.city",
