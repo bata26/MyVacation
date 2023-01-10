@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import config from '../utility/config';
+import Moment from 'moment';
 
 const theme = createTheme();
 
@@ -31,9 +32,19 @@ const MyAdv = () => {
     const [stateCities, setStateCities] = React.useState([]);
     const [city, setCity] = React.useState([]);
     const [listToPlot, setListToPlot] = React.useState([]);
-
+    const [reservations, setReservations] = React.useState([]);
 
     React.useEffect(() => {
+        //Richiesta per recuperare le reservations degli annunci dell'utente
+        api.get("/reservationsHost/" + profileID)
+            .then(function (response) {
+                setReservations(response.data);
+            })
+            .catch(function (error) {
+                alert("Ops, something went wrong :(" + "\n" + error);
+            }
+            );
+
         //Richiesta per recuperare le accommodations dell'utente
         api.get("/myadvacc/" + profileID)
             .then(function (response) {
@@ -76,9 +87,9 @@ const MyAdv = () => {
 
     const handleChange = (event) => {
         setCity(event.target.value);
-        selectedCity = monthReservation.find( item => item.city === event.target.value);
-        let baseList = [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 ];
-        selectedCity.stats?.map( (item , index) => (
+        selectedCity = monthReservation.find(item => item.city === event.target.value);
+        let baseList = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        selectedCity.stats?.map((item, index) => (
             baseList[item.month - 1] = item.total
         ))
         setListToPlot(baseList);
@@ -101,60 +112,6 @@ const MyAdv = () => {
                         </Typography>
                     </Container>
                 </Box>
-                <Container maxWidth="sm">
-                        <Typography
-                            component="h2"
-                            variant="h5"
-                            align="center"
-                            color="text.primary"
-                            gutterBottom
-                        >
-                            Reservations per City
-                        </Typography>
-                    </Container>
-                <Container maxWidth="md">
-                    <Select
-                        fullWidth
-                        id='city'
-                        name='city'
-                        value={city || ''}
-                        onChange={handleChange}
-                        style={{ marginBottom: 20 + 'px' }}
-                        >
-                        {stateCities &&
-                            stateCities.map((city, index) => {
-                                return <MenuItem value={city} key={index}>{city}</MenuItem>
-                            })
-                        }
-                    </Select>
-
-                    {/* Valori statici per statistiche */}
-                    <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }}>
-                        <Table sx={{ minWidth: 650 }} size="small">
-                            <TableHead>
-                                <TableRow>
-                                    {
-                                        config.SHORT_MONTHS.map((month , index) => (
-                                            <TableCell align="center" key = {index} style={{ fontWeight: 'bold' }}>{month}</TableCell>        
-                                        ))
-                                    }                                   
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-
-                                <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    {
-                                        listToPlot && listToPlot.map((month , index) => (
-                                            <TableCell align="center" id={"month-" + index} key = {index} style={{ fontWeight: 'bold' }}>{month}</TableCell>        
-                                        ))
-                                    }
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-
-                </Container>
-
                 <Container maxWidth="md">
                     <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }}>
                         <Table sx={{ minWidth: 650 }} size="small">
@@ -201,8 +158,102 @@ const MyAdv = () => {
                         </Table>
                     </TableContainer>
                 </Container>
-            </Container>
+                <Container maxWidth="sm">
+                    <Typography
+                        component="h2"
+                        variant="h5"
+                        align="center"
+                        color="text.primary"
+                        gutterBottom
+                    >
+                        Reservations per City
+                    </Typography>
+                </Container>
+                <Container maxWidth="md">
+                    <Select
+                        fullWidth
+                        id='city'
+                        name='city'
+                        value={city || ''}
+                        onChange={handleChange}
+                        style={{ marginBottom: 20 + 'px' }}
+                    >
+                        {stateCities &&
+                            stateCities.map((city, index) => {
+                                return <MenuItem value={city} key={index}>{city}</MenuItem>
+                            })
+                        }
+                    </Select>
+                    {/* Valori statici per statistiche */}
+                    <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }}>
+                        <Table sx={{ minWidth: 650 }} size="small">
+                            <TableHead>
+                                <TableRow>
+                                    {
+                                        config.SHORT_MONTHS.map((month, index) => (
+                                            <TableCell align="center" key={index} style={{ fontWeight: 'bold' }}>{month}</TableCell>
+                                        ))
+                                    }
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
 
+                                <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    {
+                                        listToPlot && listToPlot.map((month, index) => (
+                                            <TableCell align="center" id={"month-" + index} key={index} style={{ fontWeight: 'bold' }}>{month}</TableCell>
+                                        ))
+                                    }
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Container>
+                <Container maxWidth="sm">
+                    <Typography
+                        component="h2"
+                        variant="h5"
+                        align="center"
+                        color="text.primary"
+                        gutterBottom
+                    >
+                        Reservations
+                    </Typography>
+                </Container>
+                {/** tabella reservation */}
+                <Container maxWidth="md">
+                    <TableContainer component={Paper} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }}>
+                        <Table sx={{ minWidth: 650 }} size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="left" style={{ fontWeight: 'bold' }}>ID</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Type</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>Start Date</TableCell>
+                                    <TableCell align="center" style={{ fontWeight: 'bold' }}>End Date</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {reservations.map((item) => (
+                                    <TableRow key={item._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} style={{ marginBottom: 50 + 'px', maxHeight: "30rem", overflow: "auto" }}>
+                                        <TableCell align="left">
+                                            <Link style={{ cursor: "pointer" }} onClick={() => navigate("/" + item.destinationType + "/" + item.destinationID)}>
+                                                {item._id}
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell align="center">{item.destinationType}</TableCell>
+                                        <TableCell align="center">{Moment(item.startDate).utc().format('MMM DD YYYY')}</TableCell>
+                                        {item.endDate ?
+                                            <TableCell align="center">{Moment(item.endDate).utc().format('MMM DD YYYY')}</TableCell>
+                                            :
+                                            <TableCell align="center" />
+                                        }
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Container>
+            </Container>
             <Box
                 sx={{
                     py: 3,

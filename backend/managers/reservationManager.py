@@ -70,6 +70,42 @@ class ReservationManager:
             raise Exception("Impossibile ottenere prenotazioni: " + str(e))
 
     @staticmethod
+    def getReservationsByHost(hostID):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("RESERVATIONS_COLLECTION")]
+        try:
+            cursor = list(collection.find({"hostID" : ObjectId(hostID)}))
+            result =[]
+            for reservation in cursor:
+                if reservation['destinationType'] == 'activity':
+                    activityResult = Reservation(
+                        str(reservation['userID']),
+                        str(reservation['destinationID']),
+                        reservation['destinationType'],
+                        reservation['startDate'],
+                        reservation['totalExpense'],
+                        reservation["city"],                        
+                        str(reservation["hostID"]),
+                        _id = str(reservation['_id']))
+                    result.append(Serializer.serializeReservation(activityResult))
+                else:
+                    accommodationResult = Reservation(
+                        str(reservation['userID']),
+                        str(reservation['destinationID']),
+                        reservation['destinationType'],
+                        reservation['startDate'],
+                        reservation['totalExpense'],
+                        reservation["city"],                        
+                        str(reservation["hostID"]),
+                        reservation['endDate'],
+                        str(reservation['_id']))
+                    result.append(Serializer.serializeReservation(accommodationResult))
+            return result
+        except Exception as e:
+            raise Exception("Impossibile ottenere prenotazioni: " + str(e))
+
+    @staticmethod
     def updateReservation(reservation, newStartDate, newEndDate , user):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]

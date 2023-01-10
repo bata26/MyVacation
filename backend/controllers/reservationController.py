@@ -61,7 +61,6 @@ class ReservationController:
         except Exception as e:
             raise Exception(str(e))
 
-
     @staticmethod
     def updateReservation(requestBody , user):
         newStartDate = requestBody["startDate"]
@@ -78,6 +77,14 @@ class ReservationController:
     def getReservationsByUserID(userID):
         try:
             result = ReservationManager.getReservationsByUser(userID)
+            return result
+        except Exception as e:
+            raise Exception(str(e))
+
+    @staticmethod
+    def getReservationsByHostID(hostID):
+        try:
+            result = ReservationManager.getReservationsByHost(hostID)
             return result
         except Exception as e:
             raise Exception(str(e))

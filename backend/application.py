@@ -449,6 +449,13 @@ def getReservationsByUserID(user_id , user={}):
     except Exception as e:
         return str(e), 500
 
+@application.route("/reservationsHost/<host_id>", methods=["GET"])
+@required_token
+def getReservationsByHostID(host_id , user={}):
+    try:
+        return ReservationController.getReservationsByHostID(escape(host_id)) , 200
+    except Exception as e:
+        return str(e), 500
 
 @application.route("/reservations/<reservation_id>", methods=["DELETE"])
 @required_token
