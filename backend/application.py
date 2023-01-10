@@ -58,7 +58,7 @@ def testValidation(user={}):
 @application.route("/analytics/topcities", methods=["GET"])
 def getBestCities():
     try:
-        return AnalyticsController.getBestCities()
+        return AnalyticsController.getBestCities() , 200
     except Exception as e:
         return str(e), 500
 
