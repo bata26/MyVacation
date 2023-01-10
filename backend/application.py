@@ -724,4 +724,4 @@ def getActivitiesByUserID(user_id , user={}):
 
 if __name__ == "__main__":
     startup()
-    application.run(threaded=True, debug=True, use_reloader=True)
+    application.run(host = "0.0.0.0" , threaded=True, debug=True, use_reloader=True)
