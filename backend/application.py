@@ -91,7 +91,7 @@ def getBestAdvInfo(user={}):
 @required_token
 def getMonthReservations(user={}):
     try:
-        return AnalyticsController.getMonthReservations(user)
+        return jsonify(AnalyticsController.getMonthReservations(user)) , 200
     except Exception as e:
         return str(e), 500
 
@@ -100,7 +100,7 @@ def getMonthReservations(user={}):
 @required_token
 def getUsersForMonth(user={}):
     try:
-        return AnalyticsController.getUsersForMonth()
+        return jsonify(AnalyticsController.getUsersForMonth()) , 200
     except Exception as e:
         return str(e), 500
 
@@ -109,7 +109,7 @@ def getUsersForMonth(user={}):
 @required_token
 def getAccommodationsAverageCost(user={}):
     try:
-        return AnalyticsController.getAccommodationsAverageCost(user)
+        return jsonify(AnalyticsController.getAccommodationsAverageCost(user)) , 200
     except Exception as e:
         return str(e), 500
 
@@ -118,7 +118,7 @@ def getAccommodationsAverageCost(user={}):
 @required_token
 def getActivitiesAverageCost(user={}):
     try:
-        return AnalyticsController.getActivitiesAverageCost(user)
+        return jsonify(AnalyticsController.getActivitiesAverageCost(user)) , 200
     except Exception as e:
         return str(e), 500
 
@@ -127,7 +127,7 @@ def getActivitiesAverageCost(user={}):
 @required_token
 def getTotalReservations(user={}):
     try:
-        return AnalyticsController.getTotalReservations(user)
+        return jsonify(AnalyticsController.getTotalReservations(user)) , 200
     except Exception as e:
         return str(e), 500
 
@@ -136,7 +136,7 @@ def getTotalReservations(user={}):
 @required_token
 def getTotalAdvs(user={}):
     try:
-        return AnalyticsController.getTotalAdvs(user)
+        return jsonify(AnalyticsController.getTotalAdvs(user)) , 200
     except Exception as e:
         return str(e), 500
 
@@ -158,7 +158,7 @@ def deleteActivityByID(activity_id, user={}):
 def getActivityByID(activity_id):
     activityID = escape(activity_id)
     try:
-        return ActivityController.getActivityByID(activityID) , 200
+        return jsonify(ActivityController.getActivityByID(activityID)) , 200
     except Exception as e:
         return str(e), 500
 
@@ -175,9 +175,7 @@ def getActivities(user={}):
             if dateparser.parse(start_date).date() < date.today():
                 raise Exception("Impossibile ricercare")
 
-        return ActivityController.getActivities(
-            start_date, city, index, direction
-        ), 200
+        return jsonify(ActivityController.getActivities(start_date, city, index, direction)), 200
     except Exception as e:
         return str(e), 500
 
@@ -211,7 +209,7 @@ def editAccommodationById(accommodationID, user={}):
         if(not(updateResult)):
             Logger.addNodeToFile("accommodation" , accommodationID , "UPDATE" , formData["name"])
             return "Da aggiornare il nodo" , 500
-        return "", 200
+        return "OK", 200
     except Exception as e:
         return str(e), 500
 
@@ -233,7 +231,7 @@ def editActivityById(activityID, user={}):
         if(not(updateResult)):
             Logger.addNodeToFile("activity" , activityID , "UPDATE" , formData["name"])
             return "Da aggiornare il nodo" , 500
-        return "", 200
+        return "OK", 200
     except Exception as e:
         return str(e), 500
 
@@ -242,7 +240,7 @@ def editActivityById(activityID, user={}):
 def getAccommodationById(accommodation_id):
     accommodationID = escape(accommodation_id)
     try:
-        return AccommodationController.getAccommodationById(accommodationID) , 200
+        return jsonify(AccommodationController.getAccommodationById(accommodationID)) , 200
     except Exception as e:
         return str(e), 500
 
@@ -291,7 +289,7 @@ def updateUser(user_id, user={}):
 @required_token
 def checkIfIsFollowing(user_id , user={}):
     try:
-        return UserController.checkIfIsFollowing(user["_id"] , escape(user_id)) , 200
+        return jsonify(UserController.checkIfIsFollowing(user["_id"] , escape(user_id))) , 200
     except Exception as e:
         return str(e), 500
 
@@ -300,7 +298,7 @@ def checkIfIsFollowing(user_id , user={}):
 @required_token
 def getFollowedUsersByUserID(user_id , user={}):
     try:
-        return UserController.getFollowedUser(escape(user_id)) , 200
+        return jsonify(UserController.getFollowedUser(escape(user_id))) , 200
     except Exception as e:
         return str(e), 500
 
@@ -345,7 +343,7 @@ def likeAdv(user={}):
                 AccommodationController.likeAccommodation(requestBody , user)
             elif requestBody["destinationType"] == "activity":
                 ActivityController.likeActivity(requestBody , user)
-            return "", 200
+            return "OK", 200
         except Exception as e:
             return str(e), 500
     else:
@@ -357,9 +355,9 @@ def getCommonAdv(destination_type, user_id, user={}):
     destinationType = escape(destination_type)
     try:
         if destinationType == "accommodation":
-            return AccommodationController.getCommonAccommodation(user, escape(user_id))
+            return jsonify(AccommodationController.getCommonAccommodation(user, escape(user_id))) , 200
         else:
-            return ActivityController.getCommonActivity(user, escape(user_id))
+            return jsonify(ActivityController.getCommonActivity(user, escape(user_id))) , 200
     except Exception as e:
         return str(e), 500
 
@@ -370,9 +368,9 @@ def getTotalLikes(destination_type, destination_id, user={}):
     destinationType = escape(destination_type)
     try:
         if destinationType == "accommodation":
-            return AccommodationController.getTotalLikes(escape(destination_id)) , 200
+            return jsonify(AccommodationController.getTotalLikes(escape(destination_id))) , 200
         else:
-            return ActivityController.getTotalLikes(escape(destination_id)) , 200
+            return jsonify(ActivityController.getTotalLikes(escape(destination_id))) , 200
         
     except Exception as e:
         return str(e), 500
@@ -394,7 +392,7 @@ def unfollowUser(user={}):
         try:
             requestBody = dict(request.json)
             UserController.unfollowUser(requestBody , user)      
-            return "", 200
+            return "OK", 200
         except Exception as e:
             return str(e), 500
     else:
@@ -411,7 +409,7 @@ def dislikeAdv(user={}):
                 AccommodationController.dislikeAccommodation(requestBody , user)
             elif requestBody["destinationType"] == "activity":
                 ActivityController.dislikeActivity(requestBody , user)
-            return "", 200
+            return "OK", 200
         except Exception as e:
             return str(e), 500
     else:
@@ -422,7 +420,7 @@ def dislikeAdv(user={}):
 @required_token
 def getRecommendedAdvs(destination_type, user={}):
     try:
-        return UserController.getRecommendedAdvs(escape(destination_type) , user), 200
+        return jsonify(UserController.getRecommendedAdvs(escape(destination_type) , user)), 200
     except Exception as e:
         return str(e), 500
 
@@ -445,7 +443,7 @@ def bookActivity(user={}):
 @required_token
 def getReservationsByUserID(user_id , user={}):
     try:
-        return ReservationController.getReservationsByUserID(escape(user_id)) , 200
+        return jsonify(ReservationController.getReservationsByUserID(escape(user_id))) , 200
     except Exception as e:
         return str(e), 500
 
@@ -453,7 +451,7 @@ def getReservationsByUserID(user_id , user={}):
 @required_token
 def getReservationsByHostID(host_id , user={}):
     try:
-        return ReservationController.getReservationsByHostID(escape(host_id)) , 200
+        return jsonify(ReservationController.getReservationsByHostID(escape(host_id))) , 200
     except Exception as e:
         return str(e), 500
 
@@ -484,9 +482,9 @@ def getAccommodations():
             if end_date != "" and end_date is not None:
                 if dateparser.parse(end_date) < dateparser.parse(start_date):
                     raise Exception("Impossibile ricercare")
-        return AccommodationController.getFilteredAccommodations(
+        return jsonify(AccommodationController.getFilteredAccommodations(
             start_date, end_date, city, guests, index, direction
-        ), 200
+        )), 200
     except Exception as e:
         return str(e), 500
 
@@ -497,7 +495,7 @@ def insertAccommodation(user={}):
     if user["role"] != "admin":
         formData = dict(request.json)
         try:
-           return AccommodationController.insertAccommodation(formData , user) , 200
+           return jsonify(AccommodationController.insertAccommodation(formData , user)) , 200
         except Exception as e:
             return str(e), 500
     else:
@@ -509,7 +507,7 @@ def insertActivity(user={}):
     if user["role"] != "admin":
         formData = dict(request.json)
         try:
-            return ActivityController.insertActivity(formData , user) , 200
+            return jsonify(ActivityController.insertActivity(formData , user)) , 200
         except Exception as e:
             return str(e), 500
     else:
@@ -520,7 +518,7 @@ def insertActivity(user={}):
 def getReviewByID(review_id):
     reviewID = escape(review_id)
     try:
-        return ReviewController.getReviewByID(reviewID)  ,200
+        return jsonify(ReviewController.getReviewByID(reviewID))  ,200
     except Exception as e:
         return str(e), 500
 
@@ -530,7 +528,7 @@ def getReviewByID(review_id):
 def getReviewByAd(destination_id):
     destinationID = escape(destination_id)
     try:
-        return ReviewController.getReviewByDestinationID(destinationID) , 200
+        return jsonify(ReviewController.getReviewByDestinationID(destinationID)) , 200
     except Exception as e:
         return str(e), 500
 
@@ -570,7 +568,7 @@ def deleteReviewByID(destinationType, destinationID, reviewID, user={}):
 def deleteUserById(user_id, user={}):
     try:
         if(AdminController.deleteUser(escape(user_id), user)):
-            return "", 200
+            return "OK", 200
         else:
             Logger.addNodeToFile("user" , escape(user_id) , "DELETE")
     except Exception as e:
@@ -605,7 +603,7 @@ def loginUser():
     username = request.json["username"]
     password = request.json["password"]
     try:
-        return UserController.authenticateUser(username, password) , 200
+        return jsonify(UserController.authenticateUser(username, password)) , 200
     except Exception as e:
         return str(e), 500
 
@@ -634,9 +632,9 @@ def getUsers(user):
     index = args.get("index")
     direction = args.get("direction")
     try:
-        return AdminController.getUsers(
+        return jsonify(AdminController.getUsers(
             user, username, name, surname, index, direction
-        ) , 200
+        )) , 200
     except Exception as e:
         return str(e), 500
 
@@ -648,9 +646,9 @@ def getAnnouncementsToBeApproved(destination_type, user={}):
     index = args.get("index")
     direction = args.get("direction")
     try:
-        return AdminController.getAnnouncementsToBeApproved(
+        return jsonify(AdminController.getAnnouncementsToBeApproved(
             index, direction, escape(destination_type)
-        ) , 200
+        )) , 200
     except Exception as e:
         return str(e), 500
 
@@ -661,7 +659,7 @@ def getAnnouncementToBeApprovedByID(destination_type, announcementID , user={}):
     try:
         if not (validateObjecID(escape(announcementID))):
             raise Exception("Announcement non valido")
-        return AdminController.getAnnouncementToBeApprovedByID(escape(announcementID), escape(destination_type)) , 200
+        return jsonify(AdminController.getAnnouncementToBeApprovedByID(escape(announcementID), escape(destination_type))) , 200
     except Exception as e:
         return str(e), 500
 
@@ -681,9 +679,7 @@ def approveAnnouncement(announcementID, user={}):
         return str(e), 500
 
 
-@application.route(
-    "/admin/announcement/<destination_type>/<announcementID>", methods=["DELETE"]
-)
+@application.route("/admin/announcement/<destination_type>/<announcementID>", methods=["DELETE"])
 @required_token
 def refuseAnnouncement(destination_type, announcementID, user={}):
     if not (validateObjecID(announcementID)):
@@ -707,7 +703,7 @@ def getAccommodationsByUserID(user_id):
     userID = escape(user_id)
     try:
         result = AccommodationController.getAccommodationsByUserID(userID)
-        return result, 200
+        return jsonify(result), 200
     except Exception as e:
         return str(e), 500
 
@@ -717,7 +713,7 @@ def getAccommodationsByUserID(user_id):
 def getActivitiesByUserID(user_id , user={}):
     userID = escape(user_id)
     try:
-        return ActivityController.getActivityByUserID(userID) , 200
+        return jsonify(ActivityController.getActivityByUserID(userID)) , 200
     except Exception as e:
         return str(e), 500
 
