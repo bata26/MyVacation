@@ -45,8 +45,7 @@ class AccommodationNodeManager:
                 session.run(query)
 
         except Exception as e:
-            raise Exception(
-                "Impossibile aggiornare il nodo accommodation: " + str(e))
+            raise Exception("Impossibile aggiornare il nodo accommodation: " + str(e))
 
     @staticmethod
     def getTotalLikes(accommodationID):

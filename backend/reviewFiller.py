@@ -103,8 +103,8 @@ for reservation in reservationList:
     review = {
      "score" : vote["score"],
      "description"  :vote["comment"],
-     "userID" : str(reservation["userID"]),
-     "destinationID" : str(reservation["destinationID"]),
+     "userID" : reservation["userID"],
+     "destinationID" : reservation["destinationID"],
      "reviewer" : getUsernameFromID(str(reservation["userID"]))
     }
     reviewList.append(review)
