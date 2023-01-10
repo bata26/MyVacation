@@ -45,7 +45,7 @@ class AccommodationController:
             accomodationNode = AccommodationNode(
                 accommodationID,
                 formData["name"],
-                formData["approve"]
+                formData["approved"]
             )
             AccommodationNodeManager.updateAccommodationNode(accomodationNode)
             return True

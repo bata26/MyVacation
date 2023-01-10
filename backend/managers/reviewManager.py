@@ -30,6 +30,7 @@ class ReviewManager:
         collection = db[os.getenv("REVIEW_COLLECTION")]
         cursor = list(collection.find(
             {"destinationID": ObjectId(destinationID)}))
+        print({"destinationID": ObjectId(destinationID)})
         result = []
         for review in cursor:
             reviewResult = Review(

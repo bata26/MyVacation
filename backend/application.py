@@ -552,7 +552,8 @@ def deleteReviewByID(destinationType, destinationID, reviewID, user={}):
     destinationType = escape(destinationType)
     destinationID = escape(destinationID)
     try:
-        return ReviewController.deleteReview(reviewID, destinationID, destinationType, user)
+        ReviewController.deleteReview(reviewID, destinationID, destinationType, user)
+        return "OK", 200
     except Exception as e:
         return str(e), 500
 

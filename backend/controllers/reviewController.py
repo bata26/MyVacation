@@ -21,8 +21,7 @@ class ReviewController:
     @staticmethod
     def deleteReview(reviewID, destinationID, destinationType, user):
         try:
-            result = ReviewManager.deleteReview(reviewID, destinationID, destinationType, user)
-            return result
+            ReviewManager.deleteReview(reviewID, destinationID, destinationType, user)
         except Exception as e:
             raise Exception(str(e))
     
