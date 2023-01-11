@@ -571,6 +571,7 @@ def deleteUserById(user_id, user={}):
             return "OK", 200
         else:
             Logger.addNodeToFile("user" , escape(user_id) , "DELETE")
+            return "Impossibile creare nodo" , 500
     except Exception as e:
         return str(e), 500
 

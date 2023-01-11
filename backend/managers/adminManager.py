@@ -252,7 +252,7 @@ class AdminManager:
             with client.start_session() as session:
                  with session.start_transaction():
                     usersCollection.delete_one({"_id": ObjectId(userID)} , session=session)
-                    usersCollection.update_many({"reservations.hostID" : ObjectId(userID)} , {"$pull" : {"reservations" : {"hostID" : ObjectId("userID")}}} , session=session)
+                    usersCollection.update_many({"reservations.hostID" : ObjectId(userID)} , {"$pull" : {"reservations" : {"hostID" : ObjectId(userID)}}} , session=session)
                     activitiesCollection.delete_many({"hostID" : ObjectId(userID)}, session=session)
                     activitiesCollection.update_many({"reviews.userID" : ObjectId(userID)}, {"$pull" : {"reviews" : {"userID" : ObjectId(userID)}}}, session=session)
                     accommodationCollection.delete_many({"hostID" : ObjectId(userID)}, session=session)
