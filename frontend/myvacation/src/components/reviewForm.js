@@ -20,7 +20,7 @@ const style = {
 };
 
 
-const ReviewForm = ({destinationID}) => {
+const ReviewForm = ({destinationID , destinationType}) => {
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = async () => {
