@@ -2,8 +2,11 @@ from utility.graphConnection import GraphManager
 from models.activityNode import ActivityNode
 from utility.serializer import Serializer
 
+# Class that represents the manager for the activity node stored in graph database. 
+# Methods implements query and serialization of object.
 class ActivityNodeManager:
 
+    # method that creates a node if it doesn't exists or update his property if it exists.
     @staticmethod
     def createActivityNode(activityNode):
         client = GraphManager.getInstance()
@@ -48,6 +51,7 @@ class ActivityNodeManager:
             raise Exception(
                 "Impossibile aggiornare il nodo activity: " + str(e))
 
+        # method that returns the total number of likes received by a specific activity
     @staticmethod
     def getTotalLikes(activityNodeID):
         client = GraphManager.getInstance()
@@ -62,6 +66,7 @@ class ActivityNodeManager:
             raise Exception(
                 "Impossibile ottenere i likes totali: " + str(e))
 
+        # method that from two userNode, returns a list of activities that both users like
     @staticmethod
     def getCommonLikedActivity(firstUserNode, secondUserID):
         client = GraphManager.getInstance()

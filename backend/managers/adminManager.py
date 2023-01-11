@@ -6,14 +6,16 @@ from utility.serializer import Serializer
 import os
 from bson.objectid import ObjectId
 from datetime import datetime
+from managers.accommodationManager import AccommodationManager
+from managers.activityManager import ActivityManager
 
+
+# This class represents the manager for the admin query.
+# Methods implements query and serialization of object.
 
 class AdminManager:
 
-    # we can filter for:
-    #   - username
-    #   - name
-    #   - surname
+    # method that returns a list of user filtered by paramters setted by the user
     @staticmethod
     def getFilteredUsers(
         user, username="", name="", surname="", index="", direction=""
@@ -78,6 +80,7 @@ class AdminManager:
             result.append(Serializer.serializeUser(userResult))
         return result
 
+    # method that returns accommodation or activity that aren't yet been approved
     @staticmethod
     def getAnnouncementsToApprove(index, direction, destinationType):
         client = MongoManager.getInstance()
@@ -151,6 +154,7 @@ class AdminManager:
             #print(result)
         return result
 
+    # method that return a specific accommodation/activity that is not yet benn approved
     @staticmethod
     def getAnnouncementToApproveByID(announcementID, destinationType):
         client = MongoManager.getInstance()
@@ -197,6 +201,7 @@ class AdminManager:
             result = Serializer.serializeActivity(activityToBeApproved)
         return result
 
+    # method that approve a specific accommodation/activity
     @staticmethod
     def approveAnnouncement(announcementID, user, destinationType):
         client = MongoManager.getInstance()
@@ -216,6 +221,8 @@ class AdminManager:
         except Exception as e:
             raise Exception(f"Impossibile trovare l'annuncio: {announcementID}")
 
+    # method that disapprove a specific accommodation/activity, used for the rollback in case of failure 
+    # when approving
     @staticmethod
     def removeApprovalAnnouncement(announcementID, user, destinationType):
         client = MongoManager.getInstance()
@@ -235,6 +242,7 @@ class AdminManager:
         except Exception as e:
             raise Exception(f"Impossibile trovare l'annuncio: {announcementID}")
 
+    # method that delete a user
     @staticmethod
     def deleteUser(userID, user):
         client = MongoManager.getInstance()
@@ -249,15 +257,31 @@ class AdminManager:
             raise Exception("L'utente non possiede i privilegi di admin")
         
         try:
+            
+            activityHostedByUser = ActivityManager.getActivitiesIDListByUserID(userID)
+            accommodationHostedByUser = AccommodationManager.getAccommodationsIDListByUserID(userID)
+            totalHostedByUser = [*activityHostedByUser, *accommodationHostedByUser] 
+            # we have to delete all the info connected to the user:
+            # - remove all the nested reservation in user collection
+            # - remove all the activities hosted by the user
+            # - remove all the activities's review done by the user
+            # - remove all the activities's review for the activities hosted by the user
+            # - remove all the accommodation hosted by the user
+            # - remove all the accommodation's review done by the user
+            # - remove all the accommodations's review for the accommodations hosted by the user
+            # - remove all the reviews written by the user
+            # - remove all the reservation hosted by the user
             with client.start_session() as session:
                  with session.start_transaction():
                     usersCollection.delete_one({"_id": ObjectId(userID)} , session=session)
                     usersCollection.update_many({"reservations.hostID" : ObjectId(userID)} , {"$pull" : {"reservations" : {"hostID" : ObjectId(userID)}}} , session=session)
                     activitiesCollection.delete_many({"hostID" : ObjectId(userID)}, session=session)
                     activitiesCollection.update_many({"reviews.userID" : ObjectId(userID)}, {"$pull" : {"reviews" : {"userID" : ObjectId(userID)}}}, session=session)
+                    activitiesCollection.update_many({"_id" : {"$in" :activityHostedByUser }} , {"$pull" : {"reviews": {"destinationID" : {"$in" :activityHostedByUser }}}}, session=session)
                     accommodationCollection.delete_many({"hostID" : ObjectId(userID)}, session=session)
                     accommodationCollection.update_many({"reviews.userID" : ObjectId(userID)}, {"$pull" : {"reviews" : {"userID" : ObjectId(userID)}}} ,session=session)
-                    reviewsCollection.delete_many({"userID" : ObjectId(userID)}, session=session)
+                    accommodationCollection.update_many({"_id" : {"$in" :accommodationHostedByUser }} , {"$pull" : {"reviews": {"destinationID" : {"$in" :accommodationHostedByUser }}}}, session=session)
+                    reviewsCollection.delete_many({"$or" : [{"destinationID" :{"$in" :totalHostedByUser}},{"userID" : ObjectId(userID)}]} , session=session)
                     reservationCollection.delete_many({"hostID" : ObjectId(userID) , "startDate" : {"$gte" : datetime.today()}} , session=session)
             return True
         except Exception as e:

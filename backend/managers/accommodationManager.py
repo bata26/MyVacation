@@ -3,12 +3,13 @@ import os
 from models.accommodation import Accommodation
 from bson.objectid import ObjectId
 from utility.serializer import Serializer
-from datetime import datetime
 import dateparser
-from models.review import Review
 
-
+# This class represents the manager for the accommodation entity contained in MongoDB.
+# Methods implements query and serialization of object.
 class AccommodationManager:
+    
+    # return a list of objectId of accommodations that are approved
     @staticmethod
     def getApprovedAccommodationsID():
         client = MongoManager.getInstance()
@@ -20,6 +21,7 @@ class AccommodationManager:
         except Exception as e:
             raise Exception("Impossibile aggiornare: " + str(e))
 
+    # update an accommodation
     @staticmethod
     def updateAccommodation(accommodationID, accommodation, user):
         client = MongoManager.getInstance()
@@ -31,6 +33,7 @@ class AccommodationManager:
         except Exception as e:
             raise Exception("Impossibile aggiornare: " + str(e))
 
+    # return a list of accommodation from a list of objectId
     @staticmethod
     def getAccommodationsFromIdList(accommodationsIdList):
         client = MongoManager.getInstance()
@@ -39,11 +42,10 @@ class AccommodationManager:
         idList = [ObjectId(item) for item in accommodationsIdList]
         try:
             serializedAccommodations = []
-            accommodationsList = list(
-                collection.find({"_id": {"$in": idList}}, {"pictures": 0})
-            )
+            accommodationsList = list(collection.find({"_id": {"$in": idList}}, {"pictures": 0}))
 
             for accommodation in accommodationsList:
+                # create an accommodation object
                 accommodationObject = Accommodation(
                     accommodation["name"],
                     accommodation["description"],
@@ -60,44 +62,46 @@ class AccommodationManager:
                     accommodation["reviews"],
                     _id=str(accommodation["_id"]),
                 )
-                serializedAccommodations.append(
-                    Serializer.serializeAccommodation(accommodationObject)
-                )
+                # serialize the object and prepare the response
+                serializedAccommodations.append(Serializer.serializeAccommodation(accommodationObject))
             return serializedAccommodations
         except Exception as e:
             raise Exception("Impossibile aggiornare: " + str(e))
 
+    # return an accommodation from the id of it
     @staticmethod
     def getAccommodationFromId(accommodationID):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
-        cursor = dict(collection.find_one({"_id": ObjectId(accommodationID)}))
-        accommodation = Accommodation(
-            cursor["name"],
-            cursor["description"],
-            str(cursor["hostID"]),
-            cursor["hostName"],
-            cursor["mainPicture"],
-            cursor["location"],
-            cursor["propertyType"],
-            cursor["guests"],
-            cursor["bedrooms"],
-            cursor["beds"],
-            cursor["price"],
-            cursor["approved"],
-            cursor["reviews"],
-            _id=str(cursor["_id"]),
-            pictures=cursor["pictures"],
-        )
-        return Serializer.serializeAccommodation(accommodation)
-        # cursor["_id"] = str(cursor["_id"])
-        # return cursor
-
+        try:
+            cursor = dict(collection.find_one({"_id": ObjectId(accommodationID)}))
+            accommodation = Accommodation(
+                cursor["name"],
+                cursor["description"],
+                str(cursor["hostID"]),
+                cursor["hostName"],
+                cursor["mainPicture"],
+                cursor["location"],
+                cursor["propertyType"],
+                cursor["guests"],
+                cursor["bedrooms"],
+                cursor["beds"],
+                cursor["price"],
+                cursor["approved"],
+                cursor["reviews"],
+                _id=str(cursor["_id"]),
+                pictures=cursor["pictures"],
+            )
+            return Serializer.serializeAccommodation(accommodation)
+        except Exception as e:
+            raise Exception("Impossibile ottenere: " + str(e))
+    
+    # return a list of accommodation's id that are not available for a specific date range
+    # it also take a reservationID in case the user want to update his reservation otherwise 
+    # it could throw error
     @staticmethod
     def getOccupiedAccommodationIDs(start_date, end_date , reservationID = ""):
-        # ottengo una lista di id di accommodations non occupate
-        # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("RESERVATIONS_COLLECTION")]
@@ -140,11 +144,7 @@ class AccommodationManager:
         )
         return occupiedAccommodationsID
 
-    # we can filter for:
-    #   - start date
-    #   - end date
-    #   - city
-    #   - number of guests
+    # return a list of accommodations filtered by paramaters setted by the user. It also manages the pagination response
     @staticmethod
     def getFilteredAccommodations(start_date="", end_date="", city="", guestNumbers="", index="", direction=""):
         query = {}
@@ -162,12 +162,9 @@ class AccommodationManager:
 
         if ( start_date != "" and end_date != "" and end_date is not None and start_date is not None):
             dateSetted = True
-            # ottengo una lista di id di accommodations non occupate
-            # faccio una query per tutti gli id che non sono nella lista e che matchano per città e ospiti
             occupiedAccommodationsID = AccommodationManager.getOccupiedAccommodationIDs(start_date, end_date)
             
-
-            # nella paginazione dobbiamo implementare un and
+            # with pagination we have to do a double condition on _id field
             if(index != ""):
                 query["$and"] = [{} , {}]
                 query["$and"][0] = {"_id" : {"$nin" : occupiedAccommodationsID}}
@@ -180,8 +177,8 @@ class AccommodationManager:
         collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         accommodations = []
 
+        # first page
         if index == "":
-            # When it is first page
             accommodations = list(
                 collection.find(query, projection)
                 .sort("_id", 1)
@@ -231,6 +228,7 @@ class AccommodationManager:
             result.append(Serializer.serializeAccommodation(accommodationResult))
         return result
 
+    # create a new accommodation
     @staticmethod
     def insertNewAccommodation(accommodation: Accommodation):
         client = MongoManager.getInstance()
@@ -242,6 +240,7 @@ class AccommodationManager:
         except Exception:
             raise Exception("Impossibile inserire")
 
+    # delete an accommodation
     @staticmethod
     def deleteAccommodation(accommodationID, user):
         client = MongoManager.getInstance()
@@ -259,6 +258,10 @@ class AccommodationManager:
             raise Exception("L'utente non possiede l'accommodations")
         else:
             try:
+                # transaction to delete and update all documents connected to the accommodation that we are going to delete:
+                # - delete all reservation made for the accommodation from the reservation collection
+                # - remove from nested array in users collection all the reservations made for the accommodation
+                # - delete all reviews for the accommodation
                 with client.start_session() as session:
                     with session.start_transaction():
                         collection.delete_one({"_id": ObjectId(accommodationID)}, session=session)
@@ -268,20 +271,8 @@ class AccommodationManager:
                 return True
             except Exception:
                 raise Exception("Impossibile eliminare")
-
-    @staticmethod
-    def addReview(review):
-        client = MongoManager.getInstance()
-        db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
-        try:
-            collection.update_one(
-                {"_id": ObjectId(review.destinationID)},
-                {"$push": {"reviews": review.getDictForAdvertisement()}}
-            )
-        except Exception as e:
-            raise Exception("Impossibile aggiungere la review: " + str(e))
-
+    
+    # return a list of accommodations hosted by a specific user
     @staticmethod
     def getAccommodationsByUserID(userID):
         client = MongoManager.getInstance()
@@ -311,4 +302,16 @@ class AccommodationManager:
                 result.append(Serializer.serializeAccommodation(accommodationResult))
             return result
         except Exception as e:
-            raise Exception("Impossibile ottenere prenotazioni: " + str(e))
+            raise Exception("Impossibile ottenere: " + str(e))
+    
+    @staticmethod
+    def getAccommodationsIDListByUserID(userID):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
+        try:
+            cursor = list(collection.distinct( "_id" , {"hostID": ObjectId(userID)}))
+            return cursor
+        except Exception as e:
+            raise Exception("Impossibile ottenere: " + str(e))
+        

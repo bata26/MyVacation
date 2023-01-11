@@ -5,8 +5,11 @@ from bson.objectid import ObjectId
 from utility.serializer import Serializer
 import dateparser
 
+# This class represents the manager for the activity entity contained in MongoDB.
+# Methods implements query and serialization of object.
 class ActivityManager:
 
+    # return a list of objectId of activities that are approved
     @staticmethod
     def getApprovedActivitiesID():
         client = MongoManager.getInstance()
@@ -17,7 +20,8 @@ class ActivityManager:
             return collection.distinct("_id" , {"approved" : True})
         except Exception as e:
             raise Exception("Impossibile aggiornare: " + str(e))
-
+    
+    # update an activity
     @staticmethod
     def updateActivity(activityID, activity,  user):
         client = MongoManager.getInstance()
@@ -25,13 +29,12 @@ class ActivityManager:
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
 
         try:
-            #print("pre edit")
-            res = collection.update_one(
+            collection.update_one(
                 {"_id": ObjectId(activityID)}, {"$set": activity})
-            #print(res)
         except Exception as e:
             raise Exception("Impossibile aggiornare: " + str(e))
-
+    
+    # return a list of activity from a list of objectId
     @staticmethod
     def getActivitiesFromIdList(activitiesIdList):
         client = MongoManager.getInstance()
@@ -61,26 +64,30 @@ class ActivityManager:
             return serializedActivities
         except Exception as e:
             raise Exception("Impossibile aggiornare: " + str(e))
-
+    
+    # return an activity from the id of it
     @staticmethod
     def getActivityFromID(activityID):
         client = MongoManager.getInstance()
         db = client[os.getenv("DB_NAME")]
         collection = db[os.getenv("ACTIVITIES_COLLECTION")]
-        cursor = dict(collection.find_one({"_id": ObjectId(activityID)}))
-        activity = Activity(
-            str(cursor["hostID"]),
-            cursor["hostName"],
-            cursor["location"],
-            cursor["description"],
-            cursor["duration"],
-            cursor["price"],
-            cursor["mainPicture"],
-            cursor["name"],
-            cursor["approved"],
-            cursor["reviews"],
-            str(cursor["_id"]))
-        return Serializer.serializeActivity(activity)
+        try:
+            cursor = dict(collection.find_one({"_id": ObjectId(activityID)}))
+            activity = Activity(
+                str(cursor["hostID"]),
+                cursor["hostName"],
+                cursor["location"],
+                cursor["description"],
+                cursor["duration"],
+                cursor["price"],
+                cursor["mainPicture"],
+                cursor["name"],
+                cursor["approved"],
+                cursor["reviews"],
+                str(cursor["_id"]))
+            return Serializer.serializeActivity(activity)
+        except Exception as e:
+            raise Exception("Impossibile ottenere: " + str(e))
 
     @staticmethod
     def insertNewActivity(activity: Activity):
@@ -111,6 +118,10 @@ class ActivityManager:
             raise Exception("L'utente non possiede l'activity")
         else:
             try:
+                # transaction to delete and update all documents connected to the activity that we are going to delete:
+                # - delete all reservation made for the activity from the reservation collection
+                # - remove from nested array in users collection all the reservations made for the activity
+                # - delete all reviews for the activity
                 with client.start_session() as session:
                     with session.start_transaction():
                         collection.delete_one({"_id": ObjectId(activityID)} , session=session)
@@ -121,6 +132,9 @@ class ActivityManager:
             except Exception:
                 raise Exception("Impossibile eliminare")
 
+    # return a list of activity's id that are not available for a specific date 
+    # it also take a reservationID in case the user want to update his reservation otherwise 
+    # it could throw error
     @staticmethod
     def getOccupiedActivities(start_date , reservation = ""):
         client = MongoManager.getInstance()
@@ -137,6 +151,7 @@ class ActivityManager:
         occupiedActivitiesID = collection.distinct("destinationId", query)
         return occupiedActivitiesID
 
+    # return a list of available activies based on parameters setted by the user
     @staticmethod
     def getFilteredActivities(start_date="", city="", index="", direction=""):
         client = MongoManager.getInstance()
@@ -144,16 +159,22 @@ class ActivityManager:
         occupiedActivitiesID = []
         result = []
         query = {}
+        dateSetted = False
 
         if (city != "" and city is not None):
             query["location.city"] = city
 
-        # Deve essere stato inserito il periodo di svolgimento
         if (start_date != "" and start_date is not None):
-            collection = db[os.getenv("RESERVATIONS_COLLECTION")]
+            dateSetted = True
             occupiedActivitiesID = ActivityManager.getOccupiedActivities(start_date)
-        query["_id"] = {}
-        query["_id"]["$nin"] = occupiedActivitiesID
+            # with pagination we have to do a double condition on _id field
+            if(index != ""):
+                query["$and"] = [{} , {}]
+                query["$and"][0] = {"_id" : {"$nin" : occupiedActivitiesID}}
+            else:
+                query["_id"] = {}
+                query["_id"]["$nin"] = occupiedActivitiesID
+                
         projection = {
             "reservations": 0,
             "reviews": 0
@@ -166,10 +187,21 @@ class ActivityManager:
                 '_id', 1).limit(int(os.getenv("PAGE_SIZE"))))
         else:
             if (direction == "next"):
-                query["_id"]["$gt"] = ObjectId(index)
+                if not(dateSetted):
+                    query["_id"] = {}
+                    query["_id"]["$gt"] = ObjectId(index)
+                else:
+                    query["$and"][1] = {"_id" : {"$gt" : ObjectId(index)}}
+
+
                 activities = list(collection.find(query, projection).sort('_id', 1).limit(int(os.getenv("PAGE_SIZE"))))
             elif (direction == "previous"):
-                query["_id"]["$lt"] = ObjectId(index)
+                if not(dateSetted):
+                    query["_id"] = {}
+                    query["_id"]["$lt"] = ObjectId(index)
+                else:
+                    query["$and"][1] = {"_id" : {"$lt" : ObjectId(index)}}
+
                 activities = list(collection.find(query, projection).sort('_id', -1).limit(int(os.getenv("PAGE_SIZE"))))
 
         for activity in activities:
@@ -188,17 +220,7 @@ class ActivityManager:
 
         return result
 
-    @staticmethod
-    def addReview(review):
-        client = MongoManager.getInstance()
-        db = client[os.getenv("DB_NAME")]
-        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
-        try:
-            collection.update_one({"_id": ObjectId(review.destinationID)}, {
-                                  "$push": {"reviews": review.getDictForAdvertisement()}})
-        except Exception as e:
-            raise Exception("Impossibile aggiungere la review: " + str(e))
-
+    # return a list of activities hosted by a specific user
     @staticmethod
     def getActivityByUserID(userID):
         client = MongoManager.getInstance()
@@ -224,3 +246,15 @@ class ActivityManager:
             return result
         except Exception as e:
             raise Exception("Impossibile ottenere prenotazioni: " + str(e))
+
+
+    @staticmethod
+    def getActivitiesIDListByUserID(userID):
+        client = MongoManager.getInstance()
+        db = client[os.getenv("DB_NAME")]
+        collection = db[os.getenv("ACTIVITIES_COLLECTION")]
+        try:
+            cursor = list(collection.distinct( "_id" , {"hostID": ObjectId(userID)}))
+            return cursor
+        except Exception as e:
+            raise Exception("Impossibile ottenere: " + str(e))

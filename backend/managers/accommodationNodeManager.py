@@ -2,8 +2,11 @@ from utility.serializer import Serializer
 from models.accommodationNode import AccommodationNode
 from utility.graphConnection import GraphManager
 
-
+# Class that represents the manager for the accommodation node stored in graph database. 
+# Methods implements query and serialization of object.
 class AccommodationNodeManager:
+
+    # method that creates a node if it doesn't exists or update his property if it exists.
     @staticmethod
     def createAccommodationNode(accommodationNode):
         client = GraphManager.getInstance()
@@ -12,11 +15,13 @@ class AccommodationNodeManager:
                 checkQuery = "MATCH (a:Accommodation {accommodationID : '%s'}) return COUNT(a) as total" %accommodationNode.accommodationID
                 checkResult = list(session.run(checkQuery))[0]
 
+                # the node doesn't exists, create it
                 if checkResult.value("total") == 0:
                     query = "CREATE (a:Accommodation {accommodationID: '%s', name: '%s'})" % (
                         accommodationNode.accommodationID, accommodationNode.name)
                     session.run(query)
-                # il nodo esiste, poteri doverlo modificarlo                
+                
+                # the node already exists               
                 else:
                     AccommodationNodeManager.updateAccommodationNode(accommodationNode)
 
@@ -47,6 +52,7 @@ class AccommodationNodeManager:
         except Exception as e:
             raise Exception("Impossibile aggiornare il nodo accommodation: " + str(e))
 
+    # method that returns the total number of likes received by a specific accommodation
     @staticmethod
     def getTotalLikes(accommodationID):
         client = GraphManager.getInstance()
@@ -60,6 +66,7 @@ class AccommodationNodeManager:
             raise Exception(
                 "Impossibile ottenere totale likes: " + str(e))
 
+    # method that from two userNode, returns a list of accommodations that both users like
     @staticmethod
     def getCommonLikedAccommodation(firstUserNode, secondUserID):
         client = GraphManager.getInstance()
