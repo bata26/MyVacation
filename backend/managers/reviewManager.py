@@ -49,14 +49,18 @@ class ReviewManager:
         db = client[os.getenv("DB_NAME")]
         reviewCollection = db[os.getenv("REVIEW_COLLECTION")]
         destinationCollection = db[os.getenv("ACCOMMODATIONS_COLLECTION")] if destinationType == "accommodation" else db[os.getenv("ACTIVITIES_COLLECTION")]
-
+        print("DEBUG 1")
         try:
             with client.start_session() as session:
                 with session.start_transaction():
+                    print("DEBUG   2")
                     result = reviewCollection.insert_one(review.getDictToUpload() , session=session)
+                    print("DEBUG 3")
                     review._id = result.inserted_id
+                    print(review.getDictToUpload())
                     #destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$push" : {"reviews": {"$each" : [review.getDictToUpload()] , "$slice" : -15}}}, session=session)
                     destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$push" : {"reviews": review.getDictToUpload()}}, session=session)
+                    print("DEBUG 4")
         except Exception:
             raise Exception("Impossibile inserire")
 
