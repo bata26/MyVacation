@@ -538,9 +538,11 @@ def getReviewByAd(destination_id):
 def insertReview(user={}):
     if user["role"] != "admin":
         try:
-            requestBody = request.json
+            requestBody = dict(request.json)
+            print(f"req : {requestBody}")
             destinationType = requestBody["destinationType"]
             if destinationType == "accommodation":
+                print("accommodation")
                 AccommodationController.insertReview(requestBody , user)
             elif destinationType == "activity":
                 ActivityController.insertReview(requestBody , user)
