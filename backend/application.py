@@ -328,7 +328,7 @@ def checkIfUserLikesDestination(destination_type, destination_id , user={}):
 @required_token
 def getLikedAdvsByUserID(destination_type,user_id, user={}):
     try:
-        return UserController.getLikedAdvs(escape(user_id), escape(destination_type)) , 200
+        return jsonify(UserController.getLikedAdvs(escape(user_id), escape(destination_type))) , 200
     except Exception as e:
         return str(e), 500
 
