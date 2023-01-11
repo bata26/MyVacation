@@ -13,7 +13,7 @@ class ActivityNodeManager:
                 checkResult = list(session.run(checkQuery))[0]
 
                 if checkResult.value("total") == 0:
-                    query = "CREATE (a:Activity {activityID: '%s', name: '%s'})" % ( activityNode.userID, activityNode.name)
+                    query = "CREATE (a:Activity {activityID: '%s', name: '%s'})" % ( activityNode.activityID, activityNode.name)
                     session.run(query)
                 
                 else:
