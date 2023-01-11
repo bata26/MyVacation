@@ -107,7 +107,7 @@ class AnalyticsManager:
         try:
             approvedAccommodations = AccommodationManager.getApprovedAccommodationsID()
             result = list(collection.aggregate([
-                {"$match" :  {"destinationID" : {"$in" : approvedAccommodations}}},
+                {"$match" :  {"_id" : {"$in" : approvedAccommodations}}},
                 {"$group":
                  {
                      "_id": "$location.city",
@@ -116,12 +116,10 @@ class AnalyticsManager:
                  },
                 {'$sort': {'averageCost': -1}},
                 {"$project": {"_id": 0, "city": "$_id", "averageCost": {"$round": ["$averageCost", 2]}}}
-
             ]))
             return result
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
-            #print("Impossibile eseguire la query: " + str(e))
 
     @staticmethod
     def getActivityAverageCost(user):
@@ -131,7 +129,7 @@ class AnalyticsManager:
         try:
             aprovedActivities = ActivityManager.getApprovedActivitiesID()
             result = list(collection.aggregate([
-                {"$match" :  {"destinationID" : {"$in" : aprovedActivities}}},
+                {"$match" :  {"_id" : {"$in" : aprovedActivities}}},
                 {"$group":
                  {
                      "_id": "$location.city",
@@ -140,12 +138,10 @@ class AnalyticsManager:
                  },
                 {'$sort': {'averageCost': -1}},
                 {"$project": {"_id": 0, "city": "$_id", "averageCost": {"$round": ["$averageCost", 2]}}}
-
             ]))
             return result
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
-            #print("Impossibile eseguire la query: " + str(e))
 
     # Ottieni i tre annunci più prenotati di sempre
     @staticmethod
