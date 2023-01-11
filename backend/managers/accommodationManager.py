@@ -263,7 +263,7 @@ class AccommodationManager:
                     with session.start_transaction():
                         collection.delete_one({"_id": ObjectId(accommodationID)}, session=session)
                         reservationCollection.delete_many({"destinationID" : ObjectId(accommodationID)}, session=session)
-                        userCollection.update_many({"_id" : ObjectId(user["_id"])} , {"$pull" : {"reservations.destinationID" : ObjectId(accommodationID)}}, session=session)
+                        userCollection.update_many({"_id" : ObjectId(user["_id"])} , {"$pull" : {"reservations" : {"destinationID" : ObjectId(accommodationID)}}}, session=session)
                         reviewCollection.delete_many({"destinationID" : ObjectId(accommodationID)}, session=session)
                 return True
             except Exception:

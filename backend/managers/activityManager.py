@@ -115,7 +115,7 @@ class ActivityManager:
                     with session.start_transaction():
                         collection.delete_one({"_id": ObjectId(activityID)} , session=session)
                         reservationCollection.delete_many({"destinationID" : ObjectId(activityID)} , session=session)
-                        userCollection.update_many({"_id" : ObjectId(user["_id"])} , {"$pull" : {"reservations.destinationID" : ObjectId(activityID)}} , session=session)
+                        userCollection.update_many({"_id" : ObjectId(user["_id"])} , {"$pull" : {"reservations" : {"destinationID" : ObjectId(activityID)}}} , session=session)
                         reviewCollection.delete_many({"destinationID" : ObjectId(activityID)}, session=session)
                 return True
             except Exception:
