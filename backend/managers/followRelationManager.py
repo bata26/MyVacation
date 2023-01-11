@@ -3,6 +3,7 @@ from models.followRelation import FollowRelation
 
 class FollowRelationManager:
 
+#Adds a follow relation
     @staticmethod
     def addFollowRelation(followRelation):
         client = GraphManager.getInstance()
@@ -15,6 +16,7 @@ class FollowRelationManager:
         except Exception as e:
             raise Exception("Impossibile inserire la relazione: " + str(e))
 
+#Removes a follow relation
     @staticmethod
     def removeFollowRelation(followRelation):
         client = GraphManager.getInstance()

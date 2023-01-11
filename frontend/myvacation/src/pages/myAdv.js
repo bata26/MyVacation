@@ -46,7 +46,7 @@ const MyAdv = () => {
             );
 
         //Richiesta per recuperare le accommodations dell'utente
-        api.get("/myadvacc/" + profileID)
+        api.get("/myadvacc")
             .then(function (response) {
                 setAccommodations(response.data);
                 response.data.map((item) => {
@@ -60,7 +60,7 @@ const MyAdv = () => {
             );
 
         //Richiesta per recuperare le activities dell'utente
-        api.get("/myadvact/" + profileID)
+        api.get("/myadvact")
             .then(function (response) {
                 setActivities(response.data);
                 response.data.map((item) => {

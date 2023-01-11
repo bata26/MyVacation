@@ -8,8 +8,10 @@ from utility.serializer import Serializer
 from managers.accommodationManager import AccommodationManager
 from managers.activityManager import ActivityManager
 
+#In this file are implemented all the analytics
 
 class AnalyticsManager:
+#Gets the count of reservations per month per city
     @staticmethod
     def getReservationByMonth(user):
         client = MongoManager.getInstance()
@@ -42,6 +44,7 @@ class AnalyticsManager:
         except Exception as e:
             raise Exception("Impossibile eseguire la query: " + str(e))
 
+#Gets the count of users subscribed per month
     @staticmethod
     def getUsersForMonth():
         client = MongoManager.getInstance()
@@ -73,7 +76,7 @@ class AnalyticsManager:
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
 
-    # Ottieni le tre città con più prenotazioni nell'ultimo mese (data da rivedere)
+#Gets cities with the most count of reservations in the last month
     @staticmethod
     def getTopCities():
         client = MongoManager.getInstance()
@@ -99,6 +102,7 @@ class AnalyticsManager:
             raise Exception("Impossibile ottenere: " + str(e))
             #print("impossibile ottenere: " + str(e))
 
+#Gets accommodations average cost per city
     @staticmethod
     def getAccommodationAverageCost(user):
         client = MongoManager.getInstance()
@@ -121,6 +125,7 @@ class AnalyticsManager:
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
 
+#Gets activities average cost per city
     @staticmethod
     def getActivityAverageCost(user):
         client = MongoManager.getInstance()
@@ -143,7 +148,7 @@ class AnalyticsManager:
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
 
-    # Ottieni i tre annunci più prenotati di sempre
+# Gets the three most booked accommodations/activities ever
     @staticmethod
     def getTopAdv():
         client = MongoManager.getInstance()
@@ -185,6 +190,7 @@ class AnalyticsManager:
         except Exception as e:
             raise Exception("Impossibile ottenere: " + str(e))
 
+#Gets the total count of reservations per user (not used)
     @staticmethod
     def getTotReservations(user):
         client = MongoManager.getInstance()
@@ -212,7 +218,7 @@ class AnalyticsManager:
         except Exception as e:
             raise Exception("Impossibile eseguire la query: " + str(e))
 
-
+#Gets the total count of accommodations/activities
     @staticmethod
     def getTotAdvs(user):
         client = MongoManager.getInstance()

@@ -3,6 +3,7 @@ from utility.graphConnection import GraphManager
 
 class LikeRelationManager:
 
+#Checks if a user likes an accommodation/activity
     @staticmethod
     def checkIfExists(likeRelation):
         client = GraphManager.getInstance()
@@ -26,6 +27,7 @@ class LikeRelationManager:
         except Exception as e:
             raise Exception("Impossibile inserire la relazione: " + str(e))
 
+#Adds a like relation
     @staticmethod
     def addLikeRelation(likeRelation):
         client = GraphManager.getInstance()
@@ -48,6 +50,7 @@ class LikeRelationManager:
         except Exception as e:
             raise Exception("Impossibile inserire la relazione: " + str(e))
 
+#Removes a like relation
     @staticmethod
     def removeLikeRelation(likeRelation):
         client = GraphManager.getInstance()

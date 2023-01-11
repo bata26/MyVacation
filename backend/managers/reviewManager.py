@@ -6,7 +6,7 @@ from utility.serializer import Serializer
 
 
 class ReviewManager:
-
+#Gets a review by Id
     @staticmethod
     def getReviewFromID(reviewID):
         client = MongoManager.getInstance()
@@ -22,7 +22,7 @@ class ReviewManager:
             str(cursor["_id"]))
         return Serializer.serializeReview(review)\
 
-
+#Gets all the reviews of an accommodation/activity
     @staticmethod
     def getReviewFromDestinationID(destinationID):
         client = MongoManager.getInstance()
@@ -42,6 +42,7 @@ class ReviewManager:
             result.append(Serializer.serializeReview(reviewResult))
         return result
 
+#Inserts a review
     @staticmethod
     def insertNewReview(review , destinationID , destinationType):
         client = MongoManager.getInstance()
@@ -58,6 +59,7 @@ class ReviewManager:
         except Exception:
             raise Exception("Impossibile inserire")
 
+#Deletes a review
     @staticmethod
     def deleteReview(reviewID,  destinationID, destinationType, user):
         client = MongoManager.getInstance()
@@ -79,6 +81,7 @@ class ReviewManager:
         except Exception as e:
             raise Exception("Impossibile eliminare : " + str(e))
 
+#Checks if the logged user can review an accommodation/activity
     @staticmethod
     def checkIfCanReview(destinationID, user):
         client = MongoManager.getInstance()

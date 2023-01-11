@@ -12,7 +12,7 @@ from managers.accommodationManager import AccommodationManager
 from managers.activityManager import ActivityManager
 
 class ReservationManager:
-
+#Books an accommodation/activity
     @staticmethod
     def book(reservation):
         client = MongoManager.getInstance()
@@ -33,6 +33,7 @@ class ReservationManager:
         except Exception as e:
             raise Exception("Impossibile prenotare: " + str(e) )
 
+#Gets reservations by userID
     @staticmethod
     def getReservationsByUser(userID):
         client = MongoManager.getInstance()
@@ -69,6 +70,7 @@ class ReservationManager:
         except Exception as e:
             raise Exception("Impossibile ottenere prenotazioni: " + str(e))
 
+#Gets reservations made by all users for own accommodations/activities
     @staticmethod
     def getReservationsByHost(hostID):
         client = MongoManager.getInstance()
@@ -105,6 +107,7 @@ class ReservationManager:
         except Exception as e:
             raise Exception("Impossibile ottenere prenotazioni: " + str(e))
 
+#Updates a reservation
     @staticmethod
     def updateReservation(reservation, newStartDate, newEndDate , user):
         client = MongoManager.getInstance()
@@ -158,7 +161,7 @@ class ReservationManager:
         except Exception as e:
             raise Exception("Impossibile aggiornare prenotazione "+reservationID+": " + str(e))
 
-
+#Deletes a reservation
     @staticmethod
     def deleteReservation(reservationID , user):
         client = MongoManager.getInstance()

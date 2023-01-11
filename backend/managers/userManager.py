@@ -8,7 +8,7 @@ import dateparser
 from flask import jsonify
 
 class UserManager:
-
+#Cheks if the username is already taken by another user
     @staticmethod
     def checkIfUserExists(username):
         client = MongoManager.getInstance()
@@ -19,6 +19,8 @@ class UserManager:
             return result
         except Exception:
             raise Exception("Impossibile inserire")
+
+#Gets a user from his id
     @staticmethod
     def getUserFromID(userID):
         client = MongoManager.getInstance()
@@ -40,6 +42,7 @@ class UserManager:
             str(cursor["_id"]))
         return Serializer.serializeUser(user)
 
+#Inserts a user after the signUp
     @staticmethod
     def insertNewUser(user):
         client = MongoManager.getInstance()
@@ -51,6 +54,7 @@ class UserManager:
         except Exception:
             raise Exception("Impossibile inserire")
 
+#SignIn method
     @staticmethod
     def authenticateUser(username , password):
         client = MongoManager.getInstance()
@@ -67,6 +71,7 @@ class UserManager:
         except Exception:
             raise Exception("impossibile procedere con l'autenticazione")
 
+#Adds a reservation in the user document
     @staticmethod
     def addReservation(reservation):
         client = MongoManager.getInstance()
@@ -77,6 +82,7 @@ class UserManager:
         except Exception as e:
             raise Exception("Impossibile aggiungere la reservation: " + str(e))
 
+#Updates a user
     @staticmethod
     def updateUser(user, userID):
         client = MongoManager.getInstance()

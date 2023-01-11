@@ -6,6 +6,7 @@ from utility.serializer import Serializer
 
 
 class UserNodeManager:
+#Checks if the logged user is following the viewed user
     @staticmethod
     def checkIfIsFollowing(userID , followedID):
         client = GraphManager.getInstance()
@@ -23,7 +24,7 @@ class UserNodeManager:
         except Exception as e:
             raise Exception("Impossibile inserire il nodo utente: " + str(e))
 
-
+#Creates a UserNode after the SignUp
     @staticmethod
     def createUserNode(userNode):
         client = GraphManager.getInstance()
@@ -36,6 +37,7 @@ class UserNodeManager:
         except Exception as e:
             raise Exception("Impossibile inserire il nodo utente: " + str(e))
 
+#Deletes a UserNode
     @staticmethod
     def deleteUserNode(userNodeID):
         client = GraphManager.getInstance()
@@ -47,6 +49,7 @@ class UserNodeManager:
         except Exception as e:
             raise Exception("Impossibile eliminare il nodo utente: " + str(e))
 
+#Gets all the users followed by the checked user
     @staticmethod
     def getFollowedUser(userNodeID):
         client = GraphManager.getInstance()
@@ -67,6 +70,7 @@ class UserNodeManager:
         except Exception as e:
             raise Exception("Impossibile ottenere lista follower: " + str(e))
 
+#Checks if the logged user already likes the viewed accommodation/activity
     @staticmethod
     def checkIfUserLikesDestination(userNodeID, destinationID, destinationType):
         client = GraphManager.getInstance()
@@ -89,6 +93,7 @@ class UserNodeManager:
         except Exception as e:
             raise Exception("Impossibile ottenere annunci: " + str(e))
 
+#Gets all the liked accommodations/activities by the logged user
     @staticmethod
     def getLikedAdvs(userNodeID, destinationType):
         client = GraphManager.getInstance()
@@ -119,7 +124,7 @@ class UserNodeManager:
         except Exception as e:
             raise Exception("Impossibile ottenere annunci: " + str(e))
 
-    # recommended adv: annunci che non piacciono a noi ma che piacciono ad account che seguiamo
+#Recommended adv:gets accommodations/activities that we don't like but, accounts that we follow, like
     @staticmethod
     def getRecommendedAdvs(userNode, destinationType):
         client = GraphManager.getInstance()
@@ -190,8 +195,7 @@ class UserNodeManager:
         except Exception as e:
             raise Exception("Impossibile ottenere lista annunci: " + str(e))
 
-    # Utenti raccomandati: Utenti che non seguiamo ma che vengono seguiti da utenti che seguiamo
-
+#Recommended Users: gets users we don't follow, but are followed by users we follow
     @staticmethod
     def getRecommendedUsers(userNode):
         client = GraphManager.getInstance()

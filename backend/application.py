@@ -709,23 +709,21 @@ def refuseAnnouncement(destination_type, announcementID, user={}):
         return str(e), 500
 
 #Gets own accommodations
-@application.route("/myadvacc/<user_id>", methods=["GET"])
-# @required_token
-def getAccommodationsByUserID(user_id):
-    userID = escape(user_id)
+@application.route("/myadvacc", methods=["GET"])
+@required_token
+def getAccommodationsByUserID(user={}):
     try:
-        result = AccommodationController.getAccommodationsByUserID(userID)
+        result = AccommodationController.getAccommodationsByUserID(user["_id"])
         return jsonify(result), 200
     except Exception as e:
         return str(e), 500
 
 #Gets own activities
-@application.route("/myadvact/<user_id>", methods=["GET"])
+@application.route("/myadvact", methods=["GET"])
 @required_token
-def getActivitiesByUserID(user_id , user={}):
-    userID = escape(user_id)
+def getActivitiesByUserID(user={}):
     try:
-        return jsonify(ActivityController.getActivityByUserID(userID)) , 200
+        return jsonify(ActivityController.getActivityByUserID(user["_id"])) , 200
     except Exception as e:
         return str(e), 500
 
