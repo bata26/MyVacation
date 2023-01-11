@@ -71,7 +71,7 @@ class Serializer:
     def serializeReview(review):
         return {
             "_id" : str(review._id),
-            "reviewerID" : str(review.userID),
+            "userID" : str(review.userID),
             "destinationID" : str(review.destinationID),
             "score" : review.score ,
             "description" : review.description ,
