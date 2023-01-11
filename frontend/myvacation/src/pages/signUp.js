@@ -31,6 +31,8 @@ const SignUp = () => {
   const [languages, setLanguages] = useState([]);
   const [nationality, setNationality] = useState(null);
   let navigate = useNavigate();
+  const today = new Date();
+  const date = (today.getFullYear() - 16) + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 
   const handleNationalityChange = (event) => {
     setNationality(event.target.value);
@@ -131,6 +133,7 @@ const SignUp = () => {
               type="date"
               id="dateOfBirth"
               autoFocus
+              InputProps={{ inputProps: { min: "", max: `${date}` } }}
             />
             <TextField
               margin="normal"

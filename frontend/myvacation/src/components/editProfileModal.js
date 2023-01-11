@@ -36,7 +36,7 @@ const EditProfileModal = ({ id, name, surname, gender, dateOfBirth, nationalityP
     const [languages, setLanguages] = React.useState([]);
     const [nationality, setNationality] = React.useState(nationalityProp);
     const today = new Date();
-    const date = (today.getFullYear() - 18) + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    const date = (today.getFullYear() - 16) + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 
     const handleOpen = () => {
         setOpen(true)
