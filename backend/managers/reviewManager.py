@@ -55,8 +55,8 @@ class ReviewManager:
                 with session.start_transaction():
                     result = reviewCollection.insert_one(review.getDictToUpload() , session=session)
                     review._id = result.inserted_id
-                    destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$push" : {"reviews": {"$each" : [] , "$slice" : -15}}}, session=session)
-                    destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$push" : {"reviews": review.getDictToUpload()}}, session=session)
+                    destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$push" : {"reviews": {"$each" : [review.getDictToUpload()] , "$slice" : -15}}}, session=session)
+                    #destinationCollection.update_one({"_id" : ObjectId(destinationID)} , {"$push" : {"reviews": review.getDictToUpload()}}, session=session)
         except Exception:
             raise Exception("Impossibile inserire")
 
