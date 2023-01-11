@@ -9,7 +9,7 @@ class ActivityNodeManager:
         client = GraphManager.getInstance()
         try:
             with client.session() as session:
-                checkQuery = "MATCH (a:Activity {activityID : '%s'}) return COUNT(a) as total" %activityNode.accommodationID
+                checkQuery = "MATCH (a:Activity {activityID : '%s'}) return COUNT(a) as total" %activityNode.activityID
                 checkResult = list(session.run(checkQuery))[0]
 
                 if checkResult.value("total") == 0:
@@ -74,7 +74,7 @@ class ActivityNodeManager:
                 
                 for item in queryResult:
                     node = item.get("a")
-                    activityNode = ActivityNode(node["accommodationID"], node["name"])
+                    activityNode = ActivityNode(node["activityID"], node["name"])
                     result.append(Serializer.serializeAccommodationNode(activityNode))
                 
                 return result
