@@ -202,13 +202,13 @@ class UserNodeManager:
                 totalFollowed = list(session.run(queryTotalFollowed))[0].value("total")
                 
                 if totalFollowed == 0:
-                    query = "MATCH (u : User) " \
-                            "MATCH (u2:User)-[r:FOLLOW]->(u)  " \
-                            "WHERE NOT u.userID = '%s' " \
-                            "return u , " \
+                    query = "MATCH (u3:User) " \
+                            "MATCH (u2:User)-[r:FOLLOW]->(u3)  " \
+                            "WHERE NOT u3.userID = '%s' AND NOT u2.userID='%s' " \
+                            "return u3 , " \
                             "COUNT(r) as followed " \
                             "ORDER BY followed DESC " \
-                            "LIMIT 3" % userNode.userID
+                            "LIMIT 3" % (userNode.userID , userNode.userID)
                 else:
                     query = "MATCH (u:User {userID: '%s'})-[:FOLLOW]->(u2:User) " \
                             "MATCH (u2)-[:FOLLOW]->(u3:User) " \
