@@ -687,11 +687,11 @@ def refuseAnnouncement(destination_type, announcementID, user={}):
     try:
 
         if escape(destination_type) == "accommodation":
-            result = AccommodationController.refuseAccommodation(announcementID, user)
+            result = AccommodationController.refuseAccommodation(escape(announcementID), user)
         elif escape(destination_type) == "activity":
-            result = ActivityController.refuseActivity(announcementID, user)
+            result = ActivityController.refuseActivity(escape(announcementID), user)
         if not(result):
-            Logger.addNodeToFile(escape(destination_type) , announcementID , "DELETE")
+            Logger.addNodeToFile(escape(destination_type) , escape(announcementID) , "DELETE")
         return "OK", 200
     except Exception as e:
         return str(e), 500
