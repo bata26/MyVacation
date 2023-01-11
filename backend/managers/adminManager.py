@@ -242,13 +242,11 @@ class AdminManager:
         usersCollection = db[os.getenv("USERS_COLLECTION")]
         activitiesCollection = db[os.getenv("ACTIVITIES_COLLECTION")]
         accommodationCollection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
-        reviewsCollection = db[os.getenv("REVIEWS_COLLECTION")]
+        reviewsCollection = db[os.getenv("REVIEW_COLLECTION")]
 
         if user["role"] != "admin":
             raise Exception("L'utente non possiede i privilegi di admin")
-        #try:
-        #    res = collection.delete_one({"_id": ObjectId(userID)})
-        #    return res
+        
         try:
             with client.start_session() as session:
                  with session.start_transaction():
@@ -256,8 +254,8 @@ class AdminManager:
                     activitiesCollection.delete_many({"hostID" : ObjectId(userID)}, session=session)
                     accommodationCollection.delete_many({"hostID" : ObjectId(userID)}, session=session)
                     reviewsCollection.delete_many({"userID" : ObjectId(userID)}, session=session)
-                    activitiesCollection.update_many({"reviews.userID" : ObjectId(userID)}, session=session)
-                    accommodationCollection.update_many({"reviews.userID" : ObjectId(userID)}, session=session)
+                    activitiesCollection.update_many({"reviews.userID" : ObjectId(userID)}, {"$pull" : {"reviews" : {"userID" : ObjectId(userID)}}}, session=session)
+                    accommodationCollection.update_many({"reviews.userID" : ObjectId(userID)}, {"$pull" : {"reviews" : {"userID" : ObjectId(userID)}}} ,session=session)
             return True
         except Exception:
             raise Exception("Impossibile eliminare")
