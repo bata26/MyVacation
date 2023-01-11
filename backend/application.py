@@ -538,6 +538,8 @@ def getReviewByAd(destination_id):
 def insertReview(user={}):
     if user["role"] != "admin":
         try:
+            print("egomi")
+            print(request.json)
             requestBody = dict(request.json)
             print(f"req : {requestBody}")
             destinationType = requestBody["destinationType"]

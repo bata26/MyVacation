@@ -46,7 +46,7 @@ const ReviewForm = ({destinationID}) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const review = {
-      //"destinationType" : destinationType,
+      "destinationType" : destinationType,
       "destinationID" : destinationID,
       "score" : data.get("rating"),
       "description" : data.get("description"),
