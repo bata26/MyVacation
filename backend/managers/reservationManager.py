@@ -115,7 +115,6 @@ class ReservationManager:
         reservationID = reservation["_id"]
         prevTotalExpense = int(reservation["totalExpense"])
         destinationType = reservation["destinationType"]
-        print(reservation)
         usersCollection = db[os.getenv("USERS_COLLECTION")]
         try:
             oldReservation = collection.find_one({"_id" : ObjectId(reservationID)})
@@ -134,11 +133,9 @@ class ReservationManager:
                     if ObjectId(destinationID) in occupiedAccommodationsID:
                         raise Exception("Accommodation Occupata, impossibile aggiornare")
 
-                    print("pre")
                     newNightNumber = (((dateparser.parse(newEndDate) - dateparser.parse(newStartDate)).days))
                     newTotalExpense = newNightNumber*price
                     query = {'_id': ObjectId(reservationID)}
-                    print("post")
                     with client.start_session() as session:
                         with session.start_transaction():
                             collection.update_one(query, {"$set": {'startDate': dateparser.parse(newStartDate), 'endDate': dateparser.parse(newEndDate), "totalExpense" : newTotalExpense}} , session=session)

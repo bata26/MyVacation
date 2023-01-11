@@ -32,7 +32,6 @@ class AccommodationController:
                 AccommodationNodeManager.deleteAccommodationNode(accommodationID)
                 return True
         except Exception as e:
-            print(str(e))
             return False
     
     @staticmethod
@@ -82,8 +81,6 @@ class AccommodationController:
                 "city": formData["city"],
                 "country": formData["country"],
             }
-            print("Here0")
-            print(formData)
             accommodation = Accommodation(
                 formData["name"],
                 formData["description"],
@@ -99,7 +96,6 @@ class AccommodationController:
                 False,
                 pictures=pictures,
             )
-            print("H")
     
             accommodationID = AccommodationManager.insertNewAccommodation(accommodation)
             if user["role"] != "host":

@@ -212,7 +212,6 @@ class AccommodationManager:
                     .sort("_id", -1)
                     .limit(int(os.getenv("PAGE_SIZE")))
                 )
-        print(query)
         for accommodation in accommodations:
             accommodationResult = Accommodation(
                 accommodation["name"],
