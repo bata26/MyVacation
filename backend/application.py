@@ -24,6 +24,7 @@ load_dotenv()
 application = Flask(__name__)
 cors = CORS(application, supports_credentials=True, origins=["*", "http://127.0.0.1:3000"])
 
+#In this file are exposed all the endpoints
 
 def validateObjecID(userID):
     validationRegex = "^[0-9a-fA-F]{24}$"
@@ -54,7 +55,7 @@ def testValidation(user={}):
     nodeToDelete = {"type": "activity", "_id": activityID}
     return "", 200
 
-
+#Gets the cities with most reservations
 @application.route("/analytics/topcities", methods=["GET"])
 def getBestCities():
     try:
@@ -62,7 +63,7 @@ def getBestCities():
     except Exception as e:
         return str(e), 500
 
-
+#Gets the list of advertisement's ids with more reservations
 @application.route("/analytics/topadv", methods=["GET"])
 # @required_token
 def getBestAdv():
@@ -71,7 +72,7 @@ def getBestAdv():
     except Exception as e:
         return str(e), 500
 
-
+#Gets the list of advertisement's info with more reservations
 @application.route("/analytics/advinfo", methods=["POST"])
 # @required_token
 def getBestAdvInfo(user={}):
@@ -86,7 +87,7 @@ def getBestAdvInfo(user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets reservations per month
 @application.route("/analytics/monthReservations", methods=["GET"])
 @required_token
 def getMonthReservations(user={}):
@@ -95,7 +96,7 @@ def getMonthReservations(user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets user subscriptions per month
 @application.route("/analytics/usersForMonth", methods=["GET"])
 @required_token
 def getUsersForMonth(user={}):
@@ -104,7 +105,7 @@ def getUsersForMonth(user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets the accommodations average cost per city
 @application.route("/analytics/averageAccommodations", methods=["GET"])
 @required_token
 def getAccommodationsAverageCost(user={}):
@@ -113,7 +114,7 @@ def getAccommodationsAverageCost(user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets the activities average cost per city
 @application.route("/analytics/averageActivities", methods=["GET"])
 @required_token
 def getActivitiesAverageCost(user={}):
@@ -122,7 +123,7 @@ def getActivitiesAverageCost(user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets total reservations per user
 @application.route("/analytics/totalReservations", methods=["GET"])
 @required_token
 def getTotalReservations(user={}):
@@ -131,7 +132,7 @@ def getTotalReservations(user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets total advertisements published
 @application.route("/analytics/totalAdvertisement", methods=["GET"])
 @required_token
 def getTotalAdvs(user={}):
@@ -140,7 +141,7 @@ def getTotalAdvs(user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Deletes an activty by id
 @application.route("/activities/<activity_id>", methods=["DELETE"])
 @required_token
 def deleteActivityByID(activity_id, user={}):
@@ -153,7 +154,7 @@ def deleteActivityByID(activity_id, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets an activity by id
 @application.route("/activities/<activity_id>", methods=["GET"])
 def getActivityByID(activity_id):
     activityID = escape(activity_id)
@@ -162,7 +163,7 @@ def getActivityByID(activity_id):
     except Exception as e:
         return str(e), 500
 
-
+#Gets activities filtered by params
 @application.route("/activities", methods=["GET"])
 def getActivities(user={}):
     args = request.args
@@ -179,7 +180,7 @@ def getActivities(user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Deletes an accommodation by id
 @application.route("/accommodations/<accommodation_id>", methods=["DELETE"])
 @required_token
 def deleteAccommodationById(accommodation_id, user={}):
@@ -193,7 +194,7 @@ def deleteAccommodationById(accommodation_id, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Updates an accommodation by id
 @application.route("/edit/accommodation/<accommodationID>", methods=["POST"])
 @required_token
 def editAccommodationById(accommodationID, user={}):
@@ -213,7 +214,7 @@ def editAccommodationById(accommodationID, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Updates an activity by id
 @application.route("/edit/activity/<activityID>", methods=["POST"])
 @required_token
 def editActivityById(activityID, user={}):
@@ -235,7 +236,7 @@ def editActivityById(activityID, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets accommodation by id
 @application.route("/accommodations/<accommodation_id>", methods=["GET"])
 def getAccommodationById(accommodation_id):
     accommodationID = escape(accommodation_id)
@@ -244,7 +245,7 @@ def getAccommodationById(accommodation_id):
     except Exception as e:
         return str(e), 500
 
-
+#Books an accommodation
 @application.route("/book/accommodation", methods=["POST"])
 @required_token
 def bookAccommodation(user={}):
@@ -258,7 +259,7 @@ def bookAccommodation(user={}):
     except Exception as e:
         return str(e) , 500
 
-
+#Updates a reservation
 @application.route("/reservation", methods=["PATCH"])
 @required_token
 def updateReservation(user={}):
@@ -269,7 +270,7 @@ def updateReservation(user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Updates a user
 @application.route("/user/<user_id>", methods=["PATCH"])
 @required_token
 def updateUser(user_id, user={}):
@@ -284,7 +285,7 @@ def updateUser(user_id, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Checks if the logged user is following the viewed user
 @application.route("/users/isfollowing/<user_id>", methods=["GET"])
 @required_token
 def checkIfIsFollowing(user_id , user={}):
@@ -293,7 +294,7 @@ def checkIfIsFollowing(user_id , user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets all the followed users by an user
 @application.route("/users/following/<user_id>", methods=["GET"])
 @required_token
 def getFollowedUsersByUserID(user_id , user={}):
@@ -302,6 +303,7 @@ def getFollowedUsersByUserID(user_id , user={}):
     except Exception as e:
         return str(e), 500
 
+#Create a following relation
 @application.route("/users/follow", methods=["POST"])
 @required_token
 def followUser(user={}):
@@ -315,6 +317,7 @@ def followUser(user={}):
     else:
         return "Admin non può seguire" , 500
 
+#Checks if a user likes an accommodation/activity
 @application.route("/users/liking/<destination_type>/<destination_id>", methods=["GET"])
 @required_token
 def checkIfUserLikesDestination(destination_type, destination_id , user={}):
@@ -323,7 +326,7 @@ def checkIfUserLikesDestination(destination_type, destination_id , user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets all the accommodations/activities liked by a user
 @application.route("/users/liked/<destination_type>/<user_id>", methods=["GET"])
 @required_token
 def getLikedAdvsByUserID(destination_type,user_id, user={}):
@@ -332,7 +335,7 @@ def getLikedAdvsByUserID(destination_type,user_id, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Create a like relation
 @application.route("/users/liking", methods=["POST"])
 @required_token
 def likeAdv(user={}):
@@ -349,6 +352,7 @@ def likeAdv(user={}):
     else:
         raise Exception("Admin non può mettere like")
 
+#Gets the common liked accommodations/activities
 @application.route("/commonadvs/<destination_type>/<user_id>", methods=["GET"])
 @required_token
 def getCommonAdv(destination_type, user_id, user={}):
@@ -361,7 +365,7 @@ def getCommonAdv(destination_type, user_id, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets total likes of an accommodation/activity
 @application.route("/likenumber/<destination_type>/<destination_id>", methods=["GET"])
 @required_token
 def getTotalLikes(destination_type, destination_id, user={}):
@@ -375,7 +379,7 @@ def getTotalLikes(destination_type, destination_id, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets 3 recommended users
 @application.route("/recommendations/user", methods=["GET"])
 @required_token
 def getRecommendedUsers(user={}):
@@ -384,7 +388,7 @@ def getRecommendedUsers(user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Removes a follow relation
 @application.route("/users/unfollow", methods=["POST"])
 @required_token
 def unfollowUser(user={}):
@@ -398,6 +402,7 @@ def unfollowUser(user={}):
     else:
         return "Admin non può smettere di seguire" , 500
 
+#Removes a like relation
 @application.route("/users/unliking", methods=["POST"])
 @required_token
 def dislikeAdv(user={}):
@@ -415,7 +420,7 @@ def dislikeAdv(user={}):
     else:
         raise Exception("Admin non può rimuovere il like")
 
-
+#Gets 3 recommended accommodations/activities
 @application.route("/recommendations/<destination_type>", methods=["GET"])
 @required_token
 def getRecommendedAdvs(destination_type, user={}):
@@ -424,7 +429,7 @@ def getRecommendedAdvs(destination_type, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Books an activity
 @application.route("/book/activity", methods=["POST"])
 @required_token
 def bookActivity(user={}):
@@ -439,6 +444,7 @@ def bookActivity(user={}):
     except Exception as e:
                 return str(e), 500
 
+#Gets all reservations made by a user
 @application.route("/reservations/<user_id>", methods=["GET"])
 @required_token
 def getReservationsByUserID(user_id , user={}):
@@ -447,6 +453,7 @@ def getReservationsByUserID(user_id , user={}):
     except Exception as e:
         return str(e), 500
 
+#Gets all reservations made to all host's accommodations/activities
 @application.route("/reservationsHost/<host_id>", methods=["GET"])
 @required_token
 def getReservationsByHostID(host_id , user={}):
@@ -455,6 +462,7 @@ def getReservationsByHostID(host_id , user={}):
     except Exception as e:
         return str(e), 500
 
+#Deletes a reservation
 @application.route("/reservations/<reservation_id>", methods=["DELETE"])
 @required_token
 def deleteReservation(reservation_id, user={}):
@@ -464,7 +472,7 @@ def deleteReservation(reservation_id, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets accommodations filtered by params
 @application.route("/accommodations", methods=["GET"])
 def getAccommodations():
     args = request.args
@@ -488,7 +496,7 @@ def getAccommodations():
     except Exception as e:
         return str(e), 500
 
-
+#Inserts an accommodation
 @application.route("/insert/accommodation", methods=["POST"])
 @required_token
 def insertAccommodation(user={}):
@@ -501,6 +509,7 @@ def insertAccommodation(user={}):
     else:
         return "Admin non può inserire un alloggio" , 500
 
+#Inserts an activity
 @application.route("/insert/activity", methods=["POST"])
 @required_token
 def insertActivity(user={}):
@@ -513,6 +522,7 @@ def insertActivity(user={}):
     else:
         return "Admin non può inserire un'attività" , 500
 
+#Gets a review by id
 @application.route("/reviews/<review_id>", methods=["GET"])
 # @required_token
 def getReviewByID(review_id):
@@ -522,7 +532,7 @@ def getReviewByID(review_id):
     except Exception as e:
         return str(e), 500
 
-
+#Gets all the reviews of an accommodation/activity
 @application.route("/reviewsByDestination/<destination_id>", methods=["GET"])
 # @required_token
 def getReviewByAd(destination_id):
@@ -532,7 +542,7 @@ def getReviewByAd(destination_id):
     except Exception as e:
         return str(e), 500
 
-
+#Inserts a review
 @application.route("/reviews", methods=["PUT"])
 @required_token
 def insertReview(user={}):
@@ -550,6 +560,7 @@ def insertReview(user={}):
     else:
         raise Exception("Admin non può inserire recensione")
 
+#Deletes a review by id
 @application.route("/reviews/<destinationType>/<destinationID>/<reviewID>", methods=["DELETE"])
 @required_token
 def deleteReviewByID(destinationType, destinationID, reviewID, user={}):
@@ -562,7 +573,7 @@ def deleteReviewByID(destinationType, destinationID, reviewID, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Deletes a user by id
 @application.route("/users/<user_id>", methods=["DELETE"])
 @required_token
 def deleteUserById(user_id, user={}):
@@ -575,7 +586,7 @@ def deleteUserById(user_id, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets a user by id
 @application.route("/users/<user_id>", methods=["GET"])
 @required_token
 def getUserByID(user_id, user={}):
@@ -585,7 +596,7 @@ def getUserByID(user_id, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Checks if the logged user can review an accommodation/activity
 @application.route("/review/check/<destination_id>", methods=["GET"])
 @required_token
 def getIfCanReview(destination_id, user={}):
@@ -597,7 +608,7 @@ def getIfCanReview(destination_id, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Login endpoint
 @application.route("/login", methods=["POST"])
 # @required_token
 def loginUser():
@@ -608,7 +619,7 @@ def loginUser():
     except Exception as e:
         return str(e), 500
 
-
+#SignUp endpoint
 @application.route("/signup", methods=["POST"])
 # @required_token
 def signUp():
@@ -622,7 +633,7 @@ def signUp():
     except Exception as e:
         return str(e), 500
 
-
+#Gets users filtered by params
 @application.route("/users", methods=["GET"])
 @required_token
 def getUsers(user):
@@ -639,7 +650,7 @@ def getUsers(user):
     except Exception as e:
         return str(e), 500
 
-
+#Gets all the accommodations/activities that have to be approved
 @application.route("/admin/announcements/<destination_type>", methods=["GET"])
 @required_token
 def getAnnouncementsToBeApproved(destination_type, user={}):
@@ -653,7 +664,7 @@ def getAnnouncementsToBeApproved(destination_type, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets an accommodation/activity that has to be approved
 @application.route("/admin/announcement/<destination_type>/<announcementID>", methods=["GET"])
 @required_token
 def getAnnouncementToBeApprovedByID(destination_type, announcementID , user={}):
@@ -664,7 +675,7 @@ def getAnnouncementToBeApprovedByID(destination_type, announcementID , user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Approves an accommodation/activity
 @application.route("/admin/announcement/<announcementID>", methods=["POST"])
 @required_token
 def approveAnnouncement(announcementID, user={}):
@@ -679,7 +690,7 @@ def approveAnnouncement(announcementID, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Refuses an accommodation/activity
 @application.route("/admin/announcement/<destination_type>/<announcementID>", methods=["DELETE"])
 @required_token
 def refuseAnnouncement(destination_type, announcementID, user={}):
@@ -697,7 +708,7 @@ def refuseAnnouncement(destination_type, announcementID, user={}):
     except Exception as e:
         return str(e), 500
 
-
+#Gets own accommodations
 @application.route("/myadvacc/<user_id>", methods=["GET"])
 # @required_token
 def getAccommodationsByUserID(user_id):
@@ -708,7 +719,7 @@ def getAccommodationsByUserID(user_id):
     except Exception as e:
         return str(e), 500
 
-
+#Gets own activities
 @application.route("/myadvact/<user_id>", methods=["GET"])
 @required_token
 def getActivitiesByUserID(user_id , user={}):
