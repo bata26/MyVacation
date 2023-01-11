@@ -7,6 +7,10 @@ from models.userNode import UserNode
 from managers.userNodeManager import UserNodeManager
 from models.followRelation import FollowRelation
 from managers.followRelationManager import FollowRelationManager
+
+# This class contains methods reguarding the Users behavior. Methods described here 
+# are responsible for calling the underlay layer (Manager) and perform
+# different kind of operations like: CRUD, permissions check, authentication process and so on.
 class UserController:
     
     @staticmethod

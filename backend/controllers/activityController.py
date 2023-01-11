@@ -9,6 +9,9 @@ from models.userNode import UserNode
 from models.activityNode import ActivityNode
 from models.likeRelation import LikeRelation
 
+# This class contains methods reguarding the Activities behavior. Methods described here 
+# are responsible for calling the underlay layer (Manager) and perform
+# different kind of operations like: CRUD, statistic and so on.
 class ActivityController:
 
     @staticmethod
@@ -25,7 +28,6 @@ class ActivityController:
             ActivityManager.deleteActivity(activityID, user)
         except Exception as e:
             raise Exception(str(e))
-        # provo ad eliminare il nodo
         try:
             ActivityNodeManager.deleteActivityNode(activityID)
             return True
@@ -114,14 +116,12 @@ class ActivityController:
             ActivityManager.deleteActivity(activityID, user)
         except Exception as e:
             return str(e), 200
-         # provo ad eliminare il nodo
         try:
             ActivityNodeManager.deleteActivityNode(activityID)
             return True
         except Exception as e:
             return False
     
-
     @staticmethod
     def getActivityByUserID(userID):
         try:
@@ -140,7 +140,6 @@ class ActivityController:
         except Exception as e:
             return str(e), 200
     
-
     @staticmethod
     def dislikeActivity(requestBody , user):
         try:

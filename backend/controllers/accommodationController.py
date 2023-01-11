@@ -7,9 +7,12 @@ from models.accommodationNode import AccommodationNode
 from models.userNode import UserNode
 from models.likeRelation import LikeRelation
 from models.accommodation import Accommodation
-
 from models.review import Review
 from managers.reviewManager import ReviewManager
+
+# This class contains methods reguarding the Accommodations behavior. Methods described here 
+# are responsible for calling the underlay layer (Manager) and perform
+# different kind of operations like: CRUD, statistic and so on.
 class AccommodationController:
 
     @staticmethod
@@ -26,7 +29,6 @@ class AccommodationController:
             deleteResult = AccommodationManager.deleteAccommodation(accommodationID, user)
         except Exception as e:
             raise Exception(str(e))
-        # provo ad eliminare il nodo
         try:
             if deleteResult:
                 AccommodationNodeManager.deleteAccommodationNode(accommodationID)
@@ -150,7 +152,6 @@ class AccommodationController:
         except Exception as e:
             return str(e), 200
     
-
     @staticmethod
     def dislikeAccommodation(requestBody , user):
         try:

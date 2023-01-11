@@ -1,5 +1,8 @@
 from managers.analyticsManager import AnalyticsManager
 
+# This class contains methods reguarding the Analytics behavior. Methods described here 
+# are responsible for calling the underlay layer (Manager) and retrive informations
+# reguarding statistics of the application.
 class AnalyticsController:
 
     @staticmethod

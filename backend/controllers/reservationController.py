@@ -3,6 +3,8 @@ import dateparser
 from models.reservation import Reservation
 from datetime import date
 
+# This class contains methods reguarding the Reservations behavior. Methods described here 
+# are responsible for calling the underlay layer (Manager) and perform CRUD operations.
 class ReservationController:
 
     @staticmethod

@@ -1,5 +1,7 @@
 from managers.reviewManager import ReviewManager
 
+# This class contains methods reguarding the Reviews behavior. Methods described here 
+# are responsible for calling the underlay layer (Manager) and perform CRUD operations.
 class ReviewController:
 
     @staticmethod
