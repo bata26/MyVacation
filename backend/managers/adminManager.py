@@ -260,5 +260,5 @@ class AdminManager:
                     reviewsCollection.delete_many({"userID" : ObjectId(userID)}, session=session)
                     reservationCollection.delete_many({"hostID" : ObjectId(userID) , "startDate" : {"$gte" : datetime.today()}} , session=session)
             return True
-        except Exception:
-            raise Exception("Impossibile eliminare")
+        except Exception as e:
+            raise Exception("Impossibile eliminare " + str(e))
