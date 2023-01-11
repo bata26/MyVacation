@@ -58,7 +58,8 @@ const Accommodation = () => {
 					setEnableButton(false)
 			})
 			.catch(function (error) {
-				alert("Ops, something went wrong :(" + "\n" + error);
+				alert("The accommodation requested doesn't exist or has been removed");
+                navigate(-1);
 			});
 
 		if (localStorage.getItem("userID") != null) {

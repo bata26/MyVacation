@@ -4,8 +4,8 @@ from models.user import User
 from models.activity import Activity
 from utility.serializer import Serializer
 import os
-import time
 from bson.objectid import ObjectId
+from datetime import datetime
 
 
 class AdminManager:
@@ -243,6 +243,7 @@ class AdminManager:
         activitiesCollection = db[os.getenv("ACTIVITIES_COLLECTION")]
         accommodationCollection = db[os.getenv("ACCOMMODATIONS_COLLECTION")]
         reviewsCollection = db[os.getenv("REVIEW_COLLECTION")]
+        reservationCollection = db[os.getenv("RESERVATIONS_COLLECTION")]
 
         if user["role"] != "admin":
             raise Exception("L'utente non possiede i privilegi di admin")
@@ -251,11 +252,13 @@ class AdminManager:
             with client.start_session() as session:
                  with session.start_transaction():
                     usersCollection.delete_one({"_id": ObjectId(userID)})
+                    usersCollection.update_many({"reservations.hostID" : ObjectId(userID)} , {"$pull" : {"reservations" : {"hostID" : ObjectId("userID")}}} , session=session)
                     activitiesCollection.delete_many({"hostID" : ObjectId(userID)}, session=session)
-                    accommodationCollection.delete_many({"hostID" : ObjectId(userID)}, session=session)
-                    reviewsCollection.delete_many({"userID" : ObjectId(userID)}, session=session)
                     activitiesCollection.update_many({"reviews.userID" : ObjectId(userID)}, {"$pull" : {"reviews" : {"userID" : ObjectId(userID)}}}, session=session)
+                    accommodationCollection.delete_many({"hostID" : ObjectId(userID)}, session=session)
                     accommodationCollection.update_many({"reviews.userID" : ObjectId(userID)}, {"$pull" : {"reviews" : {"userID" : ObjectId(userID)}}} ,session=session)
+                    reviewsCollection.delete_many({"userID" : ObjectId(userID)}, session=session)
+                    reservationCollection.delete_many({"hostID" : ObjectId(userID) , "startDate" : {"$gte" : datetime.today()}} , session=session)
             return True
         except Exception:
             raise Exception("Impossibile eliminare")
