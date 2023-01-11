@@ -205,7 +205,7 @@ class UserNodeManager:
                     query = "MATCH (u : User) " \
                             "MATCH (u2:User)-[r:FOLLOW]->(u)  " \
                             "WHERE NOT u.userID = '%s' " \
-                            "return u " \
+                            "return u , " \
                             "COUNT(r) as followed " \
                             "ORDER BY followed DESC " \
                             "LIMIT 3" % userNode.userID
