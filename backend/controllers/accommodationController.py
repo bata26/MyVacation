@@ -113,7 +113,6 @@ class AccommodationController:
     def insertReview(requestBody , user):
         try:
             destinationID =  requestBody["destinationID"]
-            print(f"destinationID : {destinationID}")
             review = Review(
                 user["_id"],
                 destinationID,
